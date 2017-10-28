@@ -1,0 +1,127 @@
+
+@import "../../styles/settings";
+
+.studio-sidebar {
+  top: 0;
+  left: 0;
+  //bottom: 0;
+  min-height: 100vh;
+  border-right: 1px solid;
+  width: $sidebar-width-sm;
+  @media (min-width: 1200px) {
+    width: $sidebar-width;
+  }
+  position: absolute;
+  .mat-expansion-panel {
+    background: transparent;
+  }
+}
+
+.studio-app-nav {
+
+}
+
+.sidebar-logo {
+  height: 55px;
+}
+
+.studio-site-nav {
+  margin: {
+    top: 15px;
+  }
+}
+
+.sidebar-actions {
+  margin: 20px 30px;
+  button {
+    margin-bottom: 10px;
+  }
+}
+
+.sidebar-item {
+  position: relative;
+}
+
+.sidebar-items {
+  padding-top: 10px;
+}
+
+.sidebar-sub-header {
+  margin: {
+    top: 10px;
+    bottom: 5px;
+  };
+  padding: {
+    left: 15px;
+    right: 15px;
+  }
+  font-size: 1rem;
+}
+
+.sidebar-item,
+.sidebar-item-heading {
+  display: flex;
+  align-items: center;
+  padding: 7px 15px;
+  i {
+    width: 20px;
+    font-size: 1.2rem;
+    text-align: center;
+    margin-right: 10px;
+  }
+}
+
+.sidebar-item-heading {
+  padding: 7px 0;
+}
+
+.sidebar-item-container {
+  // TODO /deep/ is deprecated, use ::ng-deep
+  /deep/ .mat-expansion-panel-body {
+    padding: 0 20px 5px !important;
+  }
+}
+
+/* Theme */
+
+.studio-sidebar {
+  color: #333;
+  background-color: $sidebar-background-color;
+  border-right-color: $sidebar-border-color;
+}
+
+.sidebar-heading {
+  @include open-sans-bold;
+  &, &:hover, &:focus {
+    background-color: $grey-header !important;
+  }
+}
+
+.sidebar-items {
+  .sidebar-sub-header {
+    color: #666;
+  }
+  a,
+  .item,
+  .sidebar-item-heading {
+    color: $action-dark; // #333;
+  }
+}
+
+.sidebar-item {
+  &.active {
+    color: #ffffff !important;
+    background-color: $action-light;
+    &::after {
+      width: 0;
+      height: 0;
+      content: "";
+      top: 0;
+      right: -10px;
+      position: absolute;
+      border-style: solid;
+      border-width: 17.5px 0 17.5px 10px;
+      border-color: transparent transparent transparent $action-light;
+    }
+  }
+}

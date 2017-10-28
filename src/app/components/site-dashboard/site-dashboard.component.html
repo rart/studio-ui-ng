@@ -1,0 +1,39 @@
+<div class="view-wrapper">
+  <div class="title-bar">
+    <h1 class="view-title"><i class="fa fa-tachometer"></i> <span i18n>Site Dashboard:</span> {{siteName}}</h1>
+  </div>
+  <div class="view-content">
+
+    <mat-expansion-panel class="studio-app-nav allow-overflow" expanded="true">
+      <mat-expansion-panel-header [collapsedHeight]="'75px'" [expandedHeight]="'75px'">
+        <mat-panel-title i18n>Items Waiting For Approval</mat-panel-title>
+      </mat-expansion-panel-header>
+      <table class="ui very basic table">
+        <thead>
+        <tr>
+          <th><mat-checkbox checked="true"></mat-checkbox></th>
+          <th>Item Name</th>
+          <th>URL</th>
+          <th>Publish Date & Time</th>
+          <th>Edited By</th>
+          <th>Edit Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td colspan="6">Pages</td>
+        </tr>
+        <tr>
+          <td><mat-checkbox></mat-checkbox></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        </tbody>
+      </table>
+    </mat-expansion-panel>
+
+  </div>
+</div>

@@ -1,0 +1,256 @@
+<div class="dialog-view-container" [class.edit-mode]="editMode">
+
+  <!--<button class="ui basic right floated button primary" (click)="done()" tabindex="2">Done</button>-->
+  <h1 mat-dialog-title>
+    <span i18n>User</span>
+    <span *ngIf="!editMode" i18n="tde word creation concatenated to User to form 'User Creation'">Creation</span>
+    <span *ngIf="editMode" i18n="tde word management is concatenated after User to form 'User Management'">Management</span>
+  </h1>
+
+  <mat-tab-group [dynamicHeight]="true" [(selectedIndex)]="selectedTabIndex">
+    <mat-tab i18n-label label="Basic Information">
+
+      <!-- Read only user view -->
+      <div class="tab-content pad-x" *ngIf="model.managedExternally">
+
+        <div class="ui icon message">
+          <i class="info icon"></i>
+          <div class="content">
+            <h3 class="header" i18n>Externally Managed</h3>
+            <p i18n>This user is managed externally and cannot be edited from Studio.</p>
+          </div>
+        </div>
+
+        <table class="ui definition very basic table">
+          <tbody>
+          <tr>
+            <td class="text-right" i18n>Username</td>
+            <td>{{model.username}}</td>
+          </tr>
+          <tr>
+            <td class="text-right" i18n>First name</td>
+            <td>{{model.firstName}}</td>
+          </tr>
+          <tr>
+            <td class="text-right" i18n>Last name</td>
+            <td>{{model.lastName}}</td>
+          </tr>
+          <tr>
+            <td class="text-right" i18n>Email</td>
+            <td>{{model.email}}</td>
+          </tr>
+          <tr>
+            <td class="text-right" i18n>Enabled</td>
+            <td>{{model.enabled ? 'Yes' : 'No'}}</td>
+          </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+      <!-- User edit form -->
+      <div class="tab-content pad-x"  *ngIf="!model.managedExternally">
+
+        <div class="mat-form-fields">
+
+          <div *ngIf="editMode">
+            <div><strong i18n>Username</strong></div> <span>{{model.username}}</span>
+          </div>
+          <mat-form-field *ngIf="!editMode">
+            <input matInput i18n-placeholder placeholder="Username"
+                   [(ngModel)]="model.username"
+                   [formControl]="userNameFormControl">
+            <mat-error i18n *ngIf="userNameFormControl.hasError('required')">
+              Email address is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+
+          <div class="two">
+            <mat-form-field>
+              <input matInput i18n-placeholder placeholder="First Name"
+                     [(ngModel)]="model.firstName"
+                     [formControl]="firstNameFormControl">
+              <mat-error i18n *ngIf="firstNameFormControl.hasError('required')">
+                First name is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field>
+              <input matInput i18n-placeholder placeholder="Last Name"
+                     [(ngModel)]="model.lastName"
+                     [formControl]="lastNameFormControl">
+              <mat-error i18n *ngIf="lastNameFormControl.hasError('required')">
+                Last name is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field>
+            <input matInput i18n-placeholder placeholder="Email"
+                   [(ngModel)]="model.email"
+                   [formControl]="emailFormControl">
+            <mat-error i18n *ngIf="emailFormControl.hasError('pattern')">
+              Please enter a valid email address
+            </mat-error>
+            <mat-error i18n *ngIf="emailFormControl.hasError('required')">
+              Email address is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+
+          <div *ngIf="!editMode">
+            <mat-form-field>
+              <input placeholder="Password" i18n-placeholder
+                     matInput [type]="passwordInputType"
+                     [formControl]="passwordFormControl"
+                     [(ngModel)]="model.password">
+              <mat-error i18n *ngIf="passwordFormControl.hasError('required')">
+                Password is <strong>required</strong>
+              </mat-error>
+              <mat-error i18n>
+                For convenience a password was auto-generated
+              </mat-error>
+            </mat-form-field>
+            <button class="ui basic icon mini button"
+                    (click)="togglePasswordVisibility()"
+                    title="Show/Hide Password" i18n-title>
+              <i class="icon {{passwordInputType === 'text' ? 'low vision' : 'eye'}}"></i>
+            </button>
+            <button i18n class="ui basic mini button" (click)="generatePassword()">
+              Generate
+            </button>
+          </div>
+
+          <div class="two">
+            <div><mat-checkbox i18n [(ngModel)]="model.enabled">Enabled</mat-checkbox></div>
+            <div></div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </mat-tab>
+    <mat-tab i18n-label label="Password Management" [disabled]="!editMode" *ngIf="!model.managedExternally">
+      <div class="tab-content pad-x" *ngIf="editMode">
+
+        <div class="mat-form-fields">
+          <div>
+            <mat-form-field>
+              <input placeholder="Password" i18n-placeholder
+                     matInput [type]="passwordInputType" required
+                     [(ngModel)]="model.password"
+                     #passwordField="ngModel">
+              <mat-error i18n *ngIf="passwordField.errors && passwordField['errors']['required']">
+                Password value is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+            <button class="ui basic icon mini button"
+                    (click)="togglePasswordVisibility()"
+                    title="Show/Hide Password" i18n-title>
+              <i class="icon {{passwordInputType === 'text' ? 'low vision' : 'eye'}}"></i>
+            </button>
+            <button i18n class="ui basic mini button" (click)="generatePassword()">
+              Generate
+            </button>
+          </div>
+        </div>
+
+        <div class="pad-y">
+          <mat-checkbox i18n [(ngModel)]="notifyPasswordReset">Send email notification</mat-checkbox>
+        </div>
+
+        <div class="pad-y">
+          <button class="ui button primary" (click)="resetPassword()" [disabled]="!passwordField.valid">
+            Reset Password
+          </button>
+        </div>
+
+      </div>
+    </mat-tab>
+    <mat-tab i18n-label label="Sites & Groups" [disabled]="!editMode">
+      <div class="tab-content pad-x" *ngIf="editMode">
+
+        <std-user-group-manager
+          *ngIf="selectedTabIndex === 2"
+          (change)="userGroupsChanged($event)"
+          [changeRollBack]="groupChangeRollback"
+          [user]="model"></std-user-group-manager>
+
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <div class="clearfix">
+    <div class="float-right">
+      <button class="ui basic button" (click)="done()" tabindex="2">Cancel</button>
+      <!--<button class="ui primary button" (click)="updateGroups()" *ngIf="userGroupsHasChanges">Update</button>-->
+      <button class="ui primary button" (click)="update()" *ngIf="editMode && !model.managedExternally && (selectedTabIndex == 0)">Update</button>
+      <button class="ui green button" (click)="create()" *ngIf="!editMode">Create</button>
+    </div>
+    <div class="float-left" *ngIf="editMode">
+
+      <button class="ui basic button labeled red icon" [matMenuTriggerFor]="deleteConfirm">
+        <i class="trash icon"></i> <ng-container i18n>Delete User</ng-container>
+      </button>
+      <mat-menu #deleteConfirm="matMenu">
+        <button mat-menu-item>Cancel</button>
+        <button mat-menu-item [matMenuTriggerFor]="deleteOptions"><i class="warning icon"></i> Confirm Deletion?</button>
+      </mat-menu>
+      <mat-menu #deleteOptions="matMenu">
+        <button mat-menu-item>No, cancel</button>
+        <button mat-menu-item (click)="eliminate()">Yes, delete</button>
+      </mat-menu>
+
+    </div>
+  </div>
+
+</div>
+
+<!--
+        <form class="ui form">
+          <div class="field">
+            <label>Username</label>
+            <input type="text" required [(ngModel)]="model.username">
+          </div>
+          <div class="field">
+            <div class="two fields">
+              <div class="field">
+                <label>First Name</label>
+                <input type="text" [(ngModel)]="model.firstName" required>
+              </div>
+              <div class="field">
+                <label>Last Name</label>
+                <input type="text" [(ngModel)]="model.lastName" required>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Email Address</label>
+            <input type="text" required>
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <input type="text" required>
+          </div>
+        </form>
+        -->
+
+<!--
+<input id="name" name="name" class="form-control"
+       required minlengtd="4" forbiddenName="bob"
+       [(ngModel)]="hero.name" #name="ngModel" >
+
+<div *ngIf="passwordField.invalid && (passwordField.dirty || passwordField.touched)"
+     class="alert alert-danger">
+
+  <div *ngIf="name.errors.required">
+    Name is required.
+  </div>
+  <div *ngIf="name.errors.minlengtd">
+    Name must be at least 4 characters long.
+  </div>
+  <div *ngIf="name.errors.forbiddenName">
+    Name cannot be Bob.
+  </div>
+
+</div>
+-->

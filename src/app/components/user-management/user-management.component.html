@@ -1,0 +1,50 @@
+<div class="view-wrapper">
+  <div class="title-bar">
+    <div class="wrapper set-max comfort">
+      <h1 class="view-title"><i class="fa fa-users"></i> <span i18n>User Management</span></h1>
+      <div class="actions">
+        <button class="ui basic green button" (click)="createUser()">Create User</button>
+      </div>
+    </div>
+  </div>
+  <div class="view-content set-max comfort">
+
+    <table class="ui very basic striped table">
+      <thead class="table-hd-bg">
+      <tr>
+        <th>Username</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Sites</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!--
+      TODO: API doesn't support search.
+      <tr>
+        <td colspan="4">
+          <div class="ui transparent fluid left icon input">
+            <i class="icon search"></i>
+            <input type="text" placeholder="Search...">
+          </div>
+        </td>
+      </tr>
+      -->
+      <tr class="is-interactive highlight-interaction bg" *ngFor="let user of users" [routerLink]="['/users']" [queryParams]="{ edit: user.username }">
+        <td>{{user.username}}</td>
+        <td>{{user.first_name}} {{user.last_name}}</td>
+        <td>{{user.email}}</td>
+        <td>{{user.sites.length}}</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <mat-paginator (page)="pageChanged($event)"
+                   [length]="totalNumOfUsers"
+                   [pageIndex]="pageIndex"
+                   [pageSize]="pageSize"
+                   [pageSizeOptions]="pageSizeOptions">
+    </mat-paginator>
+
+  </div>
+</div>

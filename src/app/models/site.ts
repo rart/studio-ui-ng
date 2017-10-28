@@ -1,0 +1,53 @@
+
+import {Group} from './group';
+
+export class Site {
+  id: string;
+  name: string;
+  code: string;
+  description: string;
+  status;
+  liveUrl;
+  lastCommitId: string;
+  publishingEnabled: number;
+  publishingStatusMessage: string;
+  groups: Array<Group>;
+  static fromJSON(siteJSON) {
+    let site = new Site();
+    site.id = siteJSON.id;
+    site.code = siteJSON.siteId || siteJSON.site_id;
+    site.name = siteJSON.name || siteJSON.site_name;
+    site.description = siteJSON.description;
+    site.status = siteJSON.status;
+    site.liveUrl = siteJSON.liveUrl;
+    site.lastCommitId = siteJSON.lastCommitId;
+    site.publishingEnabled = siteJSON.publishingEnabled;
+    site.publishingStatusMessage = siteJSON.publishingStatusMessage;
+    site.groups = (siteJSON.groups && siteJSON.groups.length)
+      ? siteJSON.groups.map((groupJSON) => {
+        let group = Group.fromJSON(groupJSON);
+        group.site = site;
+        return group;
+      })
+      : undefined;
+    return site;
+  }
+  /**
+   * Takes any info from `completer` and sets it to this instance. Does
+   * not override any existing values on present instance.
+   **/
+  completeMissingInformation(completer: Site): void {
+    let properties = [];
+    for (let prop in completer) {
+      // hasOwnProperty skips properties with null values (at least in chrome)
+      // leaving the if for tslining purposes...
+      if (this.hasOwnProperty(prop)) {
+        properties.push(prop);
+      }
+    }
+    properties.forEach(propertyName => {
+      this[propertyName] = this[propertyName] || completer[propertyName];
+    });
+  }
+}
+

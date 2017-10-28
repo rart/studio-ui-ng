@@ -1,0 +1,166 @@
+
+@import "styles/settings";
+@import "../../node_modules/semantic-ui-sass/semantic-ui.scss";
+@import "./styles/material.scss";
+
+body, html {
+  height: 100%;
+  @include open-sans-regular;
+  font-size: $font-size-base;
+  &, * {
+    box-sizing: border-box;
+  }
+}
+
+h1,h2,h3,h4,h5,h6 {
+  @include open-sans-bold;
+}
+
+h1 {
+  @include open-sans-light;
+}
+
+.crafter-studio {
+  padding-left: $sidebar-width-sm;
+  @media (min-width: 1200px) {
+    padding-left: $sidebar-width;
+  }
+  &.sidebar-collapsed {
+    padding-left: $sidebar-width-collapsed;
+    .studio-sidebar {
+      width: $sidebar-width-collapsed;
+      .label,
+      .sidebar-actions,
+      .sidebar-sub-header{
+        /* TODO what do to with actions? add icon */
+        display: none;
+      }
+      .sidebar-item,
+      .sidebar-item-heading {
+        &:hover {
+          .label {
+            display: initial;
+          }
+        }
+      }
+    }
+  }
+}
+
+.view-container {
+  padding: 20px;
+}
+
+.font-light {
+
+}
+
+.font-semi-bold {
+
+}
+
+.font-bold {
+
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+.is-interactive {
+  cursor: pointer;
+}
+
+.highlight-interaction {
+  &.bg {
+    &:hover {
+      background-color: $action-light !important;
+    }
+  }
+}
+
+.float-right {
+  float: right
+}
+
+.float-left {
+  float: left
+}
+
+.clearfix {
+  @include clearfix();
+}
+
+.flex {
+  display: flex;
+  &.column {
+    flex-direction: column
+  }
+}
+
+.pad {
+  padding: 20px;
+}
+
+.pad-y {
+  padding: {
+    top: 20px;
+    bottom: 20px;
+  }
+}
+
+.pad-x {
+  padding: {
+    right: 20px;
+    left: 20px;
+  }
+}
+
+.view-wrapper {
+  .title-bar {
+    border-bottom: 1px solid rgba(34, 36, 38, 0.15);
+    box-shadow: 0 2px 2px 0 rgba(34, 36, 38, 0.15);
+    .wrapper {
+      display: flex;
+      align-items: center;
+      padding: $spacing-conservative;
+    }
+    .view-title {
+      margin: 0;
+      color: #666;
+    }
+    .actions {
+      margin-left: auto;
+    }
+  }
+  .view-content {
+    padding: $spacing-lg $spacing-conservative;
+  }
+}
+
+.set-max {
+  margin: auto;
+  &.readability {
+    max-width: 600px;
+  }
+  &.comfort {
+    max-width: 1100px;
+  }
+  &.generous {
+    max-width: 1100px;
+  }
+}
+
+.table-hd-bg {
+  background-color: #EBEBEB;
+}
+
+

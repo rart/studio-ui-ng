@@ -1,0 +1,211 @@
+{
+  "studio": [
+    {
+      "iconClass": "fa fa-address-card-o",
+      "iconText": "",
+      "label": "Users",
+      "config": {
+        "href": "/users"
+      }
+    },
+    {
+      "iconClass": "fa fa-laptop",
+      "iconText": "",
+      "label": "Sites",
+      "config": {
+        "href": "/sites"
+      }
+    },
+    {
+      "iconClass": "fa fa-question-circle-o",
+      "iconText": "",
+      "label": "Help",
+      "config": {
+        "href": "/help"
+      }
+    }
+  ],
+  "site": {
+    "nav": [
+      {
+        "type": "link",
+        "label": "Dashboard",
+        "iconClass": "fa fa-tachometer",
+        "config": {
+          "href": "dashboard"
+        }
+      },
+      {
+        "type": "link",
+        "label": "Server Log",
+        "iconClass": "fa fa-align-left",
+        "config": {
+          "href": "server-log"
+        },
+        "roles": []
+      },
+      {
+        "type": "heading",
+        "label": "Content"
+      },
+      {
+        "type": "container",
+        "label": "Pages",
+        "iconClass": "fa fa-file-text-o",
+        "iconText": "",
+        "component": "",
+        "config": {
+          "path": "/site/website"
+        }
+      },
+      {
+        "type": "container",
+        "label": "Taxonomy",
+        "iconClass": "fa fa-tags",
+        "component": "",
+        "config": {
+          "path": ""
+        }
+      },
+      {
+        "type": "container",
+        "label": "Site Assets",
+        "iconClass": "fa fa-file-text-o",
+        "component": "",
+        "config": {
+          "": ""
+        }
+      },
+      {
+        "type": "container",
+        "label": "Components",
+        "iconClass": "fa fa-puzzle-piece",
+        "iconText": "",
+        "component": "",
+        "config": {
+          "": ""
+        }
+      },
+      {
+        "type": "link",
+        "label": "Content Models",
+        "iconClass": "fa fa-database",
+        "iconText": "",
+        "component": "",
+        "config": {
+          "href": "content-models"
+        }
+      },
+      {
+        "type": "heading",
+        "label": "Code",
+        "iconClass": "",
+        "iconText": "",
+        "component": "",
+        "config": {
+          "": ""
+        }
+      },
+      {
+        "type": "container",
+        "label": "Templates",
+        "iconClass": "fa fa-file-code-o",
+        "iconText": "",
+        "component": "",
+        "config": {
+          "": ""
+        }
+      },
+      {
+        "type": "container",
+        "label": "Scripts",
+        "iconClass": "fa fa-code",
+        "iconText": "",
+        "component": "",
+        "config": {
+          "": ""
+        }
+      },
+      {
+        "type": "heading",
+        "label": "Configuration",
+        "iconClass": "",
+        "iconText": "",
+        "component": "",
+        "config": {
+          "": ""
+        }
+      },
+      {
+        "type": "link",
+        "label": "Configuration Files",
+        "iconClass": "fa fa-cogs",
+        "iconText": "",
+        "component": "",
+        "config": {
+          "href": "configuration-files"
+        }
+      },
+      {
+        "type": "link",
+        "label": "User Groups",
+        "iconClass": "fa fa-users",
+        "iconText": "",
+        "component": "",
+        "config": {
+          "href": "user-groups"
+        }
+      },
+      {
+        "type": "link",
+        "label": "Workflow States",
+        "iconClass": "fa fa-fast-forward",
+        "iconText": "",
+        "component": "",
+        "config": {
+          "href": "workflow-states"
+        }
+      },
+      {
+        "type": "link",
+        "label": "Bulk Publishing",
+        "iconClass": "fa fa-cubes",
+        "iconText": "",
+        "component": "",
+        "config": {
+          "href": "bulk-publishing"
+        }
+      },
+      {
+        "type": "link",
+        "label": "Audit",
+        "iconClass": "fa fa-eye",
+        "iconText": "",
+        "component": "",
+        "config": {
+          "href": "audit"
+        }
+      },
+      {
+        "type": "link",
+        "label": "Logging Levels",
+        "iconClass": "fa fa-align-right",
+        "iconText": "",
+        "component": "",
+        "config": {
+          "href": "logging-levels"
+        }
+      }
+    ],
+    "commands": [
+      {
+        "label": "Start Preview Sync",
+        "command": "start.preview.sync"
+      },
+      {
+        "label": "Sync From Repository",
+        "command": "start.repo.sync"
+      }
+    ]
+  }
+}

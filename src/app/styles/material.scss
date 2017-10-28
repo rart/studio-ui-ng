@@ -1,0 +1,167 @@
+
+@import "settings";
+
+//@import "material-theme";
+
+@import '~@angular/material/theming';
+
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core(mat-typography-config(
+  $font-family:   '"Open Sans", sans-serif',
+  $display-4:     mat-typography-level(112px, 112px, 300),
+  $display-3:     mat-typography-level(56px, 56px, 400),
+  $display-2:     mat-typography-level(45px, 48px, 400),
+  $display-1:     mat-typography-level(34px, 40px, 400),
+  $headline:      mat-typography-level(24px, 32px, 400),
+  $title:         mat-typography-level(20px, 32px, 500),
+  $subheading-2:  mat-typography-level(16px, 28px, 400),
+  $subheading-1:  mat-typography-level(15px, 24px, 400),
+  $body-2:        mat-typography-level(16px, 24px, 500),
+  $body-1:        mat-typography-level(16px, 20px, 400),
+  $caption:       mat-typography-level(12px, 20px, 400),
+  $button:        mat-typography-level(16px, 16px, 500),
+    // Line-height must be unit-less fraction of the font-size.
+  $input:         mat-typography-level(16px, 1.125, 400)
+));
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue.
+$studio-app-primary: mat-palette($mat-blue);
+$studio-app-accent: mat-palette($mat-blue, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$studio-app-warn: mat-palette($mat-red);
+
+// Create the theme object (a Sass map containing all of the palettes).
+$studio-app-theme: mat-light-theme($studio-app-primary, $studio-app-accent, $studio-app-warn);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($studio-app-theme);
+
+.mat-expanded.allow-overflow {
+  > .mat-expansion-panel-content {
+    &, > .mat-expansion-panel-body {
+      overflow: visible;
+    }
+  }
+}
+
+.mat-expansion-panel {
+  transition: box-shadow 280ms cubic-bezier(.4, 0, .2, 1);
+  box-sizing: content-box;
+  display: block;
+  margin: 0;
+  transition: margin 225ms cubic-bezier(.4, 0, .2, 1)
+}
+
+.mat-expansion-panel:not([class*=mat-elevation-z]) {
+  //box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12)
+  box-shadow: none !important;
+}
+
+.mat-expansion-panel-content {
+  overflow: hidden
+}
+
+.mat-expansion-panel-body {
+  //margin: 0 24px 16px;
+  margin: 0 !important;
+  overflow: auto;
+}
+
+.mat-expansion-panel-spacing {
+  //margin: 16px 0
+  margin: 0 !important
+}
+
+.mat-accordion .mat-expansion-panel-spacing:first-child {
+  margin-top: 0
+}
+
+.mat-accordion .mat-expansion-panel-spacing:last-child {
+  margin-bottom: 0
+}
+
+.mat-action-row {
+  border-top-style: solid;
+  border-top-width: 1px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding: 16px 8px 16px 24px
+}
+
+.mat-action-row button.mat-button {
+  margin-left: 8px
+}
+
+[dir=rtl] .mat-action-row button.mat-button {
+  margin-left: 0;
+  margin-right: 8px
+}
+
+.mat-expansion-panel-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  //padding: 0 24px
+  padding: 0 15px !important;
+}
+
+
+.mat-expansion-panel-header:focus,
+.mat-expansion-panel-header:hover {
+  outline: 0
+}
+
+.mat-expansion-panel-header.mat-expanded:focus,
+.mat-expansion-panel-header.mat-expanded:hover {
+  background: inherit
+}
+
+.mat-expansion-panel-header:not([aria-disabled=true]) {
+  cursor: pointer
+}
+
+.mat-content {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  overflow: hidden
+}
+
+.mat-expansion-panel-header-description, .mat-expansion-panel-header-title {
+  display: flex;
+  flex-grow: 1;
+  margin-right: 16px
+}
+
+[dir=rtl] .mat-expansion-panel-header-description, [dir=rtl] .mat-expansion-panel-header-title {
+  margin-right: 0;
+  margin-left: 16px
+}
+
+.mat-expansion-panel-header-description {
+  flex-grow: 2
+}
+
+.mat-expansion-indicator::after {
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  content: '';
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(45deg);
+  vertical-align: middle
+}
+
+.mat-expansion-panel-header.no-indicator .mat-expansion-indicator::after {
+  border: none !important;
+}
