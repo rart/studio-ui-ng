@@ -35,7 +35,11 @@ ProxyPreserveHost On
 ## TODOs
 - Move directories into sub packages (e.g. studio/core, studio/models, studio/services, etc) to achieve better extensibility
 - PoC a plugin and plugin system
+- Figure i18n in TypeScript files & test the i18n attributes on templates
 - Styles & theming R&D
+- Finish validations prior to submitting user editing requests
+- API error handling
+- Auth
 
 ## Development server
 
