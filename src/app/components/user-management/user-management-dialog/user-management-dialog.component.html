@@ -196,8 +196,7 @@
         <button mat-menu-item [matMenuTriggerFor]="deleteOptions"><i class="warning icon"></i> Confirm Deletion?</button>
       </mat-menu>
       <mat-menu #deleteOptions="matMenu">
-        <button mat-menu-item>No, cancel</button>
-        <button mat-menu-item (click)="eliminate()">Yes, delete</button>
+        <button mat-menu-item (click)="eliminate()">Yes, permanently delete user.</button>
       </mat-menu>
 
     </div>
