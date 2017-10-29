@@ -37,14 +37,7 @@ export class Site {
    * not override any existing values on present instance.
    **/
   completeMissingInformation(completer: Site): void {
-    let properties = [];
-    for (let prop in completer) {
-      // hasOwnProperty skips properties with null values (at least in chrome)
-      // leaving the if for tslining purposes...
-      if (this.hasOwnProperty(prop)) {
-        properties.push(prop);
-      }
-    }
+    let properties = Object.keys(completer);
     properties.forEach(propertyName => {
       this[propertyName] = this[propertyName] || completer[propertyName];
     });
