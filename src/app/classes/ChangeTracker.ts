@@ -2,7 +2,7 @@
 export enum ChangeTrackerType {
   ADD_REMOVE,
   INCREASE_DECREASE,
-  EDIT
+  TYPING
 }
 
 export enum ChangeType {
@@ -13,11 +13,15 @@ export enum ChangeType {
   Increase,
   Decrease,
 
-  Edit
+  CharEntry,
+  Backspace
 
 }
 
-export interface Change {
+// TODO: Why cli warns of this not being exported when it is an interface?
+// Changed to class to get rid of warning
+// https://github.com/angular/angular-cli/issues/2034
+export class Change {
   type: ChangeType;
   value: any;
 }
