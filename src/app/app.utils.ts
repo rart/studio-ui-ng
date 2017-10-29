@@ -2,10 +2,10 @@
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
-import {Http} from '@angular/http';
+import {Http, RequestOptionsArgs} from '@angular/http';
 import {MatDialog, MatDialogConfig, MatDialogRef, MatSnackBar} from '@angular/material';
-import {ComponentType} from "@angular/cdk/portal";
-import {TemplateRef} from "@angular/core";
+import {ComponentType} from '@angular/cdk/portal';
+import {TemplateRef} from '@angular/core';
 
 // MatSnackBarHorizontalPosition = 'start' | 'center' | 'end' | 'left' | 'right';
 // MatSnackBarVerticalPosition = 'top' | 'bottom';
@@ -25,18 +25,43 @@ export const openDialog = <T>(
   return dialogModule.open(compOrTemplate, config);
 };
 
-export const fetchObservable = (http: Http, path: string, paramMap?): Observable<any> => {
+export const toURLSearchParams = (paramMap = {}) => {
   let parameters = new URLSearchParams();
-  for (let key in paramMap) {
-    if (paramMap.hasOwnProperty(key)) {
-      parameters.set(key, paramMap[key]);
-    }
-  }
+  Object.keys(paramMap).forEach((key) => parameters.set(key, paramMap[key]));
+  return parameters;
+};
+
+export const httpGet = (http: Http, path: string, paramMap?,
+                        asPromise = false,
+                        options?: RequestOptionsArgs): Observable<any> | Promise<any> => {
+  let requestOptions: RequestOptionsArgs = Object.assign(
+    {}, paramMap ? { params: paramMap } : {},
+    options || {});
+  let request = http
+    .get(path, requestOptions)
+    .map((response) => response.json());
+  return asPromise ? request.toPromise() : request;
+};
+
+export const httpPost = (http: Http, path: string, body,
+                         asPromise = false,
+                         options?: RequestOptionsArgs): Observable<any> | Promise<any> => {
+  let request = http.post(path, body, options)
+    .map(resp => resp.json());
+  return (asPromise)
+    ? request.toPromise()
+    : request;
+};
+
+/** @deprecated */
+export const fetchObservable = (http: Http, path: string, paramMap?): Observable<any> => {
+  let parameters = toURLSearchParams(paramMap);
   return http
     .get(path, { search: parameters.toString() })
     .map((response) => response.json());
 };
 
+/** @deprecated */
 export const fetchPromise = (http: Http, path: string, paramMap?): Promise<any> => {
   return fetchObservable(http, path, paramMap)
     .toPromise()
