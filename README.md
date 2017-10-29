@@ -38,7 +38,7 @@ ProxyPreserveHost On
 - Figure i18n in TypeScript files & test the i18n attributes on templates
 - Styles & theming R&D
 - Finish validations prior to submitting user editing requests
-- API error handling
+- API/HTTP error handling
 - Auth
 
 ## Development server
