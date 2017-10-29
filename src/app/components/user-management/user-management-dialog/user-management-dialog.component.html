@@ -120,7 +120,7 @@
           </div>
 
           <div class="two">
-            <div><mat-checkbox i18n [(ngModel)]="model.enabled">Enabled</mat-checkbox></div>
+            <div><mat-checkbox i18n [(ngModel)]="model.enabled" (change)="enabledChanged($event.checked)">Enabled</mat-checkbox></div>
             <div></div>
           </div>
 

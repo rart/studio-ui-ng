@@ -2,7 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar} from '@angular/material';
 import {Router} from '@angular/router';
-import {UserService} from '../../../services/user.service';
+import {RestResponseMessages, UserService} from '../../../services/user.service';
 import {User} from '../../../models/user';
 import {password, showSnackBar} from '../../../app.utils';
 import {Change, ChangeType} from '../../../classes/ChangeTracker';
@@ -125,6 +125,55 @@ export class UserManagementDialogComponent implements OnInit {
       .then((data) => {
         this.done(`${this.fullName()} updated successfully.`);
       });
+  }
+
+  enable() {
+    this.userService
+      .enable(this.model)
+      .then((result) => {
+        // TODO: See sample error handling here...
+        // Not quite working though. When would result not be "OK"?
+        if (result.message === RestResponseMessages.OK) {
+          showSnackBar(this.snackBar, `${this.fullName()} set as enabled.`, 'Undo')
+            .onAction()
+            .subscribe(() => {
+              this.model.enabled = false;
+              this.disable();
+            });
+        } else {
+          this.model.enabled = false;
+          showSnackBar(this.snackBar, `Unable to set ${this.fullName()} as required.`, 'Retry')
+            .onAction()
+            .subscribe(() => {
+              this.enable();
+            });
+        }
+      })
+      .catch((reason) => {
+        console.log(reason);
+      });
+  }
+
+  disable() {
+    this.userService
+      .disable(this.model)
+      .then((result) => {
+        console.log(result);
+        showSnackBar(this.snackBar, `${this.fullName()} set as disabled.`, 'Undo')
+          .onAction()
+          .subscribe(() => {
+            this.model.enabled = true;
+            this.enable();
+          });
+      });
+  }
+
+  enabledChanged(enabled) {
+    if (enabled) {
+      this.enable();
+    } else {
+      this.disable();
+    }
   }
 
   eliminate() {
