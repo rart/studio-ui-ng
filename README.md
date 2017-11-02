@@ -15,17 +15,14 @@ ProxyVia On
 
 ProxyPreserveHost On
 
-    ProxyPass /studio http://localhost:8080/studio
-    ProxyPassReverse /studio http://localhost:8080/studio
-   
-    ProxyPass /prev http://localhost:8080/
-    ProxyPassReverse /prev http://localhost:8080/
-   
-    ProxyPass /static-assets http://localhost:8080/static-assets
-    ProxyPassReverse /static-assets http://localhost:8080/static-assets
-   
-    ProxyPass / http://localhost:4200/
-    ProxyPassReverse / http://localhost:4200/
+    ProxyPass /app http://localhost:4200/
+    ProxyPassReverse /app http://localhost:4200/
+
+    ProxyPass /guest http://localhost:3000/
+    ProxyPassReverse /guest http://localhost:3000/
+
+    ProxyPass / http://localhost:8080/
+    ProxyPassReverse / http://localhost:8080/
 ```
 
 **FYI.**
