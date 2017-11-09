@@ -115,7 +115,6 @@ $studio-app-theme: mat-light-theme($studio-app-primary, $studio-app-accent, $stu
   padding: 0 15px !important;
 }
 
-
 .mat-expansion-panel-header:focus,
 .mat-expansion-panel-header:hover {
   outline: 0
@@ -164,4 +163,13 @@ $studio-app-theme: mat-light-theme($studio-app-primary, $studio-app-accent, $stu
 
 .mat-expansion-panel-header.no-indicator .mat-expansion-indicator::after {
   border: none !important;
+}
+
+/* MatDialog */
+
+.mat-dialog-container {
+  @media only screen and (max-width: 1000px) {
+    max-width: 95vw;
+    margin: auto;
+  }
 }

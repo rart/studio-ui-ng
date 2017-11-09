@@ -1,0 +1,37 @@
+<div class="view-container">
+  <std-view-title-bar
+    i18n-title
+    [title]="site.name"
+    icon="fa fa-tachometer"
+    max="readability">
+    <button class="ui basic blue button" (click)="$event">Edit Site</button>
+  </std-view-title-bar>
+  <div class="content set-max readability responsive-box">
+
+    <table class="ui definition very basic table">
+      <tbody>
+      <tr>
+        <td class="text-right" i18n>Name</td>
+        <td>{{site.name}}</td>
+      </tr>
+      <tr>
+        <td class="text-right" i18n>Code</td>
+        <td>{{site.code}}</td>
+      </tr>
+      <tr>
+        <td class="text-right" i18n>Description</td>
+        <td>{{site.description}}</td>
+      </tr>
+      <tr>
+        <td class="text-right" i18n>Live Link</td>
+        <td>{{site.liveUrl}}</td>
+      </tr>
+      <tr>
+        <td class="text-right" i18n>Groups</td>
+        <td></td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>

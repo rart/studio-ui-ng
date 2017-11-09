@@ -5,5 +5,9 @@
 
 export const environment = {
   production: false,
+
+  appUrl: '/app',
+  assetsUrl: '/app/assets',
   baseUrl: '/studio/api/1/services/api/1'
+
 };

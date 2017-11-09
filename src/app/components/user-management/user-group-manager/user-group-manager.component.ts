@@ -6,11 +6,11 @@ import {
   Output,
   EventEmitter
 } from '@angular/core';
-import {User} from '../../../models/user';
+import {User} from '../../../models/user.model';
 import {SiteService} from '../../../services/site.service';
 import {GroupService} from '../../../services/group.service';
-import {Site} from '../../../models/site';
-import {Change, ChangeTracker, ChangeTrackerType, ChangeType} from '../../../classes/ChangeTracker';
+import {Site} from '../../../models/site.model';
+import {Change, ChangeTracker, ChangeTrackerType, ChangeType} from '../../../classes/change-tracker';
 
 @Component({
   selector: 'std-user-group-manager',
@@ -39,7 +39,7 @@ export class UserGroupManagerComponent implements OnInit, OnChanges {
       .all()
       .then((data) => {
         this.sitesLoaded = true;
-        this.mergeSites(data.sites);
+        this.mergeSites(data.entries);
         this.setNotAMemberGroupBySite();
       });
     this.groupService

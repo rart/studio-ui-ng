@@ -4,7 +4,6 @@
 .studio-sidebar {
   top: 0;
   left: 0;
-  //bottom: 0;
   min-height: 100vh;
   border-right: 1px solid;
   width: $sidebar-width-sm;
@@ -12,6 +11,20 @@
     width: $sidebar-width;
   }
   position: absolute;
+  &.independent-scroll {
+    bottom: 0;
+    .sidebar-scroll {
+      overflow: auto;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-bottom: $spacing-conservative;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 75px;
+    }
+  }
   .mat-expansion-panel {
     background: transparent;
   }
@@ -82,12 +95,48 @@
   }
 }
 
+.ui.message.user-account-control {
+
+  .independent-scroll & {
+    left: 0;
+    bottom: 0;
+    top: auto;
+    right: auto;
+    position: fixed;
+    width: ($sidebar-width-sm+(-1)) !important;
+    @media (min-width: 1200px) {
+      width: ($sidebar-width+(-1)) !important;
+    }
+  }
+
+  padding: 15px;
+  overflow: hidden;
+  border-top: 1px solid;
+
+  .content .header,
+  .content p {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .image,
+  .user.icon {
+    width: 43px;
+    margin-right: $spacing-sm;
+    @media (max-width: 1199px) {
+      display: none !important;
+    }
+  }
+
+}
+
 /* Theme */
 
 .studio-sidebar {
   color: #333;
   background-color: $sidebar-background-color;
-  border-right-color: $sidebar-border-color;
+  border-color: $sidebar-border-color;
 }
 
 .sidebar-heading {
@@ -124,4 +173,11 @@
       border-color: transparent transparent transparent $action-light;
     }
   }
+}
+
+.ui.message.user-account-control {
+  box-shadow: none;
+  border-radius: 0;
+  background-color: #EBEBEB;
+  border-color: $sidebar-border-color;
 }

@@ -1,4 +1,4 @@
-import {Site} from './site';
+import {Site} from './site.model';
 
 export class Group {
   id;

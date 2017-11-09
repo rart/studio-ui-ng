@@ -1,8 +1,11 @@
-<div class="view-wrapper">
-  <div class="title-bar">
-    <h1 class="view-title"><i class="fa fa-tachometer"></i> <span i18n>Site Dashboard:</span> {{siteName}}</h1>
-  </div>
-  <div class="view-content">
+<div class="view-container">
+  <std-view-title-bar
+    i18n-title
+    [title]="viewTitle"
+    icon="fa fa-tachometer"
+    max="comfort">
+  </std-view-title-bar>
+  <div class="content">
 
     <mat-expansion-panel class="studio-app-nav allow-overflow" expanded="true">
       <mat-expansion-panel-header [collapsedHeight]="'75px'" [expandedHeight]="'75px'">

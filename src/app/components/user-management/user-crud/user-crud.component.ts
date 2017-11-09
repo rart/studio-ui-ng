@@ -1,46 +1,26 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar} from '@angular/material';
-import {Router} from '@angular/router';
-import {RestResponseMessages, UserService} from '../../../services/user.service';
-import {User} from '../../../models/user';
-import {password, showSnackBar} from '../../../app.utils';
-import {Change, ChangeType} from '../../../classes/ChangeTracker';
+import {MatSnackBar} from '@angular/material';
+import {ActivatedRoute, Router} from '@angular/router';
+import {UserService} from '../../../services/user.service';
+import {User, AVATARS} from '../../../models/user.model';
+import {showSnackBar} from '../../../app.utils';
+import {Change, ChangeType} from '../../../classes/change-tracker';
 import {GroupService} from '../../../services/group.service';
+import {ResponseCodes} from '../../../services/http.service';
 
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-const TYPE_PASSWORD = 'password';
-const TYPE_TEXT = 'text';
-
-// @Component({
-//   selector: 'std-password-field',
-//   template: `
-//     <mat-form-field>
-//       <input i18n-placeholder placeholder="Password"
-//              matInput [type]="passwordInputType"
-//              [formControl]="passwordFormControl"
-//              [(ngModel)]="model.password">
-//       <mat-error i18n *ngIf="passwordFormControl.hasError('required')">
-//         Password is <strong>required</strong>
-//       </mat-error>
-//     </mat-form-field>
-//     <button class="ui basic icon mini button" (click)="togglePasswordVisibility()">
-//       <i class="icon" class="{{passwordInputType === 'text' ? 'eye' : 'low vision'}}"></i>
-//     </button>
-//     <button class="ui basic mini button" (click)="generatePassword()">Generate</button>`
-// }) class PasswordFieldComponent implements OnInit {
-//   @Input() type = TYPE_TEXT;
-//   ngOnInit() {
-//
-//   }
-// }
 
 @Component({
-  selector: 'std-user-management-dialog',
-  templateUrl: './user-management-dialog.component.html',
-  styleUrls: ['./user-management-dialog.component.scss']
+  selector: 'std-user-crud',
+  templateUrl: './user-crud.component.html',
+  styleUrls: ['./user-crud.component.scss']
 })
-export class UserManagementDialogComponent implements OnInit {
+export class UserCrUDComponent implements OnInit {
+
+  @Output() finished = new EventEmitter();
+
+  avatars = AVATARS;
 
   userGroupsHasChanges = false;
   groupChangeRollback: Change;
@@ -48,7 +28,6 @@ export class UserManagementDialogComponent implements OnInit {
   model: User = new User();
   isEnabled = false;
   editMode = false;
-  passwordInputType = TYPE_TEXT;
   selectedTabIndex = 0;
   notifyPasswordReset = true;
 
@@ -57,41 +36,51 @@ export class UserManagementDialogComponent implements OnInit {
   emailFormControl = new FormControl('', [Validators.required, Validators.pattern(EMAIL_REGEX)]);
   userNameFormControl = new FormControl('', [Validators.required]);
   passwordFormControl = new FormControl('', [Validators.required]);
+  resetPasswordFormControl = new FormControl('', [Validators.required]);
 
-  basicInfoFormGroup = new FormGroup({
+  updateBasicInfoFormGroup= new FormGroup({
     firstName: this.firstNameFormControl,
     lastName: this.lastNameFormControl,
     email: this.emailFormControl,
-    userName: this.userNameFormControl,
-    password: this.passwordFormControl
+    userName: this.userNameFormControl
   });
 
   constructor(
-    public dialogRef: MatDialogRef<UserManagementDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
     public snackBar: MatSnackBar,
     private router: Router,
+    private route: ActivatedRoute,
     public userService: UserService,
     public groupService: GroupService
   ) { }
 
   ngOnInit() {
-    const data = this.data;
-    if (data.username) {
-      this.model.username = data.username;
-      this.loadUser();
-    } else {
-      this.model.enabled = true;
-      this.generatePassword();
-    }
+    const subscription = (params) => {
+      if (params.username || params.edit) {
+        this.model.username = params.username || params.edit;
+        this.loadUser();
+      }
+    };
+    this.route.params
+      .subscribe(subscription);
+    this.route.queryParams
+      .subscribe(subscription);
   }
 
   done(snackBarMessage?) {
-    this.dialogRef.close();
+
     if (snackBarMessage) {
       showSnackBar(this.snackBar, snackBarMessage);
     }
-    this.router.navigate(['/users']);
+
+    // TODO: Better way of doing this?
+    // How can parent component view subscribe to the event if it's the router outlet how renders
+    // https://stackoverflow.com/questions/38393494/how-to-emit-event-in-router-outlet-in-angular2
+    if (this.finished.observers.length) {
+      this.finished.emit();
+    } else {
+      this.router.navigate(['/users']);
+    }
+
   }
 
   loadUser() {
@@ -100,7 +89,7 @@ export class UserManagementDialogComponent implements OnInit {
       .then((isEnabled) => {
         this.model.enabled = this.isEnabled = isEnabled;
       });
-    return this.userService.fetch(username)
+    return this.userService.get(username)
       .then((response) => {
         this.model = response;
         this.model.enabled = this.isEnabled;
@@ -112,7 +101,8 @@ export class UserManagementDialogComponent implements OnInit {
     this.userService
       .create(this.model)
       .then((data) => {
-        if (data.message === 'OK') {
+        if (data.responseCode === ResponseCodes.OK) {
+          this.model.password = '';
           showSnackBar(this.snackBar, `${this.fullName()} registered successfully. Edit mode enabled.`);
           this.loadUser();
         }
@@ -133,7 +123,7 @@ export class UserManagementDialogComponent implements OnInit {
       .then((result) => {
         // TODO: See sample error handling here...
         // Not quite working though. When would result not be "OK"?
-        if (result.message === RestResponseMessages.OK) {
+        if (result.responseCode === ResponseCodes.OK) {
           showSnackBar(this.snackBar, `${this.fullName()} set as enabled.`, 'Undo')
             .onAction()
             .subscribe(() => {
@@ -178,7 +168,7 @@ export class UserManagementDialogComponent implements OnInit {
 
   eliminate() {
     this.userService
-      .eliminate(this.model)
+      .delete(this.model)
       .then(() => {
         this.done(`${this.fullName()} deleted successfully.`);
       });
@@ -190,20 +180,6 @@ export class UserManagementDialogComponent implements OnInit {
       .then(() => {
         this.done('Password successfully reset.');
       });
-  }
-
-  togglePasswordVisibility() {
-    if (this.passwordInputType === TYPE_PASSWORD) {
-      this.passwordInputType = TYPE_TEXT;
-    } else if (this.passwordInputType === TYPE_TEXT) {
-      this.passwordInputType = TYPE_PASSWORD;
-    }
-  }
-
-  generatePassword() {
-    const passwd: string = password();
-    this.passwordFormControl.setValue(passwd);
-    this.model.password = passwd;
   }
 
   fullName() {

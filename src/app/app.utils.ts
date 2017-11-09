@@ -1,8 +1,6 @@
 
-import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
-import {Http, RequestOptionsArgs} from '@angular/http';
 import {MatDialog, MatDialogConfig, MatDialogRef, MatSnackBar} from '@angular/material';
 import {ComponentType} from '@angular/cdk/portal';
 import {TemplateRef} from '@angular/core';
@@ -31,50 +29,31 @@ export const toURLSearchParams = (paramMap = {}) => {
   return parameters;
 };
 
-export const httpGet = (http: Http, path: string, paramMap?,
-                        asPromise = false,
-                        options?: RequestOptionsArgs): Observable<any> | Promise<any> => {
-  let requestOptions: RequestOptionsArgs = Object.assign(
-    {}, paramMap ? { params: paramMap } : {},
-    options || {});
-  let request = http
-    .get(path, requestOptions)
-    .map((response) => response.json());
-  return asPromise ? request.toPromise() : request;
-};
-
-export const httpPost = (http: Http, path: string, body,
-                         asPromise = false,
-                         options?: RequestOptionsArgs): Observable<any> | Promise<any> => {
-  let request = http.post(path, body, options)
-    .map(resp => resp.json());
-  return (asPromise)
-    ? request.toPromise()
-    : request;
-};
-
-/** @deprecated */
-export const fetchObservable = (http: Http, path: string, paramMap?): Observable<any> => {
-  let parameters = toURLSearchParams(paramMap);
-  return http
-    .get(path, { search: parameters.toString() })
-    .map((response) => response.json());
-};
-
-/** @deprecated */
-export const fetchPromise = (http: Http, path: string, paramMap?): Promise<any> => {
-  return fetchObservable(http, path, paramMap)
-    .toPromise()
-    .catch((error) => {
-      console.log(`An error occurred fetching (${path})`, error);
-    });
-};
-
 const randomStr = (): string => Math.random().toString(36).slice(2);
 export const password = () =>  `${randomStr().substr(5)}-${randomStr().substr(5)}-${randomStr().substr(5)}`;
 
-const S4 = ()  => (( ( (1 + Math.random()) * 0x10000 ) | 0 ).toString(16).substring(1));
-export const guid = () => (
-  (S4() + S4() + '-' + S4() + '-4' + S4().substr(0, 3) + '-' + S4() + '-' + S4() + S4() + S4())
-    .toLowerCase()
-);
+// taken from TodoMVC
+export const uuid = () => {
+  let i, random;
+  let result = '';
+
+  for (i = 0; i < 32; i++) {
+    random = Math.random() * 16 | 0;
+    if (i === 8 || i === 12 || i === 16 || i === 20) {
+      result += '-';
+    }
+    result += (i === 12 ? 4 : (i === 16 ? (random & 3 | 8) : random))
+      .toString(16);
+  }
+
+  return result;
+}
+
+export class StringUtils {
+  static contains(str, search) {
+    return str.indexOf(search) !== -1;
+  }
+  static remove(str, remove) {
+    return str.replace(remove, '');
+  }
+}

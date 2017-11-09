@@ -27,3 +27,25 @@
     bottom: $spacing-conservative;
   }
 }
+
+.avatar-display {
+  display: flex;
+  .selected-avatar {
+    margin-right: 5px;
+    .ui.tiny.image {
+      width: 70px;
+      height: 70px;
+      overflow: hidden;
+      background-color: #f2f2f2;
+    }
+  }
+  .available-avatars {
+    flex-wrap: wrap;
+    .image {
+      opacity: .5;
+      &.active {
+        opacity: 1;
+      }
+    }
+  }
+}

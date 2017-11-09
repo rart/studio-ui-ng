@@ -1,0 +1,52 @@
+<div class="view-container">
+  <std-view-title-bar
+    i18n-title
+    title="Site Management"
+    icon="fa fa-laptop">
+    <button class="ui basic green button" [routerLink]="['/sites/create']">Create Site</button>
+  </std-view-title-bar>
+  <div class="content">
+
+    <table class="ui selectable flat basic table">
+      <thead class="uppercase">
+      <tr>
+        <th class="spacer-cell"></th>
+        <th>Handle</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Live Link</th>
+        <th>Groups</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!--
+      TODO: API doesn't support search.
+      <tr>
+        <td colspan="6">
+          <div class="ui transparent fluid left icon input">
+            <i class="icon search"></i>
+            <input type="text" placeholder="Search...">
+          </div>
+        </td>
+      </tr>
+      -->
+      <tr class="is-interactive highlight-interaction bg" *ngFor="let site of sites" [routerLink]="['/sites', site.code]">
+        <td></td>
+        <td>{{site.code}}</td>
+        <td>{{site.name}}</td>
+        <td>{{site.description}}</td>
+        <td>{{site.liveUrl}}</td>
+        <td>{{site.groups || 0}}</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <mat-paginator (page)="pageChanged($event)"
+                   [length]="totalNumOfSites"
+                   [pageIndex]="pageIndex"
+                   [pageSize]="pageSize"
+                   [pageSizeOptions]="pageSizeOptions">
+    </mat-paginator>
+
+  </div>
+</div>

@@ -1,0 +1,70 @@
+<h2>
+  <span *ngIf="editMode">Editing {{model.name}}</span>
+  <span *ngIf="!editMode">New Site</span>
+</h2>
+
+<div class="ui grid mat-form full-width">
+  <div class="eight wide column">
+    <mat-form-field>
+      <input matInput i18n-placeholder placeholder="Site Name"
+             [(ngModel)]="model.name"
+             [formControl]="nameFormControl">
+      <mat-error i18n *ngIf="nameFormControl.hasError('required')">
+        Site name is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <div class="eight wide column">
+    <mat-form-field>
+      <input matInput i18n-placeholder placeholder="Site Handle"
+             [(ngModel)]="model.code"
+             [formControl]="codeFormControl">
+      <mat-error i18n *ngIf="codeFormControl.hasError('required')">
+        Site code is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <div class="sixteen wide column">
+    <mat-form-field>
+      <textarea matInput i18n-placeholder placeholder="Description" rows="3"
+                [(ngModel)]="model.description"
+                [formControl]="descriptionFormControl"></textarea>
+    </mat-form-field>
+  </div>
+</div>
+
+<mat-form-field>
+  <mat-select placeholder="Select Blueprint">
+    <mat-option *ngFor="let blueprint of blueprints" [value]="blueprint.id">
+      {{blueprint.label}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<div class="clearfix">
+  <div class="float-right">
+    <button class="ui basic button" (click)="done()" tabindex="2">Done</button>
+    <button class="ui blue button" i18n
+            (click)="update()"
+            [disabled]="!formGroup.valid"
+            *ngIf="editMode">Update</button>
+    <button class="ui green button" i18n
+            (click)="create()"
+            [disabled]="!formGroup.valid"
+            *ngIf="!editMode">Create</button>
+  </div>
+  <div class="float-left" *ngIf="editMode">
+
+    <button class="ui basic button labeled red icon" [matMenuTriggerFor]="deleteConfirm">
+      <i class="trash icon"></i> <ng-container i18n>Delete Site</ng-container>
+    </button>
+    <mat-menu #deleteConfirm="matMenu">
+      <button mat-menu-item>Cancel</button>
+      <button mat-menu-item [matMenuTriggerFor]="deleteOptions"><i class="warning icon"></i> Confirm Deletion?</button>
+    </mat-menu>
+    <mat-menu #deleteOptions="matMenu">
+      <button mat-menu-item (click)="eliminate()">Yes, permanently delete site.</button>
+    </mat-menu>
+
+  </div>
+</div>

@@ -1,5 +1,5 @@
 
-import {Group} from './group';
+import {Group} from './group.model';
 
 export class Site {
   id: string;

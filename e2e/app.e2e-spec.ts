@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('studio-ui4 App', () => {
+describe('studio-ui-x App', () => {
   let page: AppPage;
 
   beforeEach(() => {

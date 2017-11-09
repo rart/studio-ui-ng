@@ -1,24 +1,46 @@
-import { Injectable } from '@angular/core';
-import {Http} from '@angular/http';
-
+import {Injectable} from '@angular/core';
 import {environment} from '../../environments/environment';
-import {fetchObservable, fetchPromise} from '../app.utils';
-import {Site} from '../models/site';
+
+import {Site} from '../models/site.model';
+import {IEntityService, IPagedResponse, IPostResponse, StudioHttpService} from './http.service';
 
 const baseUrl = `${environment.baseUrl}/site`;
 
 @Injectable()
-export class SiteService {
+export class SiteService implements IEntityService<Site> {
 
-  constructor(public http: Http) { }
+  constructor(public http: StudioHttpService) {}
 
-  all(query?) {
-    return fetchObservable(this.http, `${baseUrl}/get-per-user.json`, { username: 'admin' })
+  all(query?): Promise<IPagedResponse<Site>> {
+    return this.http.get(`${baseUrl}/get-per-user.json`, {username: 'admin'})
       .map((data) => ({
-          total: data.total,
-          sites: data.sites.map((item) => Site.fromJSON(item))
+        total: data.total,
+        entries: data.sites.map((item) => Site.fromJSON(item))
       }))
       .toPromise();
+  }
+
+  allBlueprints() {
+    return this.http.get(`${baseUrl}/get-available-blueprints.json`)
+      .toPromise();
+  }
+
+  get(sideCode): Promise<Site> {
+    return this.http.get(`${baseUrl}/get.json`, {site_id: sideCode})
+      .map((data) => Site.fromJSON(data))
+      .toPromise();
+  }
+
+  create(entity: Site): Promise<IPostResponse<Site>> {
+    throw new Error('Method not implemented.');
+  }
+
+  update(entity: Site): Promise<IPostResponse<Site>> {
+    throw new Error('Method not implemented.');
+  }
+
+  delete(entity: Site): Promise<IPostResponse<Site>> {
+    throw new Error('Method not implemented.');
   }
 
 }

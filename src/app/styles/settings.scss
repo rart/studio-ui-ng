@@ -4,8 +4,8 @@ $import-google-fonts: true !default;
 $font-url: 'https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i' !default;
 $font-name: 'Open Sans' !default;
 $font-family: $font-name, sans-serif !default;
-$icons-font-path: '../../node_modules/semantic-ui-sass/icons' !default;
-$flags-image-path: '../../node_modules/semantic-ui-sass/images' !default;
+$icons-font-path: '~semantic-ui-css/themes/default/assets/fonts' !default;
+$flags-image-path: '~semantic-ui-css/themes/default/assets/images' !default;
 /* \\ Semantic UI // */
 
 $mat-font-family: $font-family;
@@ -28,11 +28,21 @@ $grey-header: #EBEBEB;
 
 $spacing-sm: 15px;
 $spacing-conservative: 20px;
+$spacing-md: 30px;
 $spacing-lg: 40px;
+
+$max-width-readability: 600px;
+$max-width-comfort: 1100px;
+$max-width-generous: 1100px;
 
 $font-size-base: 16px;
 
+$body-bg: $grey-main;
+$gray-light: $grey-header;
+
 // Sidebar
+
+$sidebar-breakpoint-sm: 1200px;
 
 $sidebar-width: 300px !default;
 $sidebar-width-sm: 220px !default;

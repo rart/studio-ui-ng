@@ -1,0 +1,48 @@
+<div class="view-container transparent" [class.tabbed]="tabs.length > 1">
+  <div class="title-bar transparent">
+    <div class="ui address-bar">
+      <section class="controls">
+        <button [disabled]="!selectedTab.hasBack()" (click)="back()" class="ui mini icon button"><i class="icon chevron left"></i></button>
+        <button [disabled]="!selectedTab.hasForward()" (click)="forward()" class="ui mini icon button"><i class="icon chevron right"></i></button>
+        <button [disabled]="selectedTab.isNew" (click)="reload()" class="ui mini icon button"><i class="icon refresh"></i></button>
+        <div class="ui search input-skin" *ngIf="site && sites">
+          <div class="ui inline dropdown site-display">
+            <div class="text" [title]="site.name" [matMenuTriggerFor]="siteSelectorMenu">
+              {{selectedTab.siteCode}}
+            </div>
+            <i class="dropdown icon"></i>
+            <mat-menu #siteSelectorMenu="matMenu">
+              <button mat-menu-item *ngFor="let siteItem of sites" (click)="changeSite(siteItem)"> {{siteItem.name}}</button>
+            </mat-menu>
+          </div>
+          <input #urlBox type="text" id="address"
+                 placeholder="enter page url... (e.g. /about-us)"
+                 class="address-input ui search prompt"
+                 [value]="selectedTab.url"
+                 (keyup.enter)="requestUrl(urlBox.value)" />
+        </div>
+        <button (click)="addTab()" class="ui mini basic green icon button"><i class="icon plus" title="New Tab"></i></button>
+      </section>
+      <nav class="tab-bar">
+        <div class="tab" *ngFor="let tab of tabs" [class.active]="tab.active">
+          <button (click)="selectTab(tab)" class="main" [title]="tab.title">{{tab.title}}</button>
+          <button (click)="closeTab(tab)" class="close" title="Close" i18n>&times;</button>
+        </div>
+      </nav>
+    </div>
+  </div>
+  <div class="preview-container">
+    <!--<section class="iframe-wrapper"
+             *ngFor="let tab of tabs"
+             [hidden]="tab.active"
+             [class.active]="tab.active">
+      <iframe frameborder="0" data-id="{{tab.id}}"
+              *ngIf="tab.render"
+              [src]="iframeLandingUrl | safeUrl"></iframe>
+    </section>-->
+    <section class="iframe-wrapper active">
+      <iframe frameborder="0"
+              [src]="iframeLandingUrl | safeUrl"></iframe>
+    </section>
+  </div>
+</div>

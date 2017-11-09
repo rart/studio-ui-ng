@@ -1,0 +1,61 @@
+@import "../../styles/settings";
+
+.user-management {
+
+  > .content {
+    display: flex;
+  }
+
+  .split {
+    .list-column {
+      width: 400px;
+      border-right: 1px solid $sidebar-border-color;
+    }
+    .details-column {
+      display: block;
+    }
+  }
+
+  .list-column {
+    width: 100%;
+    overflow: auto;
+    @media (max-width: 1310px) {
+
+    }
+    @media (max-width: 1420px) {
+      .ui.items .item {
+        padding-left: $spacing-conservative;
+        &:first-child {
+          padding-top: $spacing-conservative !important;
+        }
+      }
+    }
+  }
+
+  .details-column {
+    display: none;
+    flex-grow: 1;
+    overflow: auto;
+    padding: $spacing-conservative;
+  }
+
+  .ui.items > .item .meta {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /deep/ .mat-paginator {
+    @media (max-width: 1320px) {
+      justify-content: space-around;
+      .mat-paginator-page-size {
+        display: block;
+      }
+      .mat-paginator-range-label {
+        margin: 0 auto;
+      }
+    }
+  }
+
+}

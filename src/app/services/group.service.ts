@@ -1,24 +1,18 @@
 import { Injectable } from '@angular/core';
-import {Http} from '@angular/http';
 
 import {environment} from '../../environments/environment';
-import {fetchObservable, fetchPromise} from '../app.utils';
-import {Site} from '../models/site';
-import {Group} from '../models/group';
+import {Site} from '../models/site.model';
+import {StudioHttpService} from './http.service';
 
 const baseUrl = `${environment.baseUrl}/group`;
 
 @Injectable()
 export class GroupService {
 
-  constructor(public http: Http) { }
-
-  all(query?) {
-    console.error('Not implemented.');
-  }
+  constructor(public http: StudioHttpService) { }
 
   allBySite(query?) {
-    return fetchObservable(this.http, `${baseUrl}/get-all.json`, query)
+    return this.http.get(`${baseUrl}/get-all.json`, query)
       .map((data) => ({
         total: '(not provided by API)',
         sites: data.sites.map((dataItem) => {

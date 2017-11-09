@@ -1,68 +1,81 @@
-import { Injectable } from '@angular/core';
-import {Http} from '@angular/http';
+import {Injectable} from '@angular/core';
+
+import {User} from '../models/user.model';
+import {
+  IEntityService, IPagedResponse, IPostResponse, mapToPagedResponse, mapToPostResponse,
+  StudioHttpService
+} from './http.service';
 import {environment} from '../../environments/environment';
-import {httpPost, httpGet, fetchPromise} from '../app.utils';
-import {User} from '../models/user';
 import {Observable} from 'rxjs/Observable';
 
 const baseUrl = `${environment.baseUrl}/user`;
 
-export interface UserServicePagedResponse {
-  total: number;
-  users: User[];
-}
-
-export interface UserServicePostResponse {
-  message: RestResponseMessages;
-}
-
-const RestResponseMessages = { OK: 'OK' };
-type RestResponseMessages = (typeof RestResponseMessages)[keyof typeof RestResponseMessages];
-export { RestResponseMessages };
-
 @Injectable()
-export class UserService {
+export class UserService implements IEntityService<User> {
 
-  constructor(private http: Http) {}
+  constructor(private http: StudioHttpService) {}
 
-  fetch(username): Promise<User> {
-    let request = httpGet(this.http, `${baseUrl}/get.json`, { username: username }) as Observable<User>;
-    return request.map((userJSON) => User.fromJSON(userJSON)).toPromise();
+  all(options?): Promise<IPagedResponse<User>> {
+    return this.http
+      .get(`${baseUrl}/get-all.json`, options)
+      .map(mapToPagedResponse('users', User))
+      .toPromise();
+  }
+
+  get(username: string): Promise<User> {
+    return this.http
+      .get(`${baseUrl}/get.json`, {username: username})
+      .map((userJSON) => User.fromJSON(userJSON))
+      .toPromise();
+  }
+
+  create(user: User): Promise<IPostResponse<User>> {
+    return this.http
+      .post(`${baseUrl}/create.json`, user.export())
+      .map(mapToPostResponse(user))
+      .toPromise();
+  }
+
+  update(user: User): Promise<IPostResponse<User>> {
+    return this.http
+      .post(`${baseUrl}/update.json`, user.export())
+      .map(mapToPostResponse(user))
+      .toPromise();
+  }
+
+  delete(user: User): Promise<IPostResponse<User>> {
+    return this.http.post(`${baseUrl}/delete.json`, user.export())
+      .map(mapToPostResponse(user))
+      .toPromise();
   }
 
   isEnabled(username): Promise<boolean> {
-    let request = httpGet(this.http, `${baseUrl}/status.json`, { username: username }, true) as Promise<any>;
-    return request.then((json) => json.enabled);
+    return this.http.get(`${baseUrl}/status.json`, {username: username})
+      .toPromise()
+      .then((json) => json.enabled);
   }
 
-  enable(user: User) {
-    return httpPost(this.http, `${baseUrl}/enable.json`, { username: user.username }, true) as Promise<UserServicePostResponse>;
+  enable(user: User): Promise<IPostResponse<User>> {
+    return this.http.post(`${baseUrl}/enable.json`, {username: user.username})
+      .map(mapToPostResponse(user))
+      .toPromise();
   }
 
-  disable(user: User) {
-    return httpPost(this.http, `${baseUrl}/disable.json`, { username: user.username }, true) as Promise<any>;
-  }
-
-  all(options?) {
-    return httpGet(this.http, `${baseUrl}/get-all.json`, options, true) as Promise<UserServicePagedResponse>;
-  }
-
-  create(user: User) {
-    return httpPost(this.http, `${baseUrl}/create.json`, user.export(), true) as Promise<UserServicePostResponse>;
-  }
-
-  update(user: User) {
-    return httpPost(this.http, `${baseUrl}/update.json`, user.export(), true) as Promise<UserServicePostResponse>;
-  }
-
-  eliminate(user: User) {
-    return httpPost(this.http, `${baseUrl}/delete.json`, user.export()) as Promise<UserServicePostResponse>;
+  disable(user: User): Promise<IPostResponse<User>> {
+    return this.http
+      .post(`${baseUrl}/disable.json`, {username: user.username})
+      .map(mapToPostResponse(user))
+      .toPromise();
   }
 
   resetPassword(user: User) {
-    return httpPost(
-      this.http, `${baseUrl}/reset-password.json`,
-      { 'username': user.username, 'new': user.password }) as Promise<UserServicePostResponse>;
+    return this.http
+      .post(`${baseUrl}/reset-password.json`, {
+        'username': user.username,
+        'new': user.password
+      })
+      .map(mapToPostResponse(user))
+      .toPromise();
   }
 
 }

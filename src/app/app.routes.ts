@@ -1,9 +1,18 @@
 
 import {Routes, RouterModule} from '@angular/router';
+
+import {SiteResolver} from './services/site.resolver';
+
 import {DashboardComponent} from './components/dashboard/dashboard.component';
-import {SiteDashboardComponent} from './components/site-dashboard/site-dashboard.component';
+import {SiteDashboardComponent} from './components/site/site-dashboard/site-dashboard.component';
 import {UserManagementComponent} from './components/user-management/user-management.component';
 import {NotImplementedComponent} from './components/not-implemented/not-implemented.component';
+import {UserProfileComponent} from './components/user-management/user-profile/user-profile.component';
+import {SiteComponent} from './components/site/site.component';
+import {SiteManagementComponent} from './components/site-management/site-management.component';
+import {PreviewComponent} from './components/site/preview/preview.component';
+import {UserCrUDComponent} from './components/user-management/user-crud/user-crud.component';
+import {SiteCrUDComponent} from './components/site-management/site-crud/site-crud.component';
 
 const routes: Routes = [
   {
@@ -13,23 +22,63 @@ const routes: Routes = [
   },
   {
     path: 'users',
-    component: UserManagementComponent
+    component: UserManagementComponent,
+    children: [
+      {
+        path: 'create',
+        component: UserCrUDComponent
+      },
+      {
+        path: 'edit/:username',
+        component: UserCrUDComponent
+      }
+    ]
   },
   {
     path: 'sites',
-    component: NotImplementedComponent
+    component: SiteManagementComponent,
+    children: [
+      {
+        path: 'create',
+        component: SiteManagementComponent
+      },
+      {
+        path: ':code',
+        component: SiteManagementComponent
+      }
+    ]
   },
+  /*{
+    path: 'sites/create',
+    component: SiteManagementComponent
+  },
+  {
+    path: 'sites/:code',
+    component: SiteManagementComponent
+  },*/
   {
     path: 'help',
     component: NotImplementedComponent
   },
   {
+    path: 'profile',
+    component: UserProfileComponent
+  },
+  {
     path: 'site/:site',
-    component: NotImplementedComponent,
+    resolve: { site: SiteResolver },
     children: [
+      {
+        path: '',
+        component: SiteComponent
+      },
       {
         path: 'dashboard',
         component: SiteDashboardComponent
+      },
+      {
+        path: 'preview',
+        component: PreviewComponent
       },
       {
         path: 'server-log',
@@ -68,7 +117,15 @@ const routes: Routes = [
         component: NotImplementedComponent
       }
     ]
-  }
+  },
+  /*{
+    path: 'site/:site/dashboard',
+    component: SiteDashboardComponent
+  },
+  {
+    path: 'site/:site/server-log',
+    component: NotImplementedComponent
+  },*/
 ];
 
 export const studioRoutes = RouterModule.forRoot(routes);

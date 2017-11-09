@@ -21,7 +21,7 @@
       "iconText": "",
       "label": "Help",
       "config": {
-        "href": "/help"
+        "href": "/site/launcher/preview"
       }
     }
   ],
@@ -53,7 +53,7 @@
         "label": "Pages",
         "iconClass": "fa fa-file-text-o",
         "iconText": "",
-        "component": "",
+        "component": "wcm-root-folder",
         "config": {
           "path": "/site/website"
         }
