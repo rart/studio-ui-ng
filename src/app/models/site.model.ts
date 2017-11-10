@@ -12,6 +12,7 @@ export class Site {
   publishingEnabled: number;
   publishingStatusMessage: string;
   groups: Array<Group>;
+  blueprint: { id, label };
   static fromJSON(siteJSON) {
     let site = new Site();
     site.id = siteJSON.id;

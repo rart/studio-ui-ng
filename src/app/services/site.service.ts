@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../environments/environment';
 
 import {Site} from '../models/site.model';
-import {IEntityService, IPagedResponse, IPostResponse, StudioHttpService} from './http.service';
+import {IEntityService, IPagedResponse, IPostResponse, mapToPostResponse, StudioHttpService} from './http.service';
 
 const baseUrl = `${environment.baseUrl}/site`;
 
@@ -12,7 +12,7 @@ export class SiteService implements IEntityService<Site> {
   constructor(public http: StudioHttpService) {}
 
   all(query?): Promise<IPagedResponse<Site>> {
-    return this.http.get(`${baseUrl}/get-per-user.json`, {username: 'admin'})
+    return this.http.get(`${baseUrl}/get-per-user.json`, Object.assign({username: 'admin'}, query || {}))
       .map((data) => ({
         total: data.total,
         entries: data.sites.map((item) => Site.fromJSON(item))
@@ -31,16 +31,33 @@ export class SiteService implements IEntityService<Site> {
       .toPromise();
   }
 
-  create(entity: Site): Promise<IPostResponse<Site>> {
-    throw new Error('Method not implemented.');
+  create(site: Site): Promise<IPostResponse<Site>> {
+    return this.http
+      .post(`${baseUrl}/create.json`, {
+        site_id: site.code,
+        description: site.description,
+        blueprint: site.blueprint.id
+      })
+      .map(mapToPostResponse(site))
+      .toPromise();
   }
 
-  update(entity: Site): Promise<IPostResponse<Site>> {
-    throw new Error('Method not implemented.');
+  update(site: Site): Promise<IPostResponse<Site>> {
+    return this.http
+      .post(`${baseUrl}/update.json`, {
+        site_id: site.code,
+        description: site.description,
+        blueprint: site.blueprint.id
+      })
+      .map(mapToPostResponse(site))
+      .toPromise();
   }
 
-  delete(entity: Site): Promise<IPostResponse<Site>> {
-    throw new Error('Method not implemented.');
+  delete(site: Site): Promise<IPostResponse<Site>> {
+    return this.http
+      .post(`${baseUrl}/delete-site.json`, {siteId: site.code})
+      .map(mapToPostResponse(site))
+      .toPromise();
   }
 
 }

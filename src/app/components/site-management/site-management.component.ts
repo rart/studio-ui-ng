@@ -37,26 +37,21 @@ export class SiteManagementComponent implements OnInit {
   ngOnInit() {
 
     // @see https://github.com/angular/angular/issues/20299
-    // activatedRoute not carrying the correct URL when updated
-    // this.activeRoute.params
-    //   .subscribe(params => {
-    //     let {code} = params;
-    //     if (code) {
-    //       this.openDialog({code: code});
-    //     }
-    //   });
 
     this.activeRoute.url
       .subscribe(() => {
         let url = this.router.url;
-        setTimeout(() => {
-          if ('/sites/create' === url) {
-            this.openDialog();
-          } else if (StringUtils.contains(url, '/sites/')) {
-            /* Routes as /sites/:code */
-            this.openDialog({code: url.replace('/sites/', '')});
-          }
-        });
+        if (StringUtils.contains(url, '/create')) {
+          setTimeout(() => this.openDialog());
+        } else if (this.activeRoute.firstChild) {
+          this.activeRoute.firstChild.params
+            .subscribe((params) => {
+              if (params.siteCode) {
+                setTimeout(() =>
+                  this.openDialog({code: params.code || params.edit}));
+              }
+            });
+        }
       });
 
     this.activeRoute.queryParams
@@ -81,13 +76,11 @@ export class SiteManagementComponent implements OnInit {
         // TODO: fetch only when changed
         this.fetchSites();
 
-        // Something fails when opening dialogs without the setTimeout
+        // Something fails when opening dialogs on the current callstack (without the setTimeout)
 
         if (create !== undefined) {
           setTimeout(() => this.openDialog());
-        }
-
-        if (edit !== undefined && edit !== '') {
+        } else if (edit !== undefined && edit !== '') {
           setTimeout(() => this.openDialog({code: edit}));
         }
 
@@ -121,6 +114,7 @@ export class SiteManagementComponent implements OnInit {
       .subscribe(() => {
         this.router.navigate(['/sites']);
         subscription.unsubscribe();
+        this.fetchSites();
       });
     this.dialogRef = dialogRef;
   }

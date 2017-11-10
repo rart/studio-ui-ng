@@ -15,8 +15,9 @@ body, html {
   }
 }
 
-textarea {
-  resize: none;
+textarea,
+textarea.mat-input-element {
+  resize: none !important;
 }
 
 h1,h2,h3,h4,h5,h6 {
@@ -72,7 +73,7 @@ router-outlet {
 }
 
 .text-center {
-  text-align: center;
+  text-align: center !important;
 }
 
 .text-left {
@@ -125,9 +126,33 @@ router-outlet {
   }
 }
 
+.pad-top {
+  padding: {
+    top: $spacing-conservative;
+  }
+}
+
+.pad-bottom {
+  padding: {
+    bottom: $spacing-conservative;
+  }
+}
+
 .pad-x {
   padding: {
     right: $spacing-conservative;
+    left: $spacing-conservative;
+  }
+}
+
+.pad-right {
+  padding: {
+    right: $spacing-conservative;
+  }
+}
+
+.pad-left {
+  padding: {
     left: $spacing-conservative;
   }
 }

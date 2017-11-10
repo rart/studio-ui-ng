@@ -6,7 +6,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {MatSnackBar} from '@angular/material';
 import {SiteService} from '../../../services/site.service';
 import {Site} from '../../../models/site.model';
-import {StringUtils} from '../../../app.utils';
+import {showSnackBar, StringUtils} from '../../../app.utils';
 
 @Component({
   selector: 'std-site-crud',
@@ -18,6 +18,8 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
   @Output() finished = new EventEmitter();
 
   editMode = false;
+  creationRequestPending = false;
+  runCreationInBackground = false;
   subscriptions = [];
 
   model = new Site();
@@ -33,9 +35,9 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
     description: this.descriptionFormControl
   });
 
-  constructor(public snackBar: MatSnackBar,
-              private router: Router,
+  constructor(private router: Router,
               private route: ActivatedRoute,
+              public snackBar: MatSnackBar,
               public userService: UserService,
               public groupService: GroupService,
               public siteService: SiteService) {}
@@ -44,28 +46,54 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
 
     this.loadBlueprints();
 
+    const listener = (params) => {
+      if (params.siteCode || params.edit) {
+        this.model.code = params.siteCode || params.edit;
+        this.loadSite();
+      }
+    };
+
     // @see https://github.com/angular/angular/issues/20299
     this.subscriptions.push(
-      this.route.params
+      this.route.url
         .subscribe(() => {
-          let url = this.router.url;
-          if (!StringUtils.contains(url, '?')) {
-            let siteCode = url
-              .replace('/sites/', '')
-              .replace('create', '');
-            if (siteCode) {
-              this.model.code = siteCode;
-              this.loadSite();
-            }
+          let firstChild = this.route.firstChild;
+          while (firstChild && firstChild.firstChild) {
+            firstChild = firstChild.firstChild;
+          }
+          if (firstChild) {
+            this.subscriptions.push(
+              firstChild.params
+                .subscribe(listener),
+              firstChild.queryParams
+                .subscribe(listener));
           }
         }),
       this.route.queryParams
-        .subscribe((params) => {
-          if (params.edit) {
-            this.model.code = params.edit;
-            this.loadSite();
-          }
-        }));
+        .subscribe(listener)
+    );
+
+    // this.subscriptions.push(
+    //   this.route.params
+    //     .subscribe(() => {
+    //       let url = this.router.url;
+    //       if (!StringUtils.contains(url, '?')) {
+    //         let siteCode = url
+    //           .replace('/sites/', '')
+    //           .replace('create', '');
+    //         if (siteCode) {
+    //           this.model.code = siteCode;
+    //           this.loadSite();
+    //         }
+    //       }
+    //     }),
+    //   this.route.queryParams
+    //     .subscribe((params) => {
+    //       if (params.edit) {
+    //         this.model.code = params.edit;
+    //         this.loadSite();
+    //       }
+    //     }));
 
   }
 
@@ -79,13 +107,72 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
       .then((site) => {
         this.model = site;
         this.editMode = true;
+        // if (this.blueprints.length) {}
       });
   }
 
   loadBlueprints() {
     this.siteService
       .allBlueprints()
-      .then((blueprints) => this.blueprints = blueprints);
+      .then((blueprints) => {
+        this.blueprints = blueprints;
+        this.model.blueprint = blueprints[0];
+      });
+  }
+
+  autoSiteCode() {
+    this.model.name = StringUtils.capitalizeWords(this.model.name || '');
+    this.model.code = ((this.model.name || '')
+      .replace(/\s+/g, '-')
+      .toLowerCase());
+  }
+
+  create() {
+
+    const closure = ((instance, router, snackBar, siteCode, siteName) => {
+      return () => {
+        instance.creationRequestPending = false;
+        if (instance.runCreationInBackground) {
+
+        } else {
+
+        }
+        // TODO: Go to different place depending on user type?
+        showSnackBar(snackBar, `${siteName} site created successfully.`, 'Site Dashboard')
+          .onAction()
+          .subscribe(() => {
+            if (!instance.runCreationInBackground) {
+              instance.done();
+            }
+            router.navigate(['/site', siteCode, 'dashboard']);
+          });
+      };
+    }) (this, this.router, this.snackBar, this.model.code, this.model.name);
+
+    this.creationRequestPending = true;
+    this.siteService
+      .create(this.model)
+      .then(closure);
+
+  }
+
+  runSiteCreationInBackground() {
+    this.runCreationInBackground = true;
+    this.done();
+  }
+
+  update() {
+    this.siteService
+      .update(this.model);
+  }
+
+  delete() {
+    this.siteService
+      .delete(this.model)
+      .then(() => {
+        this.done();
+        showSnackBar(this.snackBar, `${this.model.name} site deleted successfully.`);
+      });
   }
 
   done() {
