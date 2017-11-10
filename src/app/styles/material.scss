@@ -72,6 +72,8 @@ $studio-app-theme: mat-light-theme($studio-app-primary, $studio-app-accent, $stu
 
 .mat-expansion-panel-body {
   //margin: 0 24px 16px;
+  // padding: 0 24 16px;
+  padding: 0 !important;
   margin: 0 !important;
   overflow: auto;
 }
