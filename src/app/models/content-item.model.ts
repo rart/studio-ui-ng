@@ -438,7 +438,7 @@ export class ContentItem {
     // item. = json.;
 
     item.label = json.internalName || json.name;
-    item.browserURL = json.browserUri;
+    item.browserURL = (json.browserUri === '') ? '/' : json.browserUri;
     item.siteCode = json.site;
     item.internalURL = json.uri;
     item.children = (json.children && json.children.length)

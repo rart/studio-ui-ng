@@ -83,4 +83,9 @@ export class StringUtils {
       return chr ? chr.toUpperCase() : '';
     });
   }
+  static startsWith(url: string, search: string) {
+    let length = search.length;
+    let newStr = url.substr(0, length);
+    return search === newStr;
+  }
 }

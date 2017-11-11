@@ -8,7 +8,7 @@
         <div class="ui search input-skin" *ngIf="site && sites">
           <div class="ui inline dropdown site-display">
             <div class="text" [title]="site.name" [matMenuTriggerFor]="siteSelectorMenu">
-              {{selectedTab.siteCode}}
+              {{selectedTab.isExternal() ? '(External Page)' : selectedTab.siteCode}}
             </div>
             <i class="dropdown icon"></i>
             <mat-menu #siteSelectorMenu="matMenu">
@@ -42,6 +42,7 @@
     </section>-->
     <section class="iframe-wrapper active">
       <iframe frameborder="0"
+              (load)="onIFrameLoadEvent($event)"
               [src]="iframeLandingUrl | safeUrl"></iframe>
     </section>
   </div>

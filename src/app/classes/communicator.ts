@@ -1,17 +1,27 @@
 
+import {Subscription} from 'rxjs/Subscription';
+
 export enum MessageTopic {
-  ALL,
-  GUEST_CHECK_IN,
-  START_ICE,
-  END_ICE,
-  GUEST_RELOAD_REQUEST,
-  GUEST_NAV_REQUEST
+
+  ALL = 'ALL',
+
+  GUEST_CHECK_IN = 'GUEST_CHECK_IN',
+  GUEST_LOAD_EVENT = 'GUEST_LOAD_EVENT',
+
+  HOST_ICE_START_REQUEST = 'HOST_ICE_START_REQUEST',
+  HOST_END_ICE_REQUEST = 'HOST_END_ICE_REQUEST',
+  HOST_RELOAD_REQUEST = 'HOST_RELOAD_REQUEST',
+  HOST_NAV_REQUEST = 'HOST_NAV_REQUEST',
+
+  SITE_TREE_NAV_REQUEST = 'SITE_TREE_NAV_REQUEST'
+
 }
 
 export enum MessageScope {
-  Local,
-  External,
-  Broadcast
+  ALL = 'ALL',
+  Local = 'LOCAL',
+  External = 'EXTERNAL',
+  Broadcast = 'BROADCAST'
 }
 
 export class Message {
@@ -38,7 +48,9 @@ export abstract class Communicator {
    */
   protected abstract processReceivedMessage(message: Message): void;
 
-  abstract subscribe(topic: MessageTopic, handler: Function, scope?: MessageScope): any;
+  abstract subscribe(subscriber: (value) => void): Subscription;
+
+  abstract subscribeTo(topic: MessageTopic, subscriber: (value) => void, scope?: MessageScope): Subscription;
 
   private onMessage(event: { data: any, origin: string }): void {
 

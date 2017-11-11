@@ -1,4 +1,3 @@
-
 import {Routes, RouterModule} from '@angular/router';
 
 import {SiteResolver} from './services/site.resolver';
@@ -19,7 +18,7 @@ const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
-    data: { title: 'Crafter Studio' }
+    data: {title: 'Crafter Studio'}
   },
   {
     path: 'users',
@@ -67,7 +66,7 @@ const routes: Routes = [
   },
   {
     path: 'site/:site',
-    resolve: { site: SiteResolver },
+    resolve: {site: SiteResolver},
     children: [
       {
         path: '',
@@ -119,7 +118,26 @@ const routes: Routes = [
       }
     ]
   },
+  {
+    path: 'preview',
+    component: PreviewComponent
+  },
   /*{
+    path: 'preview',
+    component: PreviewComponent,
+    children: [
+      {
+        path: ':site/:page',
+        resolve: {site: SiteResolver},
+        component: PreviewComponent
+      },
+      {
+        path: ':site',
+        component: PreviewComponent
+      }
+    ]
+  }
+  {
     path: 'site/:site/dashboard',
     component: SiteDashboardComponent
   },
