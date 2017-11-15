@@ -50,21 +50,14 @@ export class ContentTreeComponent implements OnInit {
       actionMapping: {
         mouse: {
           click: (tree, node, $event) => {
-            // const url = node.data.browserURL || '/';
-            // const siteCode = node.data.siteCode;
-            // const title = node.data.label;
-            // console.log(node, node.data.browserURL, url);
-            // this.router.navigate([`/site/${siteCode}/preview`], {
-            //   queryParams: { open: JSON.stringify([[siteCode, url, title]]) }
-            // });
+            if (node.isCollapsed) {
+              TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
+            }
             this.router.navigate([`/preview`])
               .then((value) => {
                 setTimeout(() =>
                   this.communicationService.publish(MessageTopic.SITE_TREE_NAV_REQUEST, node.data, MessageScope.Local));
               });
-            if (node.isCollapsed) {
-              TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
-            }
           }
         }
       },
