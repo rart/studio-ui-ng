@@ -2,41 +2,181 @@
   <std-view-title-bar
     i18n-title
     [title]="viewTitle"
-    icon="fa fa-tachometer"
-    max="comfort">
+    icon="fa fa-tachometer">
   </std-view-title-bar>
-  <div class="content">
+  <div class="content transparent">
 
-    <mat-expansion-panel class="studio-app-nav allow-overflow" expanded="true">
-      <mat-expansion-panel-header [collapsedHeight]="'75px'" [expandedHeight]="'75px'">
-        <mat-panel-title i18n>Items Waiting For Approval</mat-panel-title>
-      </mat-expansion-panel-header>
-      <table class="ui very basic table">
-        <thead>
-        <tr>
-          <th><mat-checkbox checked="true"></mat-checkbox></th>
-          <th>Item Name</th>
-          <th>URL</th>
-          <th>Publish Date & Time</th>
-          <th>Edited By</th>
-          <th>Edit Date</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td colspan="6">Pages</td>
-        </tr>
-        <tr>
-          <td><mat-checkbox></mat-checkbox></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        </tbody>
-      </table>
-    </mat-expansion-panel>
+    <div class="pad">
+      <div class="ui two column doubling grid">
+        <div class="column">
+          <std-item-list-dashlet
+            [collection]="pendingApproval"
+            title="Pending Approval">
+          </std-item-list-dashlet>
+        </div>
+        <div class="column">
+          <std-item-list-dashlet
+            [collection]="scheduled"
+            title="Scheduled">
+          </std-item-list-dashlet>
+        </div>
+      </div>
+      <div class="ui two column doubling grid">
+        <div class="column">
+          <std-item-list-dashlet
+            [collection]="activity"
+            type="MONO_LEVEL"
+            title="My Activity">
+          </std-item-list-dashlet>
+        </div>
+        <div class="column">
+          <std-item-list-dashlet
+            [collection]="published"
+            title="Published">
+          </std-item-list-dashlet>
+        </div>
+      </div>
+    </div>
+
+    <!--
+    <div class="pad">
+      <mat-expansion-panel class="studio-app-nav allow-overflow" expanded="false">
+        <mat-expansion-panel-header [collapsedHeight]="'75px'" [expandedHeight]="'75px'">
+          <mat-panel-title i18n>Pending Approval</mat-panel-title>
+        </mat-expansion-panel-header>
+        <table class="ui selectable flat very compact basic table">
+          <thead class="uppercase">
+          <tr>
+            <th><mat-checkbox checked></mat-checkbox></th>
+            <th>Name</th>
+            <th>URL</th>
+            <th>Publish Date & Time</th>
+            <th>Edited By</th>
+            <th>Edit Date</th>
+            <th>
+              <span class="sr-only">Actions</span>
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container *ngFor="let entry of pendingApproval | async">
+            <tr>
+              <td colspan="7">
+                <button class="inline-flex flex-align-center"><i class="minus icon"></i></button>
+                <strong><small>{{entry.label}} ({{(entry.children || []).length}})</small></strong>
+              </td>
+            </tr>
+            <tr *ngFor="let item of entry.children">
+              <td><mat-checkbox></mat-checkbox></td>
+              <td><div>{{item.label}}</div></td>
+              <td><div>{{item.browserURL}}</div></td>
+              <td><div></div></td>
+              <td><div></div></td>
+              <td><div></div></td>
+              <td>
+                <div>
+                  <button class="inline-flex flex-align-center">
+                    <i class="material-icons">more_vert</i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+      </mat-expansion-panel>
+    </div>
+
+    <div class="pad">
+      <mat-expansion-panel class="studio-app-nav allow-overflow" expanded="false">
+        <mat-expansion-panel-header [collapsedHeight]="'75px'" [expandedHeight]="'75px'">
+          <mat-panel-title i18n>Schedule</mat-panel-title>
+        </mat-expansion-panel-header>
+        <table class="ui selectable flat very compact basic table">
+          <thead class="uppercase">
+          <tr>
+            <th><mat-checkbox checked></mat-checkbox></th>
+            <th>Name</th>
+            <th>URL</th>
+            <th>Last Edit</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container *ngFor="let entry of scheduled | async">
+            <tr><td colspan="6">{{entry.label}} ({{(entry.children || []).length}})</td></tr>
+            <tr *ngFor="let item of entry.children">
+              <td><mat-checkbox></mat-checkbox></td>
+              <td>{{item.label}}</td>
+              <td>{{item.browserURL}}</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+      </mat-expansion-panel>
+    </div>
+
+    <div class="pad">
+      <mat-expansion-panel class="studio-app-nav allow-overflow" expanded="true">
+        <mat-expansion-panel-header [collapsedHeight]="'75px'" [expandedHeight]="'75px'">
+          <mat-panel-title i18n>Published</mat-panel-title>
+        </mat-expansion-panel-header>
+        <table class="ui selectable flat very compact basic table">
+          <thead class="uppercase">
+          <tr>
+            <th><mat-checkbox checked></mat-checkbox></th>
+            <th>Name</th>
+            <th>URL</th>
+            <th>Last Edit</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container *ngFor="let entry of published | async">
+            <tr><td colspan="6">{{entry.label}} ({{(entry.children || []).length}})</td></tr>
+            <tr *ngFor="let item of entry.children">
+              <td><mat-checkbox></mat-checkbox></td>
+              <td><div>{{item.label}}</div></td>
+              <td><div>{{item.browserURL}}</div></td>
+              <td><div></div></td>
+              <td><div></div></td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+      </mat-expansion-panel>
+    </div>
+
+    <div class="pad">
+      <mat-expansion-panel class="studio-app-nav allow-overflow" expanded="true">
+        <mat-expansion-panel-header [collapsedHeight]="'75px'" [expandedHeight]="'75px'">
+          <mat-panel-title i18n>Activity</mat-panel-title>
+        </mat-expansion-panel-header>
+        <table class="ui selectable flat very compact basic table">
+          <thead class="uppercase">
+          <tr>
+            <th><mat-checkbox checked></mat-checkbox></th>
+            <th>Name</th>
+            <th>URL</th>
+            <th>Last Edit</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of activity | async">
+            <td><mat-checkbox></mat-checkbox></td>
+            <td><div>{{item.label}}</div></td>
+            <td><div>{{item.browserURL}}</div></td>
+            <td><div></div></td>
+            <td><div></div></td>
+          </tr>
+          </tbody>
+        </table>
+      </mat-expansion-panel>
+    </div>
+    -->
 
   </div>
 </div>

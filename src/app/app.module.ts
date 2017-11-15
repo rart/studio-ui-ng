@@ -38,17 +38,27 @@ import {
   MatStepperModule
 } from '@angular/material';
 
+// Thid party
+import {MomentModule} from 'angular2-moment';
+import {CookieService} from 'ngx-cookie-service';
+import {TreeModule} from 'angular-tree-component';
+
+// Studio Services
 import {UserService} from './services/user.service';
 import {StudioService} from './services/studio.service';
 import {SiteService} from './services/site.service';
 import {GroupService} from './services/group.service';
 import {CommunicationService} from './services/communication.service';
 import {SiteResolver} from './services/site.resolver';
-import {CookieService} from 'ngx-cookie-service';
 import {StudioHttpService} from './services/http.service';
 import {ContentService} from './services/content.service';
+import {WorkflowService} from './services/workflow.service';
 
 import {studioRoutes} from './app.routes';
+import {SafeUrlPipe} from './safe-url.pipe';
+import {ComponentHostDirective} from './components/component-host.directive';
+
+// Studio Components
 import {AppComponent} from './app.component';
 import {SidebarComponent} from './components/sidebar/sidebar.component';
 import {DashboardComponent} from './components/dashboard/dashboard.component';
@@ -63,13 +73,11 @@ import {SiteComponent} from './components/site/site.component';
 import {PreviewComponent} from './components/site/preview/preview.component';
 import {SiteManagementComponent} from './components/site-management/site-management.component';
 import {PasswordFieldComponent} from './components/user-management/password-field/password-field.component';
-import {SafeUrlPipe} from './safe-url.pipe';
-
 import {ContentTreeComponent} from './components/site/content-tree/content-tree.component';
-import {ComponentHostDirective} from './components/component-host.directive';
 import {UserCrUDComponent} from './components/user-management/user-crud/user-crud.component';
-import {TreeModule} from 'angular-tree-component';
 import {SiteCrUDComponent} from './components/site-management/site-crud/site-crud.component';
+import {CollapsibleComponent} from './components/collapsible/collapsible.component';
+import {ItemListDashletComponent} from './components/site/site-dashboard/item-list-dashlet.component';
 
 @NgModule({
   declarations: [
@@ -91,7 +99,9 @@ import {SiteCrUDComponent} from './components/site-management/site-crud/site-cru
     ComponentHostDirective,
     PasswordFieldComponent,
     UserCrUDComponent,
-    SiteCrUDComponent
+    SiteCrUDComponent,
+    CollapsibleComponent,
+    ItemListDashletComponent
   ],
   imports: [
     studioRoutes,
@@ -111,7 +121,8 @@ import {SiteCrUDComponent} from './components/site-management/site-crud/site-cru
     MatMenuModule,
     MatSnackBarModule,
     MatSelectModule,
-    TreeModule
+    TreeModule,
+    MomentModule
   ],
   entryComponents: [
     EmbeddedViewDialogComponent,
@@ -126,7 +137,8 @@ import {SiteCrUDComponent} from './components/site-management/site-crud/site-cru
     SiteResolver,
     StudioHttpService,
     ContentService,
-    CookieService
+    CookieService,
+    WorkflowService
   ],
   bootstrap: [AppComponent]
 })

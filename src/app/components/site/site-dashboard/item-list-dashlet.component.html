@@ -1,0 +1,84 @@
+<article class="dashlet">
+  <header>
+    <div class="flex-grow">
+      <h2>{{title}}</h2>
+    </div>
+    <div>
+      <button [matMenuTriggerFor]="settingsMenu">
+        <i class="setting icon"></i>
+      </button>
+      <mat-menu #settingsMenu="matMenu">
+        <button mat-menu-item>Settings</button>
+        <button mat-menu-item>Help</button>
+      </mat-menu>
+    </div>
+  </header>
+  <section class="bd">
+    <div class="ui top relatively fixed mini menu">
+      <a class="item" [class.disabled]="allChecked()" (click)="checkAll()">
+        <i class="checkmark box icon"></i> All
+      </a>
+      <a class="item" [class.disabled]="allUnchecked()" (click)="uncheckAll()">
+        <i class="checkmark box icon"></i> None
+      </a>
+      <ng-container *ngIf="type === CATEGORIZED">
+      <a class="item" [class.disabled]="allExpanded()" (click)="expandAll()">Expand All</a>
+      <a class="item" [class.disabled]="allCollapsed()" (click)="collapseAll()">Collapse All</a>
+      </ng-container>
+    </div>
+    <ng-container [ngSwitch]="type">
+      <ng-container *ngSwitchCase="CATEGORIZED">
+        <mat-expansion-panel
+          #expPanel
+          (click)="expandedState[entry.label] = expPanel.expanded"
+          [expanded]="expandedState[entry.label]"
+          [disabled]="!entry.children || !entry.children.length"
+          *ngFor="let entry of collection | async">
+          <mat-expansion-panel-header
+            [collapsedHeight]="panelHeaderHeight"
+            [expandedHeight]="panelHeaderHeight">
+            {{entry.label}} ({{(entry.children || []).length}})
+          </mat-expansion-panel-header>
+
+          <ng-container
+            [ngTemplateOutlet]="templateRef"
+            [ngTemplateOutletContext]="{ $implicit: entry.children }">
+          </ng-container>
+
+        </mat-expansion-panel>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+
+        <ng-container
+          [ngTemplateOutlet]="templateRef"
+          [ngTemplateOutletContext]="{ $implicit: collection | async }">
+        </ng-container>
+
+      </ng-container>
+    </ng-container>
+  </section>
+</article>
+
+<ng-template #templateRef let-items>
+  <div class="ui vertical segment" *ngFor="let item of items">
+    <section class="checkbox">
+      <mat-checkbox [(ngModel)]="checkedState[item.internalURL]"></mat-checkbox>
+    </section>
+    <section class="information">
+      <div>{{item.label}}</div>
+      <div class="text-muted">
+        Edited
+        <strong title="{{item.lastEditedOn | amDateFormat:'MM/DD/YY h:mm a'}}">
+          {{item.lastEditedOn | amTimeAgo}}
+        </strong>
+        by <strong>{{item.lastEditedBy.name}}</strong>
+      </div>
+      <a href="javascript:">{{item.browserURL}}</a>
+    </section>
+    <section class="menu">
+      <button class="inline-flex flex-align-center">
+        <i class="material-icons">more_horiz</i>
+      </button>
+    </section>
+  </div>
+</ng-template>

@@ -1,3 +1,5 @@
+import {User} from './user.model';
+
 const MOCK = {
   'item': {
     'name': 'index.xml',
@@ -412,6 +414,8 @@ const MOCK = {
   }
 };
 
+declare var moment;
+
 interface ContentItemFlags {
   levelDescriptor;
   reference;
@@ -432,22 +436,46 @@ export class ContentItem {
   children: ContentItem[];
   numOfChildren: number;
   is: ContentItemFlags;
-
+  lastEditedBy: User;
+  lastEditedOn: string;
+  // item.internalURN: string = json.path;
   static fromJSON(json) {
+
     let item = new ContentItem();
-    // item. = json.;
+    let user = new User();
+
+    user.username = json.user;
+    user.firstName = json.userFirstName;
+    user.lastName = json.userLastName;
+    item.lastEditedBy = user;
 
     item.label = json.internalName || json.name;
+    if (item.label === 'crafter-level-descriptor.level.xml') {
+      // TODO: I18n?
+      item.label = 'Section Defaults*';
+    }
+
+    item.lastEditedOn = json.eventDate || json.lastEditDate;
+    // item.lastEditedOn = moment
+    //   // TODO need to get this outta here...
+    //   .tz(item.lastEditedOn, 'America/New_York')
+    //   .tz('America/New_York')
+    //   .format('MM/DD/YY hh:mm a');
+
+    item.children = (json.children && json.children.length)
+      ? json.children
+      // Get rid of crafter-component.xml
+        .filter(jsonItem => jsonItem.name !== 'crafter-component.xml')
+        // Convert all children to ContentItem type
+        .map(itemJSON => ContentItem.fromJSON(itemJSON))
+      : null;
+
     item.browserURL = (json.browserUri === '') ? '/' : json.browserUri;
     item.siteCode = json.site;
     item.internalURL = json.uri;
-    item.children = (json.children && json.children.length)
-      ? json.children.map((itemJSON) => ContentItem.fromJSON(itemJSON))
-      : null;
     item.numOfChildren = json.numOfChildren;
     item.formURI = json.form;
     item.renderingTemplates = json.renderingTemplates;
-    // item.internalURN: string = json.path;
 
     return item;
   }

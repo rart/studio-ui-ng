@@ -63,6 +63,9 @@ export class User {
   sites: Array<Site>;
   groups: Array<Group>;
   password: string;
+  get name() {
+    return `${this.firstName} ${this.lastName}`;
+  }
   static fromJSON(userJSON): User {
     let user = new User();
     user.username = userJSON.username;
@@ -115,6 +118,9 @@ export class User {
       json['password'] = user.password;
     }
     return json;
+  }
+  fullName() {
+    return `${this.firstName} ${this.lastName}`;
   }
   export() {
     return User.toJSON(this);

@@ -1,0 +1,56 @@
+@import "../../../styles/settings";
+
+.dashlet {
+  background: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  // box-shadow: 1px 1px 4px rgba(100, 100, 100, 0.2);
+  > header {
+    height: 60px;
+    display: flex;
+    color: #666666;
+    align-items: center;
+    background: $grey-main;
+    padding: 0 $spacing-sm;
+  }
+  > .bd {
+    height: 400px;
+    overflow: auto;
+  }
+  > footer {
+
+  }
+}
+
+.ui.accordion {
+  .content {
+    padding: 0;
+  }
+}
+
+.ui.vertical.segment.segment {
+  width: 100%;
+  display: flex;
+  padding: $spacing-tiny $spacing-mini;
+  > * {
+
+  }
+  .checkbox {
+    width: 24px;
+  }
+  .information {
+    flex-grow: 1;
+    width: calc(100% - 24px - 36px);
+    padding-left: $spacing-tiny;
+    padding-right: $spacing-tiny;
+    > * {
+      display: block;
+      max-width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+  .menu {
+    width: 40px;
+  }
+}
