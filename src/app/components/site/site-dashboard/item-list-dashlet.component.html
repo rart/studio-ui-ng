@@ -1,4 +1,4 @@
-<article class="dashlet">
+<article class="dashlet" [class.is-dialog]="isDialog">
   <header>
     <div class="flex-grow">
       <h2>{{title}}</h2>
@@ -7,31 +7,42 @@
       <button [matMenuTriggerFor]="settingsMenu">
         <i class="setting icon"></i>
       </button>
+      <button *ngIf="!isDialog" (click)="popOut()">
+        <i class="expand icon"></i>
+      </button>
+      <button *ngIf="isDialog" (click)="done()">
+        <i class="close icon"></i>
+      </button>
       <mat-menu #settingsMenu="matMenu">
-        <button mat-menu-item>Settings</button>
-        <button mat-menu-item>Help</button>
+        <button mat-menu-item>Sort by</button>
+        <button mat-menu-item>Hide 'In Progress' Items</button>
       </mat-menu>
     </div>
   </header>
   <section class="bd">
+    <!--<ng-container *ngIf="collection | async"></ng-container>-->
     <div class="ui top relatively fixed mini menu">
-      <a class="item" [class.disabled]="allChecked()" (click)="checkAll()">
+      <a class="item" [class.disabled]="areAllChecked" (click)="checkAll()">
         <i class="checkmark box icon"></i> All
       </a>
-      <a class="item" [class.disabled]="allUnchecked()" (click)="uncheckAll()">
+      <a class="item" [class.disabled]="areAllUnchecked" (click)="uncheckAll()">
         <i class="checkmark box icon"></i> None
       </a>
-      <ng-container *ngIf="type === CATEGORIZED">
-      <a class="item" [class.disabled]="allExpanded()" (click)="expandAll()">Expand All</a>
-      <a class="item" [class.disabled]="allCollapsed()" (click)="collapseAll()">Collapse All</a>
+      <ng-container *ngIf="type === TYPE_CATEGORIZED">
+      <a class="item" [class.disabled]="areAllExpanded" (click)="expandAll()">Expand All</a>
+      <a class="item" [class.disabled]="areAllCollapsed" (click)="collapseAll()">Collapse All</a>
       </ng-container>
     </div>
+    <ng-container
+      *ngIf="uiFormat === UI_FORMAT_TABLE"
+      [ngTemplateOutlet]="tableHeader">
+    </ng-container>
     <ng-container [ngSwitch]="type">
-      <ng-container *ngSwitchCase="CATEGORIZED">
+      <ng-container *ngSwitchCase="TYPE_CATEGORIZED">
         <mat-expansion-panel
-          #expPanel
-          (click)="expandedState[entry.label] = expPanel.expanded"
-          [expanded]="expandedState[entry.label]"
+          #expPanel class="allow-overflow"
+          (click)="expandedStateChange(entry, expPanel.expanded)"
+          [expanded]="expandedState[getPanelKey(entry)]"
           [disabled]="!entry.children || !entry.children.length"
           *ngFor="let entry of collection | async">
           <mat-expansion-panel-header
@@ -41,7 +52,7 @@
           </mat-expansion-panel-header>
 
           <ng-container
-            [ngTemplateOutlet]="templateRef"
+            [ngTemplateOutlet]="(uiFormat === UI_FORMAT_MODERN) ? modernFormatTpl : tableFormatTpl"
             [ngTemplateOutletContext]="{ $implicit: entry.children }">
           </ng-container>
 
@@ -50,7 +61,7 @@
       <ng-container *ngSwitchDefault>
 
         <ng-container
-          [ngTemplateOutlet]="templateRef"
+          [ngTemplateOutlet]="(uiFormat === UI_FORMAT_MODERN) ? modernFormatTpl : tableFormatTpl"
           [ngTemplateOutletContext]="{ $implicit: collection | async }">
         </ng-container>
 
@@ -59,7 +70,7 @@
   </section>
 </article>
 
-<ng-template #templateRef let-items>
+<ng-template #modernFormatTpl let-items>
   <div class="ui vertical segment" *ngFor="let item of items">
     <section class="checkbox">
       <mat-checkbox [(ngModel)]="checkedState[item.internalURL]"></mat-checkbox>
@@ -73,12 +84,85 @@
         </strong>
         by <strong>{{item.lastEditedBy.name}}</strong>
       </div>
-      <a href="javascript:">{{item.browserURL}}</a>
+      <a (click)="requestPreview(item)">{{item.browserURL}}</a>
     </section>
     <section class="menu">
-      <button class="inline-flex flex-align-center">
-        <i class="material-icons">more_horiz</i>
-      </button>
+
+      <ng-container
+        [ngTemplateOutlet]="itemMenuTpl"
+        [ngTemplateOutletContext]="{ $implicit: item }">
+      </ng-container>
+
     </section>
   </div>
+</ng-template>
+
+<ng-template #tableHeader>
+  <div>
+  <table
+    class="ui flat very compact basic table"
+    *ngIf="UI_FORMAT_TABLE === uiFormat">
+    <thead class="uppercase">
+    <tr>
+      <th class="label">
+        <div>Name</div>
+      </th>
+      <th class="url"><div>URL</div></th>
+      <th class="edit-by"><div>Edit By</div></th>
+      <th class="edit-on"><div>Edit On</div></th>
+      <th class="menu"><div>&nbsp;</div></th>
+    </tr>
+    </thead>
+  </table>
+  </div>
+</ng-template>
+
+<ng-template #tableFormatTpl let-items>
+  <table class="ui selectable flat extremely compact basic table">
+    <tbody>
+      <tr *ngFor="let item of items">
+        <td class="label">
+          <mat-checkbox [(ngModel)]="checkedState[item.internalURL]"></mat-checkbox>
+          <div>{{item.label}}</div>
+        </td>
+        <td class="url">
+          <a (click)="requestPreview(item)" title="{{item.browserURL}}">{{item.browserURL}}</a>
+        </td>
+        <td class="edit-by">
+          <div>{{item.lastEditedBy.name}}</div>
+        </td>
+        <td class="edit-on">
+          <div title="{{item.lastEditedOn | amDateFormat:'MM/DD/YY h:mm a'}}">
+            {{item.lastEditedOn | amTimeAgo}}
+          </div>
+        </td>
+        <td class="menu">
+          <div>
+            <ng-container
+              [ngTemplateOutlet]="itemMenuTpl"
+              [ngTemplateOutletContext]="{ $implicit: item }">
+            </ng-container>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</ng-template>
+
+<ng-template #itemMenuTpl let-item>
+  <button class="inline-flex flex-align-center" [matMenuTriggerFor]="itemOptionsMenu">
+    <i class="material-icons">more_horiz</i>
+  </button>
+  <mat-menu class="mat-menu-compact" #itemOptionsMenu="matMenu">
+    <ng-container *ngFor="let menu of itemMenuMap[item.id]">
+      <ng-container [ngSwitch]="menu">
+        <button mat-menu-item
+                (click)="menuActionClicked(menu.action, item)"
+                *ngSwitchDefault>
+          {{menu.label | i18n}}
+        </button>
+        <div class="mat-menu-divider" *ngSwitchCase="'DIVIDER'"></div>
+      </ng-container>
+    </ng-container>
+  </mat-menu>
 </ng-template>

@@ -17,9 +17,6 @@
     "begin": "ng serve --host 0.0.0.0 --deploy-url /app/ --base-href /app --public-host http://localhost:4200/sockjs-node --aot"
   },
   "private": true,
-  "dependenciesToBe": {
-    "angular-tree-component": "^5.1.2"
-  },
   "dependencies": {
     "@angular/animations": "^5.0.0",
     "@angular/cdk": "^5.0.0-rc0",
@@ -32,7 +29,8 @@
     "@angular/platform-browser": "^5.0.0",
     "@angular/platform-browser-dynamic": "^5.0.0",
     "@angular/router": "^5.0.0",
-    "angular-tree-component": "^5.1.2",
+    "ace-builds": "^1.2.9",
+    "angular-tree-component": "^5.2.1",
     "angular2-moment": "^1.7.0",
     "core-js": "^2.4.1",
     "jquery": "^3.2.1",

@@ -1,10 +1,10 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SiteService} from '../../../services/site.service';
 import {CookieService} from 'ngx-cookie-service';
 import {Site} from '../../../models/site.model';
 import {CommunicationService} from '../../../services/communication.service';
-import {MessageScope, MessageTopic} from '../../../classes/communicator';
+import {MessageScope, MessageTopic} from '../../../classes/communicator.class';
 import {StringUtils, uuid} from '../../../app.utils';
 import {ContentItem} from '../../../models/content-item.model';
 
@@ -199,6 +199,8 @@ class PreviewTab {
 })
 export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
+  @Input() quickView = false; // TODO: do quick view?
+
   site: Site;
   tabs = [];
   selectedTab: PreviewTab;
@@ -218,75 +220,73 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
 
-    this.route.data
-      .subscribe(data => {
-        console.log('%c Went through route.data ', logStyles);
-        this.site = data.site || { code: 'launcher', name: 'Launcher' };
-        this.initTabs();
-      });
+    if (!this.quickView) {
 
-    this.route.queryParams
-      .subscribe(params => {
-        const open = params.open;
-        if (open) {
+      this.route.data
+        .subscribe(data => {
+          console.log('%c Went through route.data ', logStyles);
+          this.site = data.site || { code: 'launcher', name: 'Launcher' };
+          this.initTabs();
+        });
 
-          let tab;
-          let firstFoundIndex = null;
-          const tabs = this.tabs;
-          const tabsToOpen = JSON.parse(params.open)
-          // Filter out tabs that are already opened
-            .filter((data) => (
-              tabs.filter((previewTab, i) => {
-                if (data[0] === previewTab.siteCode && data[1] === previewTab.url) {
-                  if (firstFoundIndex === null) {
-                    // First found currently opened tab from the requested 'open' tabs
-                    // will be given focus
-                    firstFoundIndex = i;
+      this.route.queryParams
+        .subscribe(params => {
+          const open = params.open;
+          if (open) {
+
+            let tab;
+            let firstFoundIndex = null;
+            const tabs = this.tabs;
+            const tabsToOpen = JSON.parse(params.open)
+            // Filter out tabs that are already opened
+              .filter((data) => (
+                tabs.filter((previewTab, i) => {
+                  if (data[0] === previewTab.siteCode && data[1] === previewTab.url) {
+                    if (firstFoundIndex === null) {
+                      // First found currently opened tab from the requested 'open' tabs
+                      // will be given focus
+                      firstFoundIndex = i;
+                    }
+                    return true;
+                  } else {
+                    return false;
                   }
-                  return true;
+                }).length < 1
+              ));
+
+            if (tabsToOpen.length === 0) {
+              this.selectTab(tabs[firstFoundIndex]);
+            } else {
+              tabsToOpen.forEach((item, i) => {
+                let url = item[1];
+                let siteCode = item[0];
+                let title = (item[2] || '');
+                if (i === 0) {
+                  tab = this.selectedTab;
+                  tab.url = url;
+                  tab.title = title;
+                  tab.isNew = false;
+                  tab.siteCode = siteCode;
                 } else {
-                  return false;
+                  tab = new PreviewTab(url, title, siteCode, false);
+                  tabs.push(tab);
                 }
-              }).length < 1
-            ));
+              });
+              this.requestGuestNavigation(tab.url, tab.siteCode);
+            }
 
-          if (tabsToOpen.length === 0) {
-            this.selectTab(tabs[firstFoundIndex]);
-          } else {
-            tabsToOpen.forEach((item, i) => {
-              let url = item[1];
-              let siteCode = item[0];
-              let title = (item[2] || '');
-              if (i === 0) {
-                tab = this.selectedTab;
-                tab.url = url;
-                tab.title = title;
-                tab.isNew = false;
-                tab.siteCode = siteCode;
-              } else {
-                tab = new PreviewTab(url, title, siteCode, false);
-                tabs.push(tab);
-              }
-            });
-            this.requestGuestNavigation(tab.url, tab.siteCode);
+            this.router.navigate([`/site/${tabs[0].siteCode}/preview`]);
+
           }
+        });
 
-          this.router.navigate([`/site/${tabs[0].siteCode}/preview`]);
+      this.siteService
+        .all()
+        .then((data) => (this.sites = data.entries));
 
-        }
-      });
+    }
 
-    this.siteService
-      .all()
-      .then((data) => (this.sites = data.entries));
-
-    this.communicator.addOrigin(window.location.origin);
-    this.messagesSubscription = this.communicator
-      .subscribe(message => this.processMessage(message));
-    // this.communicator.addOrigin(window.location.origin);      // Self
-    // this.communicator.addOrigin(environment.urlPreviewBase);  // Guest TODO: load from config.
-    // this.communicator.addTarget(document.getElementById('previewFrame'));
-    // this.communicator.subscribe(message => this.processMessage(message));
+    this.initializeCommunications();
 
   }
 
@@ -352,14 +352,6 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
       tabs.push(new PreviewTab('', 'New Tab', this.site.code, true));
     }
     this.selectTab(tabs[0]);
-  }
-
-  private addCommunicatorTargets() {
-    // let iframes = document.querySelectorAll('iframe');
-    // Array.from(iframes)
-    //   .forEach((iframe) => this.communicator.addTarget(iframe));
-    let iframe = this.getIFrame();
-    this.communicator.addTarget(iframe);
   }
 
   private getIFrame() {
@@ -436,6 +428,24 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.guestLoadControlTimeout = setTimeout(() => {
       this.getIFrame().src = IFRAME_ERROR_URL;
     }, wait);
+  }
+
+  private initializeCommunications() {
+    this.communicator.addOrigin(window.location.origin);
+    this.messagesSubscription = this.communicator
+      .subscribe(message => this.processMessage(message));
+    // this.communicator.addOrigin(window.location.origin);      // Self
+    // this.communicator.addOrigin(environment.urlPreviewBase);  // Guest TODO: load from config.
+    // this.communicator.addTarget(document.getElementById('previewFrame'));
+    // this.communicator.subscribe(message => this.processMessage(message));
+  }
+
+  private addCommunicatorTargets() {
+    // let iframes = document.querySelectorAll('iframe');
+    // Array.from(iframes)
+    //   .forEach((iframe) => this.communicator.addTarget(iframe));
+    let iframe = this.getIFrame();
+    this.communicator.addTarget(iframe);
   }
 
   /*

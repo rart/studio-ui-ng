@@ -35,8 +35,12 @@
             <i class="{{item.iconClass}}"></i> <span class="label">{{item.label}}</span>
           </a>
           <h3 class="sidebar-sub-header" *ngSwitchCase="itemTypes.Heading">{{item.label}}</h3>
-          <mat-expansion-panel class="sidebar-item-container"  *ngSwitchCase="itemTypes.Container">
-            <mat-expansion-panel-header class="no-indicator" [collapsedHeight]="'auto'" [expandedHeight]="'auto'">
+          <mat-expansion-panel class="sidebar-item-container"
+                               [expanded]="item.label === 'Pages'"
+                               *ngSwitchCase="itemTypes.Container">
+            <mat-expansion-panel-header class="no-indicator"
+                                        [collapsedHeight]="'auto'"
+                                        [expandedHeight]="'auto'">
               <mat-panel-title class="sidebar-item-heading">
                 <i class="{{item.iconClass}}"></i> <span class="label" i18n>{{item.label}}</span>
               </mat-panel-title>
@@ -45,7 +49,7 @@
               {{item.label}} Content Goes Here!
             </div>
             <div *ngIf="item.label === 'Pages'">
-              <std-content-tree></std-content-tree>
+              <std-content-tree rootPath="{{item.config.path}}"></std-content-tree>
             </div>
           </mat-expansion-panel>
         </div>

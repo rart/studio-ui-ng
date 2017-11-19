@@ -2,7 +2,7 @@
 @import "styles/settings";
 @import "~semantic-ui-sass/semantic-ui.scss";
 @import "./styles/material.scss";
-@import '~angular-tree-component/dist/angular-tree-component.css';
+@import './styles/angular-tree.component.scss';
 
 body, html {
   height: 100%;
@@ -121,6 +121,15 @@ router-outlet {
 
 .pad {
   padding: $spacing-conservative;
+  &.sm {
+    padding: $spacing-sm;
+  }
+  &.md {
+    padding: $spacing-md;
+  }
+  &.lg {
+    padding: $spacing-lg;
+  }
 }
 
 .pad-y {
@@ -259,8 +268,10 @@ router-outlet {
   }
 }
 
-.ui.table.compact {
-
+.ui.extremely.compact.table {
+  td, th {
+    padding: 2px;
+  }
 }
 
 .uppercase {
@@ -279,6 +290,7 @@ thead.uppercase {
 button {
   border: 0;
   outline: 0;
+  border-radius: 0;
   background: transparent;
   @include open-sans-regular;
 }

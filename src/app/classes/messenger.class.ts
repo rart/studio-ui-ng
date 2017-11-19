@@ -1,11 +1,11 @@
 
 import {Subject} from 'rxjs/Subject';
 import {Subscription} from 'rxjs/Subscription';
-import {Communicator, Message, MessageTopic, MessageScope} from '../classes/communicator';
+import {Communicator, Message, MessageTopic, MessageScope} from './communicator.class';
 
 const SCOPED_SUBJECTS = 'SCOPED_SUBJECTS';
 
-export class MessageCommunicator extends Communicator {
+export class Messenger extends Communicator {
 
   private messages: Subject<Message>;
   private subjects: { /* topic(MessageTopic): Subject<Message> */ };

@@ -1,7 +1,10 @@
 @import "../../../styles/settings";
 
 .dashlet {
+  height: 100%;
+  display: flex;
   background: #fff;
+  flex-direction: column;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   // box-shadow: 1px 1px 4px rgba(100, 100, 100, 0.2);
   > header {
@@ -10,11 +13,20 @@
     color: #666666;
     align-items: center;
     background: $grey-main;
-    padding: 0 $spacing-sm;
+    padding: 0 0 0 $spacing-sm;
   }
   > .bd {
-    height: 400px;
-    overflow: auto;
+
+  }
+  &:not(.is-dialog) {
+    > .bd {
+      height: 350px;
+      @media only screen and (min-height: 650px) {
+        height: calc(100% - 60px);
+      }
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
   }
   > footer {
 
@@ -53,4 +65,80 @@
   .menu {
     width: 40px;
   }
+}
+
+.ui.table {
+  table-layout: fixed;
+
+  .check,
+  .label,
+  .url,
+  .edit-by,
+  .edit-on,
+  .menu {
+    > a,
+    > div,
+    > span {
+      width: 100%;
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .check {
+    width: 5%;
+  }
+  .label {
+    width: 30%;
+    position: relative;
+    mat-checkbox {
+      top: 5px;
+      left: 5px;
+      position: absolute;
+    }
+    > div {
+      padding-left: 28px;
+    }
+  }
+  .url {
+    width: 50%;
+  }
+  .edit-by {
+    width: 30%;
+  }
+  .edit-on {
+    width: 15%;
+  }
+  .menu {
+    width: 5%;
+    > * {
+      overflow: visible;
+      text-overflow: clip;
+    }
+    button {
+      padding: 0;
+    }
+  }
+
+  tbody, thead {
+    td, th {
+
+    }
+  }
+  thead {
+
+  }
+  tbody {
+    .label {
+      mat-checkbox {
+
+      }
+      > span {
+
+      }
+    }
+  }
+
 }

@@ -9,14 +9,13 @@ const NavItemTypes = {
   Component: 'component'
 };
 
+// declare var require;
 // import {ContentTreeComponent} from '../site/content-tree/content-tree.component';
 // import {} from '../site/content-tree/content-tree.component';
 const COMPONENT_MAP = {
   'wcm-assets-folder': '',
   'wcm-root-folder': ''
 };
-
-declare var require;
 
 @Component({
   selector: 'std-sidebar',

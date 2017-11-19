@@ -10,7 +10,7 @@ import {User} from '../../../models/user.model';
 import {SiteService} from '../../../services/site.service';
 import {GroupService} from '../../../services/group.service';
 import {Site} from '../../../models/site.model';
-import {Change, ChangeTracker, ChangeTrackerType, ChangeType} from '../../../classes/change-tracker';
+import {Change, ChangeTracker, ChangeTrackerType, ChangeType} from '../../../classes/change-tracker.class';
 
 @Component({
   selector: 'std-user-group-manager',

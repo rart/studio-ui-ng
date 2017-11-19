@@ -5,7 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {UserService} from '../../../services/user.service';
 import {User, AVATARS} from '../../../models/user.model';
 import {showSnackBar} from '../../../app.utils';
-import {Change, ChangeType} from '../../../classes/change-tracker';
+import {Change, ChangeType} from '../../../classes/change-tracker.class';
 import {GroupService} from '../../../services/group.service';
 import {ResponseCodes} from '../../../services/http.service';
 

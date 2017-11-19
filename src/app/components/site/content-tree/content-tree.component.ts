@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {ITreeOptions, TREE_ACTIONS, TreeNode, ITreeState} from 'angular-tree-component';
 import {ContentService} from '../../../services/content.service';
-import {ITreeOptions, TREE_ACTIONS, TreeNode} from 'angular-tree-component';
-import {ActivatedRoute, Router} from '@angular/router';
 import {CommunicationService} from '../../../services/communication.service';
-import {MessageScope, MessageTopic} from '../../../classes/communicator';
+import {MessageScope, MessageTopic} from '../../../classes/communicator.class';
+import {ContentItem} from '../../../models/content-item.model';
 
 @Component({
   selector: 'std-content-tree',
@@ -12,11 +13,20 @@ import {MessageScope, MessageTopic} from '../../../classes/communicator';
 })
 export class ContentTreeComponent implements OnInit {
 
+  @Input() rootPath: string;
+
   site = {code: 'launcher'};
-
-  options: ITreeOptions;
-
   nodes;
+  rootItem: ContentItem;
+  options: ITreeOptions;
+  treeState: ITreeState = {
+    expandedNodeIds: {
+      '/site/website/index.xml': true
+    },
+    activeNodeIds: {},
+    hiddenNodeIds: {},
+    focusedNodeId: null
+  };
 
   constructor(private contentService: ContentService,
               private communicationService: CommunicationService,
@@ -25,49 +35,64 @@ export class ContentTreeComponent implements OnInit {
 
   ngOnInit() {
 
-    /*this.route.data
-      .subscribe(data => this.site = data.site);*/
+    this.fetch(this.site.code, this.rootPath)
+      .then(item => {
+        this.rootItem = item;
+        this.nodes = [item];
+      });
 
-    this.contentService
-      .tree('launcher', '/site/website')
-      .toPromise()
-      .then(item => this.nodes = [item]);
-
-    this.treeOptionDefaults();
+    this.setTreeOptionDefaults();
 
   }
 
-  private treeOptionDefaults() {
+  treeStateChanged(e) {
+
+  }
+
+  treeItemClicked(tree, node, $event) {
+    if (node.isCollapsed) {
+      TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
+    }
+    this.router.navigate([`/preview`])
+      .then((value) => {
+        setTimeout(() => this.communicationService.publish(
+          MessageTopic.SITE_TREE_NAV_REQUEST, node.data, MessageScope.Local));
+      });
+  }
+
+  private fetch(siteCode, path) {
+    return this.contentService
+      .tree(siteCode, path)
+      .toPromise();
+  }
+
+  private setTreeOptionDefaults() {
     this.options = {
-      childrenField: 'children',
       displayField: 'label',
-      // isExpandedField: '',
       idField: 'internalURL',
+      childrenField: 'children',
+      nodeHeight: 23,
+      animateSpeed: 30,
+      animateAcceleration: 1.2,
+      allowDrag: false,
+      allowDrop: false,
+      animateExpand: false,
+      useVirtualScroll: false,
       getChildren: (node: TreeNode) => {
-        console.log(node);
-        // return request('/api/children/' + node.id);
+        return this
+          .fetch(this.site.code, (<ContentItem>node.data).internalURL)
+          .then(item => item.children);
+      },
+      nodeClass: (node: TreeNode) => {
+        return 'icon-' + node.data.icon;
       },
       actionMapping: {
         mouse: {
           click: (tree, node, $event) => {
-            if (node.isCollapsed) {
-              TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
-            }
-            this.router.navigate([`/preview`])
-              .then((value) => {
-                setTimeout(() =>
-                  this.communicationService.publish(MessageTopic.SITE_TREE_NAV_REQUEST, node.data, MessageScope.Local));
-              });
+            this.treeItemClicked(tree, node, $event);
           }
         }
-      },
-      nodeHeight: 23,
-      allowDrag: false,
-      allowDrop: false,
-      useVirtualScroll: false,
-      animateExpand: true,
-      animateSpeed: 30,
-      animateAcceleration: 1.2
+      }
     };
   }
 

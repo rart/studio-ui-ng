@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {NgModule} from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
 import {CdkTableModule} from '@angular/cdk/table';
@@ -78,6 +78,9 @@ import {UserCrUDComponent} from './components/user-management/user-crud/user-cru
 import {SiteCrUDComponent} from './components/site-management/site-crud/site-crud.component';
 import {CollapsibleComponent} from './components/collapsible/collapsible.component';
 import {ItemListDashletComponent} from './components/site/site-dashboard/item-list-dashlet.component';
+import {I18nPipe} from './i18n.pipe';
+import {CodeEditorComponent} from './components/code-editor/code-editor.component';
+import {AppStoreProvider} from './app-state.provider';
 
 @NgModule({
   declarations: [
@@ -101,13 +104,15 @@ import {ItemListDashletComponent} from './components/site/site-dashboard/item-li
     UserCrUDComponent,
     SiteCrUDComponent,
     CollapsibleComponent,
-    ItemListDashletComponent
+    ItemListDashletComponent,
+    I18nPipe,
+    CodeEditorComponent
   ],
   imports: [
     studioRoutes,
     HttpClientModule,
     BrowserModule,
-    BrowserAnimationsModule,
+    NoopAnimationsModule, // TODO: BrowserAnimationsModule
     FormsModule,
     CdkTableModule,
     MatExpansionModule,
@@ -126,7 +131,8 @@ import {ItemListDashletComponent} from './components/site/site-dashboard/item-li
   ],
   entryComponents: [
     EmbeddedViewDialogComponent,
-    SiteCrUDComponent
+    SiteCrUDComponent,
+    ItemListDashletComponent
   ],
   providers: [
     StudioService,
@@ -138,9 +144,8 @@ import {ItemListDashletComponent} from './components/site/site-dashboard/item-li
     StudioHttpService,
     ContentService,
     CookieService,
-    WorkflowService
+    WorkflowService,
+    AppStoreProvider
   ],
   bootstrap: [AppComponent]
-})
-export class AppModule {
-}
+}) export class AppModule { }

@@ -18,10 +18,10 @@ export class ContentService {
 
   constructor(private httpService: StudioHttpService) {}
 
-  tree(site, path, depth = 1) {
+  tree(siteCode, path, depth = 1) {
     return this.httpService.get(
       `${baseUrl}/get-items-tree.json`,
-      {site, path, depth})
+      {site: siteCode, path, depth})
       .pipe(map(response => ContentItem.fromJSON(response.item)));
   }
 

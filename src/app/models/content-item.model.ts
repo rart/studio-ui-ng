@@ -414,8 +414,6 @@ const MOCK = {
   }
 };
 
-declare var moment;
-
 interface ContentItemFlags {
   levelDescriptor;
   reference;
@@ -427,6 +425,7 @@ interface RenderingTemplate {
 }
 
 export class ContentItem {
+  id: string;
   label: string;
   browserURL: string;
   internalURL: string;
@@ -438,7 +437,10 @@ export class ContentItem {
   is: ContentItemFlags;
   lastEditedBy: User;
   lastEditedOn: string;
-  // item.internalURN: string = json.path;
+
+  get hasChildren(): boolean {
+    return this.numOfChildren > 0;
+  }
   static fromJSON(json) {
 
     let item = new ContentItem();
@@ -455,21 +457,16 @@ export class ContentItem {
       item.label = 'Section Defaults*';
     }
 
-    item.lastEditedOn = json.eventDate || json.lastEditDate;
-    // item.lastEditedOn = moment
-    //   // TODO need to get this outta here...
-    //   .tz(item.lastEditedOn, 'America/New_York')
-    //   .tz('America/New_York')
-    //   .format('MM/DD/YY hh:mm a');
-
     item.children = (json.children && json.children.length)
       ? json.children
-      // Get rid of crafter-component.xml
+        // Get rid of crafter-component.xml
         .filter(jsonItem => jsonItem.name !== 'crafter-component.xml')
         // Convert all children to ContentItem type
         .map(itemJSON => ContentItem.fromJSON(itemJSON))
       : null;
 
+    item.id = json.path;
+    item.lastEditedOn = json.eventDate || json.lastEditDate;
     item.browserURL = (json.browserUri === '') ? '/' : json.browserUri;
     item.siteCode = json.site;
     item.internalURL = json.uri;
@@ -478,5 +475,8 @@ export class ContentItem {
     item.renderingTemplates = json.renderingTemplates;
 
     return item;
+  }
+  toTreeNode() {
+
   }
 }
