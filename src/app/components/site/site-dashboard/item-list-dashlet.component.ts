@@ -13,6 +13,7 @@ import {AppStore} from '../../../app-state.provider';
 import {AppState} from '../../../classes/app-state.interface';
 import {Store} from 'redux';
 import {Actions as ExpansionAction} from '../../../../state/expanded-panels.state';
+import {Actions as SelectionAction} from '../../../../state/selected-items.state';
 
 type Format = 'modern' | 'table';
 type ItemResponseFormat = 'categorized' | 'simple';
@@ -39,14 +40,13 @@ export declare type FetchType = 'pending' | 'scheduled' | 'activity' | 'publishe
 })
 export class ItemListDashletComponent implements OnInit {
 
-  // PANEL_KEY_PREFIX = this.getPanelKey();
   UI_FORMAT_MODERN: Format = 'modern';
   UI_FORMAT_TABLE: Format = 'table';
   TYPE_CATEGORIZED: ItemResponseFormat = 'categorized';
   TYPE_SIMPLE: ItemResponseFormat = 'simple';
 
-  isDialog = false;
   @Output() finished = new EventEmitter();
+  @Output() settingsChanged;
 
   @Input() title: string;
   @Input() collection: Observable<ContentItem>;
@@ -55,15 +55,14 @@ export class ItemListDashletComponent implements OnInit {
   @Input() settings;
   @Input() uiFormat: Format = 'modern';
 
-  @Output() settingsChanged;
-
   type: ItemResponseFormat = 'categorized';
   panelHeaderHeight = '2.5rem';
+  isDialog = false;
 
   cachedPanelKeys: Array<string> = [];
   expandedState = {};
 
-  itemsFromCollection: Array<ContentItem>;
+  contentItems: Array<ContentItem> = [];
   checkedState = {};
 
   areAllChecked = false;
@@ -162,15 +161,16 @@ export class ItemListDashletComponent implements OnInit {
   allExpanded() {
 
     const state = this.store.getState().expandedPanels;
-    const panelKeys = this.cachedPanelKeys; // Object.keys(this.expandedState);
+    const panelKeys = this.cachedPanelKeys;
+
+    let countSome = 0;
+    let countForBreak = 0;
 
     // If the loop breaks, it means one item wasn't found in the state,
     // meaning a panel is not expanded and hence not all are expanded.
-    let didNotFindOneKey = ArrayUtils.forEachBreak(panelKeys, (key) => {
-      return !ArrayUtils.contains(state, key);
-    });
+    let didNotFindOne = panelKeys.some(key => !state.includes(key));
 
-    return !didNotFindOneKey;
+    return !didNotFindOne;
 
   }
 
@@ -181,73 +181,19 @@ export class ItemListDashletComponent implements OnInit {
 
     // If the loop breaks, it means the item was found in the state
     // meaning at least that panel is expanded and not all are collapsed.
-    let foundOneKey = ArrayUtils.forEachBreak(panelKeys, (key) => {
-      return ArrayUtils.contains(state, key);
-    });
+    let foundOneKey = panelKeys.some(key => state.includes(key));
 
     return !foundOneKey;
-  }
-
-  allChecked() {
-    let allChecked = true;
-    const state = this.checkedState;
-    Object.keys(state).forEach((key) => {
-      if (!state[key]) {
-        allChecked = false;
-      }
-    });
-    return allChecked;
-  }
-
-  allUnchecked() {
-    let allUnChecked = true;
-    const state = this.checkedState;
-    Object.keys(state).forEach((key) => {
-      if (state[key]) {
-        allUnChecked = false;
-      }
-    });
-    return allUnChecked;
   }
 
   expandAll() {
     this.store.dispatch(
       ExpansionAction.expandMany(this.cachedPanelKeys));
-    // const expandedState = this.expandedState;
-    // Object.keys(expandedState).forEach((key) => {
-    //   expandedState[key] = true;
-    // });
-    // this.areAllExpanded = true;
-    // this.areAllCollapsed = false;
   }
 
   collapseAll() {
     this.store.dispatch(
       ExpansionAction.collapseMany(this.cachedPanelKeys));
-    // const expandedState = this.expandedState;
-    // Object.keys(expandedState).forEach((key) => {
-    //   expandedState[key] = false;
-    // });
-    // this.areAllExpanded = false;
-    // this.areAllCollapsed = true;
-  }
-
-  checkAll() {
-    const state = this.checkedState;
-    Object.keys(state).forEach((key) => {
-      state[key] = true;
-    });
-    this.areAllChecked = true;
-    this.areAllUnchecked = false;
-  }
-
-  uncheckAll() {
-    const state = this.checkedState;
-    Object.keys(state).forEach((key) => {
-      state[key] = false;
-    });
-    this.areAllChecked = false;
-    this.areAllUnchecked = true;
   }
 
   expandedStateChange(entry, expanded) {
@@ -259,25 +205,55 @@ export class ItemListDashletComponent implements OnInit {
       this.store.dispatch(ExpansionAction.collapse(key));
     }
 
-    // this.expandedState[entry.label] = expanded;
-    // if (expanded) {
-    //   this.areAllExpanded = this.allExpanded();
-    //   this.areAllCollapsed = false;
-    // } else {
-    //   this.areAllExpanded = false;
-    //   this.areAllCollapsed = this.allCollapsed();
-    // }
+  }
+
+  allChecked() {
+
+    const state = this.store.getState().selectedItems;
+    const items = this.contentItems;
+
+    const reducer = (ids, item) => ids.concat(item.id);
+    const stateIDs = state.reduce(reducer, []);
+    const itemsIDs = items.reduce(reducer, []);
+
+    let oneNotFound = itemsIDs.some(id => !stateIDs.includes(id));
+
+    return !oneNotFound;
 
   }
 
-  checkedStateChange(entry, checked) {
-    this.checkedState[entry.label] = checked;
+  allUnchecked() {
+
+    const state = this.store.getState().selectedItems;
+    const items = this.contentItems;
+
+    const reducer = (ids, item) => ids.concat(item.id);
+    const stateIDs = state.reduce(reducer, []);
+    const itemsIDs = items.reduce(reducer, []);
+
+    let oneFound = itemsIDs.some(id => stateIDs.includes(id));
+
+    return !oneFound;
+
+  }
+
+  checkAll() {
+    this.store.dispatch(
+      SelectionAction.selectMany(this.contentItems));
+  }
+
+  uncheckAll() {
+    this.store.dispatch(
+      SelectionAction.deselectMany(this.contentItems));
+  }
+
+  checkedStateChange(item, checked) {
     if (checked) {
-      this.areAllChecked = this.allChecked();
-      this.areAllUnchecked = false;
+      this.store.dispatch(
+        SelectionAction.select(item));
     } else {
-      this.areAllChecked = false;
-      this.areAllUnchecked = this.allUnchecked();
+      this.store.dispatch(
+        SelectionAction.deselect(item));
     }
   }
 
@@ -353,7 +329,7 @@ export class ItemListDashletComponent implements OnInit {
       checkedState = this.checkedState = {};
 
     selectedItems.forEach((item) => {
-      checkedState[item.internalURL] = true;
+      checkedState[item.id] = true;
     });
 
     this.areAllChecked = this.allChecked();
@@ -362,14 +338,24 @@ export class ItemListDashletComponent implements OnInit {
   }
 
   private afterItemsFetched(items) {
-    this.itemsFromCollection = items;
+
     this.itemMenuMap = {};
     this.cachedPanelKeys = [];
-    items.forEach(item => {
-      this.itemMenuMap[item.id] = this.getItemMenu(item);
-      this.cachedPanelKeys.push(this.getPanelKey(item));
-    });
+    this.contentItems = (this.type === 'categorized')
+      ? items.reduce((nextItems, item) =>
+        item.hasChildren
+          ? nextItems.concat(item.children)
+          : nextItems, [])
+      : items;
+
+    items.forEach(item =>
+      this.cachedPanelKeys.push(this.getPanelKey(item)));
+
+    this.contentItems.forEach(item =>
+      this.itemMenuMap[item.id] = this.getItemMenu(item));
+
     this.runUIStateChecks();
+
   }
 
   // Currently called statically

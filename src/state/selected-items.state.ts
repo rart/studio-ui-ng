@@ -25,15 +25,50 @@ export class Actions {
       item
     };
   }
+  static selectMany(items: ContentItem[]): AnyAction {
+    return {
+      type: ActionTypesList.SELECT_ITEMS,
+      items
+    };
+  }
+  static deselectMany(items: ContentItem[]): AnyAction {
+    return {
+      type: ActionTypesList.DESELECT_ITEMS,
+      items
+    };
+  }
 }
 
+const withoutItem = (state, item) => {
+  return state.filter((stateItem) => stateItem.id !== item.id);
+};
+
+const addOne = (state, item) => {
+  return [...withoutItem(state, item), item];
+};
+
 export const reducer: Reducer<Array<ContentItem>> = (state = [], action: AnyAction) => {
-  const item = action.item;
   switch (action.type) {
+
     case ActionTypesList.SELECT_ITEM:
-      return [...state, item];
+      return addOne(state, action.item);
     case ActionTypesList.DESELECT_ITEM:
-      return state.filter(stateItem => item.id !== stateItem.id);
+      return withoutItem(state, action.item);
+
+    case ActionTypesList.SELECT_ITEMS: {
+      let nextState = [...state];
+      action.items.forEach(item =>
+        nextState = addOne(nextState, item));
+      return nextState;
+    }
+
+    case ActionTypesList.DESELECT_ITEMS: {
+      let nextState = [...state];
+      action.items.forEach(item =>
+        nextState = withoutItem(nextState, item));
+      return nextState;
+    }
+
     default:
       return state;
   }

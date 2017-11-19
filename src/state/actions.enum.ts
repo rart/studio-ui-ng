@@ -4,6 +4,8 @@ export enum ActionTypesList {
   // selectedItems
   SELECT_ITEM = 'SELECT_ITEM',
   DESELECT_ITEM = 'DESELECT_ITEM',
+  DESELECT_ITEMS = 'DESELECT_ITEMS',
+  SELECT_ITEMS = 'SELECT_ITEMS',
 
   // expandedPanels
   EXPAND_PANEL = 'EXPAND_PANEL',
