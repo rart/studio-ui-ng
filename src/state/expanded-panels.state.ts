@@ -40,31 +40,31 @@ export class Actions {
   }
 }
 
+const addOne = (state, key) => {
+  return state.includes(key) ? state : [...state, key];
+};
+
+const removeOne = (state, key) => {
+  return state.filter(stateItem => stateItem !== key);
+};
+
 // export const reducer: Reducer<Array<ExpansionPanelIdentifierKeys>> = (state = [], action) => {
 export const reducer: Reducer<Array<string>> = (state = [], action) => {
   switch (action.type) {
 
     case ActionTypesList.EXPAND_PANEL:
-      return ArrayUtils.contains(state, action.key) ? state : [action.key, ...state];
+      return addOne(state, action.key);
 
     case ActionTypesList.COLLAPSE_PANEL:
-      return state.filter(stateItem => stateItem !== action.key);
+      return removeOne(state, action.key);
 
-    case ActionTypesList.EXPAND_PANELS: {
-      let newState = [...state];
-      action.keys.forEach(key => {
-        newState = reducer(newState, Actions.expand(key));
-      });
-      return newState;
-    }
+    case ActionTypesList.EXPAND_PANELS:
+      return action.keys.reduce((nextState, key) =>
+        addOne(nextState, key), [...state]);
 
     case ActionTypesList.COLLAPSE_PANELS: {
-      let newState = [...state];
-      action.keys.forEach(key => {
-        newState = reducer(newState, Actions.collapse(key));
-      });
-      console.log(newState);
-      return newState;
+      return action.keys.reduce((nextState, key) =>
+        removeOne(nextState, key), [...state]);
     }
 
     default:
