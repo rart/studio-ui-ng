@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Editor</title>
+</head>
+<body>
+
+<pre id="ace"></pre>
+
+<pre id="monaco"></pre>
+
+
+
+<!-- ACE + Emmet (REQUIREJS) -->
+<!-- <style type="text/css" media="screen">
+.ace_editor {
+  border: 1px solid lightgray;
+  margin: auto;
+  height: 200px;
+  width: 80%;
+}
+</style>
+<script src="emmet.js"></script>
+<script src="require.js"></script>
+<script>
+require.config({paths: { "ace" : "ace-master/lib/ace" }});
+require(["ace/ace", "ace/ext/emmet"], function(ace) {
+    var editor = ace.edit("ace");
+    editor.session.setMode("ace/mode/html");
+    editor.setOption("enableEmmet", true);
+});
+</script> -->
+
+
+
+<!-- ACE w/ Emmet & Monaco (REQUIREJS) -->
+<!-- <style type="text/css">
+html, body { margin: 0; padding: 0; }
+#monaco,
+.ace_editor {
+  width: 80%;
+  margin: 40px auto;
+  height: 200px;
+  border: 1px solid lightgray;
+}
+</style>
+<script src="require.js"></script>
+<script>
+  require.config({
+    paths: {
+      'vs': 'vs',
+      'ace': 'ace'
+    }
+  });
+  require(['ace/ace', 'ace/ext/emmet', 'emmet.js'], function (Ace, Emmet) {
+
+    let editor = Ace.edit("ace");
+
+    Emmet.setCore(emmet);
+
+    editor.setOption('enableEmmet', true);
+    editor.setTheme("ace/theme/chrome");
+    editor.session.setMode("ace/mode/html");
+    editor.session.setTabSize(2);
+    editor.session.setFoldStyle('markbeginend');
+    editor.setOption('wrap', 'off');
+    editor.setReadOnly(false);
+    editor.setFontSize(12);
+
+    window.myeditor = editor;
+
+  });
+  require(['vs/editor/editor.main'], function() {
+    var elem = document.getElementById('monaco');
+    var editor = monaco.editor.create(elem, {
+      value: '',
+      folding: true,
+      language: 'html'
+    });
+  });
+</script> -->
+
+
+
+<!-- ACE (NO REQUIRE) -->
+<!-- <style type="text/css" media="screen">
+.ace_editor {
+  border: 1px solid lightgray;
+  margin: auto;
+  height: 200px;
+  width: 80%;
+}
+</style>
+<script src="ace/ace.js"></script>
+<script>
+var editor = ace.edit("ace");
+editor.setTheme("ace/theme/chrome");
+editor.session.setMode("ace/mode/html");
+</script> -->
+
+
+
+<!-- MONACO (ONLY) -->
+<!-- <style type="text/css">
+#monaco {
+  width: 800px;
+  height: 600px;
+  border: 1px solid grey;
+}
+</style>
+<script src="vs/loader.js"></script>
+<script>
+  require.config({ paths: { 'vs': 'vs' }});
+  require(['vs/editor/editor.main'], function() {
+    var elem = document.getElementById('monaco');
+    var editor = monaco.editor.create(elem, {
+      value: [
+        'function x() {',
+        '\tconsole.log("Hello world!");',
+        '}'
+      ].join('\n'),
+      language: 'javascript'
+    });
+  });
+</script> -->
+
+</body>
+</html>
