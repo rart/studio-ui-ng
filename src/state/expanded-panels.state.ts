@@ -1,9 +1,7 @@
-import {
-  Reducer,
-  AnyAction
-} from 'redux';
-import {ArrayUtils} from '../app/app.utils';
-import {ActionTypesList} from './actions.enum';
+import { Reducer } from 'redux';
+import { StoreActionsEnum } from '../app/enums/actions.enum';
+import { AppState } from '../app/classes/app-state.interface';
+import { SignedAction } from '../app/classes/signed-action.interface';
 
 // enum ActionsList {
 //   EXPAND_PANEL = 'EXPAND_PANEL',
@@ -23,20 +21,22 @@ import {ActionTypesList} from './actions.enum';
 //   '' ;
 
 export class Actions {
-  static expand(key: string): AnyAction {
-    return {type: ActionTypesList.EXPAND_PANEL, key};
+  static affects: Array<keyof AppState> = ['expandedPanels'];
+
+  static expand(key: string): SignedAction {
+    return { type: StoreActionsEnum.EXPAND_PANEL, affects: Actions.affects, key };
   }
 
-  static collapse(key: string): AnyAction {
-    return {type: ActionTypesList.COLLAPSE_PANEL, key};
+  static collapse(key: string): SignedAction {
+    return { type: StoreActionsEnum.COLLAPSE_PANEL, affects: Actions.affects, key };
   }
 
-  static expandMany(keys: Array<string>): AnyAction {
-    return {type: ActionTypesList.EXPAND_PANELS, keys};
+  static expandMany(keys: Array<string>): SignedAction {
+    return { type: StoreActionsEnum.EXPAND_PANELS, affects: Actions.affects, keys };
   }
 
-  static collapseMany(keys: Array<string>): AnyAction {
-    return {type: ActionTypesList.COLLAPSE_PANELS, keys};
+  static collapseMany(keys: Array<string>): SignedAction {
+    return { type: StoreActionsEnum.COLLAPSE_PANELS, affects: Actions.affects, keys };
   }
 }
 
@@ -52,17 +52,17 @@ const removeOne = (state, key) => {
 export const reducer: Reducer<Array<string>> = (state = [], action) => {
   switch (action.type) {
 
-    case ActionTypesList.EXPAND_PANEL:
+    case StoreActionsEnum.EXPAND_PANEL:
       return addOne(state, action.key);
 
-    case ActionTypesList.COLLAPSE_PANEL:
+    case StoreActionsEnum.COLLAPSE_PANEL:
       return removeOne(state, action.key);
 
-    case ActionTypesList.EXPAND_PANELS:
+    case StoreActionsEnum.EXPAND_PANELS:
       return action.keys.reduce((nextState, key) =>
         addOne(nextState, key), [...state]);
 
-    case ActionTypesList.COLLAPSE_PANELS: {
+    case StoreActionsEnum.COLLAPSE_PANELS: {
       return action.keys.reduce((nextState, key) =>
         removeOne(nextState, key), [...state]);
     }

@@ -1,4 +1,11 @@
 
 @import "../../styles/settings";
 
+:host {
+  display: block;
+  min-height: 100%;
+}
 
+.dialog-view-container {
+
+}

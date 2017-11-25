@@ -1,5 +1,9 @@
 @import "../../../styles/settings";
 
+:host {
+  height: 100%;
+}
+
 .ui.grid {
   width: 100%;
   &.top {

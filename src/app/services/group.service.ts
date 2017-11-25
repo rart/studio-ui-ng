@@ -4,7 +4,7 @@ import {environment} from '../../environments/environment';
 import {Site} from '../models/site.model';
 import {StudioHttpService} from './http.service';
 
-const baseUrl = `${environment.baseUrl}/group`;
+const baseUrl = `${environment.apiUrl}/group`;
 
 @Injectable()
 export class GroupService {

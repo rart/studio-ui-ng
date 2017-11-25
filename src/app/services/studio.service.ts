@@ -17,7 +17,7 @@ export class StudioService {
   constructor(private http: StudioHttpService) {}
 
   fetchSidebarItems(): void {
-    this.http.get(`${environment.baseUrl}/get-sidebar-items.json`)
+    this.http.get(`${environment.apiUrl}/get-sidebar-items.json`)
       .subscribe(sidebarItems => {
         this._sidebarItems.next(sidebarItems);
       });

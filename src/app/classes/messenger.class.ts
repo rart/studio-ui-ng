@@ -1,21 +1,24 @@
 
 import {Subject} from 'rxjs/Subject';
 import {Subscription} from 'rxjs/Subscription';
-import {Communicator, Message, MessageTopic, MessageScope} from './communicator.class';
+import {Communicator} from './communicator.class';
+import { WindowMessageTopicEnum } from '../enums/window-message-topic.enum';
+import { WindowMessageScopeEnum } from '../enums/window-message-scope.enum';
+import { WindowMessage } from './window-message.class';
 
 const SCOPED_SUBJECTS = 'SCOPED_SUBJECTS';
 
 export class Messenger extends Communicator {
 
-  private messages: Subject<Message>;
-  private subjects: { /* topic(MessageTopic): Subject<Message> */ };
+  private messages: Subject<WindowMessage>;
+  private subjects: { /* topic(WindowMessageTopicEnum): Subject<WindowMessage> */ };
 
   constructor() {
     super();
-    this.messages = new Subject<Message>();
+    this.messages = new Subject<WindowMessage>();
   }
 
-  protected processReceivedMessage(message: Message) {
+  protected processReceivedMessage(message: WindowMessage) {
     if (this.subjects) {
       if (this.subjects[message.scope] && this.subjects[message.scope][message.topic]) {
         this.subjects[message.scope][message.topic].next(message);
@@ -27,7 +30,7 @@ export class Messenger extends Communicator {
     this.messages.next(message);
   }
 
-  subscribeTo(topic: MessageTopic, subscriber: (value) => void, scope?: MessageScope): Subscription {
+  subscribeTo(topic: WindowMessageTopicEnum, subscriber: (value) => void, scope?: WindowMessageScopeEnum): Subscription {
     if (!this.subjects) {
       this.subjects = { };
     }
@@ -44,10 +47,10 @@ export class Messenger extends Communicator {
     }
 
     if (!subjects[topic]) {
-      subjects[topic] = new Subject<Message>();
+      subjects[topic] = new Subject<WindowMessage>();
     }
 
-    subject = <Subject<Message>>subjects[topic];
+    subject = <Subject<WindowMessage>>subjects[topic];
     return subject.subscribe(subscriber);
   }
 
@@ -59,16 +62,16 @@ export class Messenger extends Communicator {
     this.messages.unsubscribe();
   }
 
-  publish(topic: MessageTopic, data: any = null, scope: MessageScope = MessageScope.Broadcast) {
-    let message = new Message(topic, data, scope);
+  publish(topic: WindowMessageTopicEnum, data: any = null, scope: WindowMessageScopeEnum = WindowMessageScopeEnum.Broadcast) {
+    let message = new WindowMessage(topic, data, scope);
     switch (message.scope) {
-      case MessageScope.Local:
+      case WindowMessageScopeEnum.Local:
         this.messages.next(message);
         break;
-      case MessageScope.External:
+      case WindowMessageScopeEnum.External:
         super.publish(topic, data, scope);
         break;
-      case MessageScope.Broadcast:
+      case WindowMessageScopeEnum.Broadcast:
         this.messages.next(message);
         super.publish(topic, data, scope);
         break;

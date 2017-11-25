@@ -1,5 +1,16 @@
 
-<tree-root [nodes]="nodes"
+<tree-root *ngIf="nodes && nodes.length"
+           [nodes]="nodes"
            [options]="options"
            [state]="treeState"
-           (stateChange)="treeStateChanged($event)"></tree-root>
+           (stateChange)="treeStateChanged($event)">
+
+  <ng-template #treeNodeTemplate let-node let-index="index">
+    <std-asset-display [asset]="node.data"></std-asset-display>
+  </ng-template>
+
+  <!--<template #loadingTemplate>
+    <mat-spinner></mat-spinner> Loading, please hold....
+  </template>-->
+
+</tree-root>

@@ -1,7 +1,13 @@
 
 @import "../../styles/settings";
 
-.studio-sidebar {
+//:host {
+//  position: static;
+//}
+//.studio-sidebar {
+//   ...
+
+:host {
   top: 0;
   left: 0;
   min-height: 100vh;
@@ -59,7 +65,7 @@
   padding-top: 10px;
 }
 
-.sidebar-sub-header {
+.sidebar-sub-heading {
   margin: {
     top: 10px;
     bottom: 5px;
@@ -97,7 +103,7 @@
 
 .ui.message.user-account-control {
 
-  .independent-scroll & {
+  :host.independent-scroll & {
     left: 0;
     bottom: 0;
     top: auto;
@@ -110,6 +116,7 @@
   }
 
   padding: 15px;
+  margin-top: 0;
   overflow: hidden;
   border-top: 1px solid;
 
@@ -133,9 +140,16 @@
 
 /* Theme */
 
-.studio-sidebar {
-  color: #333;
+$font-color: #222222;
+$icon-color: #777777;
+$category-heading-color: #7f7f7f;
+$highlight-color: #dcdcdc;
+
+:host {
+  color: $font-color;
   background-color: $sidebar-background-color;
+  background: linear-gradient(to bottom, #fcfffe 0%, $sidebar-background-color 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfffe', endColorstr='#f8f8f8',GradientType=0 );
   border-color: $sidebar-border-color;
 }
 
@@ -147,20 +161,22 @@
 }
 
 .sidebar-items {
-  .sidebar-sub-header {
-    color: #666;
+  i {
+    color: $icon-color;
+  }
+  .sidebar-sub-heading {
+    color: $category-heading-color;
   }
   a,
   .item,
   .sidebar-item-heading {
-    color: $action-dark; // #333;
+    color: $font-color;
   }
 }
 
 .sidebar-item {
   &.active {
-    color: #ffffff !important;
-    background-color: $action-light;
+    background-color: $highlight-color;
     &::after {
       width: 0;
       height: 0;
@@ -170,7 +186,7 @@
       position: absolute;
       border-style: solid;
       border-width: 17.5px 0 17.5px 10px;
-      border-color: transparent transparent transparent $action-light;
+      border-color: transparent transparent transparent $highlight-color;
     }
   }
 }

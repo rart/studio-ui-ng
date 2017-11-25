@@ -8,6 +8,7 @@ export const environment = {
 
   appUrl: '/app',
   assetsUrl: '/app/assets',
-  baseUrl: '/studio/api/1/services/api/1'
+  // http://docs.craftercms.org/en/latest/developers/projects/studio/api/index.html
+  apiUrl: '/studio/api/1/services/api/1'
 
 };

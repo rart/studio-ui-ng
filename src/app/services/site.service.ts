@@ -4,7 +4,7 @@ import {environment} from '../../environments/environment';
 import {Site} from '../models/site.model';
 import {IEntityService, IPagedResponse, IPostResponse, mapToPostResponse, StudioHttpService} from './http.service';
 
-const baseUrl = `${environment.baseUrl}/site`;
+const baseUrl = `${environment.apiUrl}/site`;
 
 @Injectable()
 export class SiteService implements IEntityService<Site> {

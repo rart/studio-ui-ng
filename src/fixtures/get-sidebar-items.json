@@ -52,9 +52,10 @@
         "type": "container",
         "label": "Pages",
         "iconClass": "fa fa-file-text-o",
-        "iconText": "",
+        "iconText": null,
         "component": "wcm-root-folder",
         "config": {
+          "showRoot": true,
           "path": "/site/website"
         }
       },
@@ -62,28 +63,30 @@
         "type": "container",
         "label": "Taxonomy",
         "iconClass": "fa fa-tags",
-        "component": "",
+        "component": "wcm-root-folder",
         "config": {
-          "path": ""
+          "showRoot": false,
+          "path": "/site/taxonomy"
         }
       },
       {
         "type": "container",
         "label": "Site Assets",
         "iconClass": "fa fa-file-text-o",
-        "component": "",
+        "component": "wcm-root-folder",
         "config": {
-          "": ""
+          "showRoot": false,
+          "path": "/static-assets"
         }
       },
       {
         "type": "container",
         "label": "Components",
         "iconClass": "fa fa-puzzle-piece",
-        "iconText": "",
-        "component": "",
+        "component": "wcm-root-folder",
         "config": {
-          "": ""
+          "showRoot": false,
+          "path": "/site/components"
         }
       },
       {
@@ -110,20 +113,20 @@
         "type": "container",
         "label": "Templates",
         "iconClass": "fa fa-file-code-o",
-        "iconText": "",
-        "component": "",
+        "component": "wcm-root-folder",
         "config": {
-          "": ""
+          "showRoot": false,
+          "path": "/templates"
         }
       },
       {
         "type": "container",
         "label": "Scripts",
         "iconClass": "fa fa-code",
-        "iconText": "",
-        "component": "",
+        "component": "wcm-root-folder",
         "config": {
-          "": ""
+          "showRoot": false,
+          "path": "/scripts"
         }
       },
       {

@@ -47,7 +47,11 @@ export const uuid = () => {
   }
 
   return result;
-}
+};
+
+// export const getPanelKey = (topic) => {
+//   return ``;
+// };
 
 export class StringUtils {
   static contains(str, search) {
@@ -105,8 +109,5 @@ export class ArrayUtils {
       }
     }
     return false;
-  }
-  static contains<T>(collection: Array<T>, search: T) {
-    return (collection.indexOf(search) !== -1);
   }
 }

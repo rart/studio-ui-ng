@@ -1,8 +1,6 @@
 
 @import "styles/settings";
 @import "~semantic-ui-sass/semantic-ui.scss";
-@import "./styles/material.scss";
-@import './styles/angular-tree.component.scss';
 
 body, html {
   height: 100%;
@@ -32,7 +30,34 @@ router-outlet {
   display: none;
 }
 
-.crafter-studio {
+std-root,
+std-not-implemented,
+std-sidebar,
+std-preview,
+std-user-crud,
+std-user-profile,
+std-user-management,
+std-user-group-manager,
+std-content-tree,
+std-code-editor,
+std-dashboard,
+std-embedded-view-dialog,
+std-view-title-bar,
+std-site,
+std-site-crud,
+std-site-dashboard,
+std-site-management,
+std-password-field,
+std-item-list-dashlet {
+  display: block;
+  position: relative;
+}
+
+std-asset-display {
+
+}
+
+std-root {
   height: 100%;
   padding-left: $sidebar-width-sm;
   @media (min-width: $sidebar-breakpoint-sm) {
@@ -44,7 +69,7 @@ router-outlet {
       width: $sidebar-width-collapsed;
       .label,
       .sidebar-actions,
-      .sidebar-sub-header{
+      .sidebar-sub-heading{
         /* TODO what do to with actions? add icon */
         display: none;
       }
@@ -57,6 +82,9 @@ router-outlet {
         }
       }
     }
+  }
+  > router-outlet + * {
+    height: 100%;
   }
 }
 
@@ -170,6 +198,10 @@ router-outlet {
   }
 }
 
+.visibility-hidden {
+  visibility: hidden;
+}
+
 .transparent {
   background-color: transparent;
 }
@@ -193,7 +225,7 @@ router-outlet {
   flex-direction: column;
   position: relative;
   > .title-bar,
-  std-view-title-bar .title-bar {
+  std-view-title-bar {
     background-color: #FFFFFF;
     border-bottom: 1px solid rgba(34, 36, 38, 0.15);
     &.transparent {
@@ -274,6 +306,19 @@ router-outlet {
   }
 }
 
+.ui.buttons {
+  &.flat {
+    border: none;
+  }
+  &.extremely.compact {
+    $pad: .6rem;
+    padding: {
+      left: $pad;
+      right: $pad;
+    }
+  }
+}
+
 .uppercase {
   &.text {
     text-transform: uppercase;
@@ -287,12 +332,25 @@ thead.uppercase {
   }
 }
 
+a, button {
+  cursor: pointer;
+}
+
 button {
   border: 0;
   outline: 0;
   border-radius: 0;
+  text-align: center;
   background: transparent;
   @include open-sans-regular;
+  &.simple {
+    padding: 0;
+    align-items: center;
+    display: inline-flex;
+    > i {
+      margin: auto;
+    }
+  }
 }
 
 .inline-flex {
@@ -326,3 +384,6 @@ button {
   position: relative;
   border-style: none;
 }
+
+@import "./styles/material.scss";
+@import './styles/angular-tree.component.scss';

@@ -1,20 +1,37 @@
 import {Injectable} from '@angular/core';
 import {StudioHttpService} from './http.service';
 import {environment} from '../../environments/environment';
-import {ContentItem} from '../models/content-item.model';
+import {Asset} from '../models/asset.model';
 
-const workflow = `${environment.baseUrl}/workflow`;
-const deployment = `${environment.baseUrl}/deployment`;
-const activity = `${environment.baseUrl}/activity`;
+const workflow = `${environment.apiUrl}/workflow`;
+const deployment = `${environment.apiUrl}/deployment`;
+const activity = `${environment.apiUrl}/activity`;
 
 const noCache = ((d) => d.toString()) (new Date());
+// const noCache = (() => (new Date()).toString());
 
 const mappingFn = (data) => ({
   total: data.total,
   sortedBy: data.sortedBy,
   ascending: (data.ascending === 'true'),
-  entries: (data.documents || []).map((entry) => ContentItem.fromJSON(entry))
+  entries: (data.documents || []).map((entry) => Asset.fromJSON(entry))
 });
+
+const sortByFieldMap = {
+  url: 'browserUri',
+  name: 'internalName',
+  label: 'internalName',
+  lastEditedBy: 'user',
+  lastEditedOn: 'eventDate'
+};
+
+const mix = (query, mixin = {}) => Object.assign({
+  site: query.siteCode,
+  sort: query.sortBy ? sortByFieldMap[query.sortBy] : 'eventDate',
+  ascending: (query.sortDirection === 'ASC'),
+  // TODO: check cache is not a problem just getting the buster at initialization
+  nocache: noCache
+}, mixin);
 
 @Injectable()
 export class WorkflowService {
@@ -28,16 +45,10 @@ export class WorkflowService {
     sortDirection?: 'ASC' | 'DESC',
     includeInProgress?
   }) {
-    return this.http
-      .get(`${workflow}/get-go-live-items.json`, {
-        site: query.siteCode,
-        sort: query.sortBy || 'eventDate',
-        ascending: (query.sortDirection === 'ASC'),
-        includeInProgress: (query.includeInProgress !== undefined)
-          ? query.includeInProgress
-          : true,
-        nocache: noCache
-      }).map(mappingFn);
+    return this.http.get(
+      `${workflow}/get-go-live-items.json`, mix(query, {
+        includeInProgress: !!query.includeInProgress
+      })).map(mappingFn);
   }
 
   fetchScheduled(query: {
@@ -47,13 +58,9 @@ export class WorkflowService {
     filterType?: 'ALL' | 'PAGES' | 'COMPONENTS' | 'DOCUMENTS'
   }) {
     return this.http
-      .get(`${deployment}/get-scheduled-items.json`, {
-        site: query.siteCode,
-        sort: query.sortBy || 'eventDate',
-        ascending: query.sortDirection ? (query.sortDirection === 'ASC') : false,
+      .get(`${deployment}/get-scheduled-items.json`, mix(query, {
         filterType: query.filterType || 'all',
-        nocache: noCache
-      }).map(mappingFn);
+      })).map(mappingFn);
   }
 
   fetchDeploymentHistory(query: {
@@ -65,15 +72,11 @@ export class WorkflowService {
     filterType?: 'ALL' | 'PAGES' | 'COMPONENTS' | 'DOCUMENTS'
   }) {
     return this.http
-      .get(`${deployment}/get-deployment-history.json`, {
-        site: query.siteCode,
+      .get(`${deployment}/get-deployment-history.json`, mix(query, {
         num: query.num || 20,
-        days: 30 || query.days,
-        sort: query.sortBy || 'eventDate',
-        ascending: query.sortDirection ? (query.sortDirection === 'ASC') : false,
-        filterType: query.filterType || 'all',
-        nocache: noCache
-      }).map(mappingFn);
+        days: query.days || 30,
+        filterType: query.filterType || 'all'
+      })).map(mappingFn);
   }
 
   fetchUserActivities(query: {
@@ -86,16 +89,34 @@ export class WorkflowService {
     includeLive?: boolean
   }) {
     return this.http
-      .get(`${activity}/get-user-activities.json`, {
-        site: query.siteCode,
+      .get(`${activity}/get-user-activities.json`, mix(query, {
         user: query.username || 'admin',
-        num: 10 || query.num,
-        sort: 'eventDate' || query.sortBy,
-        ascending: query.sortDirection ? (query.sortDirection === 'ASC') : false,
-        filterType: 'all',
-        excludeLive: query.includeLive !== undefined ? !query.includeLive : false,
-        nocache: noCache
-      }).map(mappingFn);
+        num: query.num || 20,
+        filterType: query.filterType || 'all',
+        excludeLive: (query.includeLive !== undefined) ? !query.includeLive : false
+      })).map(mappingFn);
+  }
+
+  getAvailableWorkflowOptions(user, items) {
+    return items.length ? [
+      { label: 'Edit', action: '' },
+      { label: 'Delete', action: '' },
+      { label: 'Schedule', action: '' },
+      { label: 'Approve', action: '' },
+      { label: 'History', action: '' },
+      { label: 'Dependencies', action: '' }
+    ] : [];
+  }
+
+  getAvailableAssetOptions(user, item) {
+    return [
+      { label: 'Edit', action: '' },
+      { label: 'Delete', action: '' },
+      { label: 'Schedule', action: '' },
+      { label: 'Approve', action: '' },
+      { label: 'History', action: '' },
+      { label: 'Dependencies', action: '' }
+    ];
   }
 
 }

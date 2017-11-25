@@ -4,9 +4,10 @@ import {SiteService} from '../../../services/site.service';
 import {CookieService} from 'ngx-cookie-service';
 import {Site} from '../../../models/site.model';
 import {CommunicationService} from '../../../services/communication.service';
-import {MessageScope, MessageTopic} from '../../../classes/communicator.class';
+import {WindowMessageScopeEnum} from '../../../enums/window-message-scope.enum';
 import {StringUtils, uuid} from '../../../app.utils';
-import {ContentItem} from '../../../models/content-item.model';
+import {Asset} from '../../../models/asset.model';
+import { WindowMessageTopicEnum } from '../../../enums/window-message-topic.enum';
 
 declare var $;
 const logStyles = 'background: #ddd; color: #333';
@@ -183,6 +184,8 @@ class PreviewTab {
 //  edit=true&
 //  editorId=b0665d96-2395-14b5-7f2b-3db8fa7286e3
 
+// /studio/form?form=/page/entry&path=/site/website/index.xml&iceComponent=true&site=launcher&edit=true&editorId=b0665d96-2395-14b5-7f2b-3db8fa7286e3
+
 // CStudioAuthoring.Operations.editContent(
 //   content.form,
 //   CStudioAuthoringContext.siteId,
@@ -300,7 +303,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.messagesSubscription.unsubscribe();
   }
 
-  private processOpenItemRequest(item: ContentItem) {
+  private processOpenItemRequest(item: Asset) {
 
     const tabs = this.tabs;
     let
@@ -311,7 +314,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     // Find if the requested preview URL is already within the opened tabs.
     for (i = 0; i < l; ++i) {
       tab = tabs[i];
-      if (item.siteCode === tab.siteCode && item.browserURL === tab.url) {
+      if (item.siteCode === tab.siteCode && item.url === tab.url) {
         found = true;
         break;
       }
@@ -322,7 +325,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
 
       let
-        url = item.browserURL,
+        url = item.url,
         siteCode = item.siteCode,
         title = item.label;
 
@@ -360,13 +363,13 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private processMessage(message) {
     switch (message.topic) {
-      case MessageTopic.GUEST_CHECK_IN:
+      case WindowMessageTopicEnum.GUEST_CHECK_IN:
         this.onGuestCheckIn(message.data);
         break;
-      case MessageTopic.GUEST_LOAD_EVENT:
+      case WindowMessageTopicEnum.GUEST_LOAD_EVENT:
         this.onGuestLoadEvent(message.data);
         break;
-      case MessageTopic.SITE_TREE_NAV_REQUEST:
+      case WindowMessageTopicEnum.NAV_REQUEST:
         this.processOpenItemRequest(message.data);
         break;
       default:
@@ -407,14 +410,14 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     // if (this.selectedTab.isExternal()) {
     //   this.startGuestLoadErrorTimeout(10000);
     // }
-    // this.communicate(MessageTopic.HOST_NAV_REQUEST, url);
+    // this.communicate(WindowMessageTopicEnum.HOST_NAV_REQUEST, url);
   }
 
   private setIFrameURL(url) {
     this.getIFrame().src = url;
   }
 
-  private communicate(topic: MessageTopic, message?, scope: MessageScope = MessageScope.External) {
+  private communicate(topic: WindowMessageTopicEnum, message?, scope: WindowMessageScopeEnum = WindowMessageScopeEnum.External) {
     this.communicator.publish(topic, message, scope);
   }
 
@@ -470,7 +473,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.selectedTab.isExternal()) {
       this.setIFrameURL(this.selectedTab.url);
     } else {
-      this.communicate(MessageTopic.HOST_RELOAD_REQUEST);
+      this.communicate(WindowMessageTopicEnum.HOST_RELOAD_REQUEST);
     }
   }
 
@@ -497,7 +500,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!tab.isNew) {
       // Tab isn't new and navigation should occur. Directing to the '/' path of the selected site.
       tab.navigate(site.code, '/');
-      this.communicator.publish(MessageTopic.HOST_RELOAD_REQUEST);
+      this.communicator.publish(WindowMessageTopicEnum.HOST_RELOAD_REQUEST);
     } else {
       // Tab is new and no URL has been entered. User is simply
       // selecting the site for the URL that he's about to type...

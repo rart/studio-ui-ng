@@ -11,7 +11,7 @@
               {{selectedTab.isExternal() ? '(External Page)' : selectedTab.siteCode}}
             </div>
             <i class="dropdown icon"></i>
-            <mat-menu #siteSelectorMenu="matMenu">
+            <mat-menu #siteSelectorMenu="matMenu" class="mat-menu-compact">
               <button mat-menu-item *ngFor="let siteItem of sites" (click)="changeSite(siteItem)"> {{siteItem.name}}</button>
             </mat-menu>
           </div>

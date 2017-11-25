@@ -10,7 +10,10 @@ import {AppState} from '../app/classes/app-state.interface';
 import {reducer as selectedItems} from './selected-items.state';
 import {reducer as expandedPanels} from './expanded-panels.state';
 
+const tempReducer = (state = null, action) => state;
+
 const appReducer = combineReducers<AppState>({
+  user: tempReducer,
   selectedItems,
   expandedPanels
 });

@@ -1,5 +1,5 @@
 
-export enum ActionTypesList {
+export enum StoreActionsEnum {
 
   // selectedItems
   SELECT_ITEM = 'SELECT_ITEM',

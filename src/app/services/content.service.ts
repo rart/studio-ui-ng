@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {map} from 'rxjs/operators';
 import {StudioHttpService} from './http.service';
-import {ContentItem} from '../models/content-item.model';
+import {Asset} from '../models/asset.model';
 
 // import {Observable} from 'rxjs/Observable';
 // Old way...
@@ -11,7 +11,7 @@ import {ContentItem} from '../models/content-item.model';
 // New way...
 // import {map, filter} from 'rxjs/operators';
 
-const baseUrl = `${environment.baseUrl}/content`;
+const baseUrl = `${environment.apiUrl}/content`;
 
 @Injectable()
 export class ContentService {
@@ -22,7 +22,7 @@ export class ContentService {
     return this.httpService.get(
       `${baseUrl}/get-items-tree.json`,
       {site: siteCode, path, depth})
-      .pipe(map(response => ContentItem.fromJSON(response.item)));
+      .pipe(map(response => Asset.fromJSON(response.item)));
   }
 
 }

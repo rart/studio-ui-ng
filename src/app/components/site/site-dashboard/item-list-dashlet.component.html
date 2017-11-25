@@ -1,162 +1,178 @@
-<article class="dashlet" [class.is-dialog]="isDialog">
-  <header>
-    <div class="flex-grow">
-      <h2>{{title}}</h2>
-    </div>
-    <div>
-      <button [matMenuTriggerFor]="settingsMenu">
-        <i class="setting icon"></i>
+
+<header>
+  <div class="flex-grow">
+    <h2>{{title}}</h2>
+  </div>
+  <div>
+
+    <ng-container *ngIf="dashletMenuMap[fetchType]">
+      <button [matMenuTriggerFor]="optionsMenu">
+        <i class="options icon"></i>
       </button>
-      <button *ngIf="!isDialog" (click)="popOut()">
-        <i class="expand icon"></i>
-      </button>
-      <button *ngIf="isDialog" (click)="done()">
-        <i class="close icon"></i>
-      </button>
-      <mat-menu #settingsMenu="matMenu">
-        <button mat-menu-item>Sort by</button>
-        <button mat-menu-item>Hide 'In Progress' Items</button>
+      <mat-menu #optionsMenu="matMenu">
+        <ng-container *ngFor="let menu of dashletMenuMap[fetchType]">
+          <ng-container [ngSwitch]="menu.type">
+            <button *ngSwitchDefault (click)="menuOptionClicked(menu.action)" mat-menu-item>
+              {{ menu.label | i18n }}
+            </button>
+            <mat-form-field *ngSwitchCase="'menu'" class="menu-dropdown">
+              <mat-select
+                #select="matSelect"
+                placeholder="{{ menu.label | i18n }}"
+                [(ngModel)]="query[menu.action]"
+                (change)="menuOptionClicked(menu.action, select.value)">
+                <mat-option *ngFor="let opt of menu.options" [value]="opt.value">
+                  {{ opt.label || opt.value | i18n }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field *ngSwitchCase="'input'" class="menu-dropdown">
+              <input type="text" matInput [(ngModel)]="query[menu.action]">
+            </mat-form-field>
+          </ng-container>
+        </ng-container>
       </mat-menu>
-    </div>
-  </header>
-  <section class="bd">
-    <!--<ng-container *ngIf="collection | async"></ng-container>-->
-    <div class="ui top relatively fixed mini menu">
-      <a class="item" [class.disabled]="areAllChecked" (click)="checkAll()">
-        <i class="checkmark box icon"></i> All
-      </a>
-      <a class="item" [class.disabled]="areAllUnchecked" (click)="uncheckAll()">
-        <i class="checkmark box icon"></i> None
-      </a>
-      <ng-container *ngIf="type === TYPE_CATEGORIZED">
+    </ng-container>
+
+    <button *ngIf="!isDialog && canExpand" (click)="popOut()">
+      <i class="expand icon"></i>
+    </button>
+
+    <button *ngIf="isDialog" (click)="done()">
+      <i class="close icon"></i>
+    </button>
+
+  </div>
+</header>
+<section class="bd">
+  <div class="ui top relatively fixed mini menu">
+    <a class="item" [class.disabled]="areAllChecked" (click)="checkAll()">
+      <i class="checkmark box icon"></i> All
+    </a>
+    <a class="item" [class.disabled]="areAllUnchecked" (click)="uncheckAll()">
+      <i class="checkmark box icon"></i> None
+    </a>
+    <ng-container *ngIf="type === TYPE_CATEGORIZED">
       <a class="item" [class.disabled]="areAllExpanded" (click)="expandAll()">Expand All</a>
       <a class="item" [class.disabled]="areAllCollapsed" (click)="collapseAll()">Collapse All</a>
-      </ng-container>
-    </div>
-    <ng-container
-      *ngIf="uiFormat === UI_FORMAT_TABLE"
-      [ngTemplateOutlet]="tableHeader">
     </ng-container>
-    <ng-container [ngSwitch]="type">
-      <ng-container *ngSwitchCase="TYPE_CATEGORIZED">
-        <mat-expansion-panel
-          #expPanel class="allow-overflow"
+    <a class="item" (click)="refresh()">
+      Refresh
+    </a>
+  </div>
+  <ng-container
+    *ngIf="uiFormat === UI_FORMAT_TABLE"
+    [ngTemplateOutlet]="tableHeader">
+  </ng-container>
+  <ng-container [ngSwitch]="type">
+    <ng-container *ngSwitchCase="TYPE_CATEGORIZED">
+      <mat-expansion-panel
+        #expPanel class="allow-overflow"
+        [expanded]="expandedState[getPanelKey(entry)]"
+        [disabled]="!entry.children || !entry.children.length"
+        *ngFor="let entry of collection | async">
+        <mat-expansion-panel-header
           (click)="expandedStateChange(entry, expPanel.expanded)"
-          [expanded]="expandedState[getPanelKey(entry)]"
-          [disabled]="!entry.children || !entry.children.length"
-          *ngFor="let entry of collection | async">
-          <mat-expansion-panel-header
-            [collapsedHeight]="panelHeaderHeight"
-            [expandedHeight]="panelHeaderHeight">
-            {{entry.label}} ({{(entry.children || []).length}})
-          </mat-expansion-panel-header>
-
-          <ng-container
-            [ngTemplateOutlet]="(uiFormat === UI_FORMAT_MODERN) ? modernFormatTpl : tableFormatTpl"
-            [ngTemplateOutletContext]="{ $implicit: entry.children }">
-          </ng-container>
-
-        </mat-expansion-panel>
-      </ng-container>
-      <ng-container *ngSwitchDefault>
+          [collapsedHeight]="panelHeaderHeight"
+          [expandedHeight]="panelHeaderHeight">
+          {{entry.label}} ({{(entry.children || []).length}})
+        </mat-expansion-panel-header>
 
         <ng-container
           [ngTemplateOutlet]="(uiFormat === UI_FORMAT_MODERN) ? modernFormatTpl : tableFormatTpl"
-          [ngTemplateOutletContext]="{ $implicit: collection | async }">
+          [ngTemplateOutletContext]="{ $implicit: entry.children }">
         </ng-container>
 
-      </ng-container>
+      </mat-expansion-panel>
     </ng-container>
-  </section>
-</article>
+    <ng-container *ngSwitchDefault>
+
+      <ng-container
+        [ngTemplateOutlet]="(uiFormat === UI_FORMAT_MODERN) ? modernFormatTpl : tableFormatTpl"
+        [ngTemplateOutletContext]="{ $implicit: collection | async }">
+      </ng-container>
+
+    </ng-container>
+  </ng-container>
+  <div class="spinner" *ngIf="!collection">
+    <mat-spinner></mat-spinner>
+  </div>
+</section>
+<!--<footer></footer>-->
 
 <ng-template #modernFormatTpl let-items>
   <div class="ui vertical segment" *ngFor="let item of items">
-    <section class="checkbox">
-      <mat-checkbox
-        [ngModel]="checkedState[item.id]"
-        (change)="checkedStateChange(item, $event.checked)">
-      </mat-checkbox>
-    </section>
-    <section class="information">
-      <div>{{item.label}}</div>
-      <div class="text-muted">
+      <div class="asset-display">
+        <std-asset-display [asset]="item" [showCheck]="true" [showMenu]="true"></std-asset-display>
+      </div>
+      <div class="stats text-muted" *ngIf="item.lastEditedOn || item.lastEditedBy">
         Edited
         <strong title="{{item.lastEditedOn | amDateFormat:'MM/DD/YY h:mm a'}}">
           {{item.lastEditedOn | amTimeAgo}}
         </strong>
-        by <strong>{{item.lastEditedBy.name}}</strong>
+        <ng-container  *ngIf="item.lastEditedBy">by <strong>{{item.lastEditedBy.name}}</strong></ng-container>
       </div>
-      <a (click)="requestPreview(item)">{{item.browserURL}}</a>
-    </section>
-    <section class="menu">
-
-      <ng-container
-        [ngTemplateOutlet]="itemMenuTpl"
-        [ngTemplateOutletContext]="{ $implicit: item }">
-      </ng-container>
-
-    </section>
+      <a class="url" (click)="requestPreview(item)" title="{{item.url}}">{{item.url}}</a>
   </div>
 </ng-template>
 
 <ng-template #tableHeader>
   <div>
-  <table
-    class="ui flat very compact basic table"
-    *ngIf="UI_FORMAT_TABLE === uiFormat">
-    <thead class="uppercase">
-    <tr>
-      <th class="label">
-        <div>Name</div>
-      </th>
-      <th class="url"><div>URL</div></th>
-      <th class="edit-by"><div>Edit By</div></th>
-      <th class="edit-on"><div>Edit On</div></th>
-      <th class="menu"><div>&nbsp;</div></th>
-    </tr>
-    </thead>
-  </table>
+    <table
+      class="ui flat very compact basic table"
+      *ngIf="UI_FORMAT_TABLE === uiFormat">
+      <thead class="uppercase">
+      <tr>
+        <th class="label">
+          <div>Name</div>
+        </th>
+        <th class="url"><div>URL</div></th>
+        <th class="edit-by"><div>Edit By</div></th>
+        <th class="edit-on"><div>Edit On</div></th>
+        <th class="menu"><div>&nbsp;</div></th>
+      </tr>
+      </thead>
+    </table>
   </div>
 </ng-template>
 
 <ng-template #tableFormatTpl let-items>
   <table class="ui selectable flat extremely compact basic table">
     <tbody>
-      <tr *ngFor="let item of items">
-        <td class="label">
-          <mat-checkbox
-            [ngModel]="checkedState[item.id]"
-            (change)="checkedStateChange(item, $event.checked)">
-          </mat-checkbox>
-          <div>{{item.label}}</div>
-        </td>
-        <td class="url">
-          <a (click)="requestPreview(item)" title="{{item.browserURL}}">{{item.browserURL}}</a>
-        </td>
-        <td class="edit-by">
-          <div>{{item.lastEditedBy.name}}</div>
-        </td>
-        <td class="edit-on">
-          <div title="{{item.lastEditedOn | amDateFormat:'MM/DD/YY h:mm a'}}">
-            {{item.lastEditedOn | amTimeAgo}}
-          </div>
-        </td>
-        <td class="menu">
-          <div>
-            <ng-container
-              [ngTemplateOutlet]="itemMenuTpl"
-              [ngTemplateOutletContext]="{ $implicit: item }">
-            </ng-container>
-          </div>
-        </td>
-      </tr>
+    <tr *ngFor="let item of items">
+      <td class="label">
+        <mat-checkbox
+          [ngModel]="checkedState[item.id]"
+          (change)="checkedStateChange(item, $event.checked)">
+        </mat-checkbox>
+        <std-asset-display [asset]="item" [disallowWrap]="true"></std-asset-display>
+      </td>
+      <td class="url">
+        <a (click)="requestPreview(item)" title="{{item.url}}">{{item.url}}</a>
+      </td>
+      <td class="edit-by">
+        <div>{{item.lastEditedBy.name}}</div>
+      </td>
+      <td class="edit-on">
+        <div title="{{item.lastEditedOn | amDateFormat:'MM/DD/YY h:mm a'}}">
+          {{item.lastEditedOn | amTimeAgo}}
+        </div>
+      </td>
+      <td class="menu">
+        <div>
+          <ng-container
+            [ngTemplateOutlet]="itemMenuTpl"
+            [ngTemplateOutletContext]="{ $implicit: item }">
+          </ng-container>
+        </div>
+      </td>
+    </tr>
     </tbody>
   </table>
 </ng-template>
 
 <ng-template #itemMenuTpl let-item>
-  <button class="inline-flex flex-align-center" [matMenuTriggerFor]="itemOptionsMenu">
+  <button class="simple" [matMenuTriggerFor]="itemOptionsMenu">
     <i class="material-icons">more_horiz</i>
   </button>
   <mat-menu class="mat-menu-compact" #itemOptionsMenu="matMenu">

@@ -1,0 +1,205 @@
+import {
+  Component, EventEmitter, HostBinding, Inject, Input, OnChanges, OnDestroy, OnInit,
+  Output
+} from '@angular/core';
+import { Router } from '@angular/router';
+import { ComponentWithState } from '../../classes/component-with-state.class';
+import { AppStore } from '../../state.provider';
+import { AppState } from '../../classes/app-state.interface';
+import { SubjectStore } from '../../classes/subject-store.class';
+import { Asset } from '../../models/asset.model';
+import { ArrayUtils, StringUtils } from '../../app.utils';
+import { AssetTypeEnum } from '../../enums/asset-type.enum';
+import { WindowMessageTopicEnum } from '../../enums/window-message-topic.enum';
+import { WindowMessageScopeEnum } from '../../enums/window-message-scope.enum';
+import { CommunicationService } from '../../services/communication.service';
+import { WorkflowService } from '../../services/workflow.service';
+import { Actions } from '../../../state/selected-items.state';
+
+@Component({
+  selector: 'std-asset-display',
+  templateUrl: './asset-display.component.html',
+  styleUrls: ['./asset-display.component.scss']
+})
+export class AssetDisplayComponent extends ComponentWithState implements OnInit, OnChanges, OnDestroy {
+
+  constructor(@Inject(AppStore) protected store: SubjectStore<AppState>,
+              private workflowService: WorkflowService,
+              private communicationService: CommunicationService,
+              private router: Router) {
+    // Init Store
+    super(store);
+  }
+
+  @Input() asset: Asset;
+  @Input() disallowWrap = true;
+  @Input() showCheck = false;
+  @Input() showIcons = true;
+  @Input() showTypeIcon = true;
+  @Input() showStatusIcons = true;
+  @Input() showMenu: boolean | 'hover' = 'hover';
+  @Input() showLabel = true;
+  @Input() showLink = true; // Asset renders as a link when 'previewable'
+  @Input() displayField: keyof Asset = 'label';
+
+  // https://stackoverflow.com/questions/45313939/data-binding-causes-expressionchangedafterithasbeencheckederror
+  // https://stackoverflow.com/questions/46065535/expressionchangedafterithasbeencheckederror-in-two-way-angular-binding
+  // https://angular.io/guide/template-syntax
+  // @Output() showIconsChange = new EventEmitter();
+
+  @HostBinding('class.no-wrap')
+  get wrapDisallowed() {
+    return this.disallowWrap;
+  }
+
+  @HostBinding('class.hover-menu')
+  get hoverMenu() {
+    return this.showMenu === 'hover';
+  }
+
+  @HostBinding('class.label-left-clear')
+  get labelLeftClear() {
+    return (!this.showCheck && !this.showIcons);
+  }
+
+  get iconDescription() {
+    let
+      type,
+      lockBy,
+      status,
+      asset = this.asset;
+    type = StringUtils.capitalize(
+      asset
+        .type
+        .replace(/_/g, ' ')
+        .toLowerCase());
+    status = StringUtils.capitalize(
+      asset
+        .workflowStatus
+        .replace('WITH_WF', 'with workflow')
+        .replace(/_/g, ', ')
+        .toLowerCase());
+    lockBy = asset.locked ? ` by ${asset.lockedBy.name || asset.lockedBy.username}.` : '';
+    return `${type}. ${status}${asset.locked ? lockBy : '.'}`;
+  }
+
+  get typeClass() {
+    return this.asset
+      .type
+      .toLowerCase()
+      .replace(/_/g, ' ');
+  }
+
+  get statusClass() {
+    return this.asset
+      .workflowStatus
+      .toLowerCase()
+      .replace(/_/g, ' ');
+  }
+
+  get label() {
+
+    let label,
+      displayField = this.displayField;
+
+    if (!(displayField in this.asset)) {
+      console.log('Incorrect field ' + displayField + ' supplied. Using "label".');
+      displayField = 'label';
+    }
+
+    label = this.asset[displayField];
+    switch (this.displayField) {
+      case 'label':
+        return (label === 'crafter-level-descriptor.level.xml')
+          ? 'Section Defaults'
+          : this.asset.label;
+      default:
+        return label;
+    }
+
+  }
+
+  menu = []; // Options of the asset menu drop down
+  navigable = true; // Internal control of whether the asset displays as a link or a label
+  selected = false;
+
+  // Keeps track of the value of showCheck to determine
+  // whether to update stuff related to state.selectedItems
+  private priorShowCheckValue;
+
+  ngOnInit() {
+
+  }
+
+  ngOnChanges() {
+
+    this.navigable = this.isNavigable();
+    this.menu = this.workflowService
+      .getAvailableAssetOptions(this.state.user, this.asset);
+
+    // if (!this.showTypeIcon && !this.showStatusIcons) {
+    //   this.showIcons = false;
+    //   this.showIconsChange.emit(false);
+    // }
+
+    if (this.priorShowCheckValue !== this.showCheck) {
+      // Only good as far as single subscription...
+      if (this.priorShowCheckValue === true) {
+        this.terminateSubscriptions();
+      }
+      if (this.showCheck) {
+        this.updateFromState();
+        this.subscribeTo('selectedItems', () => this.updateFromState());
+      }
+      this.priorShowCheckValue = this.showCheck;
+    }
+
+  }
+
+  isNavigable() {
+    if (!this.showLink) {
+      return false;
+    }
+    switch (this.asset.type) {
+      case AssetTypeEnum.FOLDER:
+      case AssetTypeEnum.COMPONENT:
+      case AssetTypeEnum.LEVEL_DESCRIPTOR:
+        return false;
+      default:
+        return true;
+    }
+  }
+
+  navigate() {
+    this.router.navigate([`/preview`])
+      .then((value) => {
+        setTimeout(() => this.communicationService.publish(
+          WindowMessageTopicEnum.NAV_REQUEST,
+          this.asset,
+          WindowMessageScopeEnum.Local));
+      });
+  }
+
+  checkedStateChange(checked) {
+    if (checked) {
+      this.store.dispatch(Actions.select(this.asset));
+    } else {
+      this.store.dispatch(Actions.deselect(this.asset));
+    }
+  }
+
+  menuItemSelected(action) {
+    switch (action) {
+      default:
+
+        break;
+    }
+  }
+
+  private updateFromState() {
+    let checked: Asset[] = this.state.selectedItems;
+    this.selected = ArrayUtils.forEachBreak(checked,
+      (asset) => asset.id === this.asset.id);
+  }
+
+}

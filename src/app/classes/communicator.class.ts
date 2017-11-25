@@ -1,37 +1,7 @@
-
-import {Subscription} from 'rxjs/Subscription';
-
-export enum MessageTopic {
-
-  ALL = 'ALL',
-
-  GUEST_CHECK_IN = 'GUEST_CHECK_IN',
-  GUEST_LOAD_EVENT = 'GUEST_LOAD_EVENT',
-
-  HOST_ICE_START_REQUEST = 'HOST_ICE_START_REQUEST',
-  HOST_END_ICE_REQUEST = 'HOST_END_ICE_REQUEST',
-  HOST_RELOAD_REQUEST = 'HOST_RELOAD_REQUEST',
-  HOST_NAV_REQUEST = 'HOST_NAV_REQUEST',
-
-  NAV_REQUEST = 'NAV_REQUEST',
-  SITE_TREE_NAV_REQUEST = 'SITE_TREE_NAV_REQUEST'
-
-}
-
-export enum MessageScope {
-  ALL = 'ALL',
-  Local = 'LOCAL',
-  External = 'EXTERNAL',
-  Broadcast = 'BROADCAST'
-}
-
-export class Message {
-
-  constructor (public topic: MessageTopic,
-               public data: any,
-               public scope: MessageScope = MessageScope.Broadcast) {}
-
-}
+import { Subscription } from 'rxjs/Subscription';
+import { WindowMessageTopicEnum } from '../enums/window-message-topic.enum';
+import { WindowMessageScopeEnum } from '../enums/window-message-scope.enum';
+import { WindowMessage } from './window-message.class';
 
 export abstract class Communicator {
 
@@ -44,14 +14,14 @@ export abstract class Communicator {
 
   /**
    * Process the message once the origin/source has been verified.
-   * @param message: Message
+   * @param message: WindowMessage
    * @private
    */
-  protected abstract processReceivedMessage(message: Message): void;
+  protected abstract processReceivedMessage(message: WindowMessage): void;
 
   abstract subscribe(subscriber: (value) => void): Subscription;
 
-  abstract subscribeTo(topic: MessageTopic, subscriber: (value) => void, scope?: MessageScope): Subscription;
+  abstract subscribeTo(topic: WindowMessageTopicEnum, subscriber: (value) => void, scope?: WindowMessageScopeEnum): Subscription;
 
   private onMessage(event: { data: any, origin: string }): void {
 
@@ -94,8 +64,8 @@ export abstract class Communicator {
     });
   }
 
-  publish(topic: MessageTopic, data: any = null, scope = MessageScope.Broadcast): void {
-    let message = new Message(topic, data, scope);
+  publish(topic: WindowMessageTopicEnum, data: any = null, scope = WindowMessageScopeEnum.Broadcast): void {
+    let message = new WindowMessage(topic, data, scope);
     this.targets.forEach((target) => {
       // TODO need to determine where to get the origin
       if (!target.postMessage) {

@@ -14,14 +14,29 @@ $mat-font-family: $font-family;
 
 // App
 
+$color-red: #FF3B30;
+$color-orange: #FF9500;
+$color-yellow: #FFCC00;
+$color-green: #4CD964;
+$color-teal: #5AC8FA;
+$color-blue: #007AFF;
+$color-purple: #5856D6;
+$color-pink: #FF2D55;
+$color-gray-lightest: #EFEFF4;
+$color-gray-lighter: #E5E5EA;
+$color-gray-light: #D1D1D6;
+$color-gray-mid: #C7C7CC;
+$color-gray: #8E8E93;
+$color-black: #000;
+
 // 2.5 Colors
 //$action-light: #AFCEED;
 //$action-medium: #7E9DBB;
 //$action-dark: #506F8B;
 
-$action-light: #66b4ff;
-$action-medium: #2185d0;
-$action-dark: #00599e;
+$action-light: $color-teal; // #66b4ff;
+$action-medium: $color-blue; // #2185d0;
+$action-dark: darken($color-blue, 10%); // #00599e;
 
 $studio-logo: #283277;
 $color: #C5C5C5;
@@ -52,6 +67,7 @@ $sidebar-width: 300px !default;
 $sidebar-width-sm: 220px !default;
 $sidebar-width-collapsed: 65px !default;
 $sidebar-background-color: $grey-main !default;
+//$sidebar-background: $grey-main !default;
 $sidebar-border-color: #C8C8C8 !default;
 
 @mixin open-sans-light {
@@ -85,4 +101,10 @@ $sidebar-border-color: #C8C8C8 !default;
     clear: both;
     content: "";
   }
+}
+
+@mixin ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }

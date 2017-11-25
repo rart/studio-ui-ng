@@ -8,7 +8,7 @@ import {
 import {environment} from '../../environments/environment';
 import {Observable} from 'rxjs/Observable';
 
-const baseUrl = `${environment.baseUrl}/user`;
+const baseUrl = `${environment.apiUrl}/user`;
 
 @Injectable()
 export class UserService implements IEntityService<User> {

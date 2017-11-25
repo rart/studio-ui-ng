@@ -1,39 +1,46 @@
 
-import {
-  Reducer,
-  AnyAction
-} from 'redux';
+import { Reducer, AnyAction } from 'redux';
 
-import {ContentItem} from '../app/models/content-item.model';
-import {ActionTypesList} from './actions.enum';
+import { Asset } from '../app/models/asset.model';
+import { StoreActionsEnum } from '../app/enums/actions.enum';
+import { SignedAction } from '../app/classes/signed-action.interface';
+import { AppState } from '../app/classes/app-state.interface';
 
 // enum Action List {
 //   SELECT_ITEM = 'SELECT_ITEM',
 //   DESELECT_ITEM = 'DESELECT_ITEM'
 // }
 
+const affects: Array<keyof AppState> = ['selectedItems'];
+
 export class Actions {
-  static select(item: ContentItem): AnyAction {
+  static affects = affects;
+
+  static select(item: Asset): SignedAction {
     return {
-      type: ActionTypesList.SELECT_ITEM,
+      type: StoreActionsEnum.SELECT_ITEM,
+      affects,
       item
     };
   }
-  static deselect(item: ContentItem): AnyAction {
+  static deselect(item: Asset): SignedAction {
     return {
-      type: ActionTypesList.DESELECT_ITEM,
+      type: StoreActionsEnum.DESELECT_ITEM,
+      affects,
       item
     };
   }
-  static selectMany(items: ContentItem[]): AnyAction {
+  static selectMany(items: Asset[]): SignedAction {
     return {
-      type: ActionTypesList.SELECT_ITEMS,
+      type: StoreActionsEnum.SELECT_ITEMS,
+      affects,
       items
     };
   }
-  static deselectMany(items: ContentItem[]): AnyAction {
+  static deselectMany(items: Asset[]): SignedAction {
     return {
-      type: ActionTypesList.DESELECT_ITEMS,
+      type: StoreActionsEnum.DESELECT_ITEMS,
+      affects,
       items
     };
   }
@@ -47,22 +54,23 @@ const addOne = (state, item) => {
   return [...withoutItem(state, item), item];
 };
 
-export const reducer: Reducer<Array<ContentItem>> = (state = [], action: AnyAction) => {
+export const reducer: Reducer<Array<Asset>> = (state = [], action: AnyAction) => {
   switch (action.type) {
 
-    case ActionTypesList.SELECT_ITEM:
+    case StoreActionsEnum.SELECT_ITEM:
       return addOne(state, action.item);
-    case ActionTypesList.DESELECT_ITEM:
+
+    case StoreActionsEnum.DESELECT_ITEM:
       return withoutItem(state, action.item);
 
-    case ActionTypesList.SELECT_ITEMS: {
+    case StoreActionsEnum.SELECT_ITEMS: {
       let nextState = [...state];
       action.items.forEach(item =>
         nextState = addOne(nextState, item));
       return nextState;
     }
 
-    case ActionTypesList.DESELECT_ITEMS: {
+    case StoreActionsEnum.DESELECT_ITEMS: {
       let nextState = [...state];
       action.items.forEach(item =>
         nextState = withoutItem(nextState, item));
@@ -70,6 +78,9 @@ export const reducer: Reducer<Array<ContentItem>> = (state = [], action: AnyActi
     }
 
     default:
-      return state;
+      // return state;
+      return state.map((item) => (
+        (item instanceof Asset) ? item : Asset.fromPO(item)
+      ));
   }
 };

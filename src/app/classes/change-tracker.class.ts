@@ -1,8 +1,8 @@
-
 export enum ChangeTrackerType {
   ADD_REMOVE,
   INCREASE_DECREASE,
-  TYPING
+  TYPING,
+  BOOLEAN
 }
 
 export enum ChangeType {
@@ -14,16 +14,23 @@ export enum ChangeType {
   Decrease,
 
   CharEntry,
-  Backspace
+  Backspace,
+
+  Boolean
 
 }
 
 // TODO: Why cli warns of this not being exported when it is an interface?
 // Changed to class to get rid of warning
 // https://github.com/angular/angular-cli/issues/2034
+// interface Change {
+//   type: ChangeType;
+//   value: any;
+// }
 export class Change {
-  type: ChangeType;
-  value: any;
+  constructor(public type: ChangeType, public value: any) {
+
+  }
 }
 
 const defaultValueCompareFn = (v1, v2) => v1 === v2;
@@ -31,23 +38,33 @@ const defaultValueCompareFn = (v1, v2) => v1 === v2;
 export abstract class ChangeTracker {
   action: string;
   params: any;
-  constructor(public valueCompareFn = defaultValueCompareFn) {}
+
+  constructor(public valueCompareFn = defaultValueCompareFn) {
+  }
+
   protected changeStack: Array<Change> = [];
+
   static create(type: ChangeTrackerType, valueCompareFn = defaultValueCompareFn) {
     switch (type) {
       case ChangeTrackerType.ADD_REMOVE: {
         return new AddRemoveChangeTracker(valueCompareFn);
+      }
+      case ChangeTrackerType.BOOLEAN: {
+        return new BooleanChangeTracker(valueCompareFn);
       }
       default: {
         console.error('Incorrect or not implemented ChangeTrackerType');
       }
     }
   }
+
   abstract track(change: Change): boolean;
+
   // abstract findAntagonists(change: Change): Change;
   protected push(change: Change) {
     this.changeStack.push(change);
   }
+
   protected remove(change: Change, index: number = null) {
     let stack = this.changeStack;
     if (index !== null) {
@@ -60,9 +77,11 @@ export abstract class ChangeTracker {
       this.changeStack = stack.filter((item) => change === item);
     }
   }
+
   latest() {
     return this.changeStack[this.changeStack.length - 1];
   }
+
   hasChanges() {
     return !!(this.changeStack.length);
   }
@@ -100,3 +119,17 @@ export class AddRemoveChangeTracker extends ChangeTracker {
     return true;
   }
 }
+
+// Only counts as change alternating from true <=> false. 2 consecutive same bool
+// values won't be counted as change nor increment the change stack
+export class BooleanChangeTracker extends ChangeTracker {
+  track(change: Change): boolean {
+    if (this.hasChanges() && (this.latest().value === change.value)) {
+      return false;
+    } else {
+      this.push(change);
+      return true;
+    }
+  }
+}
+

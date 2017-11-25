@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import { Component, HostBinding, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'std-root',
@@ -7,11 +7,8 @@ import {Component, ViewEncapsulation} from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'app';
-  sidebarCollapsed = false;
+  @HostBinding('class.sidebar-collapsed') sidebarCollapsed = false;
   constructor() {
-    window['setSBC'] = (w) => {
-      this.sidebarCollapsed = w;
-    }
+
   }
 }

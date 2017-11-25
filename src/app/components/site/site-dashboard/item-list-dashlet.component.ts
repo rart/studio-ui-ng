@@ -1,26 +1,84 @@
-import {Component, ComponentFactory, Input, OnInit, Output, EventEmitter, Inject} from '@angular/core';
-import {ContentItem} from '../../../models/content-item.model';
-import {Observable} from 'rxjs/Observable';
-import {WorkflowService} from '../../../services/workflow.service';
-import {Site} from '../../../models/site.model';
-import {Router} from '@angular/router';
-import {MessageScope, MessageTopic} from '../../../classes/communicator.class';
-import {CommunicationService} from '../../../services/communication.service';
-import {EmbeddedViewDialogComponent} from '../../embedded-view-dialog/embedded-view-dialog.component';
-import {ArrayUtils, openDialog} from '../../../app.utils';
-import {MatDialog} from '@angular/material';
-import {AppStore} from '../../../app-state.provider';
-import {AppState} from '../../../classes/app-state.interface';
-import {Store} from 'redux';
-import {Actions as ExpansionAction} from '../../../../state/expanded-panels.state';
-import {Actions as SelectionAction} from '../../../../state/selected-items.state';
+import { Component, ComponentFactory, Input, OnInit, Output, EventEmitter, Inject, HostBinding } from '@angular/core';
+import { Asset } from '../../../models/asset.model';
+import { Observable } from 'rxjs/Observable';
+import { WorkflowService } from '../../../services/workflow.service';
+import { Site } from '../../../models/site.model';
+import { Router } from '@angular/router';
+import { WindowMessageScopeEnum} from '../../../enums/window-message-scope.enum';
+import { CommunicationService } from '../../../services/communication.service';
+import { EmbeddedViewDialogComponent } from '../../embedded-view-dialog/embedded-view-dialog.component';
+import { ArrayUtils, openDialog } from '../../../app.utils';
+import { MatDialog } from '@angular/material';
+import { AppStore } from '../../../state.provider';
+import { AppState } from '../../../classes/app-state.interface';
+import { SubjectStore } from '../../../classes/subject-store.class';
+import { Actions as ExpansionAction } from '../../../../state/expanded-panels.state';
+import { Actions as SelectionAction } from '../../../../state/selected-items.state';
+import { Subscriber } from 'rxjs/Subscriber';
+import { MatMenu } from '@angular/material/menu/typings/menu-directive';
+import { ViewChild } from '@angular/core/src/metadata/di';
+import { MatMenuItem } from '@angular/material/menu/typings/menu-item';
+import { WindowMessageTopicEnum } from '../../../enums/window-message-topic.enum';
+import { ComponentWithState } from '../../../classes/component-with-state.class';
 
 type Format = 'modern' | 'table';
 type ItemResponseFormat = 'categorized' | 'simple';
+type TYPE_DIVIDER = 'DIVIDER';
 
-const DIVIDER = 'DIVIDER';
+const DIVIDER: TYPE_DIVIDER = 'DIVIDER';
 
-enum ItemAction {
+const optionsMenuCommon = [
+  {
+    type: 'menu',
+    label: 'Sort By',
+    action: 'sortBy',
+    options: [
+      { label: 'Name', value: 'name' },
+      { label: 'URL', value: 'url' },
+      { label: 'Edited By', value: 'lastEditedBy' },
+      { label: 'Edited On', value: 'lastEditedOn' }
+    ]
+  },
+  {
+    type: 'menu',
+    label: 'Sort Direction',
+    action: 'sortDirection',
+    options: [
+      { label: 'Ascending', value: 'ASC' },
+      { label: 'Descending', value: 'DESC' }
+    ]
+  }
+];
+
+const typeOfItemFilterMenuOption = {
+  type: 'menu',
+  label: 'Types Shown',
+  action: 'filterType',
+  options: [
+    { label: 'All', value: 'all' },
+    { label: 'Pages', value: 'page' },
+    { label: 'Components', value: 'component' },
+    { label: 'Documents', value: 'document' }
+  ]
+};
+
+const numOfItemsMenuOption = {
+
+  // Not supporting inputs right now since matMenu closes on first click
+  // type: 'input',
+
+  type: 'menu',
+  label: 'Items Shown',
+  action: 'num',
+  options: [
+    { value: 20 },
+    { value: 50 },
+    { value: 100 },
+    { value: 200 }
+  ]
+};
+
+enum ItemActionEnum {
   PREVIEW,
   SCHEDULE,
   APPROVE_PUBLISH,
@@ -31,38 +89,61 @@ enum ItemAction {
   FORM_VIEW
 }
 
-export declare type FetchType = 'pending' | 'scheduled' | 'activity' | 'published';
+export enum DashletActionEnum {
+  SORT_BY,
+  CUSTOM
+}
+
+export interface MenuItem {
+  label: string;
+  action?: ItemActionEnum | DashletActionEnum;
+  options?: MenuItem[];
+}
+
+export interface MenuItemDivier extends MenuItem {
+  type: TYPE_DIVIDER;
+}
+
+export declare type FetchType =
+  'pending' |
+  'scheduled' |
+  'activity' |
+  'published';
 
 @Component({
   selector: 'std-item-list-dashlet',
   templateUrl: './item-list-dashlet.component.html',
   styleUrls: ['./item-list-dashlet.component.scss']
 })
-export class ItemListDashletComponent implements OnInit {
+export class ItemListDashletComponent extends ComponentWithState implements OnInit {
+  /* tslint:disable:no-unused-expression */
 
   UI_FORMAT_MODERN: Format = 'modern';
   UI_FORMAT_TABLE: Format = 'table';
   TYPE_CATEGORIZED: ItemResponseFormat = 'categorized';
   TYPE_SIMPLE: ItemResponseFormat = 'simple';
 
+  @HostBinding('class.is-dialog') isDialog = false;
+
   @Output() finished = new EventEmitter();
   @Output() settingsChanged;
 
   @Input() title: string;
-  @Input() collection: Observable<ContentItem>;
   @Input() fetchType: FetchType;
   @Input() site: Site;
   @Input() settings;
   @Input() uiFormat: Format = 'modern';
+  @Input() canExpand = true;
 
-  type: ItemResponseFormat = 'categorized';
   panelHeaderHeight = '2.5rem';
-  isDialog = false;
+  type: ItemResponseFormat = 'categorized';
+
+  collection: Observable<Asset[]>;
 
   cachedPanelKeys: Array<string> = [];
   expandedState = {};
 
-  contentItems: Array<ContentItem> = [];
+  contentItems: Array<Asset> = [];
   checkedState = {};
 
   areAllChecked = false;
@@ -70,70 +151,101 @@ export class ItemListDashletComponent implements OnInit {
   areAllExpanded = false;
   areAllCollapsed = false;
 
+  query = {
+    num: 20,
+    sortDirection: 'ASC',
+    sortBy: 'lastEditedOn',
+    includeInProgress: true,
+    filterType: 'all',
+    username: null,
+    includeLive: true
+  };
+  dashletMenuMap = {
+    'pending': [
+      ...optionsMenuCommon,
+      {
+        type: 'menu',
+        label: 'Show In Progress',
+        action: 'includeInProgress',
+        options: [
+          { label: 'Yes', value: true },
+          { label: 'No', value: false }
+        ]
+      }
+    ],
+    'scheduled': [
+      ...optionsMenuCommon,
+      typeOfItemFilterMenuOption
+    ],
+    'published': [
+      ...optionsMenuCommon,
+      typeOfItemFilterMenuOption,
+      numOfItemsMenuOption
+    ],
+    'activity': [
+      ...optionsMenuCommon,
+      numOfItemsMenuOption
+    ]
+  };
   itemMenuMap = {};
 
-  constructor(@Inject(AppStore) private store: Store<AppState>,
+  private cachePreInitialized = false;
+
+  constructor(@Inject(AppStore) protected store: SubjectStore<AppState>,
               private router: Router,
               public dialog: MatDialog,
               private communicationService: CommunicationService,
               private workflowService: WorkflowService) {
+    super(store);
   }
 
   ngOnInit() {
+
+    this.query.username = this.state.user.username;
 
     if (this.fetchType === 'activity') {
       this.type = 'simple';
     }
 
-    /* tslint:disable:no-unused-expression */
-    (!this.collection) && this.fetch()
-      .subscribe(items => {
-        this.afterItemsFetched(items);
-      });
+    // https://stackoverflow.com/questions/40530108/fetch-data-once-with-observables-in-angular-2
+    if (!this.collection) {
+      this.refresh();
+    }
 
     (!this.isDialog) && (this.finished = null);
 
     this.updateLocalStates();
 
-    this.store.subscribe(() => {
-      this.updateLocalStates();
+    this.subscribeTo({
+      'selectedItems': () => this.updateLocalCheckedState(),
+      'expandedPanels': () => this.updateLocalExpandedState()
     });
 
   }
 
-  fetch(): Observable<ContentItem[]> {
-    let fn = null;
-    const service = this.workflowService;
-    switch (this.fetchType) {
-      case 'pending': {
-        fn = 'fetchPendingApproval';
-        break;
-      }
-      case 'scheduled': {
-        fn = 'fetchScheduled';
-        break;
-      }
-      case 'activity': {
-        fn = 'fetchUserActivities';
-        break;
-      }
-      case 'published': {
-        fn = 'fetchDeploymentHistory';
-        break;
-      }
-      default: {
-        // throw new Error('Unrecognized FetchType specified for ItemListDashletComponent');
-        console.log('Unrecognized FetchType specified for ItemListDashletComponent');
-      }
-    }
-    return this.collection =
-      service[fn]({siteCode: this.site.code})
-        .map((data) => data.entries);
+  menuOptionClicked(action, value?) {
+    this.refresh();
+    // switch (action) {
+    //   case 'sortBy':
+    //   case 'sortDirection':
+    //   case 'includeInProgress':
+    //     this.collection = this.fetch();
+    //     break;
+    // }
+  }
+
+  refresh() {
+    this.collection = null;
+    this.fetch()
+      .subscribe(items => {
+        this.collection = Observable.of(items);
+        this.afterItemsFetched(items);
+      });
   }
 
   menuActionClicked(action, item) {
     switch (action) {
-      case ItemAction.PREVIEW: {
+      case ItemActionEnum.PREVIEW: {
         this.requestPreview(item);
         break;
       }
@@ -146,21 +258,13 @@ export class ItemListDashletComponent implements OnInit {
     this.router.navigate([`/preview`])
       .then((value) => {
         setTimeout(() => this.communicationService.publish(
-          MessageTopic.SITE_TREE_NAV_REQUEST, item, MessageScope.Local));
+          WindowMessageTopicEnum.NAV_REQUEST, item, WindowMessageScopeEnum.Local));
       });
-  }
-
-  cacheItemMenus(items) {
-    let
-      itemMenuMap = this.itemMenuMap,
-      getMenuItemsFor = this.getItemMenu;
-    items.forEach(item =>
-      itemMenuMap[item.id] = getMenuItemsFor(item));
   }
 
   allExpanded() {
 
-    const state = this.store.getState().expandedPanels;
+    const state = this.state.expandedPanels;
     const panelKeys = this.cachedPanelKeys;
 
     let countSome = 0;
@@ -176,7 +280,7 @@ export class ItemListDashletComponent implements OnInit {
 
   allCollapsed() {
 
-    const state = this.store.getState().expandedPanels;
+    const state = this.state.expandedPanels;
     const panelKeys = this.cachedPanelKeys; // Object.keys(this.expandedState);
 
     // If the loop breaks, it means the item was found in the state
@@ -209,7 +313,7 @@ export class ItemListDashletComponent implements OnInit {
 
   allChecked() {
 
-    const state = this.store.getState().selectedItems;
+    const state = this.state.selectedItems;
     const items = this.contentItems;
 
     const reducer = (ids, item) => ids.concat(item.id);
@@ -224,7 +328,7 @@ export class ItemListDashletComponent implements OnInit {
 
   allUnchecked() {
 
-    const state = this.store.getState().selectedItems;
+    const state = this.state.selectedItems;
     const items = this.contentItems;
 
     const reducer = (ids, item) => ids.concat(item.id);
@@ -257,37 +361,51 @@ export class ItemListDashletComponent implements OnInit {
     }
   }
 
+  shareCache(collection: Observable<Asset[]>,
+             contentItems: Asset[],
+             itemMenuMap: Object,
+             cachedPanelKeys: Array<string>) {
+
+    this.collection = collection;
+    this.contentItems = contentItems;
+    this.itemMenuMap = itemMenuMap;
+    this.cachedPanelKeys = cachedPanelKeys;
+
+    this.cachePreInitialized = true;
+
+  }
+
   popOut() {
     let dialogRef, subscription;
     dialogRef = openDialog(this.dialog, EmbeddedViewDialogComponent, {
       width: '90%',
       height: '90%',
+      maxWidth: 'auto',
+      maxHeight: 'auto',
       panelClass: 'unpadded',
       data: {
         component: ItemListDashletComponent,
         initializeComponent: (componentRef: ComponentFactory<ItemListDashletComponent>) => {
+
+          // TODO: careful for angular API changes.
+          // Property 'instance' seems not to be one that is published by the API willingly.
           let instance = <ItemListDashletComponent>(componentRef['instance']);
+
           instance.isDialog = true;
           instance.site = this.site;
-          instance.uiFormat = 'table';
           instance.title = this.title;
+          instance.uiFormat = 'table';
           instance.fetchType = this.fetchType;
-          instance.collection = this.collection;
-          instance.itemMenuMap = this.itemMenuMap;
-          // Should be unnecessary once redux is properly plugged
-          instance.expandedState = this.expandedState;
-          instance.checkedState = this.checkedState;
-          instance.areAllChecked = this.areAllChecked;
-          instance.areAllUnchecked = this.areAllUnchecked;
-          instance.areAllExpanded = this.areAllExpanded;
-          instance.areAllCollapsed = this.areAllCollapsed;
+
+          instance.shareCache(
+            this.collection,
+            this.contentItems,
+            this.itemMenuMap,
+            this.cachedPanelKeys);
+
         }
       }
     });
-    subscription = dialogRef.afterClosed()
-      .subscribe(() => {
-
-      });
   }
 
   done() {
@@ -296,6 +414,42 @@ export class ItemListDashletComponent implements OnInit {
 
   getPanelKey(item?) {
     return `${this.fetchType}.panel.${item ? item.label : ''}`;
+  }
+
+  private fetch(): Observable<Asset[]> {
+    let fn = null;
+    const service = this.workflowService;
+    switch (this.fetchType) {
+      case 'pending': {
+        fn = 'fetchPendingApproval';
+        break;
+      }
+      case 'scheduled': {
+        fn = 'fetchScheduled';
+        break;
+      }
+      case 'activity': {
+        fn = 'fetchUserActivities';
+        break;
+      }
+      case 'published': {
+        fn = 'fetchDeploymentHistory';
+        break;
+      }
+      default: {
+        throw new Error('Unrecognized FetchType specified for ItemListDashletComponent');
+      }
+    }
+    return service[fn](Object.assign({ siteCode: this.site.code }, this.query))
+      .map((data) => data.entries);
+  }
+
+  private cacheItemMenus(items) {
+    let
+      itemMenuMap = this.itemMenuMap,
+      getMenuItemsFor = this.getItemMenu;
+    items.forEach(item =>
+      itemMenuMap[item.id] = getMenuItemsFor(item));
   }
 
   private updateLocalStates() {
@@ -307,7 +461,7 @@ export class ItemListDashletComponent implements OnInit {
     if (this.type === 'categorized') {
 
       let
-        state = this.store.getState(),
+        state = this.state,
         expandedPanels = state.expandedPanels,
         expandedState = this.expandedState = {};
 
@@ -324,12 +478,15 @@ export class ItemListDashletComponent implements OnInit {
   private updateLocalCheckedState() {
 
     let
-      state = this.store.getState(),
+      state = this.state,
+      siteCode = this.site.code,
       selectedItems = state.selectedItems,
       checkedState = this.checkedState = {};
 
     selectedItems.forEach((item) => {
-      checkedState[item.id] = true;
+      if (item.siteCode === siteCode) {
+        checkedState[item.id] = true;
+      }
     });
 
     this.areAllChecked = this.allChecked();
@@ -348,7 +505,8 @@ export class ItemListDashletComponent implements OnInit {
           : nextItems, [])
       : items;
 
-    items.forEach(item =>
+    // Excludes panels that have no children.
+    items.forEach(item => (item.hasChildren) &&
       this.cachedPanelKeys.push(this.getPanelKey(item)));
 
     this.contentItems.forEach(item =>
@@ -358,20 +516,19 @@ export class ItemListDashletComponent implements OnInit {
 
   }
 
-  // Currently called statically
   private getItemMenu(item) {
     return [
-      {label: 'Preview', action: ItemAction.PREVIEW},
+      { label: 'Preview', action: ItemActionEnum.PREVIEW },
       DIVIDER,
-      {label: 'Schedule', action: ''},
-      {label: 'Approve & Publish', action: ''},
+      { label: 'Schedule', action: '' },
+      { label: 'Approve & Publish', action: '' },
       DIVIDER,
-      {label: 'Edit', action: ''},
-      {label: 'Delete', action: ''},
-      {label: 'History', action: ''},
-      {label: 'Dependencies', action: ''},
+      { label: 'Edit', action: '' },
+      { label: 'Delete', action: '' },
+      { label: 'History', action: '' },
+      { label: 'Dependencies', action: '' },
       DIVIDER,
-      {label: 'Form (readonly)', action: ''}
+      { label: 'Form (readonly)', action: '' }
     ];
   }
 

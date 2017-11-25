@@ -1,4 +1,4 @@
-
+// https://angular2-tree.readme.io/docs/styling
 // @import '~angular-tree-component/dist/angular-tree-component.css';
 
 /*
@@ -24,96 +24,232 @@
 .is-dragging-over-disabled
 */
 
-std-content-tree {
-  position: relative;
-}
+/* tree-root {
+  > tree-viewport {
+    > div { // div[style]
+      > .angular-tree-component {
+        > tree-node-collection {
+          > div { // div[style]
+            > tree-node {
+              > .tree-node { // div.icon-undefined.tree-node-level-1.tree-node.tree-node-expanded
+                &.tree-node-expanded {
 
-.tree-children.tree-children-no-padding {
-  padding-left: 0
-}
+                }
+                > tree-node-drop-slot {
+                  display: block;
+                  .node-drop-slot {
+                    display: block;
+                    height: 2px;
+                    &.is-dragging-over {
+                      background: #ddffee;
+                      height: 20px;
+                      border: 2px dotted #888;
+                    }
+                  }
+                }
+                > tree-node-wrapper {
+                  > .node-wrapper {
+                    > tree-node-expander {
+                      .toggle-children-wrapper {
+                        &.toggle-children-wrapper-expanded {
 
-.tree-children {
-  //overflow: hidden;
-  padding-left: 15px;
-}
+                        }
+                        &.toggle-children-wrapper-collapsed {
 
-.tree-node-loading {
-  padding-left: 23px !important;
-}
+                        }
+                        > .toggle-children {
 
-.node-drop-slot {
+                        }
+                      }
+                    }
+                    > .node-content-wrapper {
+                      > tree-node-content {
+                        // Content here
+                      }
+                    }
+                  }
+                }
+                > tree-node-children {
+                  > .tree-children {
+                    &.tree-children-no-padding {
+
+                    }
+                    > tree-node-collection {
+                      // ... structure repeats
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+} */
+
+/**
+ * HTML & Class Structure
+ *
+tree-root
+  >tree-viewport
+    >div[style]
+      >.angular-tree-component
+        >tree-node-collection
+          >div[style]
+            tree-node
+              >.icon-undefined.tree-node-level-1.tree-node.tree-node-expanded
+                >tree-node-drop-slot
+                  >.tree-node-drop-slot
+                >tree-node-wrapper
+                  >.node-wrapper
+                    >tree-node-expander
+                    >.node-content-wrapper
+                      >tree-node-content
+                        >{template content}
+                >tree-node-children
+                  >.tree-children
+                    >tree-node-collection
+                >tree-node-drop-slot
+                  >.tree-node-drop-slot
+
+*/
+
+tree-root,
+tree-viewport,
+tree-node-collection,
+tree-node,
+tree-node-drop-slot,
+tree-node-wrapper,
+tree-node-expander,
+tree-node-content,
+tree-node-children {
   display: block;
-  height: 2px
 }
 
-.node-drop-slot.is-dragging-over {
-  background: #ddffee;
-  height: 20px;
-  border: 2px dotted #888;
-}
-
-.toggle-children-wrapper-expanded .toggle-children {
-  //transform: rotate(90deg)
-}
-
-.toggle-children-wrapper-collapsed .toggle-children {
-  //transform: rotate(0);
-}
-
-.toggle-children-wrapper {
-  //padding: 2px 3px 5px 1px;
-}
-
-.toggle-children {
-  padding-top: 3px;
-  background: none !important;
-  display: inline-block;
-  opacity: 1;
-  margin: 0;
-  width: 1.18em;
-  height: 1em;
-  font-family: 'Icons';
-  font-style: normal;
-  font-weight: normal;
-  text-decoration: inherit;
-  text-align: center;
-  speak: none;
-  font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  &::before {
-    background: none !important;
-    content: "\f196";
+tree-root {
+  > tree-viewport {
+    > div { // [style]
+      > .angular-tree-component {
+        > tree-node-collection { /* ... */ }
+      }
+    }
   }
 }
 
-.toggle-children-wrapper-expanded .toggle-children {
-  &::before {
-    content: "\f147";
+tree-root {
+  .angular-tree-component {
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE/Edge */
+    user-select: none; /* non-prefixed version, currently not supported by any browser */
   }
-}
+  tree-node-collection {
+    > div { // [style]
+      > tree-node {
+        > .tree-node { // div.icon-undefined.tree-node-level-1.tree-node.tree-node-expanded
+          &.tree-node-expanded {
 
-.toggle-children-placeholder {
-  display: inline-block;
-  //height: 10px;
-  width: 23px;
-  position: relative;
-  //top: 1px;
-  //padding-right: 3px;
-}
+          }
+          &.tree-node-collapsed {
+            std-asset-display .icons i.folder {
+              &::before {
+                content: "\f114" !important; // closed
+              }
+            }
+          }
+          > tree-node-drop-slot {
+            display: block;
+            .node-drop-slot {
+              display: block;
+              height: 2px;
+              &.is-dragging-over {
+                background: #ddffee;
+                height: 20px;
+                border: 2px dotted #888;
+              }
+            }
+          }
+          > tree-node-wrapper {
+            > .node-wrapper {
+              display: flex;
+              align-items: center;
+              > tree-node-expander {
+                width: 20px;
+                > .toggle-children-wrapper {
+                  &.toggle-children-wrapper-expanded .toggle-children {
+                    &::before {
+                      content: "\f147";
+                    }
+                  }
+                  &.toggle-children-wrapper-collapsed .toggle-children {
 
-.node-content-wrapper {
-  display: inline-block;
-  padding: 2px 5px;
-  border-radius: 2px;
-  transition: background-color .15s, box-shadow .15s;
-}
+                  }
+                  > .toggle-children {
+                    padding-top: 1px;
+                    background: none !important;
+                    display: inline-block;
+                    opacity: 1;
+                    margin: 0;
+                    width: 1.18em;
+                    height: 1em;
+                    font-family: 'Icons';
+                    font-style: normal;
+                    font-weight: normal;
+                    text-decoration: inherit;
+                    text-align: center;
+                    speak: none;
+                    font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                    -webkit-font-smoothing: antialiased;
+                    -webkit-backface-visibility: hidden;
+                    backface-visibility: hidden;
+                    &::before {
+                      background: none !important;
+                      content: "\f196";
+                    }
+                  }
+                }
+                > .toggle-children-placeholder {
+                  width: 23px;
+                  position: relative;
+                  display: inline-block;
+                }
+              }
+              > .node-content-wrapper {
+                width: calc(100% - 20px);
+                // transition: background-color .15s, box-shadow .15s;
+                > tree-node-content {
 
-.node-wrapper {
-  display: flex;
-  align-items: flex-start;
+                }
+              }
+            }
+          }
+          > tree-node-children {
+            > .tree-children {
+              padding-left: 20px;
+              &.tree-children-no-padding {
+                padding-left: 0
+              }
+              padding-left: 15px;
+              > tree-node-collection {
+                // ...structure repeats
+              }
+            }
+            .tree-node-loading {
+              padding-left: 23px !important;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 .node-content-wrapper-active,
@@ -143,32 +279,9 @@ std-content-tree {
   opacity: 0.5
 }
 
-tree-viewport {
-  //height: 100%;
-  //overflow: auto;
-  display: block;
-}
-
-.tree-children {
-  padding-left: 20px
-}
-
 .empty-tree-drop-slot .node-drop-slot {
   height: 20px;
   min-width: 100px
-}
-
-.angular-tree-component {
-  width: 100%;
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Chrome/Safari/Opera */
-  -khtml-user-select: none; /* Konqueror */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* IE/Edge */
-  user-select: none; /* non-prefixed version, currently not supported by any browser */
 }
 
 tree-root .angular-tree-component-rtl {
@@ -183,121 +296,3 @@ tree-root .angular-tree-component-rtl .tree-children {
   padding-right: 20px;
   padding-left: 0;
 }
-
-
-// // // //
-
-/*
-
-.toggle-children-wrapper-expanded .toggle-children {
-  &::before {
-    content: "\f147";
-  }
-}
-
-.toggle-children-wrapper-collapsed .toggle-children {
-  //transform: rotate(0);
-}
-
-tree-root .angular-tree-component-rtl .toggle-children-wrapper-collapsed .toggle-children {
-  //transform: rotate(180deg) !important;
-}
-
-// * ACE Theme * /
-
-tree-root .tree-children::before,
-tree-root::before {
-  content: "";
-  position: absolute;
-  border-left: 1px dotted #23527c;
-  height: 100%;
-  top: -14px;
-  left: 12px
-}
-
-tree-root {
-   padding-left: 0;
-   margin-left: -5px
-}
-
-tree-root .tree-children {
-  position: relative;
-  padding-left: 0;
-  margin-left: 16px
-}
-
-tree-root .tree-children::before {
-  left: 5px
-}
-
-tree-root tree-node .node-wrapper {
-  margin-left: 24px
-}
-
-tree-root tree-node .node-wrapper>.node-content-wrapper {
-  margin-left: 4px
-}
-
-tree-root tree-node>.tree-node-leaf .node-wrapper {
-  margin-left: 0
-}
-
-tree-root tree-node>div::before {
-  content: "";
-  position: absolute;
-  border-bottom: 1px dotted #23527c;
-  width: 7px;
-  margin-top: 12px;
-  left: 7px
-}
-
-tree-root tree-node>div .toggle-children-wrapper {
-  width: 13px;
-  height: 13px;
-  border: 1px solid #23527c;
-  position: absolute;
-  left: 15px;
-  margin-top: 5px;
-  margin-left: 0;
-  display: inline-block;
-  background-color: #fff;
-  z-index: 1
-}
-
-tree-root tree-node>div .toggle-children-wrapper::before {
-  content: "";
-  display: inline-block;
-  width: 7px;
-  border-top: 1px solid #23527c;
-  position: absolute;
-  top: 5px;
-  left: 2px
-}
-
-tree-root tree-node>div .toggle-children-wrapper.toggle-children-wrapper-collapsed::after {
-  content: "";
-  display: inline-block;
-  height: 7px;
-  border-left: 1px solid #23527c;
-  position: absolute;
-  top: 2px;
-  left: 5px
-}
-
-tree-root tree-node>div .toggle-children-wrapper .toggle-children {
-  display: none
-}
-
-tree-root tree-node>div .node-content-wrapper {
-  margin-left: 4px
-}
-
-tree-root tree-node>div::before {
-  left: 14px
-}
-
-tree-root tree-node .node-wrapper>tree-node-expander>.toggle-children-wrapper {
-  left: 22px
-}
-
-*/

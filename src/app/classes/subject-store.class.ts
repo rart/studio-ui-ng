@@ -1,28 +1,28 @@
-import {Dispatch, Reducer, Store as StoreBase, Unsubscribe} from 'redux';
+import {Reducer, Store, Unsubscribe} from 'redux';
 import {Subject} from 'rxjs/Subject';
 import {Subscription} from 'rxjs/Subscription';
-import {ActionTypesList} from '../../state/actions.enum';
 
-export class Store<T> implements StoreBase<T> {
+export class SubjectStore<T> implements Store<T> {
 
   private subjects: Map<keyof T, Subject<any>>;
 
-  constructor(private store: StoreBase<T>,
-              private actionBranchMap: Map<ActionTypesList, keyof T>) {
+  constructor(private store: Store<T>) {
   }
 
   dispatch(action) {
 
     let
       subjects = this.subjects,
-      actionBranchMap = this.actionBranchMap,
-      appStateBranchKey = actionBranchMap[action.type],
+      affectedBranches = action.affects || [],
       superReturnValue = this.store.dispatch(action);
 
     // Assumes by this time redux updated the store
-    if (subjects.has(appStateBranchKey)) {
-      subjects.get(appStateBranchKey).next();
-    }
+    // tslint:disable-next-line:no-unused-expression
+    subjects && affectedBranches.forEach(branchKey => {
+      if (subjects.has(branchKey)) {
+        subjects.get(branchKey).next(this.getState()[branchKey]);
+      }
+    });
 
     return superReturnValue;
 
@@ -36,7 +36,7 @@ export class Store<T> implements StoreBase<T> {
     return this.store.subscribe(observer);
   }
 
-  subscribeTo(observer: () => void, stateTreeBranchName: keyof T): Subscription {
+  subscribeTo(observer: () => void, stateBranchKey: keyof T): Subscription {
 
     if (!this.subjects) {
       this.subjects = new Map();
@@ -44,9 +44,9 @@ export class Store<T> implements StoreBase<T> {
 
     let
       map = this.subjects,
-      subject = map.get(stateTreeBranchName) || new Subject();
+      subject = map.get(stateBranchKey) || new Subject();
 
-    map.set(stateTreeBranchName, subject);
+    map.set(stateBranchKey, subject);
 
     return subject.subscribe(observer);
 

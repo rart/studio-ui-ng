@@ -76,11 +76,11 @@ import {PasswordFieldComponent} from './components/user-management/password-fiel
 import {ContentTreeComponent} from './components/site/content-tree/content-tree.component';
 import {UserCrUDComponent} from './components/user-management/user-crud/user-crud.component';
 import {SiteCrUDComponent} from './components/site-management/site-crud/site-crud.component';
-import {CollapsibleComponent} from './components/collapsible/collapsible.component';
 import {ItemListDashletComponent} from './components/site/site-dashboard/item-list-dashlet.component';
 import {I18nPipe} from './i18n.pipe';
 import {CodeEditorComponent} from './components/code-editor/code-editor.component';
-import {AppStoreProvider} from './app-state.provider';
+import {AppStoreProvider} from './state.provider';
+import { AssetDisplayComponent } from './components/asset-display/asset-display.component';
 
 @NgModule({
   declarations: [
@@ -103,10 +103,10 @@ import {AppStoreProvider} from './app-state.provider';
     PasswordFieldComponent,
     UserCrUDComponent,
     SiteCrUDComponent,
-    CollapsibleComponent,
     ItemListDashletComponent,
     I18nPipe,
-    CodeEditorComponent
+    CodeEditorComponent,
+    AssetDisplayComponent
   ],
   imports: [
     studioRoutes,
@@ -126,13 +126,16 @@ import {AppStoreProvider} from './app-state.provider';
     MatMenuModule,
     MatSnackBarModule,
     MatSelectModule,
+    MatProgressSpinnerModule,
     TreeModule,
     MomentModule
   ],
   entryComponents: [
     EmbeddedViewDialogComponent,
     SiteCrUDComponent,
-    ItemListDashletComponent
+    ItemListDashletComponent,
+
+    ContentTreeComponent
   ],
   providers: [
     StudioService,
