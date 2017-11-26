@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 
 import {User} from '../models/user.model';
 import {
-  IEntityService, IPagedResponse, IPostResponse, mapToPagedResponse, mapToPostResponse,
+  IEntityService, PagedResponse, PostResponse, mapToPagedResponse, mapToPostResponse,
   StudioHttpService
 } from './http.service';
 import {environment} from '../../environments/environment';
@@ -15,7 +15,7 @@ export class UserService implements IEntityService<User> {
 
   constructor(private http: StudioHttpService) {}
 
-  all(options?): Promise<IPagedResponse<User>> {
+  all(options?): Promise<PagedResponse<User>> {
     return this.http
       .get(`${baseUrl}/get-all.json`, options)
       .map(mapToPagedResponse('users', User))
@@ -29,21 +29,21 @@ export class UserService implements IEntityService<User> {
       .toPromise();
   }
 
-  create(user: User): Promise<IPostResponse<User>> {
+  create(user: User): Promise<PostResponse<User>> {
     return this.http
       .post(`${baseUrl}/create.json`, user.export())
       .map(mapToPostResponse(user))
       .toPromise();
   }
 
-  update(user: User): Promise<IPostResponse<User>> {
+  update(user: User): Promise<PostResponse<User>> {
     return this.http
       .post(`${baseUrl}/update.json`, user.export())
       .map(mapToPostResponse(user))
       .toPromise();
   }
 
-  delete(user: User): Promise<IPostResponse<User>> {
+  delete(user: User): Promise<PostResponse<User>> {
     return this.http.post(`${baseUrl}/delete.json`, user.export())
       .map(mapToPostResponse(user))
       .toPromise();
@@ -55,13 +55,13 @@ export class UserService implements IEntityService<User> {
       .then((json) => json.enabled);
   }
 
-  enable(user: User): Promise<IPostResponse<User>> {
+  enable(user: User): Promise<PostResponse<User>> {
     return this.http.post(`${baseUrl}/enable.json`, {username: user.username})
       .map(mapToPostResponse(user))
       .toPromise();
   }
 
-  disable(user: User): Promise<IPostResponse<User>> {
+  disable(user: User): Promise<PostResponse<User>> {
     return this.http
       .post(`${baseUrl}/disable.json`, {username: user.username})
       .map(mapToPostResponse(user))

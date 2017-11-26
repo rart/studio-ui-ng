@@ -1,0 +1,56 @@
+<div class="view-container">
+  <std-view-title-bar
+    i18n-title title="Workflow States Editor"
+    icon="fa fa-fast-forward"
+    max="comfort">
+    <button class="ui button" [matMenuTriggerFor]="bulkStatesMenu">Set Selected</button>
+    <mat-menu class="mat-menu-compact" #bulkStatesMenu="matMenu">
+      <button mat-menu-item>Cancel</button>
+      <button mat-menu-item (click)="bulkSetStates(status)" *ngFor="let status of states">{{status}}</button>
+    </mat-menu>
+  </std-view-title-bar>
+  <div class="content set-max comfort responsive-box">
+
+    <table class="ui selectable flat compact basic table">
+      <thead class="uppercase">
+      <tr class="uppercase">
+        <th class="text-center text-teal">
+          <button class="simple" (click)="selectAll()">
+            <i class="fa fa-check-square-o"></i>
+          </button>
+          <button class="simple" (click)="selectNone()">
+            <i class="fa fa-square-o"></i>
+          </button>
+        </th>
+        <th>Asset ID</th>
+        <th>Asset State</th>
+        <th>System Processing</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let i of items | async">
+        <td><mat-checkbox [(ngModel)]="checked[i.id]"></mat-checkbox></td>
+        <td class="id">
+          <div>{{i.asset.id}}</div>
+        </td>
+        <td class="state">
+          <mat-form-field class="no-subscript no-underline no-infix">
+            <mat-select [(ngModel)]="i.asset.workflowStatus" (change)="itemStatusChanged(i)">
+              <mat-option [value]="status" *ngFor="let status of states">
+                {{status}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+        <td class="processing">
+          <mat-radio-group [(ngModel)]="i.processing" (change)="itemStatusChanged(i)">
+            <mat-radio-button [value]="true">Yes</mat-radio-button>
+            <mat-radio-button [value]="false">No</mat-radio-button>
+          </mat-radio-group>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>

@@ -1,13 +1,15 @@
-import {Injectable} from '@angular/core';
-import {StudioHttpService} from './http.service';
-import {environment} from '../../environments/environment';
-import {Asset} from '../models/asset.model';
+import { Injectable } from '@angular/core';
+import { map } from 'rxjs/operators';
+import { PostResponse, ResponseCodesEnum, StudioHttpService } from './http.service';
+import { environment } from '../../environments/environment';
+import { Asset } from '../models/asset.model';
 
 const workflow = `${environment.apiUrl}/workflow`;
 const deployment = `${environment.apiUrl}/deployment`;
 const activity = `${environment.apiUrl}/activity`;
+const content = `${environment.apiUrl}/content`;
 
-const noCache = ((d) => d.toString()) (new Date());
+const noCache = ((d) => d.toString())(new Date());
 // const noCache = (() => (new Date()).toString());
 
 const mappingFn = (data) => ({
@@ -59,7 +61,7 @@ export class WorkflowService {
   }) {
     return this.http
       .get(`${deployment}/get-scheduled-items.json`, mix(query, {
-        filterType: query.filterType || 'all',
+        filterType: query.filterType || 'all'
       })).map(mappingFn);
   }
 
@@ -117,6 +119,40 @@ export class WorkflowService {
       { label: 'History', action: '' },
       { label: 'Dependencies', action: '' }
     ];
+  }
+
+  assetStatusReport(siteCode, state) {
+    return this.http.get(
+      `${content}/get-item-states.json`,
+      { site: siteCode, state })
+      .pipe(
+        map(response => <{ objectId, path, site, state, systemProcessing }[]>response.items),
+        map(items => items.map(item => ({
+          id: item.objectId,
+          asset: {
+            id: item.path,
+            siteCode: item.site,
+            workflowStatus: item.state
+          },
+          processing: item.systemProcessing
+        })))
+      );
+  }
+
+  setAssetStatus(siteCode, assetId, assetWorkflowStatus, processing) {
+    return this.http.post(
+      `${content}/set-item-state.json`, null, {
+        params: { site: siteCode, path: assetId, state: assetWorkflowStatus, systemprocessing: processing }
+      })
+      .pipe(
+        map((resp: { result: string }) => {
+          if (resp.result.toLowerCase() === 'success') {
+            return <PostResponse<Asset>>{ responseCode: ResponseCodesEnum.OK };
+          } else {
+            throw new Error('setAssetStatusError');
+          }
+        })
+      );
   }
 
 }

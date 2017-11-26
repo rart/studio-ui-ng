@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../environments/environment';
 
 import {Site} from '../models/site.model';
-import {IEntityService, IPagedResponse, IPostResponse, mapToPostResponse, StudioHttpService} from './http.service';
+import {IEntityService, PagedResponse, PostResponse, mapToPostResponse, StudioHttpService} from './http.service';
 
 const baseUrl = `${environment.apiUrl}/site`;
 
@@ -11,7 +11,7 @@ export class SiteService implements IEntityService<Site> {
 
   constructor(public http: StudioHttpService) {}
 
-  all(query?): Promise<IPagedResponse<Site>> {
+  all(query?): Promise<PagedResponse<Site>> {
     return this.http.get(`${baseUrl}/get-per-user.json`, Object.assign({username: 'admin'}, query || {}))
       .map((data) => ({
         total: data.total,
@@ -31,7 +31,7 @@ export class SiteService implements IEntityService<Site> {
       .toPromise();
   }
 
-  create(site: Site): Promise<IPostResponse<Site>> {
+  create(site: Site): Promise<PostResponse<Site>> {
     return this.http
       .post(`${baseUrl}/create.json`, {
         site_id: site.code,
@@ -42,7 +42,7 @@ export class SiteService implements IEntityService<Site> {
       .toPromise();
   }
 
-  update(site: Site): Promise<IPostResponse<Site>> {
+  update(site: Site): Promise<PostResponse<Site>> {
     return this.http
       .post(`${baseUrl}/update.json`, {
         site_id: site.code,
@@ -53,7 +53,7 @@ export class SiteService implements IEntityService<Site> {
       .toPromise();
   }
 
-  delete(site: Site): Promise<IPostResponse<Site>> {
+  delete(site: Site): Promise<PostResponse<Site>> {
     return this.http
       .post(`${baseUrl}/delete-site.json`, {siteId: site.code})
       .map(mapToPostResponse(site))

@@ -7,7 +7,7 @@ import {User, AVATARS} from '../../../models/user.model';
 import {showSnackBar} from '../../../app.utils';
 import {Change, ChangeType} from '../../../classes/change-tracker.class';
 import {GroupService} from '../../../services/group.service';
-import {ResponseCodes} from '../../../services/http.service';
+import {ResponseCodesEnum} from '../../../services/http.service';
 
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
@@ -101,7 +101,7 @@ export class UserCrUDComponent implements OnInit {
     this.userService
       .create(this.model)
       .then((data) => {
-        if (data.responseCode === ResponseCodes.OK) {
+        if (data.responseCode === ResponseCodesEnum.OK) {
           this.model.password = '';
           showSnackBar(this.snackBar, `${this.fullName()} registered successfully. Edit mode enabled.`);
           this.loadUser();
@@ -123,7 +123,7 @@ export class UserCrUDComponent implements OnInit {
       .then((result) => {
         // TODO: See sample error handling here...
         // Not quite working though. When would result not be "OK"?
-        if (result.responseCode === ResponseCodes.OK) {
+        if (result.responseCode === ResponseCodesEnum.OK) {
           showSnackBar(this.snackBar, `${this.fullName()} set as enabled.`, 'Undo')
             .onAction()
             .subscribe(() => {

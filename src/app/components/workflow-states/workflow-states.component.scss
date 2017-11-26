@@ -1,0 +1,21 @@
+:host {
+
+}
+
+table {
+  .id {
+    >div {
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+  .state {
+    min-width: 300px;
+    mat-form-field {
+      display: block;
+    }
+  }
+  .processing {
+    width: 180px;
+  }
+}

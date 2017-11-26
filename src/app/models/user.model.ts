@@ -64,7 +64,7 @@ export class User {
   groups: Array<Group>;
   password: string;
   get name() {
-    return `${this.firstName} ${this.lastName}`;
+    return this.firstName || this.lastName ? `${this.firstName} ${this.lastName}` : this.username;
   }
   static fromJSON(userJSON): User {
     let user = new User();
@@ -118,9 +118,6 @@ export class User {
       json['password'] = user.password;
     }
     return json;
-  }
-  fullName() {
-    return `${this.firstName} ${this.lastName}`;
   }
   export() {
     return User.toJSON(this);

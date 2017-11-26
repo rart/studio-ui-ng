@@ -11,6 +11,7 @@ import {SiteComponent} from './components/site/site.component';
 import {SiteManagementComponent} from './components/site-management/site-management.component';
 import {PreviewComponent} from './components/site/preview/preview.component';
 import {UserCrUDComponent} from './components/user-management/user-crud/user-crud.component';
+import { WorkflowStatesComponent } from './components/workflow-states/workflow-states.component';
 // Not having as a route requires for it to be added as entry component on AppModule
 // import {SiteCrUDComponent} from './components/site-management/site-crud/site-crud.component';
 
@@ -98,7 +99,7 @@ const routes: Routes = [
       },
       {
         path: 'workflow-states',
-        component: NotImplementedComponent
+        component: WorkflowStatesComponent
       },
       {
         path: 'bulk-publishing',
