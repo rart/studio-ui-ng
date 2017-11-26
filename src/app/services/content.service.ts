@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {environment} from '../../environments/environment';
-import {map} from 'rxjs/operators';
-import {StudioHttpService} from './http.service';
-import {Asset} from '../models/asset.model';
+import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
+import { map } from 'rxjs/operators';
+import { StudioHttpService } from './http.service';
+import { Asset } from '../models/asset.model';
 
 // import {Observable} from 'rxjs/Observable';
 // Old way...
@@ -21,7 +21,7 @@ export class ContentService {
   tree(siteCode, path, depth = 1) {
     return this.httpService.get(
       `${baseUrl}/get-items-tree.json`,
-      {site: siteCode, path, depth})
+      { site: siteCode, path, depth })
       .pipe(map(response => Asset.fromJSON(response.item)));
   }
 
