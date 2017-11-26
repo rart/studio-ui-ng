@@ -62,10 +62,10 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
     return (!this.showCheck && !this.showIcons);
   }
 
+  // TODO: i18n
   get iconDescription() {
     let
       type,
-      lockBy,
       status,
       asset = this.asset;
     type = StringUtils.capitalize(
@@ -79,8 +79,15 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
         .replace('WITH_WF', 'with workflow')
         .replace(/_/g, ', ')
         .toLowerCase());
-    lockBy = asset.locked ? ` by ${asset.lockedBy.name || asset.lockedBy.username}.` : '';
-    return `${type}. ${status}${asset.locked ? lockBy : '.'}`;
+    if (asset.locked) {
+      return `${type}. ${status} by ${this.lockedByCurrent ? 'you' : asset.lockedBy.name}.`;
+    } else {
+      return `${type}. ${status}.`;
+    }
+  }
+
+  get lockedByCurrent() {
+    return this.state.user.username === this.asset.lockedBy.username;
   }
 
   get typeClass() {

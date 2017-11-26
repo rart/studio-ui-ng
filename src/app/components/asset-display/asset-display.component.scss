@@ -35,12 +35,12 @@ $color-green-darkend: darken($color-green, 15%);
 // http://plnkr.co/edit/uMNxmhBBj1E87FjTsdsU
 
 :host {
-  height: $component-height;
-  line-height: $component-height;
   font-size: 1em;
   position: relative;
   align-items: center;
   display: inline-flex;
+  height: $component-height;
+  line-height: $component-height;
   &.no-wrap {
     width: 100%;
     .label {
@@ -70,6 +70,432 @@ mat-checkbox {
   margin-right: .1em;
 }
 
+.label {
+  display: inline-block;
+  padding: 0 0 0 .1em;
+}
+
+.menu {
+  height: 100%;
+  width: $menu-width;
+  min-width: $menu-width;
+}
+
+.type {
+
+  &::before {
+    content: "\f15c"; // fa-file-text
+    content: "\f128"; // fa-question
+  }
+  &.page {
+    &::before {
+      content: "\f016";
+    }
+  }
+  &.folder {
+    &::before {
+      content: "\f114"; // closed
+      content: "\f115"; // open
+    }
+  }
+  &.component {
+    &::before {
+      content: "\f12e";
+    }
+  }
+  &.document {
+    &::before {
+
+    }
+  }
+  &.level.descriptor {
+    &::before {
+      content: "\f161";
+    }
+  }
+  &.css,
+  &.scss,
+  &.sass,
+  &.less,
+  &.stylesheet {
+    &::before {
+      content: "\f13c"; // fa-css3
+    }
+  }
+  &.font {
+    &::before {
+      content: "\f031"; // fa-font
+    }
+  }
+  &.groovy,
+  &.template,
+  &.freemarker,
+  &.javascript,
+  &.typescript {
+    &::before {
+      content: "\f121"; // fa-code
+    }
+  }
+  &.javascript {
+    &::before {
+      @include reg-font();
+      content: 'JS';
+    }
+  }
+  &.typescript {
+    &::before {
+      @include reg-font();
+      content: 'TS';
+    }
+  }
+  &.freemarker {
+    &::before {
+      @include reg-font();
+      content: 'FM';
+      // content: 'FTL';
+      // font-size: .7em;
+    }
+  }
+  &.template {
+    &::before {
+
+    }
+  }
+  &.groovy {
+    &::before {
+      @include reg-font();
+      content: 'GR';
+    }
+  }
+  &.video {
+    &::before {
+      content: "\f1c8"; // .fa-file-movie-o, .fa-file-video-o
+      content: "\f03d"; // fa-video-camera
+    }
+  }
+  &.audio {
+    &::before {
+      content: "\f028";
+    }
+  }
+  &.image {
+    &::before {
+      content: "\f1c5"; // .fa-file-photo-o, .fa-file-picture-o, .fa-file-image-o
+      content: "\f03e"; // fa-picture-o
+    }
+  }
+  &.powerpoint {
+    &::before {
+      content: "\f1c4"; // fa-file-powerpoint-o
+    }
+  }
+  &.excel {
+    &::before {
+      content: "\f1c3"; // fa-file-excel-o
+    }
+  }
+  &.word {
+    &::before {
+      content: "\f1c2"; // fa-file-word
+    }
+  }
+  &.pdf {
+    &::before {
+      content: "\f1c1"; // fa-file-pdf-o
+    }
+  }
+  &.zip {
+    &::before {
+      content: "\f1c6"; // fa-file-archive-o
+      content: "\f187"; // fa-archive
+    }
+  }
+  &.taxonomy {
+    &::before {
+      content: "\f02c";
+    }
+  }
+}
+
+.status {
+
+  &::before {
+    // Default to a question mark to help bust unknow
+    // or malformed class combinations
+    content: "\f128"; // fa-question
+  }
+
+  &.locked {
+    color: $color-orange;
+    &::before {
+      content: "\f023"; // fa-lock
+    }
+    &.you,
+    &.yourself {
+      &::before {
+        content: "\f084"; // fa-key
+      }
+    }
+  }
+
+  &.submitted {
+    color: $color-pink;
+    &::before {
+      content: "\f017"; // fa-clock-o
+    }
+  }
+
+  &.scheduled {
+    color: $color-green;
+    &::before {
+      content: "\f073"; // fa-calendar
+    }
+  }
+
+  &.with.wf {
+    color: $color-purple;
+    &::before {
+      content: "\f11e"; // fa-flag-checkered
+    }
+  }
+
+  &.deleted {
+    color: $color-red;
+    &::before {
+      content: "\f014"; // fa-trash-o
+    }
+  }
+
+  &.publishing.failed,
+  &.new.publishing.failed,
+  &.existing.publishing.failed {
+    color: $color-orange;
+    &::before {
+      content: "\f071"; // fa-exclamation-triangle
+    }
+  }
+
+  &.new,
+  &.existing {
+    &.submitted {
+      &::before {
+        content: "\f017"; // fa-clock-o
+      }
+      &.with.wf {
+        color: $color-pink;
+        &::after {
+          color: $color-purple;
+          content: "\f11e"; // fa-flag-checkered
+        }
+        &.scheduled {
+          &::before {
+            // fa-
+          }
+        }
+        &.locked {
+          &::before {
+            // fa-
+          }
+        }
+        &.unscheduled {
+          &::before {
+            // fa-
+          }
+          &.locked {
+            &::before {
+              // fa-
+            }
+          }
+        }
+      }
+      &.no.wf {
+        color: $color-green;
+        &.scheduled {
+          &::before {
+            content: "\f073"; // fa-calendar
+          }
+          &.locked {
+            &::before {
+              // fa-
+            }
+          }
+        }
+        &.unscheduled {
+          &::before {
+            // fa-
+          }
+        }
+      }
+    }
+    &.publishing.failed {
+      &::before {
+
+      }
+    }
+  }
+
+  &.new {
+    color: $color-green;
+    &::before {
+
+    }
+    &.locked {
+      // color: $color-orange;
+    }
+    &.unpublished {
+      &::before {
+        content: "\f067"; // fa-plus
+      }
+    }
+    &.submitted {
+      &::before {
+
+      }
+      &.with.wf {
+        &::after {
+
+        }
+        &.scheduled {
+          &::before {
+
+          }
+        }
+        &.locked {
+          &::before {
+            // fa-
+          }
+        }
+        &.unscheduled {
+          &::before {
+            // fa-
+          }
+          &.locked {
+            &::before {
+              // fa-
+            }
+          }
+        }
+      }
+      &.no.wf {
+        &.scheduled {
+          &::before {
+            // fa-
+          }
+          &.locked {
+            &::before {
+              // fa-
+            }
+          }
+        }
+        &.unscheduled {
+          &::before {
+            // fa-
+          }
+        }
+      }
+    }
+    &.publishing.failed {
+      &::before {
+
+      }
+    }
+    &.deleted {
+      &::before {
+
+      }
+    }
+  }
+
+  &.existing {
+    &.unedited {
+      color: $color-green;
+      &::before {
+        content: "\f046"; // fa-check-square-o
+      }
+      &.locked {
+        &::before {
+          // fa-
+        }
+      }
+      &.unlocked {
+        &::before {
+          // fa-
+        }
+      }
+    }
+    &.edited {
+      color: $color-yellow;
+      &::before {
+        content: "\f040"; // fa-pencil
+      }
+      &.locked {
+        &::before {
+          // fa-
+        }
+      }
+      &.unlocked {
+        &::before {
+
+        }
+      }
+    }
+    &.submitted {
+      &.with.wf {
+        &.scheduled {
+          &::before {
+            // fa-
+          }
+          &.locked {
+            &::before {
+              // fa-
+            }
+          }
+        }
+        &.unscheduled {
+          &::before {
+            // fa-
+          }
+          &.locked {
+            &::before {
+              // fa-
+            }
+          }
+        }
+      }
+
+      &.no.wf {
+        .scheduled {
+          &::before {
+            // fa-
+          }
+          &.locked {
+            &::before {
+              // fa-
+            }
+          }
+        }
+        .unscheduled {
+          &::before {
+            // fa-
+          }
+        }
+      }
+
+    }
+    &.publishing.failed {
+      &::before {
+        // fa-
+      }
+    }
+    &.deleted {
+      &::before {
+
+      }
+    }
+  }
+
+}
+
 .icons {
   height: 100%;
   font-size: 1.1em;
@@ -78,13 +504,6 @@ mat-checkbox {
   display: inline-block;
   position: relative;
   cursor: help;
-
-  &.folder {
-    .lock,
-    .status {
-      display: none;
-    }
-  }
 
   &:hover {
     .type {
@@ -113,7 +532,7 @@ mat-checkbox {
     left: 0;
     height: 1em;
     max-height: 1em;
-    color: $color-gray;
+    color: $color-teal;
     text-align: center;
     min-width: 100%;
     width: 100%;
@@ -128,7 +547,6 @@ mat-checkbox {
   .status {
     width: 50%;
     height: 50%;
-    opacity: .85;
     max-width: 50%;
     position: absolute;
     &::before {
@@ -140,173 +558,10 @@ mat-checkbox {
   }
 
   .status {
-    @include bl-quadrant();
-    &::before {
-      text-align: left;
-      content: "\f040";
-    }
-  }
-
-  .lock {
-    text-align: right;
-    color: $color-orange;
+    // opacity: .85;
     @include br-quadrant();
     &::before {
-      top: -1px;
-      right: 1px;
-    }
-  }
-
-}
-
-.icons {
-
-  .type {
-    &::before {
-      content: "\f15c"; // fa-file-text
-      content: "\f128"; // fa-question
-    }
-    &.page {
-      &::before {
-        content: "\f016";
-      }
-    }
-    &.folder {
-      &::before {
-        content: "\f114"; // closed
-        content: "\f115"; // open
-      }
-    }
-    &.component {
-      &::before {
-        content: "\f12e";
-      }
-    }
-    &.document {
-      &::before {
-
-      }
-    }
-    &.level.descriptor {
-      &::before {
-        content: "\f161";
-      }
-    }
-    &.css,
-    &.scss,
-    &.sass,
-    &.less,
-    &.stylesheet {
-      &::before {
-        content: "\f13c"; // fa-css3
-      }
-    }
-    &.font {
-      &::before {
-        content: "\f031"; // fa-font
-      }
-    }
-    &.groovy,
-    &.template,
-    &.freemarker,
-    &.javascript,
-    &.typescript {
-      &::before {
-        content: "\f1c9"; // file-code-o
-        content: "\f121"; // fa-code
-      }
-    }
-    &.javascript {
-      &::before {
-        @include reg-font();
-        content: 'JS';
-      }
-    }
-    &.typescript {
-      &::before {
-        @include reg-font();
-        content: 'TS';
-      }
-    }
-    &.freemarker {
-      &::before {
-
-      }
-    }
-    &.template {
-      &::before {
-
-      }
-    }
-    &.groovy {
-      &::before {
-        @include reg-font();
-        content: 'GR';
-      }
-    }
-    &.video {
-      &::before {
-        content: "\f1c8"; // .fa-file-movie-o, .fa-file-video-o
-        content: "\f03d"; // fa-video-camera
-      }
-    }
-    &.audio {
-      &::before {
-        content: "\f028";
-      }
-    }
-    &.image {
-      &::before {
-        content: "\f1c5"; // .fa-file-photo-o, .fa-file-picture-o, .fa-file-image-o
-        content: "\f03e"; // fa-picture-o
-      }
-    }
-    &.powerpoint {
-      &::before {
-        content: "\f1c4"; // fa-file-powerpoint-o
-      }
-    }
-    &.excel {
-      &::before {
-        content: "\f1c3"; // fa-file-excel-o
-      }
-    }
-    &.word {
-      &::before {
-        content: "\f1c2"; // fa-file-word
-      }
-    }
-    &.pdf {
-      &::before {
-        content: "\f1c1"; // fa-file-pdf-o
-      }
-    }
-    &.zip {
-      &::before {
-        content: "\f1c6"; // fa-file-archive-o
-        content: "\f187"; // fa-archive
-      }
-    }
-    &.taxonomy {
-      &::before {
-        content: "\f02c";
-      }
-    }
-  }
-
-  .status {
-
-    // content: "\f164"; // fa-thumbs-up
-    // content: "\f087"; // fa-thumbs-o-up
-    // content: "\f11e"; // fa-flag-checkered
-    // content: "\f11d"; // fa-flag-o
-    // content: "\f024"; // fa-flag
-    // content: "\f274"; // fa-calendar-check-o
-    // content: "\f133"; // fa-calendar-o
-    // content: "\f073"; // fa-calendar
-    // content: "\f05d"; // fa-check-circle-o
-    &::before {
-      content: "\f128"; // fa-question
+      text-align: left;
     }
 
     &.new,
@@ -316,45 +571,19 @@ mat-checkbox {
           top: -2px;
           left: 1px;
           font-size: .75em;
-          content: "\f017"; // fa-clock-o
         }
         &.with.wf {
-          color: $color-pink;
           &::after {
-            top: -100%;
-            left: 100%;
+            top: -90%;
+            left: 0;
             width: 100%;
             height: 100%;
             max-width: 100%;
             position: absolute;
             text-align: center;
-            content: "\f11e"; // fa-flag-checkered
-            color: $color-purple;
             align-items: flex-end;
             display: inline-flex;
             font-size: .7em;
-          }
-          &.scheduled {
-            &::before {
-              // top: -3px;
-              // font-size: .7em;
-              // content: "\f133"; // fa-calendar-o
-            }
-          }
-          &.locked {
-            &::before {
-              // fa-
-            }
-          }
-          &.unscheduled {
-            &::before {
-              // fa-
-            }
-            &.locked {
-              &::before {
-                // fa-
-              }
-            }
           }
         }
         &.no.wf {
@@ -363,224 +592,119 @@ mat-checkbox {
             &::before {
               top: -3px;
               font-size: .7em;
-              content: "\f274"; // fa-calendar-check-o
-              content: "\f073"; // fa-calendar
-            }
-            &.locked {
-              &::before {
-                // fa-
-              }
             }
           }
-          &.unscheduled {
-            &::before {
-              // fa-
-            }
-          }
-        }
-      }
-      &.publishing.failed {
-        color: $color-orange;
-        &::before {
-          content: "\f071"; // fa-exclamation-triangle
-          content: "\f06a"; // fa-exclamation-circle
         }
       }
     }
 
     &.new {
       color: $color-green-darkend;
-      &.locked {
-        // color: $color-orange;
-      }
-      &.unpublished {
-        &::before {
-          content: "\f067"; // fa-plus
-        }
-      }
-      &.submitted {
-        &::before {
-
-        }
-        &.with.wf {
-          &::after {
-
-          }
-          &.scheduled {
-            &::before {
-              // top: -3px;
-              // font-size: .7em;
-              // content: "\f133"; // fa-calendar-o
-            }
-          }
-          &.locked {
-            &::before {
-              // fa-
-            }
-          }
-          &.unscheduled {
-            &::before {
-              // fa-
-            }
-            &.locked {
-              &::before {
-                // fa-
-              }
-            }
-          }
-        }
-        &.no.wf {
-          &.scheduled {
-            &::before {
-              // fa-
-            }
-            &.locked {
-              &::before {
-                // fa-
-              }
-            }
-          }
-          &.unscheduled {
-            &::before {
-              // fa-
-            }
-          }
-        }
-      }
-      &.publishing.failed {
-        &::before {
-
-        }
-      }
       &.deleted {
-        // color: $color-orange;
         &::before {
           top: -3px;
           left: 1px;
-          content: "\f014"; // fa-trash-o
         }
       }
     }
 
     &.existing {
       &.unedited {
+        color: $color-green-darkend;
         &::before {
           top: -2px;
-          color: $color-green-darkend;
-          content: "\f05d"; // fa-check-circle-o
-        }
-        &.locked {
-          &::before {
-            // fa-
-          }
-        }
-        &.unlocked {
-          &::before {
-            // fa-
-          }
         }
       }
       &.edited {
-        color: $color-yellow;
         &::before {
           top: -2px;
           left: 1px;
-          content: "\f040"; // fa-pencil
-        }
-        &.locked {
-          &::before {
-            // fa-
-          }
-        }
-        &.unlocked {
-          &::before {
-
-          }
-        }
-      }
-      &.submitted {
-        &.with.wf {
-          &.scheduled {
-            &::before {
-              // fa-
-            }
-            &.locked {
-              &::before {
-                // fa-
-              }
-            }
-          }
-          &.unscheduled {
-            &::before {
-              // fa-
-            }
-            &.locked {
-              &::before {
-                // fa-
-              }
-            }
-          }
-        }
-
-        &.no.wf {
-          .scheduled {
-            &::before {
-              // fa-
-            }
-            &.locked {
-              &::before {
-                // fa-
-              }
-            }
-          }
-          .unscheduled {
-            &::before {
-              // fa-
-            }
-          }
-        }
-
-      }
-      &.publishing.failed {
-        &::before {
-          // fa-
-        }
-      }
-      &.deleted {
-        color: $color-red;
-        &::before {
-          content: "\f014"; // fa-trash-o
         }
       }
     }
 
   }
 
+  .lock {
+    text-align: right;
+    color: $color-orange;
+    @include tl-quadrant();
+    &::before {
+      top: -1px;
+      right: 1px;
+      content: "\f023"; // fa-lock
+    }
+    &.yourself {
+      &::before {
+        top: -3px;
+        right: -1px;
+        font-size: .7em;
+        content: "\f084"; // fa-key
+      }
+    }
+  }
+
 }
 
-.label {
-  display: inline-block;
-  padding: 0 0 0 .1em;
+.icon-showcase {
+
+  display: flex;
+  position: relative;
+  align-items: center;
+
+  .type,
+  .status {
+    width: 40px;
+    text-align: center;
+    position: relative;
+  }
+  .status {
+    &::before {
+
+    }
+    &::after {
+      margin-left: .5em;
+    }
+  }
 }
 
-.menu {
-  height: 100%;
-  width: $menu-width;
-  min-width: $menu-width;
-}
+// content: "\f1c9"; // file-code-o
+// content: "\f164"; // fa-thumbs-up
+// content: "\f087"; // fa-thumbs-o-up
+// content: "\f11e"; // fa-flag-checkered
+// content: "\f11d"; // fa-flag-o
+// content: "\f024"; // fa-flag
+// content: "\f274"; // fa-calendar-check-o
+// content: "\f133"; // fa-calendar-o
+// content: "\f073"; // fa-calendar
+// content: "\f05d"; // fa-check-circle-o
+// content: "\f058"; // fa-check-circle
+// content: "\f14a"; // fa-check-square
+// content: "\f046"; // fa-check-square-o
+// content: "\f00c"; // fa-check
+// content: "\f06a"; // fa-exclamation-circle
 
-//.icons {
-//  line-height: 1;
-//  .type {
-//    left: 0;
-//    top: .35em;
-//  }
-//  .status {
-//    top: -0.6em;
-//    left: -0.3em;
-//  }
-//  .lock {
-//    top: -1.9em;
-//    left: 0.35em;
-//  }
-//}
+// new unpublished locked
+// new unpublished unlocked
+// new submitted with wf scheduled
+// new submitted with wf scheduled locked
+// new submitted with wf unscheduled
+// new submitted with wf unscheduled locked
+// new submitted no wf scheduled
+// new submitted no wf scheduled locked
+// new submitted no wf unscheduled
+// new publishing failed
+// new deleted
+// existing unedited locked
+// existing unedited unlocked
+// existing edited locked
+// existing edited unlocked
+// existing submitted with wf scheduled
+// existing submitted with wf scheduled locked
+// existing submitted with wf unscheduled
+// existing submitted with wf unscheduled locked
+// existing submitted no wf scheduled
+// existing submitted no wf scheduled locked
+// existing submitted no wf unscheduled
+// existing publishing failed
+// existing deleted
