@@ -1,3 +1,11 @@
 :host {
   overflow: auto;
 }
+
+.ui.form .field,
+.ui.form .inline.fields {
+  margin: 0em 0em .2em;
+  &.more {
+    margin-bottom: .5em;
+  }
+}
