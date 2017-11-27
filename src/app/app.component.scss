@@ -112,12 +112,101 @@ std-root {
   text-align: right !important;
 }
 
-.text-muted {
-  color: #999;
+.text-white {
+  color: #fff;
+}
+
+.text-red {
+  color: $color-red;
+}
+
+.text-orange {
+  color: $color-orange;
+}
+
+.text-yellow {
+  color: $color-yellow;
+}
+
+.text-green {
+  color: $color-green;
 }
 
 .text-teal {
   color: $color-teal;
+}
+
+.text-blue {
+  color: $color-blue;
+}
+
+.text-pink {
+  color: $color-pink;
+}
+
+.text-purple {
+  color: $color-purple;
+}
+
+.text-gray,
+.text-muted {
+  color: $color-gray;
+}
+
+.background-white {
+  background-color: #fff;
+}
+
+.background-red {
+  background-color: $color-red;
+}
+
+.background-orange {
+  background-color: $color-orange;
+}
+
+.background-yellow {
+  background-color: $color-yellow;
+}
+
+.background-green {
+  background-color: $color-green;
+}
+
+.background-teal {
+  background-color: $color-teal;
+}
+
+.background-blue {
+  background-color: $color-blue;
+}
+
+.background-pink {
+  background-color: $color-pink;
+}
+
+.background-purple {
+  background-color: $color-purple;
+}
+
+.background-gray {
+  background-color: $color-gray;
+}
+
+.background-gray-mid {
+  background-color: $color-gray-mid;
+}
+
+.background-gray-light {
+  background-color: $color-gray-light;
+}
+
+.background-gray-lighter {
+  background-color: $color-gray-lighter;
+}
+
+.background-gray-lightest {
+  background-color: $color-gray-lightest;
 }
 
 .is-interactive {

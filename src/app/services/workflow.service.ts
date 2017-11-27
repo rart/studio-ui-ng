@@ -140,14 +140,30 @@ export class WorkflowService {
   }
 
   setAssetStatus(siteCode, assetId, assetWorkflowStatus, processing) {
+    let entity = {
+      done: true,
+      id: assetId,
+      siteCode: siteCode,
+      processing: processing,
+      workflowStatus: assetWorkflowStatus
+    };
     return this.http.post(
       `${content}/set-item-state.json`, null, {
-        params: { site: siteCode, path: assetId, state: assetWorkflowStatus, systemprocessing: processing }
+        params: {
+          site: siteCode,
+          path: assetId,
+          state: assetWorkflowStatus,
+          systemprocessing: processing,
+          nocache: new Date().toString()
+        }
       })
       .pipe(
         map((resp: { result: string }) => {
           if (resp.result.toLowerCase() === 'success') {
-            return <PostResponse<Asset>>{ responseCode: ResponseCodesEnum.OK };
+            return <PostResponse<{ id, siteCode, processing, workflowStatus }>>{
+              responseCode: ResponseCodesEnum.OK,
+              entity
+            };
           } else {
             throw new Error('setAssetStatusError');
           }

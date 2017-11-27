@@ -3,13 +3,40 @@
     i18n-title title="Workflow States Editor"
     icon="fa fa-fast-forward"
     max="comfort">
-    <button class="ui button" [matMenuTriggerFor]="bulkStatesMenu">Set Selected</button>
+    <ng-container *ngIf="!bulkProcessingItems">
+      <button class="ui button" [matMenuTriggerFor]="bulkStatesMenu">Set Selected</button>
+      <button class="ui icon button" (click)="refresh()"><i class="refresh icon"></i></button>
+    </ng-container>
+    <button *ngIf="bulkProcessingItems && !bulkProcessing" class="ui button" (click)="processReportDone()">
+      Done
+    </button>
     <mat-menu class="mat-menu-compact" #bulkStatesMenu="matMenu">
       <button mat-menu-item>Cancel</button>
       <button mat-menu-item (click)="bulkSetStates(status)" *ngFor="let status of states">{{status}}</button>
     </mat-menu>
   </std-view-title-bar>
-  <div class="content set-max comfort responsive-box">
+  <div class="content set-max readability responsive-box" *ngIf="bulkProcessingItems">
+    <table class="ui flat compact basic table">
+      <thead class="uppercase">
+      <tr>
+        <th>Item</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let i of bulkProcessingItems | async">
+          <td>
+            <div title="{{i.id}}">{{i.id}}</div>
+          </td>
+          <td>
+            <div class="text-red" *ngIf="!i.done">Processing...</div>
+            <div class="text-green" *ngIf="i.done">Done</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="content set-max comfort responsive-box" *ngIf="!bulkProcessingItems">
 
     <table class="ui selectable flat compact basic table">
       <thead class="uppercase">
@@ -29,9 +56,9 @@
       </thead>
       <tbody>
       <tr *ngFor="let i of items | async">
-        <td><mat-checkbox [(ngModel)]="checked[i.id]"></mat-checkbox></td>
+        <td><mat-checkbox [(ngModel)]="selected[i.id]"></mat-checkbox></td>
         <td class="id">
-          <div>{{i.asset.id}}</div>
+          <div title="{{i.asset.id}}">{{i.asset.id}}</div>
         </td>
         <td class="state">
           <mat-form-field class="no-subscript no-underline no-infix">

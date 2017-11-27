@@ -3,6 +3,14 @@
 }
 
 table {
+  &:not(.selectable) {
+    td>div {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: 420px;
+    }
+  }
   .id {
     >div {
       width: 100%;
