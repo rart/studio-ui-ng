@@ -384,32 +384,51 @@ std-root {
   background-color: #EBEBEB;
 }
 
-.ui.table.flat {
-  border: none;
-  border-radius: 0;
-  thead tr:first-child > th:first-child,
-  thead tr:first-child > th:last-child {
-    border-radius: 0;
-  }
-}
+.ui {
 
-.ui.extremely.compact.table {
-  td, th {
-    padding: 2px;
-  }
-}
-
-.ui.buttons {
-  &.flat {
+  &.table.flat {
     border: none;
-  }
-  &.extremely.compact {
-    $pad: .6rem;
-    padding: {
-      left: $pad;
-      right: $pad;
+    border-radius: 0;
+    thead tr:first-child > th:first-child,
+    thead tr:first-child > th:last-child {
+      border-radius: 0;
     }
   }
+
+  &.extremely.compact.table {
+    td, th {
+      padding: 2px;
+    }
+  }
+
+  &.buttons {
+    &.flat {
+      border: none;
+    }
+    &.extremely.compact {
+      $pad: .6rem;
+      padding: {
+        left: $pad;
+        right: $pad;
+      }
+    }
+  }
+
+  &.grid {
+    &.unpadded {
+      > .column:not(.row),
+      > .row > .column {
+        padding: 0;
+      }
+    }
+    &.reset {
+      &, &.relaxed {
+        margin: 0;
+      }
+    }
+  }
+
+
 }
 
 .uppercase {

@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
+import { debounceTime, filter, map, scan, shareReplay, combineLatest, tap, startWith, takeUntil } from 'rxjs/operators';
 import 'rxjs/add/observable/merge';
-import 'rxjs/add/observable/from';
-import { map, scan, shareReplay } from 'rxjs/operators';
 
 import { WorkflowService } from '../../services/workflow.service';
 import { ActivatedRoute } from '@angular/router';
 import { WorkflowStatusEnum } from '../../enums/workflow-status.enum';
 import { MatSnackBar } from '@angular/material';
 import { showSnackBar } from '../../app.utils';
+import { Subject } from 'rxjs/Subject';
 
 
 @Component({
@@ -20,12 +21,24 @@ export class WorkflowStatesComponent implements OnInit {
 
   site;
   items;
+  filterQuery = new FormControl('');
+  pagedItems;
   selected = {};
   states = Object.keys(WorkflowStatusEnum)
     .filter((key) => key !== WorkflowStatusEnum.UNKNOWN);
 
+  pageSizeOptions = [5, 10, 25, 50, 100];
+  pageSize = this.pageSizeOptions[0];
+  totalNumOfAssets = 0;
+  numOfPages = 0;
+  pageIndex = 0;
+
   bulkProcessing = false;
   bulkProcessingItems = null;
+
+  count = 1;
+
+  unsubscriptionControl = new Subject();
 
   constructor(private route: ActivatedRoute,
               private snackBar: MatSnackBar,
@@ -41,9 +54,34 @@ export class WorkflowStatesComponent implements OnInit {
   }
 
   fetch() {
-    return this.items = this.workflowService
+    if (!this.unsubscriptionControl) {
+      this.unsubscriptionControl = new Subject();
+    }
+
+    this.unsubscriptionControl.next();
+
+    let count = this.count++;
+
+    let items$ = this.workflowService
       .assetStatusReport(this.site.code, 'ALL')
       .pipe(shareReplay(1));
+
+    let query$ = this.filterQuery
+      .valueChanges
+      .pipe(
+        debounceTime(250),
+        startWith(this.filterQuery.value)
+      );
+
+    this.items = items$.pipe(
+      combineLatest(query$,
+        (items, query) => items.filter(item => (query.trim() === '') || (item.asset.id.includes(query)))
+      ),
+      takeUntil(this.unsubscriptionControl)
+    );
+
+    return this.items;
+
   }
 
   selectAll() {
@@ -125,11 +163,39 @@ export class WorkflowStatesComponent implements OnInit {
 
   refresh() {
     this.fetch()
-      .subscribe(items => {
-        items.forEach(i => {
-          this.selected[i.id] = (i.id in this.selected) ? this.selected[i.id] : false;
-        });
+      .subscribe({
+        next: items => {
+          let numOfItems = items.length;
+          this.totalNumOfAssets = numOfItems;
+          this.numOfPages = Math.ceil((numOfItems / this.pageSize));
+          if (numOfItems < (this.pageIndex * this.pageSize)) {
+            this.pageIndex = Math.floor(this.totalNumOfAssets / this.pageSize);
+          }
+          this.setPage(items);
+          items.forEach(i => {
+            this.selected[i.id] = (i.id in this.selected) ? this.selected[i.id] : false;
+          });
+        }
       });
+  }
+
+  pageChanged($event) {
+    this.pageSize = $event.pageSize;
+    this.pageIndex = $event.pageIndex;
+    this.items.subscribe((items) => this.setPage(items));
+  }
+
+  setPage(items) {
+    let {pageSize, pageIndex, totalNumOfAssets} = this;
+    if (totalNumOfAssets < pageSize) {
+      this.pagedItems = items;
+    } else {
+      let startIndex = (pageIndex * pageSize);
+      this.pagedItems = items.slice(
+        startIndex,
+        startIndex + pageSize
+      );
+    }
   }
 
   processReportDone() {

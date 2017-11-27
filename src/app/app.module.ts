@@ -82,6 +82,7 @@ import { CodeEditorComponent } from './components/code-editor/code-editor.compon
 import { AppStoreProvider } from './state.provider';
 import { AssetDisplayComponent } from './components/asset-display/asset-display.component';
 import { WorkflowStatesComponent } from './components/workflow-states/workflow-states.component';
+import { FilterWithPipe } from './filter-with.pipe';
 
 @NgModule({
   declarations: [
@@ -108,7 +109,8 @@ import { WorkflowStatesComponent } from './components/workflow-states/workflow-s
     I18nPipe,
     CodeEditorComponent,
     AssetDisplayComponent,
-    WorkflowStatesComponent
+    WorkflowStatesComponent,
+    FilterWithPipe
   ],
   imports: [
     studioRoutes,

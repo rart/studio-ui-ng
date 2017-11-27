@@ -200,6 +200,10 @@ $studio-app-theme: mat-light-theme($studio-app-primary, $studio-app-accent, $stu
 
 /* Mat Form Fields */
 
+mat-form-field {
+  width: 100%;
+}
+
 .no-subscript {
   .mat-form-field-wrapper {
     padding-bottom: 0;
@@ -218,6 +222,16 @@ $studio-app-theme: mat-light-theme($studio-app-primary, $studio-app-accent, $stu
 .no-infix {
   .mat-form-field-infix {
     border-top: none;
+  }
+  // mat-form-field-should-float mat-focused
+  &.mat-form-field-should-float {
+    &, &.mat-form-field-can-float {
+      .mat-form-field-placeholder {
+        &, &.mat-form-field-empty {
+          display: none;
+        }
+      }
+    }
   }
 }
 
