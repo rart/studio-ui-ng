@@ -112,6 +112,8 @@ export class WorkflowService {
 
   getAvailableAssetOptions(user, item) {
     return [
+      { label: 'Get Info', action: '' },
+      { divider: true },
       { label: 'Edit', action: '' },
       { label: 'Delete', action: '' },
       { label: 'Schedule', action: '' },
