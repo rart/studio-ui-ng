@@ -1,4 +1,3 @@
-
 import {
   StoreEnhancer,
   combineReducers,
@@ -6,16 +5,18 @@ import {
   compose
 } from 'redux';
 
-import {AppState} from '../app/classes/app-state.interface';
-import {reducer as selectedItems} from './selected-items.state';
-import {reducer as expandedPanels} from './expanded-panels.state';
+import { AppState } from './classes/app-state.interface';
+import { selectedItems } from './reducers/selected-items.reducer';
+import { expandedPanels } from './reducers/expanded-panels.reducer';
+import { expandedPaths } from './reducers/expanded-paths.reducer';
 
 const tempReducer = (state = null, action) => state;
 
 const appReducer = combineReducers<AppState>({
   user: tempReducer,
   selectedItems,
-  expandedPanels
+  expandedPanels,
+  expandedPaths
 });
 
 const devtools: StoreEnhancer<AppState> = window['devToolsExtension']

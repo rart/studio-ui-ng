@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment';
 import { AppStore } from '../../state.provider';
 import { Store } from 'redux';
 import { AppState } from '../../classes/app-state.interface';
-import { Actions } from '../../../state/expanded-panels.state';
+import { ExpandedPanelsActions } from '../../classes/expanded-panels.actions';
 import { User } from '../../models/user.model';
 import { ComponentHostDirective } from '../component-host.directive';
 import { ContentTreeComponent } from '../site/content-tree/content-tree.component';
@@ -143,8 +143,8 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     let action;
     this.store.dispatch(
       expanded
-        ? Actions.expand(key)
-        : Actions.collapse(key));
+        ? ExpandedPanelsActions.expand(key)
+        : ExpandedPanelsActions.collapse(key));
   }
 
   private stateChanged() {

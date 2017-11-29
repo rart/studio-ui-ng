@@ -14,7 +14,7 @@ import { WindowMessageTopicEnum } from '../../enums/window-message-topic.enum';
 import { WindowMessageScopeEnum } from '../../enums/window-message-scope.enum';
 import { CommunicationService } from '../../services/communication.service';
 import { WorkflowService } from '../../services/workflow.service';
-import { Actions } from '../../../state/selected-items.state';
+import { SelectedItemsActions } from '../../classes/selected-items.actions';
 
 @Component({
   selector: 'std-asset-display',
@@ -37,7 +37,7 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
   @Input() showIcons = true;
   @Input() showTypeIcon = true;
   @Input() showStatusIcons = true;
-  @Input() showMenu: boolean | 'hover' = 'hover';
+  @Input() showMenu: boolean | 'hover' | 'true' | 'false' = 'hover';
   @Input() showLabel = true;
   @Input() showLink = true; // Asset renders as a link when 'previewable'
   @Input() displayField: keyof Asset = 'label';
@@ -144,6 +144,12 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
     this.menu = this.workflowService
       .getAvailableAssetOptions(this.state.user, this.asset);
 
+    if (this.showMenu === 'true') {
+      this.showMenu = true;
+    } else if (this.showMenu === 'false') {
+      this.showMenu = false;
+    }
+
     // if (!this.showTypeIcon && !this.showStatusIcons) {
     //   this.showIcons = false;
     //   this.showIconsChange.emit(false);
@@ -152,11 +158,11 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
     if (this.priorShowCheckValue !== this.showCheck) {
       // Only good as far as single subscription...
       if (this.priorShowCheckValue === true) {
-        this.terminateSubscriptions();
+        this.unSubscriber.next();
       }
       if (this.showCheck) {
-        this.updateFromState();
-        this.subscribeTo('selectedItems', () => this.updateFromState());
+        this.selectedItemsStateChanged();
+        this.subscribeTo('selectedItems');
       }
       this.priorShowCheckValue = this.showCheck;
     }
@@ -189,9 +195,9 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
 
   checkedStateChange(checked) {
     if (checked) {
-      this.store.dispatch(Actions.select(this.asset));
+      this.store.dispatch(SelectedItemsActions.select(this.asset));
     } else {
-      this.store.dispatch(Actions.deselect(this.asset));
+      this.store.dispatch(SelectedItemsActions.deselect(this.asset));
     }
   }
 
@@ -203,7 +209,11 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
     }
   }
 
-  private updateFromState() {
+  menuButtonClicked($event: Event) {
+    $event.stopPropagation();
+  }
+
+  private selectedItemsStateChanged() {
     let checked: Asset[] = this.state.selectedItems;
     this.selected = ArrayUtils.forEachBreak(checked,
       (asset) => asset.id === this.asset.id);

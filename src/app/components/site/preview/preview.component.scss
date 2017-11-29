@@ -19,6 +19,7 @@
     }
   }
   iframe,
+  .code-editor,
   .iframe-wrapper {
     height: 100%;
     width: 100%;
@@ -73,41 +74,28 @@
     height: 33px;
     display: flex;
     flex-basis: 75%;
+    overflow: hidden;
     margin-right: 5px;
     border-radius: 5px;
     position: relative;
+    align-items: center;
     background: #e0e0e0;
+    padding-right: .2em;
     box-shadow: inset -1px 1px 3px rgba(#333,.3);
   }
   .site-display {
-    padding-left: 10px;
+    height: 100%;
     .icon {
-      top: -10px;
-      position: relative;
-      .safari & {
-        top: 0;
-      }
-    }
-    .site-icon {
-      width: 15px;
-      margin-right: 5px;
+
     }
     .text {
+      color: #000;
       height: 100%;
       overflow: hidden;
-      line-height: 33px;
+      padding-left: .6em;
       white-space: nowrap;
       text-overflow: ellipsis;
-      .site-icon {
-        top: -2px;
-        margin-right: 3px;
-        position: relative;
-      }
-    }
-    .menu {
-      .site-icon {
-
-      }
+      @include open-sans-semi-bold;
     }
   }
   input.address-input {
@@ -149,12 +137,13 @@
         border-right: none;
       }
       .main {
+        padding: 0;
         flex-grow: 1;
         cursor: pointer;
+        overflow: hidden;
         text-align: center;
         white-space: nowrap;
         text-overflow: ellipsis;
-        overflow: hidden;
         max-width: calc(100% - 30px);
       }
       .close {

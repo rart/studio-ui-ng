@@ -46,6 +46,7 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
 
+          <!-- *ngIf="expandedPanelMap[getSiteNavPanelKey(item)]" -->
           <ng-template stdComponentHost [data]="item"></ng-template>
 
         </mat-expansion-panel>

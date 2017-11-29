@@ -1,0 +1,2139 @@
+@mixin fa($icon) {
+  @if $icon == glass {
+    content: "\f000";
+  }
+  @if $icon == music {
+    content: "\f001";
+  }
+  @if $icon == search {
+    content: "\f002";
+  }
+  @if $icon == envelope-o {
+    content: "\f003";
+  }
+  @if $icon == heart {
+    content: "\f004";
+  }
+  @if $icon == star {
+    content: "\f005";
+  }
+  @if $icon == star-o {
+    content: "\f006";
+  }
+  @if $icon == user {
+    content: "\f007";
+  }
+  @if $icon == film {
+    content: "\f008";
+  }
+  @if $icon == th-large {
+    content: "\f009";
+  }
+  @if $icon == th {
+    content: "\f00a";
+  }
+  @if $icon == th-list {
+    content: "\f00b";
+  }
+  @if $icon == check {
+    content: "\f00c";
+  }
+  @if $icon == remove or
+      $icon == close or
+      $icon == times {
+    content: "\f00d";
+  }
+  @if $icon == search-plus {
+    content: "\f00e";
+  }
+  @if $icon == search-minus {
+    content: "\f010";
+  }
+  @if $icon == power-off {
+    content: "\f011";
+  }
+  @if $icon == signal {
+    content: "\f012";
+  }
+  @if $icon == gear or
+      $icon == cog {
+    content: "\f013";
+  }
+  @if $icon == trash-o {
+    content: "\f014";
+  }
+  @if $icon == home {
+    content: "\f015";
+  }
+  @if $icon == file-o {
+    content: "\f016";
+  }
+  @if $icon == clock-o {
+    content: "\f017";
+  }
+  @if $icon == road {
+    content: "\f018";
+  }
+  @if $icon == download {
+    content: "\f019";
+  }
+  @if $icon == arrow-circle-o-down {
+    content: "\f01a";
+  }
+  @if $icon == arrow-circle-o-up {
+    content: "\f01b";
+  }
+  @if $icon == inbox {
+    content: "\f01c";
+  }
+  @if $icon == play-circle-o {
+    content: "\f01d";
+  }
+  @if $icon == rotate-right or
+      $icon == repeat {
+    content: "\f01e";
+  }
+  @if $icon == refresh {
+    content: "\f021";
+  }
+  @if $icon == list-alt {
+    content: "\f022";
+  }
+  @if $icon == lock {
+    content: "\f023";
+  }
+  @if $icon == flag {
+    content: "\f024";
+  }
+  @if $icon == headphones {
+    content: "\f025";
+  }
+  @if $icon == volume-off {
+    content: "\f026";
+  }
+  @if $icon == volume-down {
+    content: "\f027";
+  }
+  @if $icon == volume-up {
+    content: "\f028";
+  }
+  @if $icon == qrcode {
+    content: "\f029";
+  }
+  @if $icon == barcode {
+    content: "\f02a";
+  }
+  @if $icon == tag {
+    content: "\f02b";
+  }
+  @if $icon == tags {
+    content: "\f02c";
+  }
+  @if $icon == book {
+    content: "\f02d";
+  }
+  @if $icon == bookmark {
+    content: "\f02e";
+  }
+  @if $icon == print {
+    content: "\f02f";
+  }
+  @if $icon == camera {
+    content: "\f030";
+  }
+  @if $icon == font {
+    content: "\f031";
+  }
+  @if $icon == bold {
+    content: "\f032";
+  }
+  @if $icon == italic {
+    content: "\f033";
+  }
+  @if $icon == text-height {
+    content: "\f034";
+  }
+  @if $icon == text-width {
+    content: "\f035";
+  }
+  @if $icon == align-left {
+    content: "\f036";
+  }
+  @if $icon == align-center {
+    content: "\f037";
+  }
+  @if $icon == align-right {
+    content: "\f038";
+  }
+  @if $icon == align-justify {
+    content: "\f039";
+  }
+  @if $icon == list {
+    content: "\f03a";
+  }
+  @if $icon == dedent or
+      $icon == outdent {
+    content: "\f03b";
+  }
+  @if $icon == indent {
+    content: "\f03c";
+  }
+  @if $icon == video-camera {
+    content: "\f03d";
+  }
+  @if $icon == photo or
+      $icon == image or
+      $icon == picture-o {
+    content: "\f03e";
+  }
+  @if $icon == pencil {
+    content: "\f040";
+  }
+  @if $icon == map-marker {
+    content: "\f041";
+  }
+  @if $icon == adjust {
+    content: "\f042";
+  }
+  @if $icon == tint {
+    content: "\f043";
+  }
+  @if $icon == edit or
+      $icon == pencil-square-o {
+    content: "\f044";
+  }
+  @if $icon == share-square-o {
+    content: "\f045";
+  }
+  @if $icon == check-square-o {
+    content: "\f046";
+  }
+  @if $icon == arrows {
+    content: "\f047";
+  }
+  @if $icon == step-backward {
+    content: "\f048";
+  }
+  @if $icon == fast-backward {
+    content: "\f049";
+  }
+  @if $icon == backward {
+    content: "\f04a";
+  }
+  @if $icon == play {
+    content: "\f04b";
+  }
+  @if $icon == pause {
+    content: "\f04c";
+  }
+  @if $icon == stop {
+    content: "\f04d";
+  }
+  @if $icon == forward {
+    content: "\f04e";
+  }
+  @if $icon == fast-forward {
+    content: "\f050";
+  }
+  @if $icon == step-forward {
+    content: "\f051";
+  }
+  @if $icon == eject {
+    content: "\f052";
+  }
+  @if $icon == chevron-left {
+    content: "\f053";
+  }
+  @if $icon == chevron-right {
+    content: "\f054";
+  }
+  @if $icon == plus-circle {
+    content: "\f055";
+  }
+  @if $icon == minus-circle {
+    content: "\f056";
+  }
+  @if $icon == times-circle {
+    content: "\f057";
+  }
+  @if $icon == check-circle {
+    content: "\f058";
+  }
+  @if $icon == question-circle {
+    content: "\f059";
+  }
+  @if $icon == info-circle {
+    content: "\f05a";
+  }
+  @if $icon == crosshairs {
+    content: "\f05b";
+  }
+  @if $icon == times-circle-o {
+    content: "\f05c";
+  }
+  @if $icon == check-circle-o {
+    content: "\f05d";
+  }
+  @if $icon == ban {
+    content: "\f05e";
+  }
+  @if $icon == arrow-left {
+    content: "\f060";
+  }
+  @if $icon == arrow-right {
+    content: "\f061";
+  }
+  @if $icon == arrow-up {
+    content: "\f062";
+  }
+  @if $icon == arrow-down {
+    content: "\f063";
+  }
+  @if $icon == mail-forward or
+      $icon == share {
+    content: "\f064";
+  }
+  @if $icon == expand {
+    content: "\f065";
+  }
+  @if $icon == compress {
+    content: "\f066";
+  }
+  @if $icon == plus {
+    content: "\f067";
+  }
+  @if $icon == minus {
+    content: "\f068";
+  }
+  @if $icon == asterisk {
+    content: "\f069";
+  }
+  @if $icon == exclamation-circle {
+    content: "\f06a";
+  }
+  @if $icon == gift {
+    content: "\f06b";
+  }
+  @if $icon == leaf {
+    content: "\f06c";
+  }
+  @if $icon == fire {
+    content: "\f06d";
+  }
+  @if $icon == eye {
+    content: "\f06e";
+  }
+  @if $icon == eye-slash {
+    content: "\f070";
+  }
+  @if $icon == warning or
+      $icon == exclamation-triangle {
+    content: "\f071";
+  }
+  @if $icon == plane {
+    content: "\f072";
+  }
+  @if $icon == calendar {
+    content: "\f073";
+  }
+  @if $icon == random {
+    content: "\f074";
+  }
+  @if $icon == comment {
+    content: "\f075";
+  }
+  @if $icon == magnet {
+    content: "\f076";
+  }
+  @if $icon == chevron-up {
+    content: "\f077";
+  }
+  @if $icon == chevron-down {
+    content: "\f078";
+  }
+  @if $icon == retweet {
+    content: "\f079";
+  }
+  @if $icon == shopping-cart {
+    content: "\f07a";
+  }
+  @if $icon == folder {
+    content: "\f07b";
+  }
+  @if $icon == folder-open {
+    content: "\f07c";
+  }
+  @if $icon == arrows-v {
+    content: "\f07d";
+  }
+  @if $icon == arrows-h {
+    content: "\f07e";
+  }
+  @if $icon == bar-chart-o or
+      $icon == bar-chart {
+    content: "\f080";
+  }
+  @if $icon == twitter-square {
+    content: "\f081";
+  }
+  @if $icon == facebook-square {
+    content: "\f082";
+  }
+  @if $icon == camera-retro {
+    content: "\f083";
+  }
+  @if $icon == key {
+    content: "\f084";
+  }
+  @if $icon == gears or
+      $icon == cogs {
+    content: "\f085";
+  }
+  @if $icon == comments {
+    content: "\f086";
+  }
+  @if $icon == thumbs-o-up {
+    content: "\f087";
+  }
+  @if $icon == thumbs-o-down {
+    content: "\f088";
+  }
+  @if $icon == star-half {
+    content: "\f089";
+  }
+  @if $icon == heart-o {
+    content: "\f08a";
+  }
+  @if $icon == sign-out {
+    content: "\f08b";
+  }
+  @if $icon == linkedin-square {
+    content: "\f08c";
+  }
+  @if $icon == thumb-tack {
+    content: "\f08d";
+  }
+  @if $icon == external-link {
+    content: "\f08e";
+  }
+  @if $icon == sign-in {
+    content: "\f090";
+  }
+  @if $icon == trophy {
+    content: "\f091";
+  }
+  @if $icon == github-square {
+    content: "\f092";
+  }
+  @if $icon == upload {
+    content: "\f093";
+  }
+  @if $icon == lemon-o {
+    content: "\f094";
+  }
+  @if $icon == phone {
+    content: "\f095";
+  }
+  @if $icon == square-o {
+    content: "\f096";
+  }
+  @if $icon == bookmark-o {
+    content: "\f097";
+  }
+  @if $icon == phone-square {
+    content: "\f098";
+  }
+  @if $icon == twitter {
+    content: "\f099";
+  }
+  @if $icon == facebook-f or
+      $icon == facebook {
+    content: "\f09a";
+  }
+  @if $icon == github {
+    content: "\f09b";
+  }
+  @if $icon == unlock {
+    content: "\f09c";
+  }
+  @if $icon == credit-card {
+    content: "\f09d";
+  }
+  @if $icon == feed or
+      $icon == rss {
+    content: "\f09e";
+  }
+  @if $icon == hdd-o {
+    content: "\f0a0";
+  }
+  @if $icon == bullhorn {
+    content: "\f0a1";
+  }
+  @if $icon == bell {
+    content: "\f0f3";
+  }
+  @if $icon == certificate {
+    content: "\f0a3";
+  }
+  @if $icon == hand-o-right {
+    content: "\f0a4";
+  }
+  @if $icon == hand-o-left {
+    content: "\f0a5";
+  }
+  @if $icon == hand-o-up {
+    content: "\f0a6";
+  }
+  @if $icon == hand-o-down {
+    content: "\f0a7";
+  }
+  @if $icon == arrow-circle-left {
+    content: "\f0a8";
+  }
+  @if $icon == arrow-circle-right {
+    content: "\f0a9";
+  }
+  @if $icon == arrow-circle-up {
+    content: "\f0aa";
+  }
+  @if $icon == arrow-circle-down {
+    content: "\f0ab";
+  }
+  @if $icon == globe {
+    content: "\f0ac";
+  }
+  @if $icon == wrench {
+    content: "\f0ad";
+  }
+  @if $icon == tasks {
+    content: "\f0ae";
+  }
+  @if $icon == filter {
+    content: "\f0b0";
+  }
+  @if $icon == briefcase {
+    content: "\f0b1";
+  }
+  @if $icon == arrows-alt {
+    content: "\f0b2";
+  }
+  @if $icon == group or
+      $icon == users {
+    content: "\f0c0";
+  }
+  @if $icon == chain or
+      $icon == link {
+    content: "\f0c1";
+  }
+  @if $icon == cloud {
+    content: "\f0c2";
+  }
+  @if $icon == flask {
+    content: "\f0c3";
+  }
+  @if $icon == cut or
+      $icon == scissors {
+    content: "\f0c4";
+  }
+  @if $icon == copy or
+      $icon == files-o {
+    content: "\f0c5";
+  }
+  @if $icon == paperclip {
+    content: "\f0c6";
+  }
+  @if $icon == save or
+      $icon == floppy-o {
+    content: "\f0c7";
+  }
+  @if $icon == square {
+    content: "\f0c8";
+  }
+  @if $icon == navicon or
+      $icon == reorder or
+      $icon == bars {
+    content: "\f0c9";
+  }
+  @if $icon == list-ul {
+    content: "\f0ca";
+  }
+  @if $icon == list-ol {
+    content: "\f0cb";
+  }
+  @if $icon == strikethrough {
+    content: "\f0cc";
+  }
+  @if $icon == underline {
+    content: "\f0cd";
+  }
+  @if $icon == table {
+    content: "\f0ce";
+  }
+  @if $icon == magic {
+    content: "\f0d0";
+  }
+  @if $icon == truck {
+    content: "\f0d1";
+  }
+  @if $icon == pinterest {
+    content: "\f0d2";
+  }
+  @if $icon == pinterest-square {
+    content: "\f0d3";
+  }
+  @if $icon == google-plus-square {
+    content: "\f0d4";
+  }
+  @if $icon == google-plus {
+    content: "\f0d5";
+  }
+  @if $icon == money {
+    content: "\f0d6";
+  }
+  @if $icon == caret-down {
+    content: "\f0d7";
+  }
+  @if $icon == caret-up {
+    content: "\f0d8";
+  }
+  @if $icon == caret-left {
+    content: "\f0d9";
+  }
+  @if $icon == caret-right {
+    content: "\f0da";
+  }
+  @if $icon == columns {
+    content: "\f0db";
+  }
+  @if $icon == unsorted or
+      $icon == sort {
+    content: "\f0dc";
+  }
+  @if $icon == sort-down or
+      $icon == sort-desc {
+    content: "\f0dd";
+  }
+  @if $icon == sort-up or
+      $icon == sort-asc {
+    content: "\f0de";
+  }
+  @if $icon == envelope {
+    content: "\f0e0";
+  }
+  @if $icon == linkedin {
+    content: "\f0e1";
+  }
+  @if $icon == rotate-left or
+      $icon == undo {
+    content: "\f0e2";
+  }
+  @if $icon == legal or
+      $icon == gavel {
+    content: "\f0e3";
+  }
+  @if $icon == dashboard or
+      $icon == tachometer {
+    content: "\f0e4";
+  }
+  @if $icon == comment-o {
+    content: "\f0e5";
+  }
+  @if $icon == comments-o {
+    content: "\f0e6";
+  }
+  @if $icon == flash or
+      $icon == bolt {
+    content: "\f0e7";
+  }
+  @if $icon == sitemap {
+    content: "\f0e8";
+  }
+  @if $icon == umbrella {
+    content: "\f0e9";
+  }
+  @if $icon == paste or
+      $icon == clipboard {
+    content: "\f0ea";
+  }
+  @if $icon == lightbulb-o {
+    content: "\f0eb";
+  }
+  @if $icon == exchange {
+    content: "\f0ec";
+  }
+  @if $icon == cloud-download {
+    content: "\f0ed";
+  }
+  @if $icon == cloud-upload {
+    content: "\f0ee";
+  }
+  @if $icon == user-md {
+    content: "\f0f0";
+  }
+  @if $icon == stethoscope {
+    content: "\f0f1";
+  }
+  @if $icon == suitcase {
+    content: "\f0f2";
+  }
+  @if $icon == bell-o {
+    content: "\f0a2";
+  }
+  @if $icon == coffee {
+    content: "\f0f4";
+  }
+  @if $icon == cutlery {
+    content: "\f0f5";
+  }
+  @if $icon == file-text-o {
+    content: "\f0f6";
+  }
+  @if $icon == building-o {
+    content: "\f0f7";
+  }
+  @if $icon == hospital-o {
+    content: "\f0f8";
+  }
+  @if $icon == ambulance {
+    content: "\f0f9";
+  }
+  @if $icon == medkit {
+    content: "\f0fa";
+  }
+  @if $icon == fighter-jet {
+    content: "\f0fb";
+  }
+  @if $icon == beer {
+    content: "\f0fc";
+  }
+  @if $icon == h-square {
+    content: "\f0fd";
+  }
+  @if $icon == plus-square {
+    content: "\f0fe";
+  }
+  @if $icon == angle-double-left {
+    content: "\f100";
+  }
+  @if $icon == angle-double-right {
+    content: "\f101";
+  }
+  @if $icon == angle-double-up {
+    content: "\f102";
+  }
+  @if $icon == angle-double-down {
+    content: "\f103";
+  }
+  @if $icon == angle-left {
+    content: "\f104";
+  }
+  @if $icon == angle-right {
+    content: "\f105";
+  }
+  @if $icon == angle-up {
+    content: "\f106";
+  }
+  @if $icon == angle-down {
+    content: "\f107";
+  }
+  @if $icon == desktop {
+    content: "\f108";
+  }
+  @if $icon == laptop {
+    content: "\f109";
+  }
+  @if $icon == tablet {
+    content: "\f10a";
+  }
+  @if $icon == mobile-phone or
+      $icon == mobile {
+    content: "\f10b";
+  }
+  @if $icon == circle-o {
+    content: "\f10c";
+  }
+  @if $icon == quote-left {
+    content: "\f10d";
+  }
+  @if $icon == quote-right {
+    content: "\f10e";
+  }
+  @if $icon == spinner {
+    content: "\f110";
+  }
+  @if $icon == circle {
+    content: "\f111";
+  }
+  @if $icon == mail-reply or
+      $icon == reply {
+    content: "\f112";
+  }
+  @if $icon == github-alt {
+    content: "\f113";
+  }
+  @if $icon == folder-o {
+    content: "\f114";
+  }
+  @if $icon == folder-open-o {
+    content: "\f115";
+  }
+  @if $icon == smile-o {
+    content: "\f118";
+  }
+  @if $icon == frown-o {
+    content: "\f119";
+  }
+  @if $icon == meh-o {
+    content: "\f11a";
+  }
+  @if $icon == gamepad {
+    content: "\f11b";
+  }
+  @if $icon == keyboard-o {
+    content: "\f11c";
+  }
+  @if $icon == flag-o {
+    content: "\f11d";
+  }
+  @if $icon == flag-checkered {
+    content: "\f11e";
+  }
+  @if $icon == terminal {
+    content: "\f120";
+  }
+  @if $icon == code {
+    content: "\f121";
+  }
+  @if $icon == mail-reply-all or
+      $icon == reply-all {
+    content: "\f122";
+  }
+  @if $icon == star-half-empty or
+      $icon == star-half-full or
+      $icon == star-half-o {
+    content: "\f123";
+  }
+  @if $icon == location-arrow {
+    content: "\f124";
+  }
+  @if $icon == crop {
+    content: "\f125";
+  }
+  @if $icon == code-fork {
+    content: "\f126";
+  }
+  @if $icon == unlink or
+      $icon == chain-broken {
+    content: "\f127";
+  }
+  @if $icon == question {
+    content: "\f128";
+  }
+  @if $icon == info {
+    content: "\f129";
+  }
+  @if $icon == exclamation {
+    content: "\f12a";
+  }
+  @if $icon == superscript {
+    content: "\f12b";
+  }
+  @if $icon == subscript {
+    content: "\f12c";
+  }
+  @if $icon == eraser {
+    content: "\f12d";
+  }
+  @if $icon == puzzle-piece {
+    content: "\f12e";
+  }
+  @if $icon == microphone {
+    content: "\f130";
+  }
+  @if $icon == microphone-slash {
+    content: "\f131";
+  }
+  @if $icon == shield {
+    content: "\f132";
+  }
+  @if $icon == calendar-o {
+    content: "\f133";
+  }
+  @if $icon == fire-extinguisher {
+    content: "\f134";
+  }
+  @if $icon == rocket {
+    content: "\f135";
+  }
+  @if $icon == maxcdn {
+    content: "\f136";
+  }
+  @if $icon == chevron-circle-left {
+    content: "\f137";
+  }
+  @if $icon == chevron-circle-right {
+    content: "\f138";
+  }
+  @if $icon == chevron-circle-up {
+    content: "\f139";
+  }
+  @if $icon == chevron-circle-down {
+    content: "\f13a";
+  }
+  @if $icon == html5 {
+    content: "\f13b";
+  }
+  @if $icon == css3 {
+    content: "\f13c";
+  }
+  @if $icon == anchor {
+    content: "\f13d";
+  }
+  @if $icon == unlock-alt {
+    content: "\f13e";
+  }
+  @if $icon == bullseye {
+    content: "\f140";
+  }
+  @if $icon == ellipsis-h {
+    content: "\f141";
+  }
+  @if $icon == ellipsis-v {
+    content: "\f142";
+  }
+  @if $icon == rss-square {
+    content: "\f143";
+  }
+  @if $icon == play-circle {
+    content: "\f144";
+  }
+  @if $icon == ticket {
+    content: "\f145";
+  }
+  @if $icon == minus-square {
+    content: "\f146";
+  }
+  @if $icon == minus-square-o {
+    content: "\f147";
+  }
+  @if $icon == level-up {
+    content: "\f148";
+  }
+  @if $icon == level-down {
+    content: "\f149";
+  }
+  @if $icon == check-square {
+    content: "\f14a";
+  }
+  @if $icon == pencil-square {
+    content: "\f14b";
+  }
+  @if $icon == external-link-square {
+    content: "\f14c";
+  }
+  @if $icon == share-square {
+    content: "\f14d";
+  }
+  @if $icon == compass {
+    content: "\f14e";
+  }
+  @if $icon == toggle-down or
+      $icon == caret-square-o-down {
+    content: "\f150";
+  }
+  @if $icon == toggle-up or
+      $icon == caret-square-o-up {
+    content: "\f151";
+  }
+  @if $icon == toggle-right or
+      $icon == caret-square-o-right {
+    content: "\f152";
+  }
+  @if $icon == euro or
+      $icon == eur {
+    content: "\f153";
+  }
+  @if $icon == gbp {
+    content: "\f154";
+  }
+  @if $icon == dollar or
+      $icon == usd {
+    content: "\f155";
+  }
+  @if $icon == rupee or
+      $icon == inr {
+    content: "\f156";
+  }
+  @if $icon == cny or
+      $icon == rmb or
+      $icon == yen or
+      $icon == jpy {
+    content: "\f157";
+  }
+  @if $icon == ruble or
+      $icon == rouble or
+      $icon == rub {
+    content: "\f158";
+  }
+  @if $icon == won or
+      $icon == krw {
+    content: "\f159";
+  }
+  @if $icon == bitcoin or
+      $icon == btc {
+    content: "\f15a";
+  }
+  @if $icon == file {
+    content: "\f15b";
+  }
+  @if $icon == file-text {
+    content: "\f15c";
+  }
+  @if $icon == sort-alpha-asc {
+    content: "\f15d";
+  }
+  @if $icon == sort-alpha-desc {
+    content: "\f15e";
+  }
+  @if $icon == sort-amount-asc {
+    content: "\f160";
+  }
+  @if $icon == sort-amount-desc {
+    content: "\f161";
+  }
+  @if $icon == sort-numeric-asc {
+    content: "\f162";
+  }
+  @if $icon == sort-numeric-desc {
+    content: "\f163";
+  }
+  @if $icon == thumbs-up {
+    content: "\f164";
+  }
+  @if $icon == thumbs-down {
+    content: "\f165";
+  }
+  @if $icon == youtube-square {
+    content: "\f166";
+  }
+  @if $icon == youtube {
+    content: "\f167";
+  }
+  @if $icon == xing {
+    content: "\f168";
+  }
+  @if $icon == xing-square {
+    content: "\f169";
+  }
+  @if $icon == youtube-play {
+    content: "\f16a";
+  }
+  @if $icon == dropbox {
+    content: "\f16b";
+  }
+  @if $icon == stack-overflow {
+    content: "\f16c";
+  }
+  @if $icon == instagram {
+    content: "\f16d";
+  }
+  @if $icon == flickr {
+    content: "\f16e";
+  }
+  @if $icon == adn {
+    content: "\f170";
+  }
+  @if $icon == bitbucket {
+    content: "\f171";
+  }
+  @if $icon == bitbucket-square {
+    content: "\f172";
+  }
+  @if $icon == tumblr {
+    content: "\f173";
+  }
+  @if $icon == tumblr-square {
+    content: "\f174";
+  }
+  @if $icon == long-arrow-down {
+    content: "\f175";
+  }
+  @if $icon == long-arrow-up {
+    content: "\f176";
+  }
+  @if $icon == long-arrow-left {
+    content: "\f177";
+  }
+  @if $icon == long-arrow-right {
+    content: "\f178";
+  }
+  @if $icon == apple {
+    content: "\f179";
+  }
+  @if $icon == windows {
+    content: "\f17a";
+  }
+  @if $icon == android {
+    content: "\f17b";
+  }
+  @if $icon == linux {
+    content: "\f17c";
+  }
+  @if $icon == dribbble {
+    content: "\f17d";
+  }
+  @if $icon == skype {
+    content: "\f17e";
+  }
+  @if $icon == foursquare {
+    content: "\f180";
+  }
+  @if $icon == trello {
+    content: "\f181";
+  }
+  @if $icon == female {
+    content: "\f182";
+  }
+  @if $icon == male {
+    content: "\f183";
+  }
+  @if $icon == gittip or
+      $icon == gratipay {
+    content: "\f184";
+  }
+  @if $icon == sun-o {
+    content: "\f185";
+  }
+  @if $icon == moon-o {
+    content: "\f186";
+  }
+  @if $icon == archive {
+    content: "\f187";
+  }
+  @if $icon == bug {
+    content: "\f188";
+  }
+  @if $icon == vk {
+    content: "\f189";
+  }
+  @if $icon == weibo {
+    content: "\f18a";
+  }
+  @if $icon == renren {
+    content: "\f18b";
+  }
+  @if $icon == pagelines {
+    content: "\f18c";
+  }
+  @if $icon == stack-exchange {
+    content: "\f18d";
+  }
+  @if $icon == arrow-circle-o-right {
+    content: "\f18e";
+  }
+  @if $icon == arrow-circle-o-left {
+    content: "\f190";
+  }
+  @if $icon == toggle-left or
+      $icon == caret-square-o-left {
+    content: "\f191";
+  }
+  @if $icon == dot-circle-o {
+    content: "\f192";
+  }
+  @if $icon == wheelchair {
+    content: "\f193";
+  }
+  @if $icon == vimeo-square {
+    content: "\f194";
+  }
+  @if $icon == turkish-lira or
+      $icon == try {
+    content: "\f195";
+  }
+  @if $icon == plus-square-o {
+    content: "\f196";
+  }
+  @if $icon == space-shuttle {
+    content: "\f197";
+  }
+  @if $icon == slack {
+    content: "\f198";
+  }
+  @if $icon == envelope-square {
+    content: "\f199";
+  }
+  @if $icon == wordpress {
+    content: "\f19a";
+  }
+  @if $icon == openid {
+    content: "\f19b";
+  }
+  @if $icon == institution or
+      $icon == bank or
+      $icon == university {
+    content: "\f19c";
+  }
+  @if $icon == mortar-board or
+      $icon == graduation-cap {
+    content: "\f19d";
+  }
+  @if $icon == yahoo {
+    content: "\f19e";
+  }
+  @if $icon == google {
+    content: "\f1a0";
+  }
+  @if $icon == reddit {
+    content: "\f1a1";
+  }
+  @if $icon == reddit-square {
+    content: "\f1a2";
+  }
+  @if $icon == stumbleupon-circle {
+    content: "\f1a3";
+  }
+  @if $icon == stumbleupon {
+    content: "\f1a4";
+  }
+  @if $icon == delicious {
+    content: "\f1a5";
+  }
+  @if $icon == digg {
+    content: "\f1a6";
+  }
+  @if $icon == pied-piper-pp {
+    content: "\f1a7";
+  }
+  @if $icon == pied-piper-alt {
+    content: "\f1a8";
+  }
+  @if $icon == drupal {
+    content: "\f1a9";
+  }
+  @if $icon == joomla {
+    content: "\f1aa";
+  }
+  @if $icon == language {
+    content: "\f1ab";
+  }
+  @if $icon == fax {
+    content: "\f1ac";
+  }
+  @if $icon == building {
+    content: "\f1ad";
+  }
+  @if $icon == child {
+    content: "\f1ae";
+  }
+  @if $icon == paw {
+    content: "\f1b0";
+  }
+  @if $icon == spoon {
+    content: "\f1b1";
+  }
+  @if $icon == cube {
+    content: "\f1b2";
+  }
+  @if $icon == cubes {
+    content: "\f1b3";
+  }
+  @if $icon == behance {
+    content: "\f1b4";
+  }
+  @if $icon == behance-square {
+    content: "\f1b5";
+  }
+  @if $icon == steam {
+    content: "\f1b6";
+  }
+  @if $icon == steam-square {
+    content: "\f1b7";
+  }
+  @if $icon == recycle {
+    content: "\f1b8";
+  }
+  @if $icon == automobile or
+      $icon == car {
+    content: "\f1b9";
+  }
+  @if $icon == cab or
+      $icon == taxi {
+    content: "\f1ba";
+  }
+  @if $icon == tree {
+    content: "\f1bb";
+  }
+  @if $icon == spotify {
+    content: "\f1bc";
+  }
+  @if $icon == deviantart {
+    content: "\f1bd";
+  }
+  @if $icon == soundcloud {
+    content: "\f1be";
+  }
+  @if $icon == database {
+    content: "\f1c0";
+  }
+  @if $icon == file-pdf-o {
+    content: "\f1c1";
+  }
+  @if $icon == file-word-o {
+    content: "\f1c2";
+  }
+  @if $icon == file-excel-o {
+    content: "\f1c3";
+  }
+  @if $icon == file-powerpoint-o {
+    content: "\f1c4";
+  }
+  @if $icon == file-photo-o or
+      $icon == file-picture-o or
+      $icon == file-image-o {
+    content: "\f1c5";
+  }
+  @if $icon == file-zip-o or
+      $icon == file-archive-o {
+    content: "\f1c6";
+  }
+  @if $icon == file-sound-o or
+      $icon == file-audio-o {
+    content: "\f1c7";
+  }
+  @if $icon == file-movie-o or
+      $icon == file-video-o {
+    content: "\f1c8";
+  }
+  @if $icon == file-code-o {
+    content: "\f1c9";
+  }
+  @if $icon == vine {
+    content: "\f1ca";
+  }
+  @if $icon == codepen {
+    content: "\f1cb";
+  }
+  @if $icon == jsfiddle {
+    content: "\f1cc";
+  }
+  @if $icon == life-bouy or
+      $icon == life-buoy or
+      $icon == life-saver or
+      $icon == support or
+      $icon == life-ring {
+    content: "\f1cd";
+  }
+  @if $icon == circle-o-notch {
+    content: "\f1ce";
+  }
+  @if $icon == ra or
+      $icon == resistance or
+      $icon == rebel {
+    content: "\f1d0";
+  }
+  @if $icon == ge or
+      $icon == empire {
+    content: "\f1d1";
+  }
+  @if $icon == git-square {
+    content: "\f1d2";
+  }
+  @if $icon == git {
+    content: "\f1d3";
+  }
+  @if $icon == y-combinator-square or
+      $icon == yc-square or
+      $icon == hacker-news {
+    content: "\f1d4";
+  }
+  @if $icon == tencent-weibo {
+    content: "\f1d5";
+  }
+  @if $icon == qq {
+    content: "\f1d6";
+  }
+  @if $icon == wechat or
+      $icon == weixin {
+    content: "\f1d7";
+  }
+  @if $icon == send or
+      $icon == paper-plane {
+    content: "\f1d8";
+  }
+  @if $icon == send-o or
+      $icon == paper-plane-o {
+    content: "\f1d9";
+  }
+  @if $icon == history {
+    content: "\f1da";
+  }
+  @if $icon == circle-thin {
+    content: "\f1db";
+  }
+  @if $icon == header {
+    content: "\f1dc";
+  }
+  @if $icon == paragraph {
+    content: "\f1dd";
+  }
+  @if $icon == sliders {
+    content: "\f1de";
+  }
+  @if $icon == share-alt {
+    content: "\f1e0";
+  }
+  @if $icon == share-alt-square {
+    content: "\f1e1";
+  }
+  @if $icon == bomb {
+    content: "\f1e2";
+  }
+  @if $icon == soccer-ball-o or
+      $icon == futbol-o {
+    content: "\f1e3";
+  }
+  @if $icon == tty {
+    content: "\f1e4";
+  }
+  @if $icon == binoculars {
+    content: "\f1e5";
+  }
+  @if $icon == plug {
+    content: "\f1e6";
+  }
+  @if $icon == slideshare {
+    content: "\f1e7";
+  }
+  @if $icon == twitch {
+    content: "\f1e8";
+  }
+  @if $icon == yelp {
+    content: "\f1e9";
+  }
+  @if $icon == newspaper-o {
+    content: "\f1ea";
+  }
+  @if $icon == wifi {
+    content: "\f1eb";
+  }
+  @if $icon == calculator {
+    content: "\f1ec";
+  }
+  @if $icon == paypal {
+    content: "\f1ed";
+  }
+  @if $icon == google-wallet {
+    content: "\f1ee";
+  }
+  @if $icon == cc-visa {
+    content: "\f1f0";
+  }
+  @if $icon == cc-mastercard {
+    content: "\f1f1";
+  }
+  @if $icon == cc-discover {
+    content: "\f1f2";
+  }
+  @if $icon == cc-amex {
+    content: "\f1f3";
+  }
+  @if $icon == cc-paypal {
+    content: "\f1f4";
+  }
+  @if $icon == cc-stripe {
+    content: "\f1f5";
+  }
+  @if $icon == bell-slash {
+    content: "\f1f6";
+  }
+  @if $icon == bell-slash-o {
+    content: "\f1f7";
+  }
+  @if $icon == trash {
+    content: "\f1f8";
+  }
+  @if $icon == copyright {
+    content: "\f1f9";
+  }
+  @if $icon == at {
+    content: "\f1fa";
+  }
+  @if $icon == eyedropper {
+    content: "\f1fb";
+  }
+  @if $icon == paint-brush {
+    content: "\f1fc";
+  }
+  @if $icon == birthday-cake {
+    content: "\f1fd";
+  }
+  @if $icon == area-chart {
+    content: "\f1fe";
+  }
+  @if $icon == pie-chart {
+    content: "\f200";
+  }
+  @if $icon == line-chart {
+    content: "\f201";
+  }
+  @if $icon == lastfm {
+    content: "\f202";
+  }
+  @if $icon == lastfm-square {
+    content: "\f203";
+  }
+  @if $icon == toggle-off {
+    content: "\f204";
+  }
+  @if $icon == toggle-on {
+    content: "\f205";
+  }
+  @if $icon == bicycle {
+    content: "\f206";
+  }
+  @if $icon == bus {
+    content: "\f207";
+  }
+  @if $icon == ioxhost {
+    content: "\f208";
+  }
+  @if $icon == angellist {
+    content: "\f209";
+  }
+  @if $icon == cc {
+    content: "\f20a";
+  }
+  @if $icon == shekel or
+      $icon == sheqel or
+      $icon == ils {
+    content: "\f20b";
+  }
+  @if $icon == meanpath {
+    content: "\f20c";
+  }
+  @if $icon == buysellads {
+    content: "\f20d";
+  }
+  @if $icon == connectdevelop {
+    content: "\f20e";
+  }
+  @if $icon == dashcube {
+    content: "\f210";
+  }
+  @if $icon == forumbee {
+    content: "\f211";
+  }
+  @if $icon == leanpub {
+    content: "\f212";
+  }
+  @if $icon == sellsy {
+    content: "\f213";
+  }
+  @if $icon == shirtsinbulk {
+    content: "\f214";
+  }
+  @if $icon == simplybuilt {
+    content: "\f215";
+  }
+  @if $icon == skyatlas {
+    content: "\f216";
+  }
+  @if $icon == cart-plus {
+    content: "\f217";
+  }
+  @if $icon == cart-arrow-down {
+    content: "\f218";
+  }
+  @if $icon == diamond {
+    content: "\f219";
+  }
+  @if $icon == ship {
+    content: "\f21a";
+  }
+  @if $icon == user-secret {
+    content: "\f21b";
+  }
+  @if $icon == motorcycle {
+    content: "\f21c";
+  }
+  @if $icon == street-view {
+    content: "\f21d";
+  }
+  @if $icon == heartbeat {
+    content: "\f21e";
+  }
+  @if $icon == venus {
+    content: "\f221";
+  }
+  @if $icon == mars {
+    content: "\f222";
+  }
+  @if $icon == mercury {
+    content: "\f223";
+  }
+  @if $icon == intersex or
+      $icon == transgender {
+    content: "\f224";
+  }
+  @if $icon == transgender-alt {
+    content: "\f225";
+  }
+  @if $icon == venus-double {
+    content: "\f226";
+  }
+  @if $icon == mars-double {
+    content: "\f227";
+  }
+  @if $icon == venus-mars {
+    content: "\f228";
+  }
+  @if $icon == mars-stroke {
+    content: "\f229";
+  }
+  @if $icon == mars-stroke-v {
+    content: "\f22a";
+  }
+  @if $icon == mars-stroke-h {
+    content: "\f22b";
+  }
+  @if $icon == neuter {
+    content: "\f22c";
+  }
+  @if $icon == genderless {
+    content: "\f22d";
+  }
+  @if $icon == facebook-official {
+    content: "\f230";
+  }
+  @if $icon == pinterest-p {
+    content: "\f231";
+  }
+  @if $icon == whatsapp {
+    content: "\f232";
+  }
+  @if $icon == server {
+    content: "\f233";
+  }
+  @if $icon == user-plus {
+    content: "\f234";
+  }
+  @if $icon == user-times {
+    content: "\f235";
+  }
+  @if $icon == hotel or
+      $icon == bed {
+    content: "\f236";
+  }
+  @if $icon == viacoin {
+    content: "\f237";
+  }
+  @if $icon == train {
+    content: "\f238";
+  }
+  @if $icon == subway {
+    content: "\f239";
+  }
+  @if $icon == medium {
+    content: "\f23a";
+  }
+  @if $icon == yc or
+      $icon == y-combinator {
+    content: "\f23b";
+  }
+  @if $icon == optin-monster {
+    content: "\f23c";
+  }
+  @if $icon == opencart {
+    content: "\f23d";
+  }
+  @if $icon == expeditedssl {
+    content: "\f23e";
+  }
+  @if $icon == battery-4 or
+      $icon == battery or
+      $icon == battery-full {
+    content: "\f240";
+  }
+  @if $icon == battery-3 or
+      $icon == battery-three-quarters {
+    content: "\f241";
+  }
+  @if $icon == battery-2 or
+      $icon == battery-half {
+    content: "\f242";
+  }
+  @if $icon == battery-1 or
+      $icon == battery-quarter {
+    content: "\f243";
+  }
+  @if $icon == battery-0 or
+      $icon == battery-empty {
+    content: "\f244";
+  }
+  @if $icon == mouse-pointer {
+    content: "\f245";
+  }
+  @if $icon == i-cursor {
+    content: "\f246";
+  }
+  @if $icon == object-group {
+    content: "\f247";
+  }
+  @if $icon == object-ungroup {
+    content: "\f248";
+  }
+  @if $icon == sticky-note {
+    content: "\f249";
+  }
+  @if $icon == sticky-note-o {
+    content: "\f24a";
+  }
+  @if $icon == cc-jcb {
+    content: "\f24b";
+  }
+  @if $icon == cc-diners-club {
+    content: "\f24c";
+  }
+  @if $icon == clone {
+    content: "\f24d";
+  }
+  @if $icon == balance-scale {
+    content: "\f24e";
+  }
+  @if $icon == hourglass-o {
+    content: "\f250";
+  }
+  @if $icon == hourglass-1 or
+      $icon == hourglass-start {
+    content: "\f251";
+  }
+  @if $icon == hourglass-2 or
+      $icon == hourglass-half {
+    content: "\f252";
+  }
+  @if $icon == hourglass-3 or
+      $icon == hourglass-end {
+    content: "\f253";
+  }
+  @if $icon == hourglass {
+    content: "\f254";
+  }
+  @if $icon == hand-grab-o or
+      $icon == hand-rock-o {
+    content: "\f255";
+  }
+  @if $icon == hand-stop-o or
+      $icon == hand-paper-o {
+    content: "\f256";
+  }
+  @if $icon == hand-scissors-o {
+    content: "\f257";
+  }
+  @if $icon == hand-lizard-o {
+    content: "\f258";
+  }
+  @if $icon == hand-spock-o {
+    content: "\f259";
+  }
+  @if $icon == hand-pointer-o {
+    content: "\f25a";
+  }
+  @if $icon == hand-peace-o {
+    content: "\f25b";
+  }
+  @if $icon == trademark {
+    content: "\f25c";
+  }
+  @if $icon == registered {
+    content: "\f25d";
+  }
+  @if $icon == creative-commons {
+    content: "\f25e";
+  }
+  @if $icon == gg {
+    content: "\f260";
+  }
+  @if $icon == gg-circle {
+    content: "\f261";
+  }
+  @if $icon == tripadvisor {
+    content: "\f262";
+  }
+  @if $icon == odnoklassniki {
+    content: "\f263";
+  }
+  @if $icon == odnoklassniki-square {
+    content: "\f264";
+  }
+  @if $icon == get-pocket {
+    content: "\f265";
+  }
+  @if $icon == wikipedia-w {
+    content: "\f266";
+  }
+  @if $icon == safari {
+    content: "\f267";
+  }
+  @if $icon == chrome {
+    content: "\f268";
+  }
+  @if $icon == firefox {
+    content: "\f269";
+  }
+  @if $icon == opera {
+    content: "\f26a";
+  }
+  @if $icon == internet-explorer {
+    content: "\f26b";
+  }
+  @if $icon == tv or
+      $icon == television {
+    content: "\f26c";
+  }
+  @if $icon == contao {
+    content: "\f26d";
+  }
+  @if $icon == 500px {
+    content: "\f26e";
+  }
+  @if $icon == amazon {
+    content: "\f270";
+  }
+  @if $icon == calendar-plus-o {
+    content: "\f271";
+  }
+  @if $icon == calendar-minus-o {
+    content: "\f272";
+  }
+  @if $icon == calendar-times-o {
+    content: "\f273";
+  }
+  @if $icon == calendar-check-o {
+    content: "\f274";
+  }
+  @if $icon == industry {
+    content: "\f275";
+  }
+  @if $icon == map-pin {
+    content: "\f276";
+  }
+  @if $icon == map-signs {
+    content: "\f277";
+  }
+  @if $icon == map-o {
+    content: "\f278";
+  }
+  @if $icon == map {
+    content: "\f279";
+  }
+  @if $icon == commenting {
+    content: "\f27a";
+  }
+  @if $icon == commenting-o {
+    content: "\f27b";
+  }
+  @if $icon == houzz {
+    content: "\f27c";
+  }
+  @if $icon == vimeo {
+    content: "\f27d";
+  }
+  @if $icon == black-tie {
+    content: "\f27e";
+  }
+  @if $icon == fonticons {
+    content: "\f280";
+  }
+  @if $icon == reddit-alien {
+    content: "\f281";
+  }
+  @if $icon == edge {
+    content: "\f282";
+  }
+  @if $icon == credit-card-alt {
+    content: "\f283";
+  }
+  @if $icon == codiepie {
+    content: "\f284";
+  }
+  @if $icon == modx {
+    content: "\f285";
+  }
+  @if $icon == fort-awesome {
+    content: "\f286";
+  }
+  @if $icon == usb {
+    content: "\f287";
+  }
+  @if $icon == product-hunt {
+    content: "\f288";
+  }
+  @if $icon == mixcloud {
+    content: "\f289";
+  }
+  @if $icon == scribd {
+    content: "\f28a";
+  }
+  @if $icon == pause-circle {
+    content: "\f28b";
+  }
+  @if $icon == pause-circle-o {
+    content: "\f28c";
+  }
+  @if $icon == stop-circle {
+    content: "\f28d";
+  }
+  @if $icon == stop-circle-o {
+    content: "\f28e";
+  }
+  @if $icon == shopping-bag {
+    content: "\f290";
+  }
+  @if $icon == shopping-basket {
+    content: "\f291";
+  }
+  @if $icon == hashtag {
+    content: "\f292";
+  }
+  @if $icon == bluetooth {
+    content: "\f293";
+  }
+  @if $icon == bluetooth-b {
+    content: "\f294";
+  }
+  @if $icon == percent {
+    content: "\f295";
+  }
+  @if $icon == gitlab {
+    content: "\f296";
+  }
+  @if $icon == wpbeginner {
+    content: "\f297";
+  }
+  @if $icon == wpforms {
+    content: "\f298";
+  }
+  @if $icon == envira {
+    content: "\f299";
+  }
+  @if $icon == universal-access {
+    content: "\f29a";
+  }
+  @if $icon == wheelchair-alt {
+    content: "\f29b";
+  }
+  @if $icon == question-circle-o {
+    content: "\f29c";
+  }
+  @if $icon == blind {
+    content: "\f29d";
+  }
+  @if $icon == audio-description {
+    content: "\f29e";
+  }
+  @if $icon == volume-control-phone {
+    content: "\f2a0";
+  }
+  @if $icon == braille {
+    content: "\f2a1";
+  }
+  @if $icon == assistive-listening-systems {
+    content: "\f2a2";
+  }
+  @if $icon == asl-interpreting or
+      $icon == american-sign-language-interpreting {
+    content: "\f2a3";
+  }
+  @if $icon == deafness or
+      $icon == hard-of-hearing or
+      $icon == deaf {
+    content: "\f2a4";
+  }
+  @if $icon == glide {
+    content: "\f2a5";
+  }
+  @if $icon == glide-g {
+    content: "\f2a6";
+  }
+  @if $icon == signing or
+      $icon == sign-language {
+    content: "\f2a7";
+  }
+  @if $icon == low-vision {
+    content: "\f2a8";
+  }
+  @if $icon == viadeo {
+    content: "\f2a9";
+  }
+  @if $icon == viadeo-square {
+    content: "\f2aa";
+  }
+  @if $icon == snapchat {
+    content: "\f2ab";
+  }
+  @if $icon == snapchat-ghost {
+    content: "\f2ac";
+  }
+  @if $icon == snapchat-square {
+    content: "\f2ad";
+  }
+  @if $icon == pied-piper {
+    content: "\f2ae";
+  }
+  @if $icon == first-order {
+    content: "\f2b0";
+  }
+  @if $icon == yoast {
+    content: "\f2b1";
+  }
+  @if $icon == themeisle {
+    content: "\f2b2";
+  }
+  @if $icon == google-plus-circle or
+      $icon == google-plus-official {
+    content: "\f2b3";
+  }
+  @if $icon == fa or
+      $icon == font-awesome {
+    content: "\f2b4";
+  }
+  @if $icon == handshake-o {
+    content: "\f2b5";
+  }
+  @if $icon == envelope-open {
+    content: "\f2b6";
+  }
+  @if $icon == envelope-open-o {
+    content: "\f2b7";
+  }
+  @if $icon == linode {
+    content: "\f2b8";
+  }
+  @if $icon == address-book {
+    content: "\f2b9";
+  }
+  @if $icon == address-book-o {
+    content: "\f2ba";
+  }
+  @if $icon == vcard or
+      $icon == address-card {
+    content: "\f2bb";
+  }
+  @if $icon == vcard-o or
+      $icon == address-card-o {
+    content: "\f2bc";
+  }
+  @if $icon == user-circle {
+    content: "\f2bd";
+  }
+  @if $icon == user-circle-o {
+    content: "\f2be";
+  }
+  @if $icon == user-o {
+    content: "\f2c0";
+  }
+  @if $icon == id-badge {
+    content: "\f2c1";
+  }
+  @if $icon == drivers-license or
+      $icon == id-card {
+    content: "\f2c2";
+  }
+  @if $icon == drivers-license-o or
+      $icon == id-card-o {
+    content: "\f2c3";
+  }
+  @if $icon == quora {
+    content: "\f2c4";
+  }
+  @if $icon == free-code-camp {
+    content: "\f2c5";
+  }
+  @if $icon == telegram {
+    content: "\f2c6";
+  }
+  @if $icon == thermometer-4 or
+      $icon == thermometer or
+      $icon == thermometer-full {
+    content: "\f2c7";
+  }
+  @if $icon == thermometer-3 or
+      $icon == thermometer-three-quarters {
+    content: "\f2c8";
+  }
+  @if $icon == thermometer-2 or
+      $icon == thermometer-half {
+    content: "\f2c9";
+  }
+  @if $icon == thermometer-1 or
+      $icon == thermometer-quarter {
+    content: "\f2ca";
+  }
+  @if $icon == thermometer-0 or
+      $icon == thermometer-empty {
+    content: "\f2cb";
+  }
+  @if $icon == shower {
+    content: "\f2cc";
+  }
+  @if $icon == bathtub or
+      $icon == s15 or
+      $icon == bath {
+    content: "\f2cd";
+  }
+  @if $icon == podcast {
+    content: "\f2ce";
+  }
+  @if $icon == window-maximize {
+    content: "\f2d0";
+  }
+  @if $icon == window-minimize {
+    content: "\f2d1";
+  }
+  @if $icon == window-restore {
+    content: "\f2d2";
+  }
+  @if $icon == times-rectangle or
+      $icon == window-close {
+    content: "\f2d3";
+  }
+  @if $icon == times-rectangle-o or
+      $icon == window-close-o {
+    content: "\f2d4";
+  }
+  @if $icon == bandcamp {
+    content: "\f2d5";
+  }
+  @if $icon == grav {
+    content: "\f2d6";
+  }
+  @if $icon == etsy {
+    content: "\f2d7";
+  }
+  @if $icon == imdb {
+    content: "\f2d8";
+  }
+  @if $icon == ravelry {
+    content: "\f2d9";
+  }
+  @if $icon == eercast {
+    content: "\f2da";
+  }
+  @if $icon == microchip {
+    content: "\f2db";
+  }
+  @if $icon == snowflake-o {
+    content: "\f2dc";
+  }
+  @if $icon == superpowers {
+    content: "\f2dd";
+  }
+  @if $icon == wpexplorer {
+    content: "\f2de";
+  }
+  @if $icon == meetup {
+    content: "\f2e0";
+  }
+}
+

@@ -87,66 +87,70 @@ export class Asset {
     asset.type = AssetTypeEnum.UNKNOWN;
     asset.workflowStatus = WorkflowStatusEnum.UNKNOWN;
 
-    switch (json.mimeType) {
-      case MimeTypeEnum.FOLDER:
-        asset.type = AssetTypeEnum.FOLDER;
-        break;
-      case MimeTypeEnum.SVG:
-        asset.type = AssetTypeEnum.SVG;
-        break;
-      case MimeTypeEnum.JPEG:
-        asset.type = AssetTypeEnum.JPEG;
-        break;
-      case MimeTypeEnum.GIF:
-        asset.type = AssetTypeEnum.GIF;
-        break;
-      case MimeTypeEnum.PNG:
-        asset.type = AssetTypeEnum.PNG;
-        break;
-      case MimeTypeEnum.MP4:
-        asset.type = AssetTypeEnum.MP4;
-        break;
-      case MimeTypeEnum.JAVASCRIPT:
-        asset.type = AssetTypeEnum.JAVASCRIPT;
-        break;
-      case MimeTypeEnum.GROOVY:
-        asset.type = AssetTypeEnum.GROOVY;
-        break;
-      case MimeTypeEnum.CSS:
-        asset.type = AssetTypeEnum.CSS;
-        break;
-      case MimeTypeEnum.FREEMARKER:
-        asset.type = AssetTypeEnum.FREEMARKER;
-        break;
-      case MimeTypeEnum.EOT_FONT:
-        asset.type = AssetTypeEnum.EOT_FONT;
-        break;
-      case MimeTypeEnum.OTF_FONT:
-        asset.type = AssetTypeEnum.OTF_FONT;
-        break;
-      case MimeTypeEnum.TTF_FONT:
-        asset.type = AssetTypeEnum.TTF_FONT;
-        break;
-      case MimeTypeEnum.WOFF_FONT:
-        asset.type = AssetTypeEnum.WOFF_FONT;
-        break;
-      case MimeTypeEnum.FOLDER && json.asset:
-        asset.type = AssetTypeEnum.FOLDER;
-        break;
-      default:
-        if (json.asset) {
-          asset.type = AssetTypeEnum.ASSET;
-        } else if (json.page) {
-          asset.type = AssetTypeEnum.PAGE;
-        } else if (json.folder) {
+    if (asset.label === 'crafter-level-descriptor.level.xml') {
+      asset.type = AssetTypeEnum.LEVEL_DESCRIPTOR;
+    } else {
+      switch (json.mimeType) {
+        case MimeTypeEnum.FOLDER:
           asset.type = AssetTypeEnum.FOLDER;
-        } else if (json.component) {
-          asset.type = AssetTypeEnum.COMPONENT;
-        } else if (json.document) {
-          asset.type = AssetTypeEnum.DOCUMENT;
-        } else if (json.levelDescriptor) {
-          asset.type = AssetTypeEnum.LEVEL_DESCRIPTOR;
-        }
+          break;
+        case MimeTypeEnum.SVG:
+          asset.type = AssetTypeEnum.SVG;
+          break;
+        case MimeTypeEnum.JPEG:
+          asset.type = AssetTypeEnum.JPEG;
+          break;
+        case MimeTypeEnum.GIF:
+          asset.type = AssetTypeEnum.GIF;
+          break;
+        case MimeTypeEnum.PNG:
+          asset.type = AssetTypeEnum.PNG;
+          break;
+        case MimeTypeEnum.MP4:
+          asset.type = AssetTypeEnum.MP4;
+          break;
+        case MimeTypeEnum.JAVASCRIPT:
+          asset.type = AssetTypeEnum.JAVASCRIPT;
+          break;
+        case MimeTypeEnum.GROOVY:
+          asset.type = AssetTypeEnum.GROOVY;
+          break;
+        case MimeTypeEnum.CSS:
+          asset.type = AssetTypeEnum.CSS;
+          break;
+        case MimeTypeEnum.FREEMARKER:
+          asset.type = AssetTypeEnum.FREEMARKER;
+          break;
+        case MimeTypeEnum.EOT_FONT:
+          asset.type = AssetTypeEnum.EOT_FONT;
+          break;
+        case MimeTypeEnum.OTF_FONT:
+          asset.type = AssetTypeEnum.OTF_FONT;
+          break;
+        case MimeTypeEnum.TTF_FONT:
+          asset.type = AssetTypeEnum.TTF_FONT;
+          break;
+        case MimeTypeEnum.WOFF_FONT:
+          asset.type = AssetTypeEnum.WOFF_FONT;
+          break;
+        case MimeTypeEnum.FOLDER && json.asset:
+          asset.type = AssetTypeEnum.FOLDER;
+          break;
+        default:
+          if (json.asset) {
+            asset.type = AssetTypeEnum.ASSET;
+          } else if (json.page) {
+            asset.type = AssetTypeEnum.PAGE;
+          } else if (json.folder) {
+            asset.type = AssetTypeEnum.FOLDER;
+          } else if (json.component) {
+            asset.type = AssetTypeEnum.COMPONENT;
+          } else if (json.document) {
+            asset.type = AssetTypeEnum.DOCUMENT;
+          } else if (json.levelDescriptor) {
+            asset.type = AssetTypeEnum.LEVEL_DESCRIPTOR;
+          }
+      }
     }
 
     if (json.new) {

@@ -80,6 +80,11 @@ $sidebar-border-color: #C8C8C8 !default;
   font-weight: 400;
 }
 
+@mixin open-sans-semi-bold {
+  font-family: $font-family;
+  font-weight: 600;
+}
+
 @mixin open-sans-bold {
   font-family: $font-family;
   font-weight: 700;

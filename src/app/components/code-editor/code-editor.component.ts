@@ -1,5 +1,8 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import {environment} from '../../../environments/environment';
+import { Subject } from 'rxjs/Subject';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { AssetTypeEnum } from '../../enums/asset-type.enum';
 
 const BOTH_TEMPLATE = `
   <div class="ace-wrapper">
@@ -20,9 +23,9 @@ const BOTH_STYLES = [`
   }
 `];
 
-declare var ace: any;
-declare var emmet: any;
-declare var monaco: any;
+// declare var ace: any;
+// declare var emmet: any;
+// declare var monaco: any;
 declare var requirejs: (deps, callback?, error?) => any;
 
 requirejs({
@@ -33,21 +36,202 @@ requirejs({
   }
 });
 
+abstract class CodeEditor {
+  // protected elem: any;
+  // protected opts: any;
+  protected instance: any;
+  protected changes = new Subject<any>();
+  protected events = new Subject<any>();
+  protected loaded = new ReplaySubject<boolean>(1);
+  constructor(protected elem,
+              protected opts) {
+  }
+  subscribe(subscriber, ...operators) {
+    return this.events
+      .pipe(...operators)
+      .subscribe(subscriber);
+  }
+  whenLoaded(subscriber) {
+    this.loaded.subscribe(subscriber);
+  }
+  abstract render(elem, opts): void;
+  abstract get content(): string;
+  abstract set content(content: string);
+  abstract get options(): any;
+  abstract set options(options: any);
+}
+
+// https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditoroptions.html
+// https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditorconstructionoptions.html
+
+interface CodeEditorOptions {
+  tabSize: number;
+  lang: string;
+}
+
+class AceEditor extends CodeEditor {
+  private ace;
+  private emmet;
+  private extEmmet;
+  private setters = {
+    tabSize: (value) => {
+      this.instance.session.setTabSize(2);
+    },
+    emmet: (enable) => {
+      if (enable) {
+        this.extEmmet.setCore(this.emmet);
+      }
+      this.instance.setOption('enableEmmet', enable);
+    },
+    folding: (folding) => {
+      switch (typeof folding) {
+        case 'boolean':
+          this.instance.session.setFoldStyle('markbeginend');
+          break;
+        case 'string':
+          this.instance.session.setFoldStyle(folding);
+          break;
+      }
+
+    },
+    lang: (lang: string) => {
+      switch (lang) {
+        case 'html':
+        case 'ace/mode/html':
+          this.instance.session.setMode('ace/mode/html');
+          this.setters.emmet(true);
+          break;
+        case 'javascript':
+        case 'ace/mode/javascript':
+        case AssetTypeEnum.JAVASCRIPT:
+          this.instance.session.setMode('ace/mode/javascript');
+          break;
+        case 'groovy':
+        case 'ace/mode/groovy':
+        case AssetTypeEnum.GROOVY:
+          this.instance.session.setMode('ace/mode/javascript');
+          break;
+        case 'css':
+        case 'stylesheet':
+        case AssetTypeEnum.CSS:
+        case 'ace/mode/css':
+          this.instance.session.setMode('ace/mode/css');
+          break;
+        case 'scss':
+        case 'sass':
+        case AssetTypeEnum.SCSS:
+        case 'ace/mode/sass':
+          this.instance.session.setMode('ace/mode/sass');
+          break;
+        case AssetTypeEnum.FREEMARKER:
+          this.instance.session.setMode('ace/mode/ftl');
+          break;
+      }
+    },
+    wrap: (wrap: boolean) => {
+      this.instance.getSession().setUseWrapMode(wrap);
+      // this.instance.setOption('wrap', wrap ? 'on' : 'off');
+    },
+    editable: (editable: boolean) => {
+      this.instance.setReadOnly(false);
+    },
+    fontSize: (size: number) => {
+      this.instance.setFontSize(12);
+    },
+    theme: (theme: string) => {
+      switch (theme) {
+        case 'chrome':
+        case 'default':
+        default:
+          this.instance.setTheme('ace/theme/chrome');
+      }
+    }
+  };
+  constructor(elem, options) {
+    super(elem, Object.assign({
+      tabSize: 2,
+      lang: 'html',
+      folding: true,
+      wrap: false,
+      editable: true,
+      fontSize: 14,
+      theme: 'chrome'
+    }, options));
+    const loaded = this.loaded;
+    requirejs(['ace/ace', 'ace/ext/emmet', 'emmet'], (ace, extEmmet) => {
+      this.onLibsLoad(ace, extEmmet, window['emmet']);
+      loaded.next(true);
+      loaded.complete();
+    });
+  }
+  private onLibsLoad(ace, extEmmet, emmet) {
+    this.ace = ace;
+    this.emmet = emmet;
+    this.extEmmet = extEmmet;
+  }
+  private configure() {
+    let
+      options = this.opts,
+      setters = this.setters;
+    this.loaded.subscribe(() =>
+      Object.keys(options).forEach(opt =>
+        setters[opt](options[opt])));
+  }
+  render(): void {
+    this.loaded.subscribe(() => {
+      let {ace, elem} = this;
+      let editor = ace.edit(elem);
+      editor.getSession().on('change', (e) => {
+        this.changes.next(e);
+      });
+      this.instance = editor;
+      this.configure();
+    });
+  }
+  get options(): any {
+    return this.opts;
+  }
+  set options(options: any) {
+    Object.assign(this.opts, options);
+    this.configure();
+  }
+  get content(): string {
+    return this.instance.getValue(); // or session.getValue
+  }
+  set content(content: string) {
+    this.loaded.subscribe(() => {
+      this.instance.setValue(content); // or session.setValue
+    });
+  }
+}
+
 @Component({
   selector: 'std-code-editor',
-  template: BOTH_TEMPLATE,
-  styles: BOTH_STYLES
-}) export class CodeEditorComponent implements OnInit {
+  template: `<div class="code-editor" #editor></div>`,
+  styles: [`
+    :host {
+      width: 100%;
+      height: 100%;
+    }
+    .code-editor {
+      width: 100%;
+      height: 100%;
+    }
+  `]
+})
+export class CodeEditorComponent implements OnInit, OnChanges, AfterViewInit {
 
-  @ViewChild('aceElem') aceElem;
-  @ViewChild('monacoElem') monacoElem;
+  @ViewChild('editor') editorRef: ElementRef;
 
-  get ace() {
-    return this.aceElem.nativeElement;
-  }
+  @Input() lang = 'html';
+  @Input() content = '';
 
-  get monaco() {
-    return this.monacoElem.nativeElement;
+  vendor: 'ace' | 'monaco' = 'ace';
+
+  private editor: CodeEditor;
+
+  get elem() {
+    return this.editorRef.nativeElement;
   }
 
   constructor() {
@@ -55,56 +239,29 @@ requirejs({
   }
 
   ngOnInit() {
-    requirejs(['vs/editor/editor.main'], () => {
-      this.initMonaco();
-    });
-    requirejs(['ace/ace', 'ace/ext/emmet', 'emmet'], (ace, emmetExt) => {
-      this.initAce();
-    });
-  }
-
-  initAce() {
-
-    let ace = requirejs('ace/ace');
-    let emm = requirejs('ace/ext/emmet');
-
-    let elem = this.ace;
-    let editor = ace.edit(elem);
-
-    emm.setCore(emmet);
-
-    editor.session.setTabSize(2);
-    editor.session.setFoldStyle('markbeginend');
-    editor.session.setMode('ace/mode/html');
-    editor.setOption('enableEmmet', true);
-    editor.setOption('wrap', 'off');
-    editor.setReadOnly(false);
-    editor.setFontSize(12);
-    editor.setTheme('ace/theme/chrome');
 
   }
 
-  initMonaco() {
-
-    let elem = this.monaco;
-
-    monaco.editor.create(elem, {
-       lineNumbers: true,
-       roundedSelection: false,
-       scrollBeyondLastLine: false,
-       wrappingColumn: -1,
-       folding: true,
-       renderLineHighlight: true,
-       overviewRulerLanes: 0,
-       theme: 'vs-dark',
-       customPreventCarriageReturn: true,
-       scrollbar: {
-         vertical: 'hidden',
-         horizontal: 'auto',
-         useShadows: false
-      }
+  ngAfterViewInit() {
+    console.log('AfterViewInit');
+    let editor = new AceEditor(this.elem, {
+      lang: this.lang
     });
+    editor.render();
+    editor.whenLoaded(() => {
+      editor.content = this.content;
+    });
+    this.editor = editor;
+  }
 
+  ngOnChanges() {
+    console.log('onChanges');
+    this.editor && this.editor.whenLoaded(() => {
+      this.editor.options = {
+        lang: this.lang
+      };
+      this.editor.content = this.content;
+    });
   }
 
 }
@@ -114,6 +271,85 @@ requirejs({
 
 
 
+
+
+
+
+// @Component({
+//   selector: 'std-code-editor',
+//   template: BOTH_TEMPLATE,
+//   styles: BOTH_STYLES
+// }) export class CodeEditorComponent implements OnInit {
+//
+//   @ViewChild('aceElem') aceElem;
+//   @ViewChild('monacoElem') monacoElem;
+//
+//   get ace() {
+//     return this.aceElem.nativeElement;
+//   }
+//
+//   get monaco() {
+//     return this.monacoElem.nativeElement;
+//   }
+//
+//   constructor() {
+//
+//   }
+//
+//   ngOnInit() {
+//     requirejs(['vs/editor/editor.main'], () => {
+//       this.initMonaco();
+//     });
+//     requirejs(['ace/ace', 'ace/ext/emmet', 'emmet'], () => {
+//       this.initAce();
+//     });
+//   }
+//
+//   initAce() {
+//
+//     let ace = requirejs('ace/ace');
+//     let emm = requirejs('ace/ext/emmet');
+//
+//     let elem = this.ace;
+//     let editor = ace.edit(elem);
+//
+//     emm.setCore(emmet);
+//
+//     editor.session.setTabSize(2);
+//     editor.session.setFoldStyle('markbeginend');
+//     editor.session.setMode('ace/mode/html');
+//     editor.setOption('enableEmmet', true);
+//     editor.setOption('wrap', 'off');
+//     editor.setReadOnly(false);
+//     editor.setFontSize(12);
+//     editor.setTheme('ace/theme/chrome');
+//
+//   }
+//
+//   initMonaco() {
+//
+//     let elem = this.monaco;
+//
+//     monaco.editor.create(elem, {
+//       lineNumbers: true,
+//       roundedSelection: false,
+//       scrollBeyondLastLine: false,
+//       wrappingColumn: -1,
+//       folding: true,
+//       renderLineHighlight: true,
+//       overviewRulerLanes: 0,
+//       theme: 'vs-dark',
+//       customPreventCarriageReturn: true,
+//       scrollbar: {
+//         vertical: 'hidden',
+//         horizontal: 'auto',
+//         useShadows: false
+//       }
+//     });
+//
+//   }
+//
+// }
 
 // const ACE_TEMPLATE = `
 //   <select [(ngModel)]="theme" (change)="aceOptionsChanged()">

@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {Messenger} from '../classes/messenger.class';
+import { Communicator } from '../classes/communicator.class';
 
 @Injectable()
-export class CommunicationService extends Messenger {
+export class CommunicationService extends Communicator {
 
   constructor() {
     super();

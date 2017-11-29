@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { debounceTime, filter, map, scan, shareReplay, combineLatest, tap, startWith, takeUntil } from 'rxjs/operators';
@@ -17,7 +17,7 @@ import { Subject } from 'rxjs/Subject';
   templateUrl: './workflow-states.component.html',
   styleUrls: ['./workflow-states.component.scss']
 })
-export class WorkflowStatesComponent implements OnInit {
+export class WorkflowStatesComponent implements OnInit, OnDestroy {
 
   site;
   items;
@@ -51,6 +51,11 @@ export class WorkflowStatesComponent implements OnInit {
 
     this.refresh();
 
+  }
+
+  ngOnDestroy() {
+    this.unsubscriptionControl.next();
+    this.unsubscriptionControl.complete();
   }
 
   fetch() {

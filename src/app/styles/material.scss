@@ -188,8 +188,10 @@ $studio-app-theme: mat-light-theme($studio-app-primary, $studio-app-accent, $stu
   line-height: 30px;
 }
 
+mat-menu-divider,
 .mat-menu-divider {
   margin: 2px 0;
+  display: block;
   border-top: 1px solid #f2f2f2;
 }
 

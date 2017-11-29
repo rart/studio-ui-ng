@@ -3,7 +3,7 @@ import { SubjectStore } from './classes/subject-store.class';
 
 import { StudioHttpService } from './services/http.service';
 import { AppState } from '../app/classes/app-state.interface';
-import { create, fromState } from '../state/app.store';
+import { create, fromState } from './app.store';
 import { User } from './models/user.model';
 
 export const appStoreFactory = (http: StudioHttpService): SubjectStore<AppState> => {
@@ -34,6 +34,7 @@ const user = User.fromJSON({
 
 const defaultState /* : AppState */ = {
   user: user,
+  // previewTabs: [],
   selectedItems: [
     {
       lastEditedBy: {
@@ -154,5 +155,10 @@ const defaultState /* : AppState */ = {
     'sidebar.sitenav.pages',
     'sidebar.sitenav.templates',
     'sidebar.sitenav.siteassets'
-  ]
+  ],
+  expandedPaths: {
+    '/site/website/index.xml': true,
+    '/site/website/movies/index.xml': true,
+    '/static-assets/css': true
+  }
 };

@@ -1,6 +1,14 @@
 
+// http://fontawesome.io/icons/
+// http://plnkr.co/edit/uMNxmhBBj1E87FjTsdsU
+
+// State for stuff being published because it's a dependecy
+// Publishing package name
+
 @import url('https://fonts.googleapis.com/css?family=Overpass+Mono');
 @import "../../styles/settings";
+
+@import "mixins";
 
 @mixin reg-font() {
   font-family: 'Overpass Mono', monospace;
@@ -30,9 +38,10 @@ $icon-width: 1.5em;
 $menu-width: 30px;
 $component-height: 1.8em;
 $color-green-darkend: darken($color-green, 15%);
-
-// http://fontawesome.io/icons/
-// http://plnkr.co/edit/uMNxmhBBj1E87FjTsdsU
+$color-teal-darkend: darken($color-teal, 15%);
+$color-purple-darkend: darken($color-purple, 15%);
+$color-yellow-darkend: darken($color-yellow, 15%);
+$color-dark: #444;
 
 :host {
   font-size: 1em;
@@ -70,37 +79,47 @@ mat-checkbox {
   margin-right: .1em;
 }
 
-.label {
-  display: inline-block;
-  padding: 0 0 0 .1em;
-}
-
 .menu {
   height: 100%;
   width: $menu-width;
   min-width: $menu-width;
 }
 
+.label {
+  display: inline-block;
+  padding: 0 0 0 .1em;
+}
+
+.type,
+.status,
+.lock {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .type {
 
   &::before {
-    content: "\f15c"; // fa-file-text
-    content: "\f128"; // fa-question
+    @include fa(question);
   }
+
   &.page {
     &::before {
-      content: "\f016";
+      @include fa(file-o);
     }
   }
   &.folder {
     &::before {
-      content: "\f114"; // closed
-      content: "\f115"; // open
+      @include fa(folder-open-o);
     }
   }
   &.component {
     &::before {
-      content: "\f12e";
+      @include fa(puzzle-piece);
     }
   }
   &.document {
@@ -110,7 +129,7 @@ mat-checkbox {
   }
   &.level.descriptor {
     &::before {
-      content: "\f161";
+      @include fa(sort-amount-desc);
     }
   }
   &.css,
@@ -119,12 +138,12 @@ mat-checkbox {
   &.less,
   &.stylesheet {
     &::before {
-      content: "\f13c"; // fa-css3
+      @include fa(css3);
     }
   }
   &.font {
     &::before {
-      content: "\f031"; // fa-font
+      @include fa(font);
     }
   }
   &.groovy,
@@ -133,7 +152,7 @@ mat-checkbox {
   &.javascript,
   &.typescript {
     &::before {
-      content: "\f121"; // fa-code
+      @include fa(code);
     }
   }
   &.javascript {
@@ -169,109 +188,90 @@ mat-checkbox {
   }
   &.video {
     &::before {
-      content: "\f1c8"; // .fa-file-movie-o, .fa-file-video-o
-      content: "\f03d"; // fa-video-camera
+      // other: .fa-file-movie-o, .fa-file-video-o
+      @include fa(video-camera);
     }
   }
   &.audio {
     &::before {
-      content: "\f028";
+      @include fa(volume-up);
     }
   }
   &.image {
     &::before {
-      content: "\f1c5"; // .fa-file-photo-o, .fa-file-picture-o, .fa-file-image-o
-      content: "\f03e"; // fa-picture-o
+      // others: .fa-file-photo-o, .fa-file-picture-o, .fa-file-image-o
+      @include fa(picture-o);
     }
   }
   &.powerpoint {
     &::before {
-      content: "\f1c4"; // fa-file-powerpoint-o
+      @include fa(file-powerpoint-o);
     }
   }
   &.excel {
     &::before {
-      content: "\f1c3"; // fa-file-excel-o
+      @include fa(file-excel-o);
     }
   }
   &.word {
     &::before {
-      content: "\f1c2"; // fa-file-word
+      @include fa(file-word-o);
     }
   }
   &.pdf {
     &::before {
-      content: "\f1c1"; // fa-file-pdf-o
+      @include fa(file-pdf-o);
     }
   }
   &.zip {
     &::before {
-      content: "\f1c6"; // fa-file-archive-o
-      content: "\f187"; // fa-archive
+      // other fa-file-archive-o
+      @include fa(archive);
     }
   }
   &.taxonomy {
     &::before {
-      content: "\f02c";
+      @include fa(tags);
     }
   }
 }
 
 .status {
 
-  &::before {
-    // Default to a question mark to help bust unknow
-    // or malformed class combinations
-    content: "\f128"; // fa-question
-  }
-
-  &.locked {
-    color: $color-orange;
-    &::before {
-      content: "\f023"; // fa-lock
-    }
-    &.you,
-    &.yourself {
-      &::before {
-        content: "\f084"; // fa-key
-      }
-    }
-  }
-
   &.submitted {
-    color: $color-pink;
+    color: $color-purple;
     &::before {
-      content: "\f017"; // fa-clock-o
+      @include fa(clock-o);
     }
   }
 
   &.scheduled {
-    color: $color-green;
+    color: $color-dark;
     &::before {
-      content: "\f073"; // fa-calendar
+      @include fa(calendar-o);
     }
   }
 
   &.with.wf {
     color: $color-purple;
     &::before {
-      content: "\f11e"; // fa-flag-checkered
+
     }
   }
 
   &.deleted {
     color: $color-red;
     &::before {
-      content: "\f014"; // fa-trash-o
+      @include fa(trash);
     }
   }
 
   &.publishing.failed,
   &.new.publishing.failed,
   &.existing.publishing.failed {
-    color: $color-orange;
+    color: $color-pink;
     &::before {
-      content: "\f071"; // fa-exclamation-triangle
+      @include fa(exclamation-triangle);
     }
   }
 
@@ -279,50 +279,48 @@ mat-checkbox {
   &.existing {
     &.submitted {
       &::before {
-        content: "\f017"; // fa-clock-o
+        @include fa(clock-o);
       }
       &.with.wf {
-        color: $color-pink;
-        &::after {
-          color: $color-purple;
-          content: "\f11e"; // fa-flag-checkered
-        }
         &.scheduled {
+          color: $color-purple;
           &::before {
-            // fa-
+
           }
         }
         &.locked {
           &::before {
-            // fa-
+
           }
         }
         &.unscheduled {
           &::before {
-            // fa-
+
           }
           &.locked {
             &::before {
-              // fa-
+
             }
           }
         }
       }
       &.no.wf {
-        color: $color-green;
         &.scheduled {
           &::before {
-            content: "\f073"; // fa-calendar
+            @include fa(calendar-o)
           }
           &.locked {
             &::before {
-              // fa-
+
             }
           }
         }
         &.unscheduled {
+          animation: fa-spin 4s infinite linear;
           &::before {
-            // fa-
+            color: $color-purple;
+            // other: fa-cog
+            @include fa(spinner)
           }
         }
       }
@@ -335,16 +333,16 @@ mat-checkbox {
   }
 
   &.new {
-    color: $color-green;
     &::before {
 
     }
     &.locked {
-      // color: $color-orange;
+
     }
     &.unpublished {
+      color: $color-green-darkend;
       &::before {
-        content: "\f067"; // fa-plus
+        @include fa(plus)
       }
     }
     &.submitted {
@@ -362,16 +360,16 @@ mat-checkbox {
         }
         &.locked {
           &::before {
-            // fa-
+
           }
         }
         &.unscheduled {
           &::before {
-            // fa-
+
           }
           &.locked {
             &::before {
-              // fa-
+
             }
           }
         }
@@ -379,17 +377,17 @@ mat-checkbox {
       &.no.wf {
         &.scheduled {
           &::before {
-            // fa-
+
           }
           &.locked {
             &::before {
-              // fa-
+
             }
           }
         }
         &.unscheduled {
           &::before {
-            // fa-
+
           }
         }
       }
@@ -408,29 +406,28 @@ mat-checkbox {
 
   &.existing {
     &.unedited {
-      color: $color-green;
       &::before {
-        content: "\f046"; // fa-check-square-o
+
       }
       &.locked {
         &::before {
-          // fa-
+
         }
       }
       &.unlocked {
         &::before {
-          // fa-
+
         }
       }
     }
     &.edited {
       color: $color-yellow;
       &::before {
-        content: "\f040"; // fa-pencil
+        @include fa(pencil)
       }
       &.locked {
         &::before {
-          // fa-
+
         }
       }
       &.unlocked {
@@ -443,21 +440,21 @@ mat-checkbox {
       &.with.wf {
         &.scheduled {
           &::before {
-            // fa-
+
           }
           &.locked {
             &::before {
-              // fa-
+
             }
           }
         }
         &.unscheduled {
           &::before {
-            // fa-
+
           }
           &.locked {
             &::before {
-              // fa-
+
             }
           }
         }
@@ -466,17 +463,17 @@ mat-checkbox {
       &.no.wf {
         .scheduled {
           &::before {
-            // fa-
+
           }
           &.locked {
             &::before {
-              // fa-
+
             }
           }
         }
         .unscheduled {
           &::before {
-            // fa-
+
           }
         }
       }
@@ -484,7 +481,7 @@ mat-checkbox {
     }
     &.publishing.failed {
       &::before {
-        // fa-
+
       }
     }
     &.deleted {
@@ -507,22 +504,21 @@ mat-checkbox {
 
   &:hover {
     .type {
-      opacity: .2;
+      // opacity: .2;
     }
     .lock,
     .status {
-      opacity: 1;
+      // opacity: 1;
     }
     .status {
-      // TODO: make green ones regular green
-      // color: $color-green;
+
     }
   }
 
   .lock,
   .type,
   .status {
-    transition: opacity .4s;
+    // transition: opacity .4s;
     position: relative;
     line-height: 1em;
   }
@@ -532,7 +528,9 @@ mat-checkbox {
     left: 0;
     height: 1em;
     max-height: 1em;
-    color: $color-teal;
+    color: $color-teal-darkend;
+    // color: $color-teal;
+    // color: $color-dark;
     text-align: center;
     min-width: 100%;
     width: 100%;
@@ -558,7 +556,6 @@ mat-checkbox {
   }
 
   .status {
-    // opacity: .85;
     @include br-quadrant();
     &::before {
       text-align: left;
@@ -587,7 +584,6 @@ mat-checkbox {
           }
         }
         &.no.wf {
-          color: $color-green-darkend;
           &.scheduled {
             &::before {
               top: -3px;
@@ -596,10 +592,15 @@ mat-checkbox {
           }
         }
       }
+      &.deleted {
+        &::before {
+          right: -.1em;
+          bottom: .15em;
+        }
+      }
     }
 
     &.new {
-      color: $color-green-darkend;
       &.deleted {
         &::before {
           top: -3px;
@@ -610,9 +611,8 @@ mat-checkbox {
 
     &.existing {
       &.unedited {
-        color: $color-green-darkend;
         &::before {
-          top: -2px;
+
         }
       }
       &.edited {
@@ -620,6 +620,15 @@ mat-checkbox {
           top: -2px;
           left: 1px;
         }
+      }
+    }
+
+    &.publishing.failed,
+    &.new.publishing.failed,
+    &.existing.publishing.failed {
+      &::before {
+        right: .15em;
+        bottom: .2em;
       }
     }
 
@@ -632,14 +641,14 @@ mat-checkbox {
     &::before {
       top: -1px;
       right: 1px;
-      content: "\f023"; // fa-lock
+      @include fa(lock)
     }
     &.yourself {
       &::before {
         top: -3px;
         right: -1px;
         font-size: .7em;
-        content: "\f084"; // fa-key
+        @include fa(key)
       }
     }
   }
@@ -664,6 +673,29 @@ mat-checkbox {
     }
     &::after {
       margin-left: .5em;
+    }
+
+    &.locked {
+      color: $color-orange;
+      &::before {
+        @include fa(lock)
+      }
+      &.you,
+      &.yourself {
+        &::before {
+          @include fa(key)
+        }
+      }
+    }
+
+    &.new,
+    &.existing {
+      &.no.wf.unscheduled {
+        animation: none;
+        &::before {
+          animation: fa-spin 4s infinite linear;
+        }
+      }
     }
   }
 }

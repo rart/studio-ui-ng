@@ -116,7 +116,8 @@ import { FilterWithPipe } from './filter-with.pipe';
     studioRoutes,
     HttpClientModule,
     BrowserModule,
-    NoopAnimationsModule, // TODO: BrowserAnimationsModule
+    // NoopAnimationsModule, // TODO: BrowserAnimationsModule
+    BrowserAnimationsModule,
     FormsModule,
     CdkTableModule,
     MatExpansionModule,

@@ -3,6 +3,7 @@ import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 import { StudioHttpService } from './http.service';
 import { Asset } from '../models/asset.model';
+import { Observable } from 'rxjs/Observable';
 
 // import {Observable} from 'rxjs/Observable';
 // Old way...
@@ -18,11 +19,20 @@ export class ContentService {
 
   constructor(private httpService: StudioHttpService) {}
 
-  tree(siteCode, path, depth = 1) {
+  tree(siteCode, assetId, depth = 1) {
     return this.httpService.get(
       `${baseUrl}/get-items-tree.json`,
-      { site: siteCode, path, depth })
+      { site: siteCode, path: assetId, depth })
       .pipe(map(response => Asset.fromJSON(response.item)));
+  }
+
+  content(siteCode, assetId, edit = false): Observable<{ id, content }> {
+    return this.httpService.get(
+      `${baseUrl}/get-content.json`,
+      { site: siteCode, path: assetId, edit })
+      .pipe(
+        map((resp: any) => ({ id: assetId, content: resp.content }))
+      );
   }
 
 }

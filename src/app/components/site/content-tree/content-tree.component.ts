@@ -11,6 +11,7 @@ import { ComponentWithState } from '../../../classes/component-with-state.class'
 import { AppStore } from '../../../state.provider';
 import { SubjectStore } from '../../../classes/subject-store.class';
 import { AppState } from '../../../classes/app-state.interface';
+import { ExpandedPathsActions } from '../../../classes/expanded-paths.actions';
 
 @Component({
   selector: 'std-content-tree',
@@ -27,14 +28,11 @@ export class ContentTreeComponent extends ComponentWithState implements OnInit {
   rootItem: Asset;
   options: ITreeOptions;
   treeState: ITreeState = {
-    expandedNodeIds: {
-      '/site/website/index.xml': true
-    },
+    expandedNodeIds: {},
     activeNodeIds: {},
     hiddenNodeIds: {},
     focusedNodeId: null
   };
-  assetMenus = {};
 
   constructor(@Inject(AppStore) protected store: SubjectStore<AppState>,
               private contentService: ContentService,
@@ -44,6 +42,8 @@ export class ContentTreeComponent extends ComponentWithState implements OnInit {
 
   ngOnInit() {
 
+    this.treeState.expandedNodeIds = Object.assign({}, this.state.expandedPaths);
+
     this.fetch(this.site.code, this.rootPath)
       .then(item => {
         this.rootPathLoaded(item);
@@ -51,10 +51,24 @@ export class ContentTreeComponent extends ComponentWithState implements OnInit {
 
     this.setTreeOptionDefaults();
 
+    this.subscribeTo('expandedPaths');
+
   }
 
-  treeStateChanged(e) {
+  expandedPathsStateChanged(expandedPaths) {
+    console.log('expandedPathsStateChanged');
+    let treeState = this.treeState;
+    Object.keys(expandedPaths).forEach(key => treeState.expandedNodeIds[key] = true);
+  }
 
+  treeStateChanged(treeState: ITreeState) {
+    let
+      source = treeState.expandedNodeIds,
+      stateExpanded  = Object.keys(this.state.expandedPaths),
+      treeExpanded = Object.keys(source)
+        .filter(key => !stateExpanded[key]);
+    // noinspection TsLint
+    treeExpanded.length && this.store.dispatch(ExpandedPathsActions.expandMany(treeExpanded));
   }
 
   treeItemClicked(tree, node, $event) {
@@ -108,17 +122,6 @@ export class ContentTreeComponent extends ComponentWithState implements OnInit {
     } else {
       this.nodes = asset.children || [];
     }
-
-    let assetMenus = {};
-    let menuFn = (node) => {
-      assetMenus[node.id] = this.workflowService
-        .getAvailableAssetOptions(null, node);
-      if (node.children && node.children.length) {
-        node.children.forEach(menuFn);
-      }
-    };
-    this.assetMenus = assetMenus;
-    this.nodes.forEach(menuFn);
 
   }
 

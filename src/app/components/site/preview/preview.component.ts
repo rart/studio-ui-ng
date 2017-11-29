@@ -1,15 +1,34 @@
-import {AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {SiteService} from '../../../services/site.service';
-import {CookieService} from 'ngx-cookie-service';
-import {Site} from '../../../models/site.model';
-import {CommunicationService} from '../../../services/communication.service';
-import {WindowMessageScopeEnum} from '../../../enums/window-message-scope.enum';
-import {StringUtils, uuid} from '../../../app.utils';
-import {Asset} from '../../../models/asset.model';
+import {
+  AfterViewInit,
+  Component, ElementRef,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit, QueryList,
+  ViewChild, ViewChildren
+} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SiteService } from '../../../services/site.service';
+import { CookieService } from 'ngx-cookie-service';
+import { Site } from '../../../models/site.model';
+import { CommunicationService } from '../../../services/communication.service';
+import { WindowMessageScopeEnum } from '../../../enums/window-message-scope.enum';
+import { makeSub } from '../../../app.utils';
+import { Asset } from '../../../models/asset.model';
 import { WindowMessageTopicEnum } from '../../../enums/window-message-topic.enum';
+import { ComponentWithState } from '../../../classes/component-with-state.class';
+import { AppStore } from '../../../state.provider';
+import { SubjectStore } from '../../../classes/subject-store.class';
+import { AppState } from '../../../classes/app-state.interface';
+import { ComponentHostDirective } from '../../component-host.directive';
+import { PreviewTab } from '../../../classes/preview-tab.class';
+import { take, takeUntil } from 'rxjs/operators';
+import { ContentService } from '../../../services/content.service';
 
-declare var $;
+// import { trigger, style, transition, animate, keyframes, query, stagger } from '@angular/animations';
+// https://angular.io/guide/animations
+
+// declare var $;
 const logStyles = 'background: #ddd; color: #333';
 const clearTimeout = window.clearTimeout;
 
@@ -19,161 +38,6 @@ const ERROR_PAGE_TITLE = '** Crafter Studio Preview ERROR **';
 const IFRAME_LANDING_URL = '/app/assets/guest.landing.html';
 const IFRAME_ERROR_URL = '/app/assets/guest.500.html';
 const IFRAME_LOAD_CONTROL_TIMEOUT = 5000;
-
-interface HistoryItem {
-  url: string;
-  title: string;
-  siteCode: string;
-}
-
-class PreviewTab {
-
-  public id: string;
-  private history: Array<HistoryItem> = [];
-  private historyIndex = -1;
-  private pending = true; // The guest hasn't checked in
-  // private outOfSync = false; // When external, after further navigation detected from the iframe without a check in
-
-  /**
-   * @param url {string}
-   * @param title {string}
-   * @param siteCode {string} The identifying code of the site this tab refers to
-   * @param isNew {boolean} The tab has a 'blank' URL pending user input
-   * @param active {boolean} Whether this is the current tab in focus
-   * @param render {boolean} To Optimize resources, used to render the
-   *                         iframe until the tab receives it's first focus.
-   *                         For a future phase where each tab has it's own iframe.
-   **/
-  constructor(public url: string,
-              public title: string,
-              public siteCode: string,
-              public isNew = false,
-              public active = false,
-              public render = false) {
-    this.id = uuid();
-    if (url) {
-      this.track({url, title, siteCode});
-    }
-  }
-  /**
-   * Updates the current history entry to reflect the
-   * instance's current state/values
-   * */
-  private updateHistory() {
-    let {url, title, siteCode} = this;
-    if (this.history.length === 0) {
-      this.track({url, title, siteCode});
-    } else {
-      this.history[this.historyIndex].url = url;
-      this.history[this.historyIndex].title = title;
-      this.history[this.historyIndex].siteCode = siteCode;
-    }
-  }
-
-  private setValues(url, title, siteCode) {
-    this.url = url;
-    this.title = title;
-    this.siteCode = siteCode;
-  }
-
-  back() {
-    let history = this.history;
-    if (this.hasBack()) {
-      let {url, title, siteCode} = history[--this.historyIndex];
-      this.setValues(url, title, siteCode);
-      this.pending = true;
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  hasBack() {
-    return this.historyIndex > 0;
-  }
-
-  forward() {
-    let history = this.history;
-    if (this.hasForward()) {
-      let {url, title, siteCode} = history[++this.historyIndex];
-      this.setValues(url, title, siteCode);
-      this.pending = true;
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  hasForward() {
-    return (this.history.length > 1) && (this.historyIndex < (this.history.length - 1));
-  }
-
-  navigate(siteCode, url, title = 'Loading') {
-    let history = this.history;
-    let index = this.historyIndex;
-    let lastIndex = history.length - 1;
-    if (index < lastIndex) {
-      // Cut the history here
-      history.splice(index + 1);
-    }
-    this.track({url, title, siteCode});
-    this.setValues(url, title, siteCode);
-  }
-
-  update(url, title, siteCode = this.siteCode) {
-
-    this.setValues(url, title, siteCode);
-    this.updateHistory();
-
-    this.pending = false;
-
-  }
-
-  notifyExternalLoad(url = this.url, title = 'External Page') {
-    this.update(url, title, null);
-  }
-
-  track(entry: HistoryItem) {
-    this.historyIndex++;
-    this.history.push(entry);
-  }
-
-  isPending() {
-    return this.pending;
-  }
-
-  // NOT a Crafter preview/engine page.
-  // Studio won't be able to interact with the page unless set up for it.
-  isExternal(url = this.url) {
-    return (StringUtils.startsWith(url, 'http') || StringUtils.startsWith(url, '//'));
-  }
-
-  // isOutOfSync() {
-  //   return this.outOfSync;
-  // }
-
-  // setOutOfSync() {
-  //
-  //   let url = this.url
-  //     .replace('http://', '')
-  //     .replace('https://', '')
-  //     .replace('//', '');
-  //
-  //   let mainURLEndIndex = url.indexOf('/');
-  //   url = url.substr(0, (mainURLEndIndex !== -1) ? mainURLEndIndex : url.length);
-  //
-  //   this.url = `${url} (out of sync)`;
-  //
-  //   this.outOfSync = true;
-  //
-  // }
-
-  // resetExternalMetrics() {
-  //   this.outOfSync = false;
-  //   this.pending = true;
-  // }
-
-}
 
 // Studio Form Engine URLs are like...
 // /studio/form?
@@ -185,6 +49,7 @@ class PreviewTab {
 //  editorId=b0665d96-2395-14b5-7f2b-3db8fa7286e3
 
 // /studio/form?form=/page/entry&path=/site/website/index.xml&iceComponent=true&site=launcher&edit=true&editorId=b0665d96-2395-14b5-7f2b-3db8fa7286e3
+// https://angular.io/guide/router#router-events
 
 // CStudioAuthoring.Operations.editContent(
 //   content.form,
@@ -200,121 +65,119 @@ class PreviewTab {
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.scss']
 })
-export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PreviewComponent extends ComponentWithState implements OnInit, AfterViewInit, OnDestroy {
 
-  @Input() quickView = false; // TODO: do quick view?
+  @ViewChildren('urlBox') input: QueryList<ElementRef>;
+  @ViewChild(ComponentHostDirective) iFrame: ComponentHostDirective;
+
+  get urlBox() {
+    return this.input.first.nativeElement;
+  }
 
   site: Site;
   tabs = [];
   selectedTab: PreviewTab;
   sites: Array<Site>;
-  iframeLandingUrl = IFRAME_LANDING_URL;
+  iFrameLandingUrl = IFRAME_LANDING_URL;
   guestLoadControlTimeout = null;
 
-  private messagesSubscription;
+  lang = null;
+  content = null;
 
-  constructor(private router: Router,
+  constructor(@Inject(AppStore) protected store: SubjectStore<AppState>,
+              private router: Router,
               private route: ActivatedRoute,
               private siteService: SiteService,
               private cookieService: CookieService,
               private communicator: CommunicationService,
-              private elementRef: ElementRef) {
+              private contentService: ContentService) {
+    super(store);
   }
 
   ngOnInit() {
 
-    if (!this.quickView) {
+    this.route.data
+      .subscribe(data => {
+        this.site = data.site || { code: 'launcher', name: 'Launcher' };
+        this.initTabs();
+      });
 
-      this.route.data
-        .subscribe(data => {
-          console.log('%c Went through route.data ', logStyles);
-          this.site = data.site || { code: 'launcher', name: 'Launcher' };
-          this.initTabs();
-        });
+    this.route.queryParams
+      .subscribe(params => {
+        const open = params.open;
+        if (open) {
+          this.openFromQueryString(open);
+        }
+      });
 
-      this.route.queryParams
-        .subscribe(params => {
-          const open = params.open;
-          if (open) {
-
-            let tab;
-            let firstFoundIndex = null;
-            const tabs = this.tabs;
-            const tabsToOpen = JSON.parse(params.open)
-            // Filter out tabs that are already opened
-              .filter((data) => (
-                tabs.filter((previewTab, i) => {
-                  if (data[0] === previewTab.siteCode && data[1] === previewTab.url) {
-                    if (firstFoundIndex === null) {
-                      // First found currently opened tab from the requested 'open' tabs
-                      // will be given focus
-                      firstFoundIndex = i;
-                    }
-                    return true;
-                  } else {
-                    return false;
-                  }
-                }).length < 1
-              ));
-
-            if (tabsToOpen.length === 0) {
-              this.selectTab(tabs[firstFoundIndex]);
-            } else {
-              tabsToOpen.forEach((item, i) => {
-                let url = item[1];
-                let siteCode = item[0];
-                let title = (item[2] || '');
-                if (i === 0) {
-                  tab = this.selectedTab;
-                  tab.url = url;
-                  tab.title = title;
-                  tab.isNew = false;
-                  tab.siteCode = siteCode;
-                } else {
-                  tab = new PreviewTab(url, title, siteCode, false);
-                  tabs.push(tab);
-                }
-              });
-              this.requestGuestNavigation(tab.url, tab.siteCode);
-            }
-
-            this.router.navigate([`/site/${tabs[0].siteCode}/preview`]);
-
-          }
-        });
-
-      this.siteService
-        .all()
-        .then((data) => (this.sites = data.entries));
-
-    }
-
-    this.initializeCommunications();
+    this.siteService
+      .all()
+      .then((data) => (this.sites = data.entries));
 
   }
 
   ngAfterViewInit() {
-    this.addCommunicatorTargets();
+    this.initializeCommunications();
+    this.input.changes
+      .pipe(take(1))
+      .subscribe(() => this.urlBox.select());
   }
 
-  ngOnDestroy() {
-    this.communicator.resetOrigins();
-    this.communicator.resetTargets();
-    this.messagesSubscription.unsubscribe();
+  private openFromQueryString(open) {
+    let tab;
+    let firstFoundIndex = null;
+    const tabs = this.tabs;
+    const tabsToOpen = JSON.parse(open)
+    // Filter out tabs that are already opened
+      .filter((data) => (
+        tabs.filter((previewTab, i) => {
+          if (data[0] === previewTab.siteCode && data[1] === previewTab.url) {
+            if (firstFoundIndex === null) {
+              // First found currently opened tab from the requested 'open' tabs
+              // will be given focus
+              firstFoundIndex = i;
+            }
+            return true;
+          } else {
+            return false;
+          }
+        }).length < 1
+      ));
+
+    if (tabsToOpen.length === 0) {
+      this.selectTab(tabs[firstFoundIndex]);
+    } else {
+      tabsToOpen.forEach((item, i) => {
+        let url = item[1];
+        let siteCode = item[0];
+        let title = (item[2] || '');
+        if (i === 0) {
+          tab = this.selectedTab;
+          tab.url = url;
+          tab.title = title;
+          tab.isNew = false;
+          tab.siteCode = siteCode;
+        } else {
+          tab = new PreviewTab(url, title, siteCode, false);
+          tabs.push(tab);
+        }
+      });
+      this.requestGuestNavigation(tab.url, tab.siteCode);
+    }
+    this.router.navigate([`/site/${tabs[0].siteCode}/preview`]);
   }
 
-  private processOpenItemRequest(item: Asset) {
+  private processOpenItemRequest(asset: Asset) {
 
     const tabs = this.tabs;
     let
-      tab,
-      i, l = tabs.length,
+      tab, i, l = tabs.length,
       found = false;
 
     // Find if the requested preview URL is already within the opened tabs.
     for (i = 0; i < l; ++i) {
       tab = tabs[i];
-      if (item.siteCode === tab.siteCode && item.url === tab.url) {
+      if (asset.siteCode === tab.siteCode && asset.url === tab.url) {
         found = true;
         break;
       }
@@ -325,40 +188,40 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
 
       let
-        url = item.url,
-        siteCode = item.siteCode,
-        title = item.label;
+        url = asset.url,
+        siteCode = asset.siteCode,
+        title = asset.label;
 
       tab = this.selectedTab;
       tab.url = url;
       tab.title = title;
       tab.isNew = false;
       tab.siteCode = siteCode;
+      tab.asset = asset;
 
       this.requestGuestNavigation(tab.url, tab.siteCode);
 
-    } /*else {
-      tab = new PreviewTab(url, title, siteCode, false);
-      tabs.push(tab);
-    }*/
+    }
 
-    // this.requestGuestNavigation(tab.url, tab.siteCode);
-    // this.router.navigate([`/site/${tabs[0].siteCode}/preview`]);
+    this.contentService
+      .content(asset.siteCode, asset.id)
+      .subscribe(a => {
+        this.content = a.content;
+        this.lang = asset.type;
+      });
 
   }
 
   private initTabs() {
     let tabs = this.tabs;
-    if (tabs.length) {
-      tabs.forEach((tab) => tab.render = tab.active);
-    } else {
+    if (tabs.length === 0) {
       tabs.push(new PreviewTab('', 'New Tab', this.site.code, true));
     }
     this.selectTab(tabs[0]);
   }
 
   private getIFrame() {
-    return this.elementRef.nativeElement.querySelector('iframe');
+    return this.iFrame.elem;
   }
 
   private processMessage(message) {
@@ -417,8 +280,10 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getIFrame().src = url;
   }
 
-  private communicate(topic: WindowMessageTopicEnum, message?, scope: WindowMessageScopeEnum = WindowMessageScopeEnum.External) {
-    this.communicator.publish(topic, message, scope);
+  private communicate(topic: WindowMessageTopicEnum,
+                      data = null,
+                      scope: WindowMessageScopeEnum = WindowMessageScopeEnum.External) {
+    this.communicator.publish(topic, data, scope);
   }
 
   private setCookie(siteCode) {
@@ -434,21 +299,17 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private initializeCommunications() {
-    this.communicator.addOrigin(window.location.origin);
-    this.messagesSubscription = this.communicator
-      .subscribe(message => this.processMessage(message));
-    // this.communicator.addOrigin(window.location.origin);      // Self
+    let
+      iFrame = this.getIFrame(),
+      origin = window.location.origin;
+    this.communicator.addTarget(iFrame);
+    this.communicator.addOrigin(origin);
     // this.communicator.addOrigin(environment.urlPreviewBase);  // Guest TODO: load from config.
-    // this.communicator.addTarget(document.getElementById('previewFrame'));
-    // this.communicator.subscribe(message => this.processMessage(message));
-  }
-
-  private addCommunicatorTargets() {
-    // let iframes = document.querySelectorAll('iframe');
-    // Array.from(iframes)
-    //   .forEach((iframe) => this.communicator.addTarget(iframe));
-    let iframe = this.getIFrame();
-    this.communicator.addTarget(iframe);
+    this.communicator.subscribe(message => this.processMessage(message), this.until);
+    this.addTearDown(() => {
+      this.communicator.removeOrigin(origin);
+      this.communicator.removeTarget(iFrame);
+    });
   }
 
   /*
@@ -481,7 +342,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     let tab = new PreviewTab('', 'New Tab', this.site.code, true);
     this.tabs.push(tab);
     this.selectTab(tab);
-    $('#address').select();
+    this.urlBox.select();
   }
 
   requestUrl(url) {
@@ -510,32 +371,28 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   selectTab(tab) {
     if (tab !== this.selectedTab) {
-      this.tabs.forEach((item) => (
-        item.active = (item === tab)));
-      tab.render = true;
       this.selectedTab = tab;
-      this.requestGuestNavigation(tab.isNew ? this.iframeLandingUrl : tab.url, tab.siteCode);
+      this.requestGuestNavigation(
+        tab.isNew
+          ? this.iFrameLandingUrl
+          : tab.url,
+        tab.siteCode);
     }
   }
 
   closeTab(tab) {
     let tabs = this.tabs;
-    if (tabs.length) {
-
-      let index = tabs.indexOf(tab);
-      tabs = tabs.filter((item) => {
-        return item !== tab;
-      });
-
-      this.tabs = tabs;
-
+    if (tabs.length > 1) {
+      let
+        active = this.selectedTab,
+        index = tabs.indexOf(tab);
       // If closed was the active one, assign
       // the nearest anterior tab as active
-      if (tab.active) {
+      if (tab === active) {
         tabs[index >= tabs.length ? --index : index].active = true;
         this.selectTab(tabs[index]);
       }
-
+      tabs.splice(index, 1);
     }
   }
 
@@ -547,7 +404,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
       // If not, this is likely some form of error like...
       // - The page doesn't exist or some other form of HTTP error
       // - The loaded page doesn't have the guest script/imported or set up correctly to communicate with Studio
-      this.startGuestLoadErrorTimeout();
+      // this.startGuestLoadErrorTimeout();
     } else if (selectedTab.isExternal()) {
       if (selectedTab.isPending()) {
         selectedTab.notifyExternalLoad();
