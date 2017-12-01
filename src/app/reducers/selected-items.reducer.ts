@@ -34,10 +34,13 @@ export const selectedItems: Reducer<Array<Asset>> = (state = [], action: AnyActi
       return nextState;
     }
 
-    default:
-      // return state;
+    case StoreActionsEnum.STATE_INIT: {
       return state.map((item) => (
-        (item instanceof Asset) ? item : Asset.fromPO(item)
+        (item instanceof Asset) ? item : Asset.deserialize(item)
       ));
+    }
+
+    default:
+      return state;
   }
 };

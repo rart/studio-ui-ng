@@ -3,12 +3,14 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
-export const environment = {
+export const environment: { apiVersion: StudioAPIVersion, [otherProps: string]: any; } = {
   production: false,
 
   appUrl: '/app',
   assetsUrl: '/app/assets',
   // http://docs.craftercms.org/en/latest/developers/projects/studio/api/index.html
-  apiUrl: '/studio/api/1/services/api/1'
+  apiUrl: '/studio/api/1/services/api/1',
+
+  apiVersion: 'v3'
 
 };

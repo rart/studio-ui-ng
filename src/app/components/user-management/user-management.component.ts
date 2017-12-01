@@ -84,8 +84,7 @@ export class UserManagementComponent implements OnInit {
     this.userService.all({
       start: (this.pageIndex * this.pageSize),
       number: this.pageSize
-    }).then((data) => {
-
+    }).subscribe((data) => {
       this.users = data.entries;
       this.totalNumOfUsers = data.total;
     });

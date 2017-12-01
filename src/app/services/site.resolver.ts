@@ -10,10 +10,8 @@ export class SiteResolver implements Resolve<any> {
 
   resolve(route: ActivatedRouteSnapshot,
           state: RouterStateSnapshot) {
-    const site = route.params.site;
-    return this.siteService.get(site).then((data) => {
-      return data;
-    });
+    const siteCode = route.params.site;
+    return this.siteService.byId(siteCode);
   }
 
 }

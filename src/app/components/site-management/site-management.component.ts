@@ -1,17 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/observable/defer';
-import 'rxjs/add/operator/delay';
-import {PageEvent} from '@angular/material';
-import {Router, ActivatedRoute} from '@angular/router';
-import {MatDialog} from '@angular/material';
-import {SiteService} from '../../services/site.service';
-import {openDialog, StringUtils} from '../../app.utils';
-import {EmbeddedViewDialogComponent} from '../embedded-view-dialog/embedded-view-dialog.component';
-import {SiteCrUDComponent} from './site-crud/site-crud.component';
-
-declare var $;
+import { Component, OnInit } from '@angular/core';
+import { PageEvent } from '@angular/material';
+import { Router, ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material';
+import { SiteService } from '../../services/site.service';
+import { openDialog, StringUtils } from '../../app.utils';
+import { EmbeddedViewDialogComponent } from '../embedded-view-dialog/embedded-view-dialog.component';
+import { SiteCrUDComponent } from './site-crud/site-crud.component';
 
 @Component({
   selector: 'std-site-management',
@@ -48,7 +42,7 @@ export class SiteManagementComponent implements OnInit {
             .subscribe((params) => {
               if (params.siteCode) {
                 setTimeout(() =>
-                  this.openDialog({code: params.code || params.edit}));
+                  this.openDialog({ code: params.code || params.edit }));
               }
             });
         }
@@ -81,7 +75,7 @@ export class SiteManagementComponent implements OnInit {
         if (create !== undefined) {
           setTimeout(() => this.openDialog());
         } else if (edit !== undefined && edit !== '') {
-          setTimeout(() => this.openDialog({code: edit}));
+          setTimeout(() => this.openDialog({ code: edit }));
         }
 
       });
@@ -91,14 +85,14 @@ export class SiteManagementComponent implements OnInit {
     this.siteService.all({
       start: (this.pageIndex * this.pageSize),
       number: this.pageSize
-    }).then((data) => {
+    }).subscribe(data => {
       this.sites = data.entries;
       this.totalNumOfSites = data.total;
     });
   }
 
   createSite() {
-    this.router.navigate(['/sites'], {queryParams: {create: 'true'}});
+    this.router.navigate(['/sites'], { queryParams: { create: 'true' } });
   }
 
   openDialog(data = {}) {
@@ -121,7 +115,7 @@ export class SiteManagementComponent implements OnInit {
 
   pageChanged($event: PageEvent) {
     this.router.navigate(['/sites'], {
-      queryParams: {pageIndex: $event.pageIndex, pageSize: $event.pageSize}
+      queryParams: { pageIndex: $event.pageIndex, pageSize: $event.pageSize }
     });
   }
 

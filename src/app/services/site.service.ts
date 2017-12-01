@@ -1,63 +1,66 @@
-import {Injectable} from '@angular/core';
-import {environment} from '../../environments/environment';
+import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
 
-import {Site} from '../models/site.model';
-import {IEntityService, PagedResponse, PostResponse, mapToPostResponse, StudioHttpService} from './http.service';
+import { Site } from '../models/site.model';
+import { StudioHttpService } from './http.service';
+import { Observable } from 'rxjs/Observable';
+import { EntityService } from '../classes/entity-service.interface';
+import { PagedResponse } from '../classes/paged-response.interface';
+import { PostResponse } from '../classes/post-response.interface';
 
 const baseUrl = `${environment.apiUrl}/site`;
 
 @Injectable()
-export class SiteService implements IEntityService<Site> {
+export class SiteService implements EntityService<Site> {
 
-  constructor(public http: StudioHttpService) {}
+  constructor(public http: StudioHttpService) {
+  }
 
-  all(query?): Promise<PagedResponse<Site>> {
-    return this.http.get(`${baseUrl}/get-per-user.json`, Object.assign({username: 'admin'}, query || {}))
+  all(query?): Observable<PagedResponse<Site>> {
+    return this.http.get(`${baseUrl}/get-per-user.json`, Object.assign({ username: 'admin' }, query || {}))
       .map((data) => ({
         total: data.total,
         entries: data.sites.map((item) => Site.fromJSON(item))
-      }))
-      .toPromise();
+      }));
   }
 
   allBlueprints() {
-    return this.http.get(`${baseUrl}/get-available-blueprints.json`)
-      .toPromise();
+    return this.http.get(`${baseUrl}/get-available-blueprints.json`);
   }
 
-  get(sideCode): Promise<Site> {
-    return this.http.get(`${baseUrl}/get.json`, {site_id: sideCode})
-      .map((data) => Site.fromJSON(data))
-      .toPromise();
+  byId(sideCode): Observable<Site> {
+    return this.http.get(`${baseUrl}/get.json`, { site_id: sideCode })
+      .map((data) => Site.fromJSON(data));
   }
 
-  create(site: Site): Promise<PostResponse<Site>> {
+  by(entityProperty: string, value): Observable<Site> {
+    return undefined;
+  }
+
+  create(site: Site): Observable<PostResponse<Site>> {
     return this.http
       .post(`${baseUrl}/create.json`, {
         site_id: site.code,
         description: site.description,
         blueprint: site.blueprint.id
       })
-      .map(mapToPostResponse(site))
-      .toPromise();
+      .map(StudioHttpService.mapToPostResponse(site));
   }
 
-  update(site: Site): Promise<PostResponse<Site>> {
+  update(site: Site): Observable<PostResponse<Site>> {
     return this.http
       .post(`${baseUrl}/update.json`, {
         site_id: site.code,
         description: site.description,
         blueprint: site.blueprint.id
       })
-      .map(mapToPostResponse(site))
-      .toPromise();
+      .map(StudioHttpService.mapToPostResponse(site));
   }
 
-  delete(site: Site): Promise<PostResponse<Site>> {
+  delete(site: Site): Observable<PostResponse<Site>> {
     return this.http
-      .post(`${baseUrl}/delete-site.json`, {siteId: site.code})
-      .map(mapToPostResponse(site))
-      .toPromise();
+      .post(`${baseUrl}/delete-site.json`, { siteId: site.code })
+      .map(StudioHttpService.mapToPostResponse(site));
   }
 
 }

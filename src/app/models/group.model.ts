@@ -5,6 +5,8 @@ export class Group {
   // siteCode;
   name;
   site: Site;
+  // roles
+
   static fromJSON(json) {
     let model = new Group();
     model.id = json.group_id;
@@ -13,7 +15,19 @@ export class Group {
     // model.siteCode = (json.site) ? Site.fromJSON(json) : undefined;
     return model;
   }
+
   static toJSON() {
     //  TODO: Implement toJSON for Group?
+  }
+
+  static deserialize(json): Group {
+    if (json === undefined || json === null) {
+      return null;
+    }
+    let model = new Group();
+    Object.keys(json).forEach(prop => {
+      model[prop] = (prop === 'site') ? Site.deserialize(json[prop]) : json[prop];
+    });
+    return model;
   }
 }

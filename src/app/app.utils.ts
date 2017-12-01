@@ -58,7 +58,6 @@ export const makeSub = asAnonymousSubscription;
 
 // @see https://github.com/Qix-/color
 
-declare const moment: any;
 const LogStyle = {
   DULL: '',
   TEXT_TEAL: `color: ${ColorsEnum.TEAL}`,
@@ -88,13 +87,18 @@ const logReturn = () => {
   return `(${moment().format('[Logged @] HH:MM:SS')})`;
 };
 
-function log(...anything) {
+function log(...anything: any[]) {
   clearIfRequested(anything);
   console.log.apply(console, anything);
   return logReturn();
 }
 
-function pretty(style: LogStyle | string, ...anything) {
+function pretty(style: LogStyle | any, ...anything) {
+  // if ((typeof style !== 'string') || !(style.toUpperCase() in LogStyle)) {
+  //   anything.unshift(style);
+  // } else {
+  //   style = (style.toUpperCase() in LogStyle) ? LogStyle[style.toUpperCase()] : style;
+  // }
   style = (style.toUpperCase() in LogStyle) ? LogStyle[style.toUpperCase()] : style;
   let prettyPrintObjects = (anything[anything.length - 1] === '$o');
   // noinspection TsLint
@@ -129,6 +133,87 @@ if (!environment.production) {
 // export const getPanelKey = (topic) => {
 //   return ``;
 // };
+
+
+// Avatars from semantic-ui.com
+// https://semantic-ui.com/images/avatar2/large/kristy.png
+// https://semantic-ui.com/images/avatar/large/elliot.jpg
+// https://semantic-ui.com/images/avatar/large/jenny.jpg
+// https://semantic-ui.com/images/avatar2/large/matthew.png
+// https://semantic-ui.com/images/avatar2/large/molly.png
+// https://semantic-ui.com/images/avatar2/large/elyse.png
+// https://semantic-ui.com/images/avatar/large/steve.jpg
+// https://semantic-ui.com/images/avatar/large/daniel.jpg
+// https://semantic-ui.com/images/avatar/large/helen.jpg
+// https://semantic-ui.com/images/avatar/large/matt.jpg
+// https://semantic-ui.com/images/avatar/large/veronika.jpg
+// https://semantic-ui.com/images/avatar/large/stevie.jpg
+
+const avatarsURL = `${environment.assetsUrl}/img/avatars`;
+
+export const AVATARS = [
+  `${avatarsURL}/daniel.jpg`,
+  `${avatarsURL}/elyse.png`,
+  `${avatarsURL}/jenny.jpg`,
+  `${avatarsURL}/matt.jpg`,
+  `${avatarsURL}/molly.png`,
+  `${avatarsURL}/stevie.jpg`,
+  `${avatarsURL}/elliot.jpg`,
+  `${avatarsURL}/helen.jpg`,
+  `${avatarsURL}/kristy.png`,
+  `${avatarsURL}/matthew.png`,
+  `${avatarsURL}/steve.jpg`,
+  `${avatarsURL}/veronika.jpg`
+];
+
+export const MALE_AVATARS = [
+  `${avatarsURL}/daniel.jpg`,
+  `${avatarsURL}/matt.jpg`,
+  `${avatarsURL}/stevie.jpg`,
+  `${avatarsURL}/elliot.jpg`,
+  `${avatarsURL}/matthew.png`,
+  `${avatarsURL}/steve.jpg`
+];
+
+export const FEMALE_AVATARS = [
+  `${avatarsURL}/elyse.png`,
+  `${avatarsURL}/jenny.jpg`,
+  `${avatarsURL}/molly.png`,
+  `${avatarsURL}/helen.jpg`,
+  `${avatarsURL}/kristy.png`,
+  `${avatarsURL}/veronika.jpg`
+];
+
+import { API3Parser } from './classes/api3-parser.class';
+import { Asset } from '../app/models/asset.model';
+import { User } from '../app/models/user.model';
+import { Group } from '../app/models/group.model';
+import { Site } from '../app/models/site.model';
+
+export type StudioModelType =
+  typeof Asset |
+  typeof User |
+  typeof Site |
+  typeof Group;
+
+export type StudioModel =
+  Asset |
+  User |
+  Site |
+  Group;
+
+export function parserFactory(apiVersion: StudioAPIVersion = environment.apiVersion) {
+  switch (apiVersion) {
+    case 'v3':
+      return new API3Parser();
+  }
+}
+
+export function parse(classType: StudioModelType,
+                      JSONObject: any): StudioModel {
+  let parser = parserFactory();
+  return parser.parseEntity(classType, JSONObject);
+}
 
 export class StringUtils {
   static contains(str, search) {

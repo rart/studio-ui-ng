@@ -9,15 +9,18 @@ import { AppState } from './classes/app-state.interface';
 import { selectedItems } from './reducers/selected-items.reducer';
 import { expandedPanels } from './reducers/expanded-panels.reducer';
 import { expandedPaths } from './reducers/expanded-paths.reducer';
+import { previewTabs } from './reducers/preview-tabs.reducer';
+import { user } from './reducers/user.reducer';
 
-const tempReducer = (state = null, action) => state;
-
-const appReducer = combineReducers<AppState>({
-  user: tempReducer,
+export const reducerMap = {
+  user,
   selectedItems,
   expandedPanels,
-  expandedPaths
-});
+  expandedPaths,
+  previewTabs
+};
+
+export const appReducer = combineReducers<AppState>(reducerMap);
 
 const devtools: StoreEnhancer<AppState> = window['devToolsExtension']
   ? window['devToolsExtension']()

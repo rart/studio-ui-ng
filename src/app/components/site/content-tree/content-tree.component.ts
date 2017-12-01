@@ -1,17 +1,13 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { ITreeOptions, TREE_ACTIONS, TreeNode, ITreeState } from 'angular-tree-component';
 import { ContentService } from '../../../services/content.service';
-import { CommunicationService } from '../../../services/communication.service';
-import { WindowMessageScopeEnum } from '../../../enums/window-message-scope.enum';
 import { Asset } from '../../../models/asset.model';
-import { WindowMessageTopicEnum } from '../../../enums/window-message-topic.enum';
 import { WorkflowService } from '../../../services/workflow.service';
 import { ComponentWithState } from '../../../classes/component-with-state.class';
 import { AppStore } from '../../../state.provider';
 import { SubjectStore } from '../../../classes/subject-store.class';
 import { AppState } from '../../../classes/app-state.interface';
-import { ExpandedPathsActions } from '../../../classes/expanded-paths.actions';
+import { ExpandedPathsActions } from '../../../actions/expanded-paths.actions';
 
 @Component({
   selector: 'std-content-tree',
@@ -56,7 +52,6 @@ export class ContentTreeComponent extends ComponentWithState implements OnInit {
   }
 
   expandedPathsStateChanged(expandedPaths) {
-    console.log('expandedPathsStateChanged');
     let treeState = this.treeState;
     Object.keys(expandedPaths).forEach(key => treeState.expandedNodeIds[key] = true);
   }

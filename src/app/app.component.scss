@@ -48,7 +48,12 @@ std-site-crud,
 std-site-dashboard,
 std-site-management,
 std-password-field,
-std-item-list-dashlet {
+std-item-list-dashlet,
+std-iframe,
+std-image-viewer,
+std-video-player,
+std-audio-player,
+std-font-visualizer {
   display: block;
   position: relative;
 }
@@ -495,6 +500,17 @@ button {
 .ui.relatively.fixed.menu {
   position: relative;
   border-style: none;
+}
+
+.loader {
+  text-align: center;
+  margin: $spacing-lg auto;
+  mat-spinner {
+    margin: $spacing-conservative auto;
+  }
+  .info {
+
+  }
 }
 
 @import "./styles/material.scss";

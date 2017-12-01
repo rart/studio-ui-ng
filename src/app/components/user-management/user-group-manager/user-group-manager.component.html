@@ -1,10 +1,11 @@
 <div class="user-group-manager">
 
-  <div *ngIf="!sitesLoaded || !groupsLoaded">
-    Loading site &amp; group information&hellip;
+  <div class="loader" *ngIf="!dataFetchComplete">
+    <mat-spinner></mat-spinner>
+    <span class="info">Loading site &amp; group information&hellip;</span>
   </div>
 
-  <div class="ui relaxed divided list" *ngIf="sitesLoaded && groupsLoaded">
+  <div class="ui relaxed divided list" *ngIf="dataFetchComplete">
     <div class="item" *ngFor="let site of sites">
       <div class="content flex">
         <div class="meta">

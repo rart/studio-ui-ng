@@ -1,6 +1,7 @@
 @import "../../../styles/settings";
 
 .preview-container {
+
   position: fixed;
   top: 52px;
   right: 0;
@@ -9,21 +10,22 @@
     left: $sidebar-width;
   }
   bottom: 0;
+
   .tabbed & {
     top: 82px;
   }
-  .iframe-wrapper {
-    display: none;
-    &.active {
-      display: block;
-    }
-  }
+
   iframe,
-  .code-editor,
-  .iframe-wrapper {
+  std-iframe,
+  std-image-viewer,
+  std-font-visualizer,
+  std-code-editor,
+  std-audio-player,
+  std-video-player {
     height: 100%;
     width: 100%;
   }
+
 }
 
 .address-bar {

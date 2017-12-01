@@ -1,58 +1,20 @@
+import { Site } from './site.model';
+import { Group } from './group.model';
+import { AVATARS } from '../app.utils';
 
-import {Site} from './site.model';
-import {Group} from './group.model';
-import {environment} from '../../environments/environment';
+export interface UserProps {
+  avatarUrl?: string;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  managedExternally?: boolean;
+  enabled?: boolean;
+  sites?: Array<Site>;
+  groups?: Array<Group>;
+}
 
-// Avatars from semantic-ui.com
-// https://semantic-ui.com/images/avatar2/large/kristy.png
-// https://semantic-ui.com/images/avatar/large/elliot.jpg
-// https://semantic-ui.com/images/avatar/large/jenny.jpg
-// https://semantic-ui.com/images/avatar2/large/matthew.png
-// https://semantic-ui.com/images/avatar2/large/molly.png
-// https://semantic-ui.com/images/avatar2/large/elyse.png
-// https://semantic-ui.com/images/avatar/large/steve.jpg
-// https://semantic-ui.com/images/avatar/large/daniel.jpg
-// https://semantic-ui.com/images/avatar/large/helen.jpg
-// https://semantic-ui.com/images/avatar/large/matt.jpg
-// https://semantic-ui.com/images/avatar/large/veronika.jpg
-// https://semantic-ui.com/images/avatar/large/stevie.jpg
-
-const avatarsURL = `${environment.assetsUrl}/img/avatars`;
-
-export const AVATARS = [
-  `${avatarsURL}/daniel.jpg`,
-  `${avatarsURL}/elyse.png`,
-  `${avatarsURL}/jenny.jpg`,
-  `${avatarsURL}/matt.jpg`,
-  `${avatarsURL}/molly.png`,
-  `${avatarsURL}/stevie.jpg`,
-  `${avatarsURL}/elliot.jpg`,
-  `${avatarsURL}/helen.jpg`,
-  `${avatarsURL}/kristy.png`,
-  `${avatarsURL}/matthew.png`,
-  `${avatarsURL}/steve.jpg`,
-  `${avatarsURL}/veronika.jpg`
-];
-
-const MALE = [
-  `${avatarsURL}/daniel.jpg`,
-  `${avatarsURL}/matt.jpg`,
-  `${avatarsURL}/stevie.jpg`,
-  `${avatarsURL}/elliot.jpg`,
-  `${avatarsURL}/matthew.png`,
-  `${avatarsURL}/steve.jpg`
-];
-
-const FEMALE = [
-  `${avatarsURL}/elyse.png`,
-  `${avatarsURL}/jenny.jpg`,
-  `${avatarsURL}/molly.png`,
-  `${avatarsURL}/helen.jpg`,
-  `${avatarsURL}/kristy.png`,
-  `${avatarsURL}/veronika.jpg`
-];
-
-export class User {
+export class User implements UserProps {
   avatarUrl: string;
   username: string;
   email: string;
@@ -63,9 +25,17 @@ export class User {
   sites: Array<Site>;
   groups: Array<Group>;
   password: string;
+
+  // permissions...
+  // roles: Array<Roles>;
+  // role => permission
+  // groups can have permission, roles
+  // user can have permissions, roles, groups
+
   get name() {
     return this.firstName || this.lastName ? `${this.firstName} ${this.lastName}` : this.username;
   }
+
   static fromJSON(userJSON): User {
     let user = new User();
     user.username = userJSON.username;
@@ -77,7 +47,7 @@ export class User {
     user.sites = [];
     user.groups = [];
 
-    user.avatarUrl = AVATARS[ Math.floor(Math.random() * 11) ];
+    user.avatarUrl = AVATARS[Math.floor(Math.random() * 11)];
 
     // When fetching a user model, the API returns the groups the
     // user belongs to inside of the site. Instead of the groups that
@@ -106,6 +76,7 @@ export class User {
 
     return user;
   }
+
   static toJSON(user) {
     let json = {
       username: user.username,
@@ -119,6 +90,24 @@ export class User {
     }
     return json;
   }
+
+  static deserialize(json: any): User {
+    if (json === undefined || json === null) {
+      return null;
+    }
+    let model = new User();
+    Object.keys(json).forEach(prop => {
+      if (prop === 'sites') {
+        model[prop] = json.sites ? json.sites.map(siteJson => Site.deserialize(siteJson)) : null;
+      } else if (prop === 'groups') {
+        model[prop] = json.groups ? json.groups.map(groupJson => Group.deserialize(groupJson)) : null;
+      } else {
+        model[prop] = json[json];
+      }
+    });
+    return model;
+  }
+
   export() {
     return User.toJSON(this);
   }

@@ -1,0 +1,18 @@
+@import "../../styles/settings";
+
+:host {
+  margin: auto;
+  max-width: 600px;
+  padding: $spacing-conservative;
+}
+
+.font-display {
+  margin: $spacing-md;
+  padding: $spacing-conservative;
+  border: 1px solid $color-gray;
+  font-family: 'font-visualizer-font', monospace;
+}
+
+.ui.form {
+  margin-bottom: $spacing-conservative;
+}

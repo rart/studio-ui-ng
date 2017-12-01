@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { PostResponse, ResponseCodesEnum, StudioHttpService } from './http.service';
+import { StudioHttpService } from './http.service';
 import { environment } from '../../environments/environment';
 import { Asset } from '../models/asset.model';
+import { PostResponse } from '../classes/post-response.interface';
+import { ResponseCodesEnum } from '../enums/response-codes.enum';
 
 const workflow = `${environment.apiUrl}/workflow`;
 const deployment = `${environment.apiUrl}/deployment`;

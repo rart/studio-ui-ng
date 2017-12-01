@@ -1,13 +1,14 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {MatSnackBar} from '@angular/material';
-import {ActivatedRoute, Router} from '@angular/router';
-import {UserService} from '../../../services/user.service';
-import {User, AVATARS} from '../../../models/user.model';
-import {showSnackBar} from '../../../app.utils';
-import {Change, ChangeType} from '../../../classes/change-tracker.class';
-import {GroupService} from '../../../services/group.service';
-import {ResponseCodesEnum} from '../../../services/http.service';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '../../../services/user.service';
+import { User } from '../../../models/user.model';
+import { showSnackBar } from '../../../app.utils';
+import { Change, ChangeType } from '../../../classes/change-tracker.class';
+import { GroupService } from '../../../services/group.service';
+import { AVATARS } from '../../../app.utils';
+import { ResponseCodesEnum } from '../../../enums/response-codes.enum';
 
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
@@ -26,7 +27,6 @@ export class UserCrUDComponent implements OnInit {
   groupChangeRollback: Change;
 
   model: User = new User();
-  isEnabled = false;
   editMode = false;
   selectedTabIndex = 0;
   notifyPasswordReset = true;
@@ -38,20 +38,19 @@ export class UserCrUDComponent implements OnInit {
   passwordFormControl = new FormControl('', [Validators.required]);
   resetPasswordFormControl = new FormControl('', [Validators.required]);
 
-  updateBasicInfoFormGroup= new FormGroup({
+  updateBasicInfoFormGroup = new FormGroup({
     firstName: this.firstNameFormControl,
     lastName: this.lastNameFormControl,
     email: this.emailFormControl,
     userName: this.userNameFormControl
   });
 
-  constructor(
-    public snackBar: MatSnackBar,
-    private router: Router,
-    private route: ActivatedRoute,
-    public userService: UserService,
-    public groupService: GroupService
-  ) { }
+  constructor(public snackBar: MatSnackBar,
+              private router: Router,
+              private route: ActivatedRoute,
+              public userService: UserService,
+              public groupService: GroupService) {
+  }
 
   ngOnInit() {
     const subscription = (params) => {
@@ -85,14 +84,9 @@ export class UserCrUDComponent implements OnInit {
 
   loadUser() {
     const username = this.model.username;
-    this.userService.isEnabled(username)
-      .then((isEnabled) => {
-        this.model.enabled = this.isEnabled = isEnabled;
-      });
-    return this.userService.get(username)
-      .then((response) => {
+    return this.userService.byId(username)
+      .subscribe((response) => {
         this.model = response;
-        this.model.enabled = this.isEnabled;
         this.editMode = true;
       });
   }
@@ -100,7 +94,7 @@ export class UserCrUDComponent implements OnInit {
   create() {
     this.userService
       .create(this.model)
-      .then((data) => {
+      .subscribe((data) => {
         if (data.responseCode === ResponseCodesEnum.OK) {
           this.model.password = '';
           showSnackBar(this.snackBar, `${this.fullName()} registered successfully. Edit mode enabled.`);
@@ -112,7 +106,7 @@ export class UserCrUDComponent implements OnInit {
   update() {
     this.userService
       .update(this.model)
-      .then((data) => {
+      .subscribe((data) => {
         this.done(`${this.fullName()} updated successfully.`);
       });
   }
@@ -120,35 +114,36 @@ export class UserCrUDComponent implements OnInit {
   enable() {
     this.userService
       .enable(this.model)
-      .then((result) => {
-        // TODO: See sample error handling here...
-        // Not quite working though. When would result not be "OK"?
-        if (result.responseCode === ResponseCodesEnum.OK) {
-          showSnackBar(this.snackBar, `${this.fullName()} set as enabled.`, 'Undo')
-            .onAction()
-            .subscribe(() => {
-              this.model.enabled = false;
-              this.disable();
-            });
-        } else {
-          this.model.enabled = false;
-          showSnackBar(this.snackBar, `Unable to set ${this.fullName()} as required.`, 'Retry')
-            .onAction()
-            .subscribe(() => {
-              this.enable();
-            });
+      .subscribe({
+        next: (result) => {
+          // TODO: See sample error handling here...
+          // Not quite working though. When would result not be "OK"?
+          if (result.responseCode === ResponseCodesEnum.OK) {
+            showSnackBar(this.snackBar, `${this.fullName()} set as enabled.`, 'Undo')
+              .onAction()
+              .subscribe(() => {
+                this.model.enabled = false;
+                this.disable();
+              });
+          } else {
+            this.model.enabled = false;
+            showSnackBar(this.snackBar, `Unable to set ${this.fullName()} as required.`, 'Retry')
+              .onAction()
+              .subscribe(() => {
+                this.enable();
+              });
+          }
+        },
+        error: (error) => {
+          console.log(error);
         }
-      })
-      .catch((reason) => {
-        console.log(reason);
       });
   }
 
   disable() {
     this.userService
       .disable(this.model)
-      .then((result) => {
-        console.log(result);
+      .subscribe((result) => {
         showSnackBar(this.snackBar, `${this.fullName()} set as disabled.`, 'Undo')
           .onAction()
           .subscribe(() => {
@@ -169,7 +164,7 @@ export class UserCrUDComponent implements OnInit {
   eliminate() {
     this.userService
       .delete(this.model)
-      .then(() => {
+      .subscribe(() => {
         this.done(`${this.fullName()} deleted successfully.`);
       });
   }
@@ -177,7 +172,7 @@ export class UserCrUDComponent implements OnInit {
   resetPassword() {
     this.userService
       .resetPassword(this.model)
-      .then(() => {
+      .subscribe(() => {
         this.done('Password successfully reset.');
       });
   }
@@ -199,11 +194,11 @@ export class UserCrUDComponent implements OnInit {
   addToGroup(siteCode, groupName) {
     this.groupService
       .addUser({ username: this.model.username, siteCode, groupName })
-      .then(() =>
+      .subscribe(() =>
         showSnackBar(this.snackBar, `${this.fullName()} added to ${groupName}`, 'Undo', { duration: 10000 })
           .onAction()
           .subscribe(() => {
-            this.groupChangeRollback = { type: ChangeType.Add, value: {siteCode, groupName} };
+            this.groupChangeRollback = { type: ChangeType.Add, value: { siteCode, groupName } };
             this.removeFromGroup(siteCode, groupName);
           }));
   }
@@ -211,11 +206,11 @@ export class UserCrUDComponent implements OnInit {
   removeFromGroup(siteCode, groupName) {
     this.groupService
       .removeUser({ username: this.model.username, siteCode, groupName })
-      .then(() =>
+      .subscribe(() =>
         showSnackBar(this.snackBar, `${this.fullName()} removed from ${groupName}`, 'Undo', { duration: 10000 })
           .onAction()
           .subscribe(() => {
-            this.groupChangeRollback = { type: ChangeType.Remove, value: {siteCode, groupName} };
+            this.groupChangeRollback = { type: ChangeType.Remove, value: { siteCode, groupName } };
             this.addToGroup(siteCode, groupName);
           }));
   }

@@ -23,10 +23,9 @@ export class StudioService {
       });
   }
 
-  getSidebarItems(): Promise<any> {
+  getSidebarItems(): Observable<any> {
     return this.http
-      .get(`${appUrl}/fixtures/get-sidebar-items.json`, { 'site': 'my-site-name' })
-      .toPromise();
+      .get(`${appUrl}/fixtures/get-sidebar-items.json`, { 'site': 'my-site-name' });
   }
 
 }

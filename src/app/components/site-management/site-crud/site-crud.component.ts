@@ -103,8 +103,8 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
 
   loadSite() {
     this.siteService
-      .get(this.model.code)
-      .then((site) => {
+      .byId(this.model.code)
+      .subscribe((site) => {
         this.model = site;
         this.editMode = true;
         // if (this.blueprints.length) {}
@@ -114,7 +114,7 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
   loadBlueprints() {
     this.siteService
       .allBlueprints()
-      .then((blueprints) => {
+      .subscribe((blueprints) => {
         this.blueprints = blueprints;
         this.model.blueprint = blueprints[0];
       });
@@ -152,7 +152,7 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
     this.creationRequestPending = true;
     this.siteService
       .create(this.model)
-      .then(closure);
+      .subscribe(closure);
 
   }
 
@@ -169,7 +169,7 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
   delete() {
     this.siteService
       .delete(this.model)
-      .then(() => {
+      .subscribe(() => {
         this.done();
         showSnackBar(this.snackBar, `${this.model.name} site deleted successfully.`);
       });

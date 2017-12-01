@@ -1,5 +1,5 @@
-import { AppState } from './app-state.interface';
-import { SignedAction } from './signed-action.interface';
+import { AppState } from '../classes/app-state.interface';
+import { SignedAction } from '../classes/signed-action.interface';
 import { StoreActionsEnum } from '../enums/actions.enum';
 
 const affects: Array<keyof AppState> = ['expandedPaths'];

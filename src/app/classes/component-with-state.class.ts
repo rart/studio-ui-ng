@@ -30,6 +30,10 @@ export class ComponentWithState {
     this.unSubscriber.subscribe(tearDownLogic);
   }
 
+  protected dispatch(action) {
+    this.store.dispatch(action);
+  }
+
   protected subscribeTo(keyMapOrKeys: keyof AppState | {} | Array<keyof AppState>,
                         subscriber: (k) => void = (k) => this[`${keyMapOrKeys}StateChanged`](k)) {
     let

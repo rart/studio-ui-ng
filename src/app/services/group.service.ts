@@ -18,8 +18,7 @@ export class GroupService {
         sites: data.sites.map((dataItem) => {
           return Site.fromJSON(dataItem);
         })
-      }))
-      .toPromise();
+      }));
   }
 
   addUser(data) {
@@ -28,8 +27,7 @@ export class GroupService {
         username: data.username,
         site_id: data.siteCode,
         group_name: data.groupName
-      })
-      .toPromise();
+      });
   }
 
   removeUser(data) {
@@ -38,8 +36,7 @@ export class GroupService {
         username: data.username,
         site_id: data.siteCode,
         group_name: data.groupName
-      })
-      .toPromise();
+      });
   }
 
 }

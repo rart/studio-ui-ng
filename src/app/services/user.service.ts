@@ -1,71 +1,78 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
-import {User} from '../models/user.model';
+import { User } from '../models/user.model';
 import {
-  IEntityService, PagedResponse, PostResponse, mapToPagedResponse, mapToPostResponse,
+  // mapToPagedResponse,
+  // mapToPostResponse,
   StudioHttpService
 } from './http.service';
-import {environment} from '../../environments/environment';
-import {Observable} from 'rxjs/Observable';
+import { environment } from '../../environments/environment';
+import { Observable } from 'rxjs/Observable';
+import { combineLatest, map } from 'rxjs/operators';
+import { EntityService } from '../classes/entity-service.interface';
+import { PagedResponse } from '../classes/paged-response.interface';
+import { PostResponse } from '../classes/post-response.interface';
 
 const baseUrl = `${environment.apiUrl}/user`;
 
 @Injectable()
-export class UserService implements IEntityService<User> {
+export class UserService implements EntityService<User> {
+  by(entityProperty: string, value): Observable<User> {
+    return undefined;
+  }
 
-  constructor(private http: StudioHttpService) {}
+  constructor(private http: StudioHttpService) {
+  }
 
-  all(options?): Promise<PagedResponse<User>> {
+  all(options?): Observable<PagedResponse<User>> {
     return this.http
       .get(`${baseUrl}/get-all.json`, options)
-      .map(mapToPagedResponse('users', User))
-      .toPromise();
+      .map(StudioHttpService.mapToPagedResponse('users', User));
   }
 
-  get(username: string): Promise<User> {
+  byId(username: string): Observable<User> {
     return this.http
-      .get(`${baseUrl}/get.json`, {username: username})
-      .map((userJSON) => User.fromJSON(userJSON))
-      .toPromise();
+      .get(`${baseUrl}/get.json`, { username: username })
+      .pipe(
+        map((userJSON) => User.fromJSON(userJSON)),
+        combineLatest(this.isEnabled(username), (user: User, enabled: boolean) => {
+          user.enabled = enabled;
+          return user;
+        })
+      );
   }
 
-  create(user: User): Promise<PostResponse<User>> {
+  create(user: User): Observable<PostResponse<User>> {
     return this.http
       .post(`${baseUrl}/create.json`, user.export())
-      .map(mapToPostResponse(user))
-      .toPromise();
+      .map(StudioHttpService.mapToPostResponse(user));
   }
 
-  update(user: User): Promise<PostResponse<User>> {
+  update(user: User): Observable<PostResponse<User>> {
     return this.http
       .post(`${baseUrl}/update.json`, user.export())
-      .map(mapToPostResponse(user))
-      .toPromise();
+      .map(StudioHttpService.mapToPostResponse(user));
   }
 
-  delete(user: User): Promise<PostResponse<User>> {
+  delete(user: User): Observable<PostResponse<User>> {
     return this.http.post(`${baseUrl}/delete.json`, user.export())
-      .map(mapToPostResponse(user))
-      .toPromise();
+      .map(StudioHttpService.mapToPostResponse(user));
   }
 
-  isEnabled(username): Promise<boolean> {
-    return this.http.get(`${baseUrl}/status.json`, {username: username})
-      .toPromise()
-      .then((json) => json.enabled);
+  isEnabled(username): Observable<boolean> {
+    return this.http.get(`${baseUrl}/status.json`, { username: username })
+      .map((json) => json.enabled);
   }
 
-  enable(user: User): Promise<PostResponse<User>> {
-    return this.http.post(`${baseUrl}/enable.json`, {username: user.username})
-      .map(mapToPostResponse(user))
-      .toPromise();
+  enable(user: User): Observable<PostResponse<User>> {
+    return this.http.post(`${baseUrl}/enable.json`, { username: user.username })
+      .map(StudioHttpService.mapToPostResponse(user));
   }
 
-  disable(user: User): Promise<PostResponse<User>> {
+  disable(user: User): Observable<PostResponse<User>> {
     return this.http
-      .post(`${baseUrl}/disable.json`, {username: user.username})
-      .map(mapToPostResponse(user))
-      .toPromise();
+      .post(`${baseUrl}/disable.json`, { username: user.username })
+      .map(StudioHttpService.mapToPostResponse(user));
   }
 
   resetPassword(user: User) {
@@ -74,8 +81,7 @@ export class UserService implements IEntityService<User> {
         'username': user.username,
         'new': user.password
       })
-      .map(mapToPostResponse(user))
-      .toPromise();
+      .map(StudioHttpService.mapToPostResponse(user));
   }
 
 }

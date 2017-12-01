@@ -1,37 +1,37 @@
-<div class="view-container transparent" [class.tabbed]="tabs.length > 1">
+<div class="view-container transparent" *ngIf="activeTab" [class.tabbed]="tabs.length > 1">
   <div class="title-bar transparent">
     <div class="ui address-bar">
       <section class="controls">
-        <button [disabled]="!selectedTab.hasBack()" (click)="back()" class="ui mini icon button"><i class="icon chevron left"></i></button>
-        <button [disabled]="!selectedTab.hasForward()" (click)="forward()" class="ui mini icon button"><i class="icon chevron right"></i></button>
-        <button [disabled]="selectedTab.isNew" (click)="reload()" class="ui mini icon button"><i class="icon refresh"></i></button>
+        <button [disabled]="!activeTab.hasBack()" (click)="back()" class="ui mini icon button"><i class="icon chevron left"></i></button>
+        <button [disabled]="!activeTab.hasForward()" (click)="forward()" class="ui mini icon button"><i class="icon chevron right"></i></button>
+        <button [disabled]="activeTab.isNew" (click)="reload()" class="ui mini icon button"><i class="icon refresh"></i></button>
         <div class="input-skin" *ngIf="site && sites">
           <div class="site-display">
             <button class="text simple" [title]="site.name" [matMenuTriggerFor]="siteSelectorMenu">
-              Site: {{selectedTab.isExternal() ? '(External Page)' : selectedTab.siteCode}} <i class="dropdown icon"></i>
+              Site: {{activeTab.isExternal() ? '(External Page)' : site.code}} <i class="dropdown icon"></i>
             </button>
             <mat-menu #siteSelectorMenu="matMenu" class="mat-menu-compact">
               <button
                 mat-menu-item
-                *ngFor="let siteItem of sites"
+                *ngFor="let siteItem of sites$ | async"
                 (click)="changeSite(siteItem)">
                 {{siteItem.name}}
               </button>
             </mat-menu>
           </div>
           <std-asset-display
-            *ngIf="selectedTab.asset"
-            [asset]="selectedTab.asset"
+            *ngIf="activeTab.asset"
+            [asset]="activeTab.asset"
             [disallowWrap]="false"
             [showLabel]="false"
             [showMenu]="false"></std-asset-display>
           <input #urlBox type="text" placeholder=""
                  class="address-input ui search prompt"
-                 [value]="selectedTab.url"
+                 [value]="activeTab.url !== iFrameLandingUrl ? activeTab.url : ''"
                  (keyup.enter)="requestUrl(urlBox.value)" />
           <std-asset-display
-            *ngIf="selectedTab.asset"
-            [asset]="selectedTab.asset"
+            *ngIf="activeTab.asset"
+            [asset]="activeTab.asset"
             [disallowWrap]="false"
             [showLink]="false"
             [showLabel]="false"
@@ -58,14 +58,36 @@
       </nav>
     </div>
   </div>
-  <div class="preview-container">
-    <section class="code-editor" *ngIf="content">
-      <std-code-editor [content]="content" [lang]="lang"></std-code-editor>
-    </section>
-    <section class="iframe-wrapper active">
-      <iframe frameborder="0" stdComponentHost
-              (load)="onIFrameLoadEvent($event)"
-              [src]="iFrameLandingUrl | safeUrl"></iframe>
-    </section>
+  <div class="preview-container" [ngSwitch]="activeTab.type()">
+
+    <std-code-editor
+      *ngSwitchCase="'text'"
+      [asset]="activeTab.asset"></std-code-editor>
+
+    <std-image-viewer
+      *ngSwitchCase="'image'"
+      [src]="activeTab.asset.url"></std-image-viewer>
+
+    <std-video-player
+      *ngSwitchCase="'video'"
+      [src]="activeTab.asset.url"
+      [type]="activeTab.asset.mimeType"></std-video-player>
+
+    <std-audio-player
+      *ngSwitchCase="'audio'"
+      [src]="activeTab.asset.url"
+      [type]="activeTab.asset.mimeType"></std-audio-player>
+
+    <std-font-visualizer
+      *ngSwitchCase="'font'"
+      [src]="activeTab.asset.url"
+      [type]="activeTab.asset.mimeType"></std-font-visualizer>
+
+    <std-iframe
+      *ngSwitchDefault
+      (load)="onIFrameLoadEvent($event)"
+      [src]="activeTab.url"
+      [communicates]="true"></std-iframe>
+
   </div>
 </div>

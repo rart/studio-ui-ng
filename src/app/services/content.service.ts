@@ -4,26 +4,21 @@ import { map } from 'rxjs/operators';
 import { StudioHttpService } from './http.service';
 import { Asset } from '../models/asset.model';
 import { Observable } from 'rxjs/Observable';
-
-// import {Observable} from 'rxjs/Observable';
-// Old way...
-// import 'rxjs/add/operator/map';
-// import 'rxjs/add/operator/filter';
-// New way...
-// import {map, filter} from 'rxjs/operators';
+import { parse } from '../app.utils';
 
 const baseUrl = `${environment.apiUrl}/content`;
 
 @Injectable()
 export class ContentService {
 
-  constructor(private httpService: StudioHttpService) {}
+  constructor(private httpService: StudioHttpService) {
+  }
 
   tree(siteCode, assetId, depth = 1) {
     return this.httpService.get(
       `${baseUrl}/get-items-tree.json`,
       { site: siteCode, path: assetId, depth })
-      .pipe(map(response => Asset.fromJSON(response.item)));
+      .pipe(map(response => <Asset>parse(Asset, response.item)));
   }
 
   content(siteCode, assetId, edit = false): Observable<{ id, content }> {

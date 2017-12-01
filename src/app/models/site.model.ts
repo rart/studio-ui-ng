@@ -33,6 +33,18 @@ export class Site {
       : undefined;
     return site;
   }
+
+  static deserialize(json): Site {
+    if (json === undefined || json === null) {
+      return null;
+    }
+    let model = new Site();
+    Object.keys(json).forEach(prop => {
+      model[prop] = (prop === 'groups') ? Group.deserialize(json[prop]) : json[prop];
+    });
+    return model;
+  }
+
   /**
    * Takes any info from `completer` and sets it to this instance. Does
    * not override any existing values on present instance.

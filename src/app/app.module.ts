@@ -83,6 +83,11 @@ import { AppStoreProvider } from './state.provider';
 import { AssetDisplayComponent } from './components/asset-display/asset-display.component';
 import { WorkflowStatesComponent } from './components/workflow-states/workflow-states.component';
 import { FilterWithPipe } from './filter-with.pipe';
+import { IFrameComponent } from './components/iframe/iframe.component';
+import { ImageViewerComponent } from './components/image-viewer/image-viewer.component';
+import { VideoPlayerComponent } from './components/video-player/video-player.component';
+import { AudioPlayerComponent } from './components/audio-player/audio-player.component';
+import { FontVisualizerComponent } from './components/font-visualizer/font-visualizer.component';
 
 @NgModule({
   declarations: [
@@ -110,7 +115,12 @@ import { FilterWithPipe } from './filter-with.pipe';
     CodeEditorComponent,
     AssetDisplayComponent,
     WorkflowStatesComponent,
-    FilterWithPipe
+    FilterWithPipe,
+    IFrameComponent,
+    ImageViewerComponent,
+    VideoPlayerComponent,
+    AudioPlayerComponent,
+    FontVisualizerComponent
   ],
   imports: [
     studioRoutes,

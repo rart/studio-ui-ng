@@ -14,7 +14,7 @@ import { WindowMessageTopicEnum } from '../../enums/window-message-topic.enum';
 import { WindowMessageScopeEnum } from '../../enums/window-message-scope.enum';
 import { CommunicationService } from '../../services/communication.service';
 import { WorkflowService } from '../../services/workflow.service';
-import { SelectedItemsActions } from '../../classes/selected-items.actions';
+import { SelectedItemsActions } from '../../actions/selected-items.actions';
 
 @Component({
   selector: 'std-asset-display',

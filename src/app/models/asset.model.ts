@@ -1,4 +1,4 @@
-import { User } from './user.model';
+import { User, UserProps } from './user.model';
 import { WorkflowStatusEnum } from '../enums/workflow-status.enum';
 import { AssetTypeEnum } from '../enums/asset-type.enum';
 import { MimeTypeEnum } from '../enums/mime-type.enum';
@@ -11,7 +11,25 @@ interface RenderingTemplate {
 // const reverseMimeMap = {};
 // Object.keys(MimeTypeEnum).forEach(type => reverseMimeMap[MimeTypeEnum[type]] = type);
 
-export class Asset {
+export interface AssetProps {
+  id: string;
+  url: string;
+  label: string;
+  contentModelId: string;
+  siteCode: string;
+  children: AssetProps[];
+  numOfChildren: number;
+  lockedBy: UserProps;
+  lastEditedBy: UserProps;
+  lastEditedOn: string;
+  publishedOn: string;
+  type: AssetTypeEnum;
+  mimeType: MimeTypeEnum;
+  workflowStatus: WorkflowStatusEnum;
+  renderingTemplates: RenderingTemplate[];
+}
+
+export class Asset implements AssetProps {
 
   id: string;
   url: string;
@@ -25,7 +43,7 @@ export class Asset {
   lastEditedOn: string;
   publishedOn: string;
   type: AssetTypeEnum;
-  mimeType: string;
+  mimeType: MimeTypeEnum;
   workflowStatus: WorkflowStatusEnum;
   renderingTemplates: RenderingTemplate[];
 
@@ -37,8 +55,21 @@ export class Asset {
     return (this.numOfChildren > 0);
   }
 
-  static fromPO(item: any) {
-    return Object.assign(new Asset(), item);
+  static deserialize(json: any) {
+    if (json === undefined || json === null) {
+      return null;
+    }
+    let model = new Asset();
+    Object.keys(json).forEach(prop => {
+      if (prop === 'children' && json.children) {
+        model[prop] = json.children.map(a => Asset.deserialize(a));
+      } else if (['lockedBy', 'lastEditedBy'].includes(prop)) {
+        model[prop] = User.deserialize(json[prop]);
+      } else {
+        model[prop] = json[prop];
+      }
+    });
+    return model;
   }
 
   static fromJSON(json) {
@@ -84,6 +115,7 @@ export class Asset {
     asset.contentModelId = json.form;
     asset.renderingTemplates = json.renderingTemplates;
 
+    asset.mimeType = json.mimeType;
     asset.type = AssetTypeEnum.UNKNOWN;
     asset.workflowStatus = WorkflowStatusEnum.UNKNOWN;
 

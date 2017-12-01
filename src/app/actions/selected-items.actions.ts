@@ -1,7 +1,7 @@
 import { Asset } from '../models/asset.model';
-import { SignedAction } from './signed-action.interface';
+import { SignedAction } from '../classes/signed-action.interface';
 import { StoreActionsEnum } from '../enums/actions.enum';
-import { AppState } from './app-state.interface';
+import { AppState } from '../classes/app-state.interface';
 
 const affects: Array<keyof AppState> = ['selectedItems'];
 

@@ -10,6 +10,9 @@ export enum MimeTypeEnum {
   // Video
   MP4 = 'video/mp4',
 
+  // AUDIO
+  MPEG = 'audio/mpeg',
+
   // Web Code
   JAVASCRIPT = 'application/javascript',
   GROOVY = 'text/x-groovy',

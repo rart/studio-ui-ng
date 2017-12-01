@@ -1,32 +1,14 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
-import {environment} from '../../../environments/environment';
+import {
+  AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output,
+  ViewChild
+} from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { Subject } from 'rxjs/Subject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { AssetTypeEnum } from '../../enums/asset-type.enum';
-
-const BOTH_TEMPLATE = `
-  <div class="ace-wrapper">
-    <div class="ace-elem" #aceElem></div>
-  </div>
-  <div class="monaco-wrapper">
-    <div class="monaco-editor" #monacoElem></div>
-  </div>`;
-
-const BOTH_STYLES = [`
-  .ace-elem,
-  .ace-wrapper,
-  .monaco-editor {
-    width: 600px;
-    height: 100px;
-    margin: 20px auto;
-    text-align: left;
-  }
-`];
-
-// declare var ace: any;
-// declare var emmet: any;
-// declare var monaco: any;
-declare var requirejs: (deps, callback?, error?) => any;
+import { Asset } from '../../models/asset.model';
+import { combineLatest } from 'rxjs/operators';
+import { ContentService } from '../../services/content.service';
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
@@ -36,44 +18,115 @@ requirejs({
   }
 });
 
-abstract class CodeEditor {
-  // protected elem: any;
-  // protected opts: any;
-  protected instance: any;
-  protected changes = new Subject<any>();
-  protected events = new Subject<any>();
-  protected loaded = new ReplaySubject<boolean>(1);
-  constructor(protected elem,
-              protected opts) {
-  }
-  subscribe(subscriber, ...operators) {
-    return this.events
-      .pipe(...operators)
-      .subscribe(subscriber);
-  }
-  whenLoaded(subscriber) {
-    this.loaded.subscribe(subscriber);
-  }
-  abstract render(elem, opts): void;
-  abstract get content(): string;
-  abstract set content(content: string);
-  abstract get options(): any;
-  abstract set options(options: any);
-}
-
-// https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditoroptions.html
-// https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditorconstructionoptions.html
-
 interface CodeEditorOptions {
   tabSize: number;
   lang: string;
 }
 
+const DEFAULT_OPTIONS = {
+  tabSize: 2,
+  lang: 'html',
+  folding: true,
+  wrap: false,
+  editable: true,
+  fontSize: 14,
+  theme: 'light'
+};
+
+export abstract class CodeEditor {
+
+  // protected elem: any;
+  protected cfg = DEFAULT_OPTIONS;
+  protected instance: any;
+  protected abstract setters: any;
+
+  protected changes = new Subject<any>();
+  protected loaded = new ReplaySubject(1);
+  protected rendered = new ReplaySubject(1);
+  protected $ready = this.loaded.pipe(combineLatest(this.rendered, (loaded, rendered) => true));
+  // protected state = Observable
+  //   .merge(this.loaded, this.rendered)
+  //   .pipe(
+  //     scan(
+  //       (state, loadedOrRendered: STARTUP_EVENT) => ({
+  //         loaded: state.loaded || loadedOrRendered === 'load',
+  //         rendered: state.rendered || loadedOrRendered === 'render'
+  //       }),
+  //       { loaded: false, rendered: false }
+  //     ),
+  //     multicast(new ReplaySubject<{ rendered: boolean, loaded: boolean }>(1))
+  //   );
+
+  constructor() {
+    this.$ready.subscribe({ complete: () => pretty('RED', '$ready completed, baby') });
+  }
+
+  static factory(assetOrType: Asset | string): CodeEditor {
+    let type = (typeof assetOrType === 'string')
+      ? <string>assetOrType
+      : (<Asset>assetOrType).type;
+    switch (type) {
+      case 'monaco':
+        return new MonacoEditor();
+      case 'ace':
+      case AssetTypeEnum.FREEMARKER:
+      default:
+        return new AceEditor();
+    }
+  }
+
+  abstract content(nextContent?: string): Promise<string>;
+
+  abstract render(elem, options?): Promise<CodeEditor>;
+
+  private setOption(option: string, value: any) {
+    let { setters } = this;
+    setters[option](value);
+  }
+
+  option(option: string, value?: any) {
+    if (value !== undefined) {
+      this.cfg[option] = value;
+      return this.ready(() => {
+        this.setOption(option, value);
+      });
+    } else {
+      return this.cfg[option];
+    }
+  }
+
+  options(value?: any) {
+    if (value !== undefined) {
+      let { cfg } = this;
+      Object.assign(cfg, value);
+      return this.ready(() => {
+        Object.keys(cfg).forEach((opt) => this.setOption(opt, cfg[opt]));
+      });
+    } else {
+      return Object.assign({}, this.cfg);
+    }
+  }
+
+  ready(logic?): Promise<any> {
+    return this.$ready
+      .toPromise()
+      .then(x => (logic && logic(x)) || (this));
+  }
+
+  tap(logic?): Promise<any> {
+    return this.loaded
+      .toPromise()
+      .then(x => (logic && logic(x)) || (this));
+  }
+
+}
+
 class AceEditor extends CodeEditor {
+
   private ace;
   private emmet;
   private extEmmet;
-  private setters = {
+  protected setters = {
     tabSize: (value) => {
       this.instance.session.setTabSize(2);
     },
@@ -109,7 +162,7 @@ class AceEditor extends CodeEditor {
         case 'groovy':
         case 'ace/mode/groovy':
         case AssetTypeEnum.GROOVY:
-          this.instance.session.setMode('ace/mode/javascript');
+          this.instance.session.setMode('ace/mode/groovy');
           break;
         case 'css':
         case 'stylesheet':
@@ -133,86 +186,155 @@ class AceEditor extends CodeEditor {
       // this.instance.setOption('wrap', wrap ? 'on' : 'off');
     },
     editable: (editable: boolean) => {
-      this.instance.setReadOnly(false);
+      this.instance.setReadOnly(!editable);
     },
     fontSize: (size: number) => {
-      this.instance.setFontSize(12);
+      this.instance.setFontSize(size);
     },
     theme: (theme: string) => {
       switch (theme) {
+        case 'dark':
+        case 'idle_fingers':
+          this.instance.setTheme('ace/theme/idle_fingers');
+          break;
+        case 'light':
         case 'chrome':
         case 'default':
         default:
           this.instance.setTheme('ace/theme/chrome');
+          break;
       }
+    },
+    content: (content) => {
+      this.content(content);
     }
   };
-  constructor(elem, options) {
-    super(elem, Object.assign({
-      tabSize: 2,
-      lang: 'html',
-      folding: true,
-      wrap: false,
-      editable: true,
-      fontSize: 14,
-      theme: 'chrome'
-    }, options));
-    const loaded = this.loaded;
+
+  constructor() {
+    super();
     requirejs(['ace/ace', 'ace/ext/emmet', 'emmet'], (ace, extEmmet) => {
-      this.onLibsLoad(ace, extEmmet, window['emmet']);
+      const loaded = this.loaded;
+      this.ace = ace;
+      this.emmet = window['emmet'];
+      this.extEmmet = extEmmet;
       loaded.next(true);
       loaded.complete();
     });
   }
-  private onLibsLoad(ace, extEmmet, emmet) {
-    this.ace = ace;
-    this.emmet = emmet;
-    this.extEmmet = extEmmet;
+
+  content(nextContent?: string): Promise<string> {
+    return this.tap(() => {
+      if (nextContent !== undefined) {
+        this.instance.setValue(nextContent); // or session.setValue
+        this.instance.clearSelection();
+        this.instance.moveCursorToPosition({ row: 0, column: 0 });
+        return nextContent;
+      } else {
+        return this.instance.getValue(); // or session.getValue
+      }
+    });
   }
-  private configure() {
-    let
-      options = this.opts,
-      setters = this.setters;
-    this.loaded.subscribe(() =>
-      Object.keys(options).forEach(opt =>
-        setters[opt](options[opt])));
-  }
-  render(): void {
-    this.loaded.subscribe(() => {
-      let {ace, elem} = this;
+
+  render(elem: HTMLElement, options?): Promise<AceEditor> {
+    return this.tap(() => {
+      let { ace, rendered } = this;
       let editor = ace.edit(elem);
       editor.getSession().on('change', (e) => {
         this.changes.next(e);
       });
+      // this.elem = elem;
       this.instance = editor;
-      this.configure();
+      rendered.next(true);
+      rendered.complete();
+      if (options) {
+        this.options(options);
+      }
     });
   }
-  get options(): any {
-    return this.opts;
+
+}
+
+class MonacoEditor extends CodeEditor {
+
+  protected setters = {
+    tabSize: (value) => {
+      this.instance.updateOptions({  });
+    },
+    emmet: (enable) => {
+      return false;
+    },
+    folding: (folding) => {
+      this.instance.updateOptions({
+        folding: (folding === 'always') || (folding === 'hover') || folding,
+        showFoldingControls: typeof folding === 'string' ? folding : 'hover'
+      });
+    },
+    lang: (lang: string) => {
+
+    },
+    wrap: (wrap: boolean) => {
+
+    },
+    editable: (editable: boolean) => {
+      this.instance.updateOptions({ readOnly: !editable });
+    },
+    fontSize: (size: number) => {
+      this.instance.updateOptions({ fontSize: size });
+    },
+    theme: (theme: string) => {
+      switch (theme) {
+        case 'dark':
+
+          break;
+        case 'light':
+        case 'default':
+        default:
+
+          break;
+      }
+    },
+    content: (content) => {
+
+    }
+  };
+
+  // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html
+  // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditoroptions.html
+  // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditorconstructionoptions.html
+  // 'vs' (default), 'vs-dark', 'hc-black'
+  constructor() {
+    super();
   }
-  set options(options: any) {
-    Object.assign(this.opts, options);
-    this.configure();
-  }
-  get content(): string {
-    return this.instance.getValue(); // or session.getValue
-  }
-  set content(content: string) {
-    this.loaded.subscribe(() => {
-      this.instance.setValue(content); // or session.setValue
+
+  content(nextContent?: string): Promise<string> {
+    return this.tap(() => {
+      if (nextContent !== undefined) {
+        this.instance.setValue(nextContent);
+        return nextContent;
+      } else {
+        return this.instance.getValue();
+      }
     });
   }
+
+  render(elem: any, opts: any): Promise<CodeEditor> {
+    return this.tap(() => {
+      monaco.editor.create(elem);
+    });
+  }
+
 }
 
 @Component({
   selector: 'std-code-editor',
-  template: `<div class="code-editor" #editor></div>`,
+  template: `
+    <div class="code-editor" #editor></div>`,
   styles: [`
     :host {
       width: 100%;
       height: 100%;
     }
+
     .code-editor {
       width: 100%;
       height: 100%;
@@ -223,10 +345,12 @@ export class CodeEditorComponent implements OnInit, OnChanges, AfterViewInit {
 
   @ViewChild('editor') editorRef: ElementRef;
 
-  @Input() lang = 'html';
+  @Input() asset: Asset;
   @Input() content = '';
 
-  vendor: 'ace' | 'monaco' = 'ace';
+  @Output() contentChanged = new EventEmitter();
+
+  // vendor: 'ace' | 'monaco' = 'ace';
 
   private editor: CodeEditor;
 
@@ -234,7 +358,7 @@ export class CodeEditorComponent implements OnInit, OnChanges, AfterViewInit {
     return this.editorRef.nativeElement;
   }
 
-  constructor() {
+  constructor(private contentService: ContentService) {
 
   }
 
@@ -243,262 +367,39 @@ export class CodeEditorComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    console.log('AfterViewInit');
-    let editor = new AceEditor(this.elem, {
-      lang: this.lang
-    });
-    editor.render();
-    editor.whenLoaded(() => {
-      editor.content = this.content;
-    });
-    this.editor = editor;
+    this.createEditor();
   }
 
   ngOnChanges() {
-    console.log('onChanges');
-    this.editor && this.editor.whenLoaded(() => {
-      this.editor.options = {
-        lang: this.lang
-      };
-      this.editor.content = this.content;
-    });
+    let { asset } = this;
+    if (this.editor) {
+      this.editor.content('');
+      this.editor.option('editable', false);
+    }
+    this.contentService
+      .content(asset.siteCode, asset.id)
+      .subscribe(a => {
+        this.content = a.content;
+        this.configure();
+      });
+  }
+
+  createEditor() {
+    let editor = CodeEditor.factory(this.asset || 'ace');
+    editor.render(this.elem)
+      .then(() => this.configure());
+    this.editor = editor;
+  }
+
+  configure() {
+    let { editor, content, asset } = this;
+    if (editor) {
+      editor.options({
+        editable: true,
+        lang: asset.type
+      });
+      editor.content(content);
+    }
   }
 
 }
-
-
-
-
-
-
-
-
-
-
-// @Component({
-//   selector: 'std-code-editor',
-//   template: BOTH_TEMPLATE,
-//   styles: BOTH_STYLES
-// }) export class CodeEditorComponent implements OnInit {
-//
-//   @ViewChild('aceElem') aceElem;
-//   @ViewChild('monacoElem') monacoElem;
-//
-//   get ace() {
-//     return this.aceElem.nativeElement;
-//   }
-//
-//   get monaco() {
-//     return this.monacoElem.nativeElement;
-//   }
-//
-//   constructor() {
-//
-//   }
-//
-//   ngOnInit() {
-//     requirejs(['vs/editor/editor.main'], () => {
-//       this.initMonaco();
-//     });
-//     requirejs(['ace/ace', 'ace/ext/emmet', 'emmet'], () => {
-//       this.initAce();
-//     });
-//   }
-//
-//   initAce() {
-//
-//     let ace = requirejs('ace/ace');
-//     let emm = requirejs('ace/ext/emmet');
-//
-//     let elem = this.ace;
-//     let editor = ace.edit(elem);
-//
-//     emm.setCore(emmet);
-//
-//     editor.session.setTabSize(2);
-//     editor.session.setFoldStyle('markbeginend');
-//     editor.session.setMode('ace/mode/html');
-//     editor.setOption('enableEmmet', true);
-//     editor.setOption('wrap', 'off');
-//     editor.setReadOnly(false);
-//     editor.setFontSize(12);
-//     editor.setTheme('ace/theme/chrome');
-//
-//   }
-//
-//   initMonaco() {
-//
-//     let elem = this.monaco;
-//
-//     monaco.editor.create(elem, {
-//       lineNumbers: true,
-//       roundedSelection: false,
-//       scrollBeyondLastLine: false,
-//       wrappingColumn: -1,
-//       folding: true,
-//       renderLineHighlight: true,
-//       overviewRulerLanes: 0,
-//       theme: 'vs-dark',
-//       customPreventCarriageReturn: true,
-//       scrollbar: {
-//         vertical: 'hidden',
-//         horizontal: 'auto',
-//         useShadows: false
-//       }
-//     });
-//
-//   }
-//
-// }
-
-// const ACE_TEMPLATE = `
-//   <select [(ngModel)]="theme" (change)="aceOptionsChanged()">
-//     <option value="ace/theme/chrome">Chrome</option>
-//     <option value="ace/theme/ambiance">Ambiance</option>
-//   </select>
-//   <select [(ngModel)]="mode" (change)="aceOptionsChanged()">
-//     <option value="ace/mode/ftl">Freemarker</option>
-//     <option value="ace/mode/javascript">JavaScript</option>
-//     <option value="ace/mode/typescript">TypeScript</option>
-//     <option value="ace/mode/groovy">Groovy</option>
-//     <option value="ace/mode/css">CSS</option>
-//     <option value="ace/mode/sass">SASS</option>
-//     <option value="ace/mode/html">HTML</option>
-//   </select>
-//   <select [(ngModel)]="fontSize" (change)="aceOptionsChanged()">
-//     <option value="10">10</option>
-//     <option value="12">12</option>
-//     <option value="14">14</option>
-//     <option value="16">16</option>
-//   </select>
-//   <div class="editor-wrapper">
-//     <div class="editor-elem" #editor></div>
-//   </div>`;
-
-// const ACE_STYLES = [`
-//   .editor-elem,
-//   .editor-wrapper {
-//     width: 100%;
-//     height: 500px;
-//   }
-// `];
-
-// declare var ace: any;
-// declare var emmet: any;
-// declare var requirejs: (deps, callback?, error?) => any;
-
-// requirejs({
-//   baseUrl: `${environment.assetsUrl}/js/vendor`,
-//   paths: {
-//     'vs': `${environment.assetsUrl}/js/vendor/vs`,
-//     'ace': `${environment.assetsUrl}/js/vendor/ace`
-//   }
-// });
-
-// @Component({
-//   selector: 'std-code-editor',
-//   template: ACE_TEMPLATE,
-//   styles: ACE_STYLES
-// }) export class CodeEditorComponent implements OnInit {
-
-//   @ViewChild('editor') editorElem;
-//   editor = null;
-
-//   fontSize = '12';
-//   theme = 'ace/theme/chrome';
-//   mode = 'ace/mode/html';
-
-//   get elem() {
-//     return this.editorElem.nativeElement;
-//   }
-
-//   constructor() {
-
-//   }
-
-//   ngOnInit() {
-//     requirejs(['ace/ace', 'ace/ext/emmet', 'emmet'], (ace, emmetExt) => {
-//       this.initAce(ace, emmetExt);
-//     });
-//   }
-
-//   aceOptionsChanged() {
-//     this.editor.setTheme(this.theme);
-//     this.editor.session.setMode(this.mode);
-//     this.editor.setFontSize(parseInt(this.fontSize, 10));
-//   }
-
-//   initAce(ace, ext) {
-
-//     let elem = this.elem;
-//     let editor = requirejs('ace/ace').edit(elem);
-//     let Emmet = requirejs('ace/ext/emmet');
-
-//     Emmet.setCore(emmet);
-
-//     editor.session.setTabSize(2);
-//     editor.session.setFoldStyle('markbeginend');
-//     editor.session.setMode(this.mode);
-//     editor.setOption('enableEmmet', true);
-//     editor.setOption('wrap', 'off');
-//     editor.setReadOnly(false);
-//     editor.setFontSize(parseInt(this.fontSize, 10));
-//     editor.setTheme(this.theme);
-
-//     this.editor = editor;
-
-//   }
-
-// }
-
-// ***********
-// MONACO...
-// ***********
-
-// declare var monaco: any;
-
-// @Component({
-//   selector: 'std-code-editor',
-//   template: `<div class="editor-elem" #editor></div>`,
-//   styles: [`
-//     .editor-elem {
-//       width: 800px;
-//       height: 300px;
-//       border: 1px solid grey;
-//       text-align: left;
-//       margin: auto;
-//     }
-//   `]
-// })
-// export class CodeEditorComponent implements OnInit {
-
-//   @ViewChild('editor') editorElem;
-//   editor = null;
-
-//   text = 'function sayHi() {\n\tconsole.log("");\n}';
-
-//   private require = window['require'];
-
-//   get elem() {
-//     return this.editorElem.nativeElement;
-//   }
-
-//   constructor() {
-
-//   }
-
-//   ngOnInit() {
-
-//     let elem = this.elem;
-
-//     this.require.config({ paths: { 'vs': `${environment.assetsUrl}/js/vendor/vs`, }});
-//     this.require(['vs/editor/editor.main'], () => {
-//       let editor = monaco.editor.create(elem, {
-//         value: this.text,
-//         language: 'javascript'
-//       });
-//     });
-
-//   }
-
-// }

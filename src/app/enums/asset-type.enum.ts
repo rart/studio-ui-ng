@@ -19,6 +19,9 @@ export enum AssetTypeEnum {
   // Video
   MP4 = 'mp4 video',
 
+  // AUDIO
+  MPEG = 'audio mpeg',
+
   // Web Code
   JAVASCRIPT = 'javascript',
   GROOVY = 'groovy',

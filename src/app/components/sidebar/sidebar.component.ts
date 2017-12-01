@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment';
 import { AppStore } from '../../state.provider';
 import { Store } from 'redux';
 import { AppState } from '../../classes/app-state.interface';
-import { ExpandedPanelsActions } from '../../classes/expanded-panels.actions';
+import { ExpandedPanelsActions } from '../../actions/expanded-panels.actions';
 import { User } from '../../models/user.model';
 import { ComponentHostDirective } from '../component-host.directive';
 import { ContentTreeComponent } from '../site/content-tree/content-tree.component';
@@ -66,7 +66,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     this.updateExpandedPanelMap();
 
     this.studioService.getSidebarItems()
-      .then((sidebarDescriptor) => {
+      .subscribe((sidebarDescriptor) => {
         this.appNavItems = sidebarDescriptor.studio;
         this.siteNavItems = sidebarDescriptor.site.nav;
         this.siteCommands = sidebarDescriptor.site.commands;
@@ -126,7 +126,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       ? item.label
         .toLowerCase()
         .replace(/ /g, '')
-      : ''
+      : '';
     return `sidebar.sitenav.${id}`;
   }
 

@@ -6,11 +6,12 @@ import {
   Output,
   EventEmitter
 } from '@angular/core';
-import {User} from '../../../models/user.model';
-import {SiteService} from '../../../services/site.service';
-import {GroupService} from '../../../services/group.service';
-import {Site} from '../../../models/site.model';
-import {Change, ChangeTracker, ChangeTrackerType, ChangeType} from '../../../classes/change-tracker.class';
+import { User } from '../../../models/user.model';
+import { SiteService } from '../../../services/site.service';
+import { GroupService } from '../../../services/group.service';
+import { Site } from '../../../models/site.model';
+import { Change, ChangeTracker, ChangeTrackerType, ChangeType } from '../../../classes/change-tracker.class';
+import { combineLatest } from 'rxjs/operators';
 
 @Component({
   selector: 'std-user-group-manager',
@@ -24,29 +25,28 @@ export class UserGroupManagerComponent implements OnInit, OnChanges {
   @Output() change = new EventEmitter();
 
   changeTracker;
-  sitesLoaded = false;
-  groupsLoaded = false;
+  dataFetchComplete = false;
   notAMemberGroupsBySite;
 
   sites;
 
-  constructor(
-    public siteService: SiteService,
-    public groupService: GroupService) { }
+  constructor(public siteService: SiteService,
+              public groupService: GroupService) {
+  }
 
   ngOnInit() {
     this.siteService
       .all()
-      .then((data) => {
-        this.sitesLoaded = true;
-        this.mergeSites(data.entries);
-        this.setNotAMemberGroupBySite();
-      });
-    this.groupService
-      .allBySite()
-      .then((data) => {
-        this.groupsLoaded = true;
-        this.mergeSites(data.sites);
+      .pipe(
+        combineLatest(this.groupService.allBySite(), (sitesData, groupsData) => {
+          return this.mergeSitesAndGroupsResponses(
+            sitesData.entries,
+            groupsData.sites);
+        })
+      )
+      .subscribe(sites => {
+        this.sites = sites;
+        this.dataFetchComplete = true;
         this.setNotAMemberGroupBySite();
       });
   }
@@ -66,7 +66,7 @@ export class UserGroupManagerComponent implements OnInit, OnChanges {
   }
 
   setNotAMemberGroupBySite() {
-    if (this.sitesLoaded && this.groupsLoaded) {
+    if (this.dataFetchComplete) {
       let notAMemberGroupsBySite = {};
       this.sites.forEach((site) => {
         // site Not A Member Groups (NMG)
@@ -115,10 +115,11 @@ export class UserGroupManagerComponent implements OnInit, OnChanges {
   }
 
   getUserNotAMemberGroupsBySite(site) {
-    let user = this.user,
+    let
+      user = this.user,
       userGroups = user.groups,
       siteGroups = site.groups;
-    if (userGroups && userGroups.length) {
+    if (userGroups && siteGroups && userGroups.length && siteGroups.length) {
       let groupsNotMemeberOf = [],
         userGroupsFromSite = userGroups.filter((userGroup) =>
           userGroup.site.code === site.code);
@@ -136,7 +137,7 @@ export class UserGroupManagerComponent implements OnInit, OnChanges {
       });
       return groupsNotMemeberOf;
     } else {
-      return siteGroups;
+      return siteGroups || [];
     }
   }
 
@@ -180,40 +181,34 @@ export class UserGroupManagerComponent implements OnInit, OnChanges {
   // TODO API needs change. Update when changed.
   // this should be not needed once the API supports
   // fetching site with it's respective groups.
-  mergeSites(fetchedSites: Site[]) {
-    let sites: Site[] = this.sites;
-    if (sites) {
-      let sitesMap = {};
-      let fetchedSitesMap = {};
-      sites.forEach(site => {
+  mergeSitesAndGroupsResponses(sites: Site[], groupSites: Site[]) {
+    let sitesMap = {};
+    let groupSitesMap = {};
+    groupSites.forEach(site => {
+      groupSitesMap[site.code] = site;
+    });
+    sites.forEach(site => {
+      sitesMap[site.code] = site;
+      if (!groupSitesMap[site.code]) {
+        groupSitesMap[site.code] = site;
+        groupSites.push(site);
+      }
+    });
+    groupSites.forEach(site => {
+      if (!sitesMap[site.code]) {
         sitesMap[site.code] = site;
-      });
-      fetchedSites.forEach(site => {
-        fetchedSitesMap[site.code] = site;
-      });
-      sites.forEach(site => {
-        if (!fetchedSitesMap[site.code]) {
-          fetchedSitesMap[site.code] = site;
-          fetchedSites.push(site);
-        }
-      });
-      fetchedSites.forEach(site => {
-        if (!sitesMap[site.code]) {
-          sitesMap[site.code] = site;
-          sites.push(site);
-        }
-      });
-      sites.forEach(site => {
-        site.completeMissingInformation(fetchedSitesMap[site.code]);
-        fetchedSitesMap[site.code].completeMissingInformation(site);
-      });
-      // console.log(sites, fetchedSites);
-      // For some reason the sites/all call returns more results
-      // than group/bySite call; so now that both array of sites
-      // are complete in info and number of sites...
-    } else {
-      this.sites = fetchedSites;
-    }
+        sites.push(site);
+      }
+    });
+    sites.forEach(site => {
+      site.completeMissingInformation(groupSitesMap[site.code]);
+      groupSitesMap[site.code].completeMissingInformation(site);
+    });
+    // console.log(sites, groupSites);
+    // For some reason the sites/all call returns more results
+    // than group/bySite call; so now that both array of sites
+    // are complete in info and number of sites...
+    return sites;
   }
 
   trackChange(type: ChangeType, siteCode, groupName, silent = false) {
