@@ -189,6 +189,7 @@ import { Asset } from '../app/models/asset.model';
 import { User } from '../app/models/user.model';
 import { Group } from '../app/models/group.model';
 import { Site } from '../app/models/site.model';
+import { APIParser } from './classes/api-parser.abstract';
 
 export type StudioModelType =
   typeof Asset |
@@ -202,17 +203,27 @@ export type StudioModel =
   Site |
   Group;
 
-export function parserFactory(apiVersion: StudioAPIVersion = environment.apiVersion) {
-  switch (apiVersion) {
-    case 'v3':
-      return new API3Parser();
-  }
+export function parserFactory(apiVersion?) {
+  return APIParserHelper.parserFactory(apiVersion);
 }
 
 export function parse(classType: StudioModelType,
                       JSONObject: any): StudioModel {
-  let parser = parserFactory();
-  return parser.parseEntity(classType, JSONObject);
+  return APIParserHelper.parse(classType, JSONObject);
+}
+
+export class APIParserHelper {
+  static parserFactory(apiVersion: StudioAPIVersion = environment.apiVersion): APIParser {
+    switch (apiVersion) {
+      case 'v3':
+        return new API3Parser();
+    }
+  }
+  static parse(classType: StudioModelType,
+        JSONObject: any): StudioModel {
+    let parser = parserFactory();
+    return parser.parseEntity(classType, JSONObject);
+  }
 }
 
 export class StringUtils {

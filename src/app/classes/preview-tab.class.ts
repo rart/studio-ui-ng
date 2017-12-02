@@ -151,6 +151,7 @@ export class PreviewTab implements PreviewTabProps {
   }
 
   type() {
+    let type = 'page';
     let { asset } = this;
     if (asset) {
       switch (asset.type) {
@@ -158,27 +159,33 @@ export class PreviewTab implements PreviewTabProps {
         case AssetTypeEnum.GROOVY:
         case AssetTypeEnum.JAVASCRIPT:
         case AssetTypeEnum.FREEMARKER:
-          return 'text';
+          type = 'text';
+          break;
         case AssetTypeEnum.MP4:
-          return 'video';
+          type = 'video';
+          break;
         case AssetTypeEnum.MPEG:
-          return 'audio';
+          type = 'audio';
+          break;
         case AssetTypeEnum.TTF_FONT:
         case AssetTypeEnum.WOFF_FONT:
         case AssetTypeEnum.OTF_FONT:
         case AssetTypeEnum.EOT_FONT:
-          return 'font';
+          type = 'font';
+          break;
         case AssetTypeEnum.GIF:
         case AssetTypeEnum.PNG:
         case AssetTypeEnum.SVG:
         case AssetTypeEnum.JPEG:
-          return 'image';
+          type = 'image';
+          break;
         default:
-          return 'page';
+          type = 'page';
       }
     } else {
-      return 'page';
+      type = 'page';
     }
+    return type;
   }
 
 }

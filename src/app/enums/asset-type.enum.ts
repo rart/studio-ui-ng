@@ -22,13 +22,17 @@ export enum AssetTypeEnum {
   // AUDIO
   MPEG = 'audio mpeg',
 
-  // Web Code
+  // Web/Code
+  JSON = 'json',
+  HTML = 'html',
   JAVASCRIPT = 'javascript',
+  TYPESCRIPT = 'typescript',
   GROOVY = 'groovy',
-  CSS = 'stylesheet',
-  SCSS = 'sass stylesheet',
-  LESS = 'less stylesheet',
-  FREEMARKER = 'freemarker template',
+  CSS = 'css',
+  SCSS = 'scss',
+  SASS = 'sass',
+  LESS = 'less',
+  FREEMARKER = 'freemarker',
   // Fonts
   EOT_FONT = 'eot font',
   OTF_FONT = 'otf font',

@@ -74,6 +74,9 @@ export class API3Parser extends APIParser {
         case MimeTypeEnum.FOLDER:
           asset.type = AssetTypeEnum.FOLDER;
           break;
+        case MimeTypeEnum.MPEG:
+          asset.type = AssetTypeEnum.MPEG;
+          break;
         case MimeTypeEnum.SVG:
           asset.type = AssetTypeEnum.SVG;
           break;

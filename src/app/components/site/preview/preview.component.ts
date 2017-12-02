@@ -72,7 +72,12 @@ export class PreviewComponent extends ComponentWithState implements OnInit, Afte
   @ViewChild(IFrameComponent) iFrameComponent: IFrameComponent;
 
   get urlBox() {
-    return this.input.first.nativeElement;
+    try {
+      return this.input.first.nativeElement;
+    } catch (e) {
+      pretty('RED', 'PreviewComponent: URL input was read but was not found. Returned "fake" input.');
+      return document.createElement('input');
+    }
   }
 
   site: Site;
@@ -102,6 +107,7 @@ export class PreviewComponent extends ComponentWithState implements OnInit, Afte
       .subscribe(data => {
         let { site } = data;
         this.site = site;
+        pretty('teal', 'has route data');
         this.setSite(site.code);
       });
 
@@ -192,15 +198,6 @@ export class PreviewComponent extends ComponentWithState implements OnInit, Afte
     const tabs = this.tabs;
     let tab = tabs.find(_tab_ =>
       (asset.siteCode === _tab_.siteCode) && (asset.url === _tab_.url));
-
-    // Find if the requested preview URL is already within the opened tabs.
-    // for (i = 0; i < l; ++i) {
-    //   tab = tabs[i];
-    //   if (asset.siteCode === tab.siteCode && asset.url === tab.url) {
-    //     found = true;
-    //     break;
-    //   }
-    // }
 
     if (tab) {
       // TODO: should be unnecessary if guest sends the asset when it loads
@@ -315,6 +312,7 @@ export class PreviewComponent extends ComponentWithState implements OnInit, Afte
   }
 
   private setSite(siteCode) {
+    pretty('yellow', `setSite(${siteCode})`, this.sites);
     if (siteCode) {
       this.cookieService.set(COOKIE, siteCode, null, '/');
       if (this.sites) {

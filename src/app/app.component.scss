@@ -503,10 +503,20 @@ button {
 }
 
 .loader {
+  display: flex;
   text-align: center;
+  align-items: center;
   margin: $spacing-lg auto;
+  > .wrapper {
+    width: 100%;
+  }
+  &.take-over {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
   mat-spinner {
-    margin: $spacing-conservative auto;
+    margin: 0 auto $spacing-conservative;
   }
   .info {
 
