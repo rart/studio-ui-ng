@@ -338,16 +338,12 @@ export class PreviewComponent extends ComponentWithState implements OnInit, Afte
 
   back() {
     let tab = this.activeTab;
-    if (tab.back()) {
-      this.requestGuestNavigation(tab.url, tab.siteCode);
-    }
+    tab.back();
   }
 
   forward() {
     let tab = this.activeTab;
-    if (tab.forward()) {
-      this.requestGuestNavigation(tab.url, tab.siteCode);
-    }
+    tab.forward();
   }
 
   reload() {
@@ -375,7 +371,6 @@ export class PreviewComponent extends ComponentWithState implements OnInit, Afte
     let tab = this.activeTab;
     tab.isNew = false;
     tab.navigate(tab.siteCode, url);
-    // this.requestGuestNavigation(url, tab.siteCode);
   }
 
   changeSite(site) {
