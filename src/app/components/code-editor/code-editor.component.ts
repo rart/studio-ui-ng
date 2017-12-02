@@ -15,7 +15,7 @@ import { ContentService } from '../../services/content.service';
 import { CodeEditor } from '../../classes/code-editor.abstract';
 import { CodeEditorFactory } from '../../classes/code-editor-factory.class';
 import { Subject } from 'rxjs/Subject';
-import { combineLatest, map, tap } from 'rxjs/operators';
+import { combineLatest, map } from 'rxjs/operators';
 
 // TODO: how to avoid navigation when code has been entered and not saved? — also, is auto save viable?
 
