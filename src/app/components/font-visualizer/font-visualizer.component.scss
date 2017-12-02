@@ -7,10 +7,14 @@
 }
 
 .font-display {
-  margin: $spacing-md;
+  font-size: 1.5em;
+  line-height: 1.5;
+  margin: $spacing-md 0;
   padding: $spacing-conservative;
   border: 1px solid $color-gray;
-  font-family: 'font-visualizer-font', monospace;
+  font-family: 'Studio-Font-Visualizer', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .ui.form {

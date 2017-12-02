@@ -18,10 +18,12 @@ export enum MimeTypeEnum {
   GROOVY = 'text/x-groovy',
   CSS = 'text/css',
   FREEMARKER = 'text/x-freemarker',
-  EOT_FONT = 'application/vnd.ms-fontobject',
-  OTF_FONT = 'application/x-font-otf',
-  TTF_FONT = 'application/x-font-ttf',
-  WOFF_FONT = 'application/x-font-woff',
+  // Fonts
+  EOT = 'application/vnd.ms-fontobject',
+  OTF = 'application/x-font-otf',
+  TTF = 'application/x-font-ttf',
+  WOFF = 'application/x-font-woff',
+  WOFF2 = 'application/font-woff2',
 
   FOLDER = 'application/octet-stream', // Name Folder?
 

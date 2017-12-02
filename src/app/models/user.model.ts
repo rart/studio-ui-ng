@@ -102,7 +102,7 @@ export class User implements UserProps {
       } else if (prop === 'groups') {
         model[prop] = json.groups ? json.groups.map(groupJson => Group.deserialize(groupJson)) : null;
       } else {
-        model[prop] = json[json];
+        model[prop] = json[prop];
       }
     });
     return model;

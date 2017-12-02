@@ -29,9 +29,11 @@ export enum AssetTypeEnum {
   SCSS = 'sass stylesheet',
   LESS = 'less stylesheet',
   FREEMARKER = 'freemarker template',
+  // Fonts
   EOT_FONT = 'eot font',
   OTF_FONT = 'otf font',
   TTF_FONT = 'ttf font',
   WOFF_FONT = 'woff font',
+  WOFF2_FONT = 'woff2 font',
 
 }

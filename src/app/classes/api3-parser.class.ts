@@ -56,12 +56,19 @@ export class API3Parser extends APIParser {
     asset.contentModelId = json.form;
     asset.renderingTemplates = json.renderingTemplates;
 
-    asset.mimeType = json.mimeType;
+    if (asset.label.endsWith('.woff2')) {
+      asset.mimeType = MimeTypeEnum.WOFF2;
+    } else {
+      asset.mimeType = json.mimeType;
+    }
+
     asset.type = AssetTypeEnum.UNKNOWN;
     asset.workflowStatus = WorkflowStatusEnum.UNKNOWN;
 
     if (asset.label === 'crafter-level-descriptor.level.xml') {
       asset.type = AssetTypeEnum.LEVEL_DESCRIPTOR;
+    } else if (asset.mimeType === MimeTypeEnum.WOFF2) {
+      asset.type = AssetTypeEnum.WOFF2_FONT;
     } else {
       switch (json.mimeType) {
         case MimeTypeEnum.FOLDER:
@@ -94,16 +101,16 @@ export class API3Parser extends APIParser {
         case MimeTypeEnum.FREEMARKER:
           asset.type = AssetTypeEnum.FREEMARKER;
           break;
-        case MimeTypeEnum.EOT_FONT:
+        case MimeTypeEnum.EOT:
           asset.type = AssetTypeEnum.EOT_FONT;
           break;
-        case MimeTypeEnum.OTF_FONT:
+        case MimeTypeEnum.OTF:
           asset.type = AssetTypeEnum.OTF_FONT;
           break;
-        case MimeTypeEnum.TTF_FONT:
+        case MimeTypeEnum.TTF:
           asset.type = AssetTypeEnum.TTF_FONT;
           break;
-        case MimeTypeEnum.WOFF_FONT:
+        case MimeTypeEnum.WOFF:
           asset.type = AssetTypeEnum.WOFF_FONT;
           break;
         case MimeTypeEnum.FOLDER && json.asset:
