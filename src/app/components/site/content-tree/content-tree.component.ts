@@ -53,15 +53,25 @@ export class ContentTreeComponent extends ComponentWithState implements OnInit {
 
   expandedPathsStateChanged(expandedPaths) {
     let treeState = this.treeState;
-    Object.keys(expandedPaths).forEach(key => treeState.expandedNodeIds[key] = true);
+    treeState.expandedNodeIds = Object.assign({}, expandedPaths);
+    // Object.keys(expandedPaths).forEach(key => treeState.expandedNodeIds[key] = true);
+  }
+
+  treeToggleExpanded(event: { isExpanded: boolean, node: { data: Asset } }) {
+    let
+      id = event.node.data.id,
+      expanded = event.isExpanded;
+    this.dispatch(
+      expanded
+        ? ExpandedPathsActions.expand(id)
+        : ExpandedPathsActions.collapse(id));
   }
 
   treeStateChanged(treeState: ITreeState) {
     let
       source = treeState.expandedNodeIds,
-      stateExpanded  = Object.keys(this.state.expandedPaths),
       treeExpanded = Object.keys(source)
-        .filter(key => !stateExpanded[key]);
+        .filter(key => source[key]);
     // noinspection TsLint
     treeExpanded.length && this.store.dispatch(ExpandedPathsActions.expandMany(treeExpanded));
   }

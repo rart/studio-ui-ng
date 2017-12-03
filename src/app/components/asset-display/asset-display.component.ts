@@ -1,5 +1,11 @@
 import {
-  Component, EventEmitter, HostBinding, Inject, Input, OnChanges, OnDestroy, OnInit,
+  Component,
+  HostBinding,
+  Inject,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
   Output
 } from '@angular/core';
 import { Router } from '@angular/router';
@@ -15,6 +21,8 @@ import { WindowMessageScopeEnum } from '../../enums/window-message-scope.enum';
 import { CommunicationService } from '../../services/communication.service';
 import { WorkflowService } from '../../services/workflow.service';
 import { SelectedItemsActions } from '../../actions/selected-items.actions';
+import { PreviewTabsActions } from '../../actions/preview-tabs.actions';
+import { PreviewTab } from '../../classes/preview-tab.class';
 
 @Component({
   selector: 'std-asset-display',
@@ -184,13 +192,17 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
   }
 
   navigate() {
-    this.router.navigate([`/preview`])
-      .then((value) => {
-        setTimeout(() => this.communicationService.publish(
-          WindowMessageTopicEnum.NAV_REQUEST,
-          this.asset,
-          WindowMessageScopeEnum.Local));
-      });
+    let
+      asset = this.asset,
+      tab = new PreviewTab();
+    tab.url = asset.url;
+    tab.siteCode = asset.siteCode;
+    tab.title = asset.label;
+    tab.asset = asset;
+    this.dispatch(PreviewTabsActions.nav(tab));
+    if (!this.router.url.includes('/preview')) {
+      this.router.navigate([`/preview`]);
+    }
   }
 
   checkedStateChange(checked) {

@@ -5,8 +5,8 @@
         <button [disabled]="!activeTab.hasBack()" (click)="back()" class="ui mini icon button"><i class="icon chevron left"></i></button>
         <button [disabled]="!activeTab.hasForward()" (click)="forward()" class="ui mini icon button"><i class="icon chevron right"></i></button>
         <button [disabled]="activeTab.isNew" (click)="reload()" class="ui mini icon button"><i class="icon refresh"></i></button>
-        <div class="input-skin" *ngIf="site && sites">
-          <div class="site-display">
+        <div class="input-skin">
+          <div class="site-display" *ngIf="site && sites">
             <button class="text simple" [title]="site.name" [matMenuTriggerFor]="siteSelectorMenu">
               Site: {{activeTab.isExternal() ? '(External Page)' : site.code}} <i class="dropdown icon"></i>
             </button>
@@ -62,7 +62,8 @@
 
     <std-code-editor
       *ngSwitchCase="'text'"
-      [asset]="activeTab.asset"></std-code-editor>
+      [asset]="activeTab.asset"
+      [editable]="activeTab.edit"></std-code-editor>
 
     <std-image-viewer
       *ngSwitchCase="'image'"
@@ -86,7 +87,9 @@
     <std-iframe
       *ngSwitchDefault
       (load)="onIFrameLoadEvent($event)"
+      (beforeNav)="beforeIFrameNav()"
       [src]="activeTab.url"
+      [changeTrigger]="activeTab.siteCode"
       [communicates]="true"></std-iframe>
 
   </div>

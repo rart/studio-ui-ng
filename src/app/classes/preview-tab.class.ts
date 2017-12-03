@@ -11,21 +11,27 @@ interface HistoryItem {
 
 export interface PreviewTabProps {
   id: string;
+  url: string;
+  title: string;
   asset: Asset;
   siteCode: string;
+  edit: boolean;
   isNew: boolean;
   active: boolean;
 }
 
 export class PreviewTab implements PreviewTabProps {
 
-  public id: string;
-  public url: string;
-  public title: string;
-  public siteCode: string = null;
-  public isNew = false;
-  public asset: Asset = null;
-  public active = false;
+  id: string;
+
+  url: string;
+  title: string;
+  asset: Asset = null;
+  siteCode: string = null;
+
+  edit = false;
+  isNew = false;
+  active = false;
 
   private history: Array<HistoryItem> = [];
   private historyIndex = -1;
@@ -43,13 +49,11 @@ export class PreviewTab implements PreviewTabProps {
 
   static deserialize(json) {
     let tab = new PreviewTab();
-    tab.id = json.id;
-    tab.url = json.url;
-    tab.title = json.title;
-    tab.siteCode = json.siteCode;
+    let { url, title, siteCode, asset } = json;
+    tab.edit = json.edit;
     tab.isNew = json.isNew;
-    tab.asset = json.asset;
     tab.active = json.active;
+    tab.navigate(siteCode, url, title, asset);
     return tab;
   }
 
@@ -108,13 +112,6 @@ export class PreviewTab implements PreviewTabProps {
   }
 
   navigate(siteCode, url, title = '...', asset: Asset = this.asset) {
-    let history = this.history;
-    let index = this.historyIndex;
-    let lastIndex = history.length - 1;
-    if (index < lastIndex) {
-      // Cut the history here
-      history.splice(index + 1);
-    }
     this.track({ url, title, siteCode, asset });
     this.setValues(url, title, siteCode, asset);
   }
@@ -132,12 +129,27 @@ export class PreviewTab implements PreviewTabProps {
     this.update(url, title, null);
   }
 
-  track(entry: HistoryItem) {
-    let current = this.history[this.historyIndex];
-    if (!current || (current.siteCode !== entry.siteCode) || (current.url !== entry.url)) {
+  track(newEntry: HistoryItem) {
+    let
+      history = this.history,
+      currentEntry = history[this.historyIndex];
+    if ((!currentEntry) ||
+      (currentEntry.siteCode !== newEntry.siteCode) ||
+      (currentEntry.url !== newEntry.url)) {
+      let
+        index = this.historyIndex,
+        lastIndex = history.length - 1;
+      if (index < lastIndex) {
+        // Cut the history here
+        history.splice(index + 1);
+      }
       this.historyIndex++;
-      this.history.push(entry);
+      this.history.push(newEntry);
+      // Entry tracked
+      return true;
     }
+    // Duplicate entry, ignored. History preserved.
+    return false;
   }
 
   isPending() {
@@ -156,6 +168,7 @@ export class PreviewTab implements PreviewTabProps {
     if (asset) {
       switch (asset.type) {
         case AssetTypeEnum.CSS:
+        case AssetTypeEnum.HTML:
         case AssetTypeEnum.GROOVY:
         case AssetTypeEnum.JAVASCRIPT:
         case AssetTypeEnum.FREEMARKER:
@@ -168,9 +181,10 @@ export class PreviewTab implements PreviewTabProps {
           type = 'audio';
           break;
         case AssetTypeEnum.TTF_FONT:
-        case AssetTypeEnum.WOFF_FONT:
         case AssetTypeEnum.OTF_FONT:
         case AssetTypeEnum.EOT_FONT:
+        case AssetTypeEnum.WOFF_FONT:
+        case AssetTypeEnum.WOFF2_FONT:
           type = 'font';
           break;
         case AssetTypeEnum.GIF:

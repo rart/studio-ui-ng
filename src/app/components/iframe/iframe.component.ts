@@ -33,6 +33,7 @@ export class IFrameComponent implements OnInit, OnDestroy, AfterViewInit, AfterC
   }
 
   @Input() src = 'about:blank';
+  @Input() changeTrigger: any; // A(ny) secondary property to cause angular to call ngOnChanges
 
   @Input()
   set communicates(communicates: boolean) {
@@ -45,6 +46,7 @@ export class IFrameComponent implements OnInit, OnDestroy, AfterViewInit, AfterC
   }
 
   @Output() load = new Subject();
+  @Output() beforeNav = new Subject();
 
   constructor(private communicator: CommunicationService) {
   }
@@ -72,6 +74,7 @@ export class IFrameComponent implements OnInit, OnDestroy, AfterViewInit, AfterC
   ngOnChanges() {
     // pretty('yellow', 'Changes have occurred', this.src);
     if (this.element) {
+      this.beforeNav.next();
       this.element.src = this.src;
     }
   }
@@ -101,6 +104,7 @@ export class IFrameComponent implements OnInit, OnDestroy, AfterViewInit, AfterC
   }
 
   reload() {
+    this.beforeNav.next();
     this.element.src = this.src;
   }
 

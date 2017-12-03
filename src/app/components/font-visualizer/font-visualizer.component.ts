@@ -2,6 +2,9 @@ import { Component, ElementRef, Input, OnChanges, OnInit, AfterViewInit, ViewChi
 import { password } from '../../app.utils';
 import { MimeTypeEnum } from '../../enums/mime-type.enum';
 
+// https://brajeshwar.github.io/entities/
+// http://www.evotech.net/blog/2007/08/css-javascript-character-entities/
+
 @Component({
   selector: 'std-font-visualizer',
   templateUrl: './font-visualizer.component.html',

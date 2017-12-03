@@ -13,9 +13,9 @@ export class AceEditor extends CodeEditor {
       this.instance.session.setTabSize(2);
     },
     emmet: (enable) => {
-      if (enable) {
-        this.extEmmet.setCore(this.emmet);
-      }
+      // if (enable) {
+      //   this.extEmmet.setCore(this.emmet);
+      // }
       this.instance.setOption('enableEmmet', enable);
     },
     folding: (folding) => {
@@ -99,6 +99,7 @@ export class AceEditor extends CodeEditor {
       this.ace = ace;
       this.emmet = window['emmet'];
       this.extEmmet = extEmmet;
+      extEmmet.setCore(this.emmet);
       loaded.next(true);
       loaded.complete();
     });

@@ -7,19 +7,19 @@ const affects: Array<keyof AppState> = ['expandedPaths'];
 export class ExpandedPathsActions {
   static affects = affects;
 
-  static expand(path: string): SignedAction {
-    return { type: StoreActionsEnum.EXPAND_PATH, affects, path };
+  static expand(key: string): SignedAction {
+    return { type: StoreActionsEnum.EXPAND_PATH, affects, key };
   }
 
-  static collapse(path: string): SignedAction {
-    return { type: StoreActionsEnum.COLLAPSE_PATH, affects, path };
+  static collapse(key: string): SignedAction {
+    return { type: StoreActionsEnum.COLLAPSE_PATH, affects, key };
   }
 
-  static expandMany(paths: Array<string>): SignedAction {
-    return { type: StoreActionsEnum.EXPAND_PATHS, affects, paths };
+  static expandMany(keys: Array<string>): SignedAction {
+    return { type: StoreActionsEnum.EXPAND_PATHS, affects, keys };
   }
 
-  static collapseMany(paths: Array<string>): SignedAction {
-    return { type: StoreActionsEnum.COLLAPSE_PATHS, affects, paths };
+  static collapseMany(keys: Array<string>): SignedAction {
+    return { type: StoreActionsEnum.COLLAPSE_PATHS, affects, keys };
   }
 }

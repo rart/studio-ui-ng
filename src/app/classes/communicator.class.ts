@@ -118,8 +118,8 @@ export abstract class Communicator {
           scope: WindowMessageScopeEnum = WindowMessageScopeEnum.Broadcast): void {
     let message;
     if (topicOrMessage in WindowMessageTopicEnum) {
-      message = new WindowMessage(<WindowMessageTopicEnum>
-          topicOrMessage,
+      message = new WindowMessage(
+        <WindowMessageTopicEnum>topicOrMessage,
         data,
         scope);
     } else {
@@ -140,7 +140,6 @@ export abstract class Communicator {
   }
 
   sendMessage(message: WindowMessage): void {
-
     this.targets.forEach((target) => {
       // TODO need to determine where to get the origin
       if (!target.postMessage) {

@@ -8,6 +8,14 @@ const affects: Array<keyof AppState> = ['previewTabs'];
 export class PreviewTabsActions {
   static affects = affects;
 
+  static nav(tab: PreviewTab): SignedAction {
+    return {
+      type: StoreActionsEnum.NAVIGATE_ON_ACTIVE,
+      affects,
+      tab
+    };
+  }
+
   static open(tab: PreviewTab): SignedAction {
     return {
       type: StoreActionsEnum.OPEN_TAB,

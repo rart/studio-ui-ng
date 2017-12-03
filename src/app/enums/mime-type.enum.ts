@@ -14,9 +14,10 @@ export enum MimeTypeEnum {
   MPEG = 'audio/mpeg',
 
   // Web Code
-  JAVASCRIPT = 'application/javascript',
-  GROOVY = 'text/x-groovy',
   CSS = 'text/css',
+  HTML = 'text/html',
+  GROOVY = 'text/x-groovy',
+  JAVASCRIPT = 'application/javascript',
   FREEMARKER = 'text/x-freemarker',
   // Fonts
   EOT = 'application/vnd.ms-fontobject',

@@ -3,7 +3,7 @@
            [nodes]="nodes"
            [options]="options"
            [state]="treeState"
-           (stateChange)="treeStateChanged($event)">
+           (toggleExpanded)="treeToggleExpanded($event)">
 
   <ng-template #treeNodeTemplate let-node let-index="index">
     <std-asset-display [asset]="node.data" [showStatusIcons]="node.data.type !== 'FOLDER'"></std-asset-display>

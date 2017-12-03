@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
-  Component, ContentChild, ElementRef,
+  Component,
+  ElementRef,
   Inject,
   OnDestroy,
   OnInit, QueryList, ViewChild,
@@ -38,6 +39,7 @@ const ERROR_PAGE_TITLE = '** Crafter Studio Preview ERROR **';
 const IFRAME_LANDING_URL = '/app/assets/guest.landing.html';
 const IFRAME_ERROR_URL = '/app/assets/guest.500.html';
 const IFRAME_LOAD_CONTROL_TIMEOUT = 5000;
+const SITE_HOME_PAGE = '/';
 
 // Studio Form Engine URLs are like...
 // /studio/form?
@@ -102,23 +104,6 @@ export class PreviewComponent extends ComponentWithState implements OnInit, Afte
 
   ngOnInit() {
 
-    this.route.data
-      .pipe(filter(data => data.site))
-      .subscribe(data => {
-        let { site } = data;
-        this.site = site;
-        pretty('teal', 'has route data');
-        this.setSite(site.code);
-      });
-
-    this.route.queryParams
-      .subscribe(params => {
-        const { open } = params;
-        if (open) {
-          this.openFromQueryString(open);
-        }
-      });
-
     this.sites$ = this.siteService
       .all()
       .pipe(
@@ -129,6 +114,23 @@ export class PreviewComponent extends ComponentWithState implements OnInit, Afte
       .subscribe(entries => {
         this.sites = entries;
       });
+
+    this.route.data
+      .pipe(filter(data => data.site), map(data => data.site))
+      .subscribe(site => {
+        let tab = new PreviewTab();
+        tab.url = SITE_HOME_PAGE;
+        tab.siteCode = site.code;
+        this.dispatch(PreviewTabsActions.nav(tab));
+      });
+
+    // this.route.queryParams
+    //   .subscribe(params => {
+    //     const { open } = params;
+    //     if (open) {
+    //       this.openFromQueryString(open);
+    //     }
+    //   });
 
     this.communicator.subscribe(
       message => this.processMessage(message),
@@ -311,16 +313,25 @@ export class PreviewComponent extends ComponentWithState implements OnInit, Afte
     this.communicator.publish(topic, data, scope);
   }
 
-  private setSite(siteCode) {
-    pretty('yellow', `setSite(${siteCode})`, this.sites);
-    if (siteCode) {
-      this.cookieService.set(COOKIE, siteCode, null, '/');
-      if (this.sites) {
-        this.site = this.sites.find(site => site.code === siteCode);
+  private setSite(siteOrSiteCode) {
+    if (siteOrSiteCode instanceof Site) {
+      this.site = siteOrSiteCode;
+    } else if (!this.site || this.site.code !== siteOrSiteCode) {
+      pretty('yellow', `setSite(${siteOrSiteCode})`);
+       if (this.sites) {
+        this.site = this.sites
+          .find(site => site.code === siteOrSiteCode);
       } else {
         this.sites$
-          .subscribe(() => this.setSite(siteCode));
+          .subscribe(() => this.setSite(siteOrSiteCode));
       }
+    }
+  }
+
+  private beforeIFrameNav() {
+    let tab = this.activeTab;
+    if (tab.siteCode) {
+      this.cookieService.set(COOKIE, tab.siteCode, null, '/');
     }
   }
 
@@ -347,11 +358,7 @@ export class PreviewComponent extends ComponentWithState implements OnInit, Afte
   }
 
   reload() {
-    if (this.activeTab.isExternal()) {
-      this.iFrameComponent.reload();
-    } else {
-      this.communicate(WindowMessageTopicEnum.HOST_RELOAD_REQUEST);
-    }
+    this.iFrameComponent.reload();
   }
 
   addTab() {
@@ -374,12 +381,12 @@ export class PreviewComponent extends ComponentWithState implements OnInit, Afte
   }
 
   changeSite(site) {
-    this.setSite(site.code);
+    this.setSite(site);
     let tab = this.activeTab;
     if (!tab.isNew) {
-      // Tab isn't newly opened, hence navigation should occur. Directing to the '/' path of the selected site.
-      tab.navigate(site.code, '/');
-      this.communicator.publish(WindowMessageTopicEnum.HOST_RELOAD_REQUEST);
+      // Tab isn't newly opened, hence navigation should occur.
+      // Directing to the '/' path of the selected site.
+      tab.navigate(site.code, SITE_HOME_PAGE);
     } else {
       // Tab is new and no URL has been entered. User is simply
       // selecting the site for the URL that he's about to type...

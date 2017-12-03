@@ -1,7 +1,24 @@
 import { CodeEditor, CodeEditorChoiceEnum } from './code-editor.abstract';
 
 let Monaco;
-//scrollBeyondLastLine: false,
+
+// https://github.com/Microsoft/vscode/blob/master/src/vs/editor/standalone/browser/standaloneCodeEditor.ts
+// import { IEditorConstructionOptions } from 'vs/editor/standalone/browser/standaloneCodeEditor';
+
+// https://github.com/Microsoft/vscode/blob/master/src/vs/editor/common/config/editorOptions.ts
+// import { IEditorOptions } from 'vs/editor/common/config/editorOptions';
+
+// https://microsoft.github.io/monaco-editor/playground.html
+// https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html
+// https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditoroptions.html
+// https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditorconstructionoptions.html
+// 'vs' (default), 'vs-dark', 'hc-black'
+// scrollBeyondLastLine: false,
+
+// const internalPropAggregation = {
+//   scrollBeyondLastLine: false
+// };
+
 export class MonacoEditor extends CodeEditor {
 
   readonly vendor = CodeEditorChoiceEnum.MONACO;
@@ -24,15 +41,6 @@ export class MonacoEditor extends CodeEditor {
       Monaco.editor.setModelLanguage(
         this.instance.getModel(),
         lang);
-      // let
-      //   value = this.instance.getValue(),
-      //   editor = this.instance,
-      //   oldModel = editor.getModel(),
-      //   newModel = monaco.editor.createModel(value, lang);
-      // editor.setModel(newModel);
-      // if (oldModel) {
-      //   oldModel.dispose();
-      // }
     },
     wrap: (wrap: boolean) => {
 
@@ -60,10 +68,6 @@ export class MonacoEditor extends CodeEditor {
     }
   };
 
-  // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html
-  // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditoroptions.html
-  // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditorconstructionoptions.html
-  // 'vs' (default), 'vs-dark', 'hc-black'
   constructor() {
     super();
     requirejs(['vs/editor/editor.main'], () => {

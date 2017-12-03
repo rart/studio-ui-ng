@@ -56,6 +56,9 @@ export class API3Parser extends APIParser {
     asset.contentModelId = json.form;
     asset.renderingTemplates = json.renderingTemplates;
 
+    // api not sending proper mime type for woff2
+    // it's giving same mime as "folders" (octet-stream)
+    // so currently acknowledging woff2 by extensions
     if (asset.label.endsWith('.woff2')) {
       asset.mimeType = MimeTypeEnum.WOFF2;
     } else {
@@ -68,11 +71,12 @@ export class API3Parser extends APIParser {
     if (asset.label === 'crafter-level-descriptor.level.xml') {
       asset.type = AssetTypeEnum.LEVEL_DESCRIPTOR;
     } else if (asset.mimeType === MimeTypeEnum.WOFF2) {
+      // see comment above
       asset.type = AssetTypeEnum.WOFF2_FONT;
     } else {
       switch (json.mimeType) {
-        case MimeTypeEnum.FOLDER:
-          asset.type = AssetTypeEnum.FOLDER;
+        case MimeTypeEnum.HTML:
+          asset.type = AssetTypeEnum.HTML;
           break;
         case MimeTypeEnum.MPEG:
           asset.type = AssetTypeEnum.MPEG;
@@ -116,6 +120,9 @@ export class API3Parser extends APIParser {
         case MimeTypeEnum.WOFF:
           asset.type = AssetTypeEnum.WOFF_FONT;
           break;
+        // case MimeTypeEnum.FOLDER:
+        //   asset.type = AssetTypeEnum.FOLDER;
+        //   break;
         case MimeTypeEnum.FOLDER && json.asset:
           asset.type = AssetTypeEnum.FOLDER;
           break;

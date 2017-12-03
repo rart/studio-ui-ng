@@ -42,7 +42,6 @@ requirejs({
       width: 100%;
       height: 100%;
     }
-
     .code-editor {
       width: 100%;
       height: 100%;
@@ -54,8 +53,8 @@ export class CodeEditorComponent implements OnInit, OnChanges, OnDestroy, AfterV
   @ViewChild('editor') editorRef: ElementRef;
 
   @Input() asset: Asset;
-  @Input() value = 'Loading Content...';
   @Input() editable = false;
+  @Input() value = 'Loading Content...';
 
   @Output() valueChanged = new EventEmitter();
 
@@ -108,7 +107,7 @@ export class CodeEditorComponent implements OnInit, OnChanges, OnDestroy, AfterV
       if (shouldReplaceEditor) {
         this.createEditor();
       }
-      let $contentRequest = this.contentFetchSub = this.contentService
+      let $contentRequest = this.contentService
         .content(asset.siteCode, asset.id);
       this.contentFetchSub = ((this.editor && !shouldReplaceEditor)
         ? $contentRequest.pipe(
@@ -119,6 +118,7 @@ export class CodeEditorComponent implements OnInit, OnChanges, OnDestroy, AfterV
         )).subscribe(content => {
         this.value = content;
         this.editor.value(content);
+        this.editor.option('editable', this.editable);
         if (this.contentFetchSub) {
           this.contentFetchSub.unsubscribe();
         }

@@ -6,11 +6,23 @@ function selectById(state, id) {
   return state.map(tab => ((tab.active = (tab.id === id)) && tab || tab));
 }
 
+function getActive(state: Array<PreviewTab>): PreviewTab {
+  return state.find(tab => tab.active);
+}
+
 export const previewTabs: Reducer<PreviewTabProps[]> = (state = [], action) => {
   switch (action.type) {
 
     case StoreActionsEnum.OPEN_TAB: {
       return selectById([...state, action.tab], action.tab.id);
+    }
+
+    case StoreActionsEnum.NAVIGATE_ON_ACTIVE: {
+      let
+        def = <PreviewTab>action.tab;
+      getActive(<Array<PreviewTab>>state)
+        .navigate(def.siteCode, def.url, def.title || undefined, def.asset || undefined);
+      return state;
     }
 
     case StoreActionsEnum.CLOSE_TAB: {
