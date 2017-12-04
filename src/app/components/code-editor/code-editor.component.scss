@@ -1,7 +1,42 @@
+@import "../../styles/settings";
+
 :host {
-  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  &.editable {
+    .edit-controls {
+
+    }
+    .code-editor {
+      height: calc(100% - 60px);
+    }
+  }
+}
+
+.code-editor {
+  flex-grow: 1;
+  &,
+  /deep/ .ace_editor,
+  /deep/ .monaco-editor {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.edit-controls {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 $spacing-conservative;
+  border-top: 1px solid $sidebar-border-color;
 }
 
 .loader {
-  //position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
 }

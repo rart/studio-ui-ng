@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  EventEmitter,
+  EventEmitter, HostBinding,
   Input,
   OnChanges, OnDestroy,
   OnInit,
@@ -29,40 +29,25 @@ requirejs({
 
 @Component({
   selector: 'std-code-editor',
-  template: `
-    <div class="loader take-over" *ngIf="!libsFetchComplete">
-      <div class="wrapper">
-        <mat-spinner></mat-spinner>
-        <div class="info">Loading Editor...</div>
-      </div>
-    </div>
-    <div class="code-editor" #editor></div>`,
-  styles: [`
-    :host {
-      width: 100%;
-      height: 100%;
-    }
-    .code-editor {
-      width: 100%;
-      height: 100%;
-    }
-  `]
+  templateUrl: 'code-editor.component.html',
+  styleUrls: ['code-editor.component.scss']
 })
 export class CodeEditorComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
 
   @ViewChild('editor') editorRef: ElementRef;
 
   @Input() asset: Asset;
+  @HostBinding('class.editable')
   @Input() editable = false;
   @Input() value = 'Loading Content...';
 
   @Output() valueChanged = new EventEmitter();
+  @Output() editCancelled = new EventEmitter();
 
   libsFetchComplete = false;
 
   private lastFileFetched = null;
   private contentFetchSub = null;
-  private codeEditorChoice = null;
   private $editorInitialized = new Subject<any>();
 
   // vendor: 'ace' | 'monaco' = 'ace';
@@ -87,14 +72,15 @@ export class CodeEditorComponent implements OnInit, OnChanges, OnDestroy, AfterV
 
   ngOnChanges() {
     let { asset } = this;
-    if (!asset) {
-      this.value = '';
-      this.editable = true;
-      return;
-    }
+    // if (!asset) {
+    //   this.value = '';
+    //   this.editable = true;
+    //   return;
+    // }
     if (this.editor) {
-      this.editor.value('Loading...');
-      this.editor.option('editable', false);
+      this.editor.option('editable', this.editable);
+      setTimeout(() => this.editor.resize());
+      setTimeout(() => this.editable && this.editor.focus());
     }
     if (this.lastFileFetched !== `${asset.siteCode}:${asset.id}`) {
       this.lastFileFetched = `${asset.siteCode}:${asset.id}`;
@@ -102,10 +88,14 @@ export class CodeEditorComponent implements OnInit, OnChanges, OnDestroy, AfterV
         this.contentFetchSub.unsubscribe();
       }
       let shouldReplaceEditor =
-        (this.codeEditorChoice !== null) &&
-        (this.codeEditorChoice !== CodeEditorFactory.choice(this.asset));
+        (this.editor) &&
+        (this.editor.vendor !== null) &&
+        (this.editor.vendor !== CodeEditorFactory.choice(this.asset));
       if (shouldReplaceEditor) {
         this.createEditor();
+      } else if (this.editor) {
+        this.editor.value('Loading...');
+        this.editor.option('editable', false);
       }
       let $contentRequest = this.contentService
         .content(asset.siteCode, asset.id);
@@ -137,12 +127,12 @@ export class CodeEditorComponent implements OnInit, OnChanges, OnDestroy, AfterV
       this.libsFetchComplete = false;
     }
     let editor = CodeEditorFactory.create(this.asset);
-    this.codeEditorChoice = editor.vendor;
     editor
       .render(this.elem, this.getOptions())
       .then(() => {
         this.libsFetchComplete = true;
         this.$editorInitialized.next(editor);
+        this.editable && this.editor.focus();
       });
     editor.subscribe((e) => this.valueChanged.next(e));
     this.editor = editor;
@@ -164,6 +154,17 @@ export class CodeEditorComponent implements OnInit, OnChanges, OnDestroy, AfterV
       lang: asset.type,
       value: value
     };
+  }
+
+  cancel() {
+    this.editor.value()
+      .then((value) => this.editCancelled.next({
+        value: value
+      }));
+  }
+
+  save() {
+
   }
 
 }

@@ -70,11 +70,8 @@ export class MonacoEditor extends CodeEditor {
 
   constructor() {
     super();
-    requirejs(['vs/editor/editor.main'], () => {
+    this.require(['vs/editor/editor.main'], () => {
       Monaco = window['monaco'];
-      const loaded = this.loaded;
-      loaded.next(true);
-      loaded.complete();
     });
   }
 
@@ -92,7 +89,9 @@ export class MonacoEditor extends CodeEditor {
   render(elem: any, options: any): Promise<CodeEditor> {
     return this.tap(() => {
       let { rendered } = this;
-      let editor = Monaco.editor.create(elem);
+      let editor = Monaco.editor.create(elem, {
+        scrollBeyondLastLine: false
+      });
       editor.getModel().onDidChangeContent((e) => {
         this.changes.next({
           value: this.instance.getValue(),
@@ -108,12 +107,20 @@ export class MonacoEditor extends CodeEditor {
     });
   }
 
+  resize() {
+    this.ready(() => this.instance.layout());
+  }
+
+  focus() {
+    this.ready(() => this.instance.focus());
+  }
+
   dispose(): void {
     this.disposeSubjects();
-    this.instance.dispose();
-    // if (this.instance) {
-    //   this.instance.dispose();
-    // }
+    if (this.instance) {
+      this.instance.dispose();
+      this.instance.destroy();
+    }
   }
 
 }

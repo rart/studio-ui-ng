@@ -1,3 +1,15 @@
-<p>
-  code-editor works!
-</p>
+<div class="loader take-over" *ngIf="!libsFetchComplete">
+  <div class="wrapper">
+    <mat-spinner></mat-spinner>
+    <div class="info">Loading Editor...</div>
+  </div>
+</div>
+<div class="code-editor" #editor></div>
+<div class="edit-controls" *ngIf="editable">
+  <button class="ui red basic button" (click)="cancel($event)">
+    Cancel
+  </button>
+  <button class="ui blue button" (click)="save($event)">
+    Save
+  </button>
+</div>

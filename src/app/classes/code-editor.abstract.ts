@@ -33,7 +33,6 @@ export abstract class CodeEditor {
 
   abstract readonly vendor: CodeEditorChoiceEnum;
 
-  // protected elem: any;
   protected cfg = DEFAULT_OPTIONS;
   protected instance: any;
   protected abstract setters: any;
@@ -67,15 +66,31 @@ export abstract class CodeEditor {
 
   abstract dispose(): void;
 
+  abstract resize(): void;
+
+  abstract focus(instructions?: any): void;
+
+  protected require(deps: string[], cb: (...args) => void) {
+    let me = this;
+    requirejs(deps, function(ace, extEmmet) {
+      const loaded = me.loaded;
+      if (!loaded.isStopped && !loaded.closed) {
+        cb.apply(me, arguments);
+        loaded.next(true);
+        loaded.complete();
+      }
+    });
+  }
+
   protected setOption(option: string, value: any) {
     let { setters } = this;
     setters[option](value);
   }
 
   protected disposeSubjects() {
-    this.loaded.complete();
-    this.changes.complete();
-    this.rendered.complete();
+    this.loaded.unsubscribe();
+    this.changes.unsubscribe();
+    this.rendered.unsubscribe();
   }
 
   option(option: string, value?: any) {

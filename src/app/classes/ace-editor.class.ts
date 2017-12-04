@@ -5,6 +5,7 @@ export class AceEditor extends CodeEditor {
 
   readonly vendor = CodeEditorChoiceEnum.ACE;
 
+  private elem: any;
   private ace;
   private emmet;
   private extEmmet;
@@ -94,14 +95,12 @@ export class AceEditor extends CodeEditor {
 
   constructor() {
     super();
-    requirejs(['ace/ace', 'ace/ext/emmet', 'emmet'], (ace, extEmmet) => {
-      const loaded = this.loaded;
-      this.ace = ace;
-      this.emmet = window['emmet'];
-      this.extEmmet = extEmmet;
+    this.require(['ace/ace', 'ace/ext/emmet', 'emmet'], (ace, extEmmet) => {
+      const emmet = window['emmet'];
       extEmmet.setCore(this.emmet);
-      loaded.next(true);
-      loaded.complete();
+      this.ace = ace;
+      this.emmet = emmet;
+      this.extEmmet = extEmmet;
     });
   }
 
@@ -120,15 +119,19 @@ export class AceEditor extends CodeEditor {
 
   render(elem: HTMLElement, options?): Promise<AceEditor> {
     return this.tap(() => {
-      let { ace, rendered } = this;
-      let editor = ace.edit(elem);
+      let
+        editor,
+        newElem = document.createElement('div'),
+        { ace, rendered } = this;
+      elem.appendChild(newElem);
+      editor = ace.edit(newElem);
       editor.getSession().on('change', (e) => {
         this.changes.next({
           value: this.instance.getValue(),
           originalEvent: e
         });
       });
-      // this.elem = elem;
+      this.elem = newElem;
       this.instance = editor;
       rendered.next(true);
       rendered.complete();
@@ -138,12 +141,25 @@ export class AceEditor extends CodeEditor {
     });
   }
 
+  resize() {
+    this.ready(() => this.instance.resize());
+  }
+
+  focus() {
+    this.ready(() => this.instance.focus());
+  }
+
   dispose(): void {
     this.disposeSubjects();
-    this.instance.destroy();
-    // if (this.instance) {
-    //   this.instance.destroy();
-    // }
+    let
+      editor = this.instance,
+      elem = this.elem;
+    if (editor) {
+      editor.destroy();
+    }
+    if (elem && elem.parentNode) {
+      elem.parentNode.removeChild(elem);
+    }
   }
 
 }
