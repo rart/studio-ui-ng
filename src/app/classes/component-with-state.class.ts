@@ -2,6 +2,9 @@ import { Subject } from 'rxjs/Subject';
 import { AppState } from './app-state.interface';
 import { SubjectStore } from './subject-store.class';
 import { takeUntil } from 'rxjs/operators';
+import { Observer, PartialObserver } from 'rxjs/Observer';
+
+type AnySubscriber<T> = (nextState: T) => void | PartialObserver<T>;
 
 export class ComponentWithState {
 
@@ -34,8 +37,13 @@ export class ComponentWithState {
     this.store.dispatch(action);
   }
 
-  protected subscribeTo(keyMapOrKeys: keyof AppState | {} | Array<keyof AppState>,
-                        subscriber: (k) => void = (k) => this[`${keyMapOrKeys}StateChanged`](k)) {
+  protected subscribeTo<T>(key: keyof AppState, subscriber?: AnySubscriber<T>);
+  // noinspection TsLint
+  protected subscribeTo<T>(keys: Array<keyof AppState>, subscriber?: AnySubscriber<T>);
+  // noinspection TsLint
+  protected subscribeTo<T>(keySubscriberMap: {  }, subscriber?: AnySubscriber<T>);
+  protected subscribeTo<T>(keyMapOrKeys: keyof AppState | {} | Array<keyof AppState>,
+                           subscriber: AnySubscriber<T> = (key => this[`${keyMapOrKeys}StateChanged`](key))) {
     let
       store = this.store,
       until = this.until;
@@ -46,7 +54,7 @@ export class ComponentWithState {
       let
         branchKeys,
         branchSubscriberMap;
-      if ('slice' in keyMapOrKeys && 'splice' in keyMapOrKeys) {
+      if (Array.isArray(keyMapOrKeys)) {
         // is array
         branchKeys = <Array<keyof AppState>>keyMapOrKeys;
       } else {
