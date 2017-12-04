@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {FetchType} from './item-list-dashlet.component';
 import {Site} from '../../../models/site.model';
-import { WorkflowService } from '../../../services/workflow.service';
+import { AssetMenuOption, WorkflowService } from '../../../services/workflow.service';
 import { SubjectStore } from '../../../classes/subject-store.class';
 import { AppStore } from '../../../state.provider';
 import { AppState } from '../../../classes/app-state.interface';
@@ -22,7 +22,7 @@ export class SiteDashboardComponent extends ComponentWithState implements OnInit
   scheduled: FetchType = 'scheduled';
   pending: FetchType = 'pending';
 
-  actions = [];
+  actions: AssetMenuOption[] = [];
 
   constructor(@Inject(AppStore) protected store: SubjectStore<AppState>,
               private route: ActivatedRoute,

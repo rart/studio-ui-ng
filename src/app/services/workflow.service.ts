@@ -38,6 +38,24 @@ const mix = (query, mixin = {}) => Object.assign({
   nocache: noCache
 }, mixin);
 
+export enum AssetActionEnum {
+  PREVIEW = '',
+  SCHEDULE = '',
+  APPROVE_PUBLISH = '',
+  EDIT = 'EDIT',
+  DELETE = '',
+  HISTORY = '',
+  DEPENDENCIES = '',
+  FORM_VIEW = ''
+}
+
+export interface AssetMenuOption {
+  label: string;
+  action: string;
+  options?: AssetMenuOption[];
+  divider?: boolean;
+}
+
 @Injectable()
 export class WorkflowService {
 
@@ -102,7 +120,7 @@ export class WorkflowService {
       })).map(mappingFn);
   }
 
-  getAvailableWorkflowOptions(user, items) {
+  getAvailableWorkflowOptions(user, items): AssetMenuOption[] {
     return items.length ? [
       { label: 'Edit', action: '' },
       { label: 'Delete', action: '' },
@@ -113,11 +131,10 @@ export class WorkflowService {
     ] : [];
   }
 
-  getAvailableAssetOptions(user, item) {
+  getAvailableAssetOptions(user, item): AssetMenuOption[] {
     return [
-      { label: 'Get Info', action: '' },
-      { divider: true },
-      { label: 'Edit', action: '' },
+      { label: 'Get Info', action: '', divider: true },
+      { label: 'Edit', action: AssetActionEnum.EDIT },
       { label: 'Delete', action: '' },
       { label: 'Schedule', action: '' },
       { label: 'Approve', action: '' },

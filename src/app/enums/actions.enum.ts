@@ -1,6 +1,5 @@
 
 export enum StoreActionsEnum {
-
   REDUX_INIT = '@@redux/INIT',
   STATE_INIT = '@@store/INIT',
 
@@ -23,6 +22,7 @@ export enum StoreActionsEnum {
   COLLAPSE_PATHS = 'COLLAPSE_PATHS',
 
   // previewTabs
+  EDIT_ASSET = 'EDIT_ASSET',
   OPEN_TAB = 'OPEN_TAB',
   CLOSE_TAB = 'CLOSE_TAB',
   SELECT_TAB = 'SELECT_TAB',

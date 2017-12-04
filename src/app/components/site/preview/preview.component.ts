@@ -420,4 +420,8 @@ export class PreviewComponent extends ComponentWithState implements OnInit, Afte
     }
   }
 
+  codeEditorEditCancelled($event) {
+    this.activeTab.editing(false);
+  }
+
 }

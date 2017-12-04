@@ -89,21 +89,6 @@ enum ItemActionEnum {
   FORM_VIEW
 }
 
-export enum DashletActionEnum {
-  SORT_BY,
-  CUSTOM
-}
-
-export interface MenuItem {
-  label: string;
-  action?: ItemActionEnum | DashletActionEnum;
-  options?: MenuItem[];
-}
-
-export interface MenuItemDivier extends MenuItem {
-  type: TYPE_DIVIDER;
-}
-
 export declare type FetchType =
   'pending' |
   'scheduled' |

@@ -62,6 +62,7 @@
 
     <std-code-editor
       *ngSwitchCase="'text'"
+      (editCancelled)="codeEditorEditCancelled($event)"
       [asset]="activeTab.asset"
       [editable]="activeTab.edit"></std-code-editor>
 

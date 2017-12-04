@@ -2,13 +2,25 @@ import { SignedAction } from '../classes/signed-action.interface';
 import { StoreActionsEnum } from '../enums/actions.enum';
 import { AppState } from '../classes/app-state.interface';
 import { PreviewTab } from '../classes/preview-tab.class';
+import { Asset } from '../models/asset.model';
 
 const affects: Array<keyof AppState> = ['previewTabs'];
+
+interface TabProps {
+  url: string;
+  siteCode: string;
+  title?: string;
+  asset?: Asset;
+}
+
+interface TabWithAsset extends TabProps {
+  asset: Asset;
+}
 
 export class PreviewTabsActions {
   static affects = affects;
 
-  static nav(tab: PreviewTab): SignedAction {
+  static nav(tab: TabProps): SignedAction {
     return {
       type: StoreActionsEnum.NAVIGATE_ON_ACTIVE,
       affects,
@@ -16,7 +28,15 @@ export class PreviewTabsActions {
     };
   }
 
-  static open(tab: PreviewTab): SignedAction {
+  static edit(tab: TabWithAsset): SignedAction {
+    return {
+      type: StoreActionsEnum.EDIT_ASSET,
+      affects,
+      tab
+    };
+  }
+
+  static open(tab: TabProps): SignedAction {
     return {
       type: StoreActionsEnum.OPEN_TAB,
       affects,
@@ -24,7 +44,7 @@ export class PreviewTabsActions {
     };
   }
 
-  static openInBackground(tab: PreviewTab): SignedAction {
+  static openInBackground(tab: TabProps): SignedAction {
     return {
       type: StoreActionsEnum.OPEN_TAB_BACKGROUND,
       affects,
@@ -32,7 +52,7 @@ export class PreviewTabsActions {
     };
   }
 
-  static close(id: PreviewTab): SignedAction {
+  static close(id: string): SignedAction {
     return {
       type: StoreActionsEnum.CLOSE_TAB,
       affects,
@@ -40,7 +60,7 @@ export class PreviewTabsActions {
     };
   }
 
-  static select(id: PreviewTab): SignedAction {
+  static select(id: string): SignedAction {
     return {
       type: StoreActionsEnum.SELECT_TAB,
       affects,

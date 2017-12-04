@@ -1,5 +1,5 @@
 import {
-  Component,
+  Component, EventEmitter,
   HostBinding,
   Inject,
   Input,
@@ -16,10 +16,8 @@ import { SubjectStore } from '../../classes/subject-store.class';
 import { Asset } from '../../models/asset.model';
 import { ArrayUtils, StringUtils } from '../../app.utils';
 import { AssetTypeEnum } from '../../enums/asset-type.enum';
-import { WindowMessageTopicEnum } from '../../enums/window-message-topic.enum';
-import { WindowMessageScopeEnum } from '../../enums/window-message-scope.enum';
 import { CommunicationService } from '../../services/communication.service';
-import { WorkflowService } from '../../services/workflow.service';
+import { AssetActionEnum, AssetMenuOption, WorkflowService } from '../../services/workflow.service';
 import { SelectedItemsActions } from '../../actions/selected-items.actions';
 import { PreviewTabsActions } from '../../actions/preview-tabs.actions';
 import { PreviewTab } from '../../classes/preview-tab.class';
@@ -49,6 +47,9 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
   @Input() showLabel = true;
   @Input() showLink = true; // Asset renders as a link when 'previewable'
   @Input() displayField: keyof Asset = 'label';
+  @Input() actionHandler: (actionDef: any, $actionNext: () => void) => boolean;
+
+  @Output() action = new EventEmitter();
 
   // https://stackoverflow.com/questions/45313939/data-binding-causes-expressionchangedafterithasbeencheckederror
   // https://stackoverflow.com/questions/46065535/expressionchangedafterithasbeencheckederror-in-two-way-angular-binding
@@ -134,7 +135,7 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
 
   }
 
-  menu = []; // Options of the asset menu drop down
+  menu: Array<AssetMenuOption> = []; // Options of the asset menu drop down
   navigable = true; // Internal control of whether the asset displays as a link or a label
   selected = false;
 
@@ -214,7 +215,29 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
   }
 
   menuItemSelected(action) {
+    let handleAction = true;
+    let eventData = { asset: this.asset, action: action };
+    if (this.actionHandler) {
+      handleAction = !this.actionHandler(eventData,
+        () => this.action.next(eventData));
+    }
+    if (handleAction) {
+      this.handleAction(action);
+      this.action.next(eventData);
+    }
+  }
+
+  handleAction(action) {
     switch (action) {
+      case AssetActionEnum.EDIT: {
+        let asset = this.asset;
+        this.dispatch(PreviewTabsActions.edit({
+          url: asset.url,
+          siteCode: asset.siteCode,
+          asset
+        }));
+        break;
+      }
       default:
 
         break;
