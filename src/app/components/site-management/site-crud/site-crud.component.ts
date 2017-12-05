@@ -1,12 +1,12 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {GroupService} from '../../../services/group.service';
-import {UserService} from '../../../services/user.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {MatSnackBar} from '@angular/material';
-import {SiteService} from '../../../services/site.service';
-import {Site} from '../../../models/site.model';
-import {showSnackBar, StringUtils} from '../../../app.utils';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { GroupService } from '../../../services/group.service';
+import { UserService } from '../../../services/user.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
+import { SiteService } from '../../../services/site.service';
+import { Site } from '../../../models/site.model';
+import { showSnackBar, StringUtils } from '../../../app.utils';
 
 @Component({
   selector: 'std-site-crud',
@@ -40,7 +40,8 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
               public snackBar: MatSnackBar,
               public userService: UserService,
               public groupService: GroupService,
-              public siteService: SiteService) {}
+              public siteService: SiteService) {
+  }
 
   ngOnInit() {
 
@@ -147,7 +148,7 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
             router.navigate(['/site', siteCode, 'dashboard']);
           });
       };
-    }) (this, this.router, this.snackBar, this.model.code, this.model.name);
+    })(this, this.router, this.snackBar, this.model.code, this.model.name);
 
     this.creationRequestPending = true;
     this.siteService
