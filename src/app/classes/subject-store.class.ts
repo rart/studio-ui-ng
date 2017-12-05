@@ -1,7 +1,7 @@
 import {Reducer, Store, Unsubscribe} from 'redux';
 import {Subject} from 'rxjs/Subject';
-import { AnonymousSubscription, Subscription, TeardownLogic } from 'rxjs/Subscription';
-import { MonoTypeOperatorFunction, OperatorFunction } from 'rxjs/interfaces';
+import { Subscription, TeardownLogic } from 'rxjs/Subscription';
+import { OperatorFunction } from 'rxjs/interfaces';
 import { Observable } from 'rxjs/Observable';
 import { Subscriber } from 'rxjs/Subscriber';
 import { AppState } from './app-state.interface';
