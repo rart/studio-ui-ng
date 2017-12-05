@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import { debounceTime, filter, map, scan, shareReplay, combineLatest, tap, startWith, takeUntil } from 'rxjs/operators';
+import { debounceTime, map, scan, shareReplay, combineLatest, startWith, takeUntil } from 'rxjs/operators';
 import 'rxjs/add/observable/merge';
 
 import { WorkflowService } from '../../services/workflow.service';
