@@ -19,7 +19,6 @@ import { ComponentWithState } from '../../../classes/component-with-state.class'
 import { AppStore } from '../../../state.provider';
 import { SubjectStore } from '../../../classes/subject-store.class';
 import { AppState } from '../../../classes/app-state.interface';
-import { ComponentHostDirective } from '../../component-host.directive';
 import { PreviewTab } from '../../../classes/preview-tab.class';
 import { filter, map, shareReplay, take } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
