@@ -52,9 +52,9 @@ export abstract class Communicator {
   }
 
   subscribe<T, R>(observer: (value) => void, ...operators: OperatorFunction<T, R>[]): Subscription {
-    return operators.length
-      ? this.messages.pipe(...operators).subscribe(observer)
-      : this.messages.subscribe(observer);
+    return this.messages
+      .pipe(...operators)
+      .subscribe(observer);
   }
 
   subscribeTo(topic: WindowMessageTopicEnum,

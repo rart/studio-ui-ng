@@ -131,12 +131,9 @@ export abstract class CodeEditor {
   }
 
   subscribe(logic: (e) => void, ...operators): Subscription {
-    return (operators.length)
-      ? this.changes
-        .pipe(...operators)
-        .subscribe(logic)
-      : this.changes
-        .subscribe(logic);
+    return this.changes
+      .pipe(...operators)
+      .subscribe(logic);
   }
 
 }
