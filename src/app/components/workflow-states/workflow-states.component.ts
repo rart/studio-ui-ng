@@ -38,7 +38,7 @@ export class WorkflowStatesComponent implements OnInit, OnDestroy {
 
   count = 1;
 
-  unsubscriptionControl = new Subject();
+  unSubscriber = new Subject();
 
   constructor(private route: ActivatedRoute,
               private snackBar: MatSnackBar,
@@ -54,16 +54,16 @@ export class WorkflowStatesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.unsubscriptionControl.next();
-    this.unsubscriptionControl.complete();
+    this.unSubscriber.next();
+    this.unSubscriber.complete();
   }
 
   fetch() {
-    if (!this.unsubscriptionControl) {
-      this.unsubscriptionControl = new Subject();
+    if (!this.unSubscriber) {
+      this.unSubscriber = new Subject();
     }
 
-    this.unsubscriptionControl.next();
+    this.unSubscriber.next();
 
     let count = this.count++;
 
@@ -82,7 +82,7 @@ export class WorkflowStatesComponent implements OnInit, OnDestroy {
       combineLatest(query$,
         (items, query) => items.filter(item => (query.trim() === '') || (item.asset.id.includes(query)))
       ),
-      takeUntil(this.unsubscriptionControl)
+      takeUntil(this.unSubscriber)
     );
 
     return this.items;
