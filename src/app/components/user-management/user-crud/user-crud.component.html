@@ -64,12 +64,12 @@
           <div class="avatar-display">
             <div class="selected-avatar">
               <div class="ui tiny image">
-                <img [src]="model.avatarUrl" alt="">
+                <img *ngIf="model.avatarUrl" [src]="model.avatarUrl" alt="">
               </div>
             </div>
             <div class="available-avatars">
               <div class="ui mini image" [class.active]="avatar === model.avatarUrl" *ngFor="let avatar of avatars" (click)="model.avatarUrl = avatar">
-                <img [src]="avatar" alt="">
+                <img *ngIf="avatar" [src]="avatar" alt="">
               </div>
             </div>
           </div>

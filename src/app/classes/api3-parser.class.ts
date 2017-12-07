@@ -226,7 +226,7 @@ export class API3Parser extends APIParser {
     user.sites = [];
     user.groups = [];
 
-    user.avatarUrl = AVATARS[ Math.floor(Math.random() * 11) ];
+    user.avatarUrl = AVATARS[ Math.floor(Math.random() * AVATARS.length) ];
 
     // When fetching a user model, the API returns the groups the
     // user belongs to inside of the site. Instead of the groups that
