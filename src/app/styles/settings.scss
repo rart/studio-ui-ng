@@ -70,46 +70,4 @@ $sidebar-background-color: $grey-main !default;
 //$sidebar-background: $grey-main !default;
 $sidebar-border-color: #C8C8C8 !default;
 
-@mixin open-sans-light {
-  font-family: $font-family;
-  font-weight: 300;
-}
-
-@mixin open-sans-regular {
-  font-family: $font-family;
-  font-weight: 400;
-}
-
-@mixin open-sans-semi-bold {
-  font-family: $font-family;
-  font-weight: 600;
-}
-
-@mixin open-sans-bold {
-  font-family: $font-family;
-  font-weight: 700;
-}
-
-@mixin open-sans-italic {
-  font-family: $font-family;
-  font-style: italic;
-}
-
-@mixin padding($type: 'default', $axis: 'x') {
-  //@if ($type)
-  //@else if()
-}
-
-@mixin clearfix {
-  &::after {
-    display: block;
-    clear: both;
-    content: "";
-  }
-}
-
-@mixin ellipsis {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
+@import "mixins";

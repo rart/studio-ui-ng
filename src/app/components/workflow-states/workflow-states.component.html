@@ -57,14 +57,14 @@
       <tbody>
       <tr>
         <td colspan="4">
-          <mat-form-field class="no-subscript no-infix no-underline">
+          <mat-form-field class="no-subscript no-infix no-underline with search icon">
             <input placeholder="Search..." i18n-placeholder
                    matInput type="text"
                    [formControl]="filterQuery">
           </mat-form-field>
         </td>
       </tr>
-      <tr *ngFor="let i of pagedItems">
+      <tr *ngFor="let i of items | async">
         <td><mat-checkbox [(ngModel)]="selected[i.id]"></mat-checkbox></td>
         <td class="id">
           <div title="{{i.asset.id}}">{{i.asset.id}}</div>
@@ -88,12 +88,12 @@
       </tbody>
       <tfoot>
       <tr>
-        <td colspan="2">Page {{pageIndex+1}} of {{numOfPages}}</td>
+        <td colspan="2">Page {{pagerConfig.pageIndex+1}} of {{numOfPages}}</td>
         <td colspan="2">
           <mat-paginator (page)="pageChanged($event)"
-                         [length]="totalNumOfAssets"
-                         [pageIndex]="pageIndex"
-                         [pageSize]="pageSize"
+                         [length]="numOfItems"
+                         [pageIndex]="pagerConfig.pageIndex"
+                         [pageSize]="pagerConfig.pageSize"
                          [pageSizeOptions]="pageSizeOptions">
           </mat-paginator>
         </td>

@@ -1,48 +1,55 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import { debounceTime, map, scan, shareReplay, combineLatest, startWith, takeUntil } from 'rxjs/operators';
+import {
+  debounceTime, map, scan, startWith, tap,
+  distinctUntilChanged, shareReplay
+} from 'rxjs/operators';
 import 'rxjs/add/observable/merge';
 
 import { WorkflowService } from '../../services/workflow.service';
 import { ActivatedRoute } from '@angular/router';
 import { WorkflowStatusEnum } from '../../enums/workflow-status.enum';
 import { MatSnackBar } from '@angular/material';
-import { showSnackBar } from '../../app.utils';
+import { createLocalPagination$, showSnackBar } from '../../app.utils';
 import { Subject } from 'rxjs/Subject';
-
+import { ComponentBase } from '../../classes/component-base.class';
+import { PagerConfig } from '../../classes/pager-config.interface';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Component({
   selector: 'std-workflow-states',
   templateUrl: './workflow-states.component.html',
   styleUrls: ['./workflow-states.component.scss']
 })
-export class WorkflowStatesComponent implements OnInit, OnDestroy {
+export class WorkflowStatesComponent extends ComponentBase implements OnInit, OnDestroy {
 
   site;
   items;
-  filterQuery = new FormControl('');
-  pagedItems;
   selected = {};
+  filterQuery = new FormControl('');
   states = Object.keys(WorkflowStatusEnum)
     .filter((key) => key !== WorkflowStatusEnum.UNKNOWN);
 
   pageSizeOptions = [5, 10, 25, 50, 100];
-  pageSize = this.pageSizeOptions[0];
-  totalNumOfAssets = 0;
-  numOfPages = 0;
-  pageIndex = 0;
+  pagerConfig = {
+    pageIndex: 0,
+    pageSize: this.pageSizeOptions[0]
+  };
+
+  numOfPages;
+  numOfItems;
 
   bulkProcessing = false;
   bulkProcessingItems = null;
 
-  count = 1;
-
-  unSubscriber = new Subject();
+  private pager$: BehaviorSubject<PagerConfig> = new BehaviorSubject(this.pagerConfig);
 
   constructor(private route: ActivatedRoute,
               private snackBar: MatSnackBar,
-              private workflowService: WorkflowService) { }
+              private workflowService: WorkflowService) {
+    super();
+  }
 
   ngOnInit() {
 
@@ -53,40 +60,41 @@ export class WorkflowStatesComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnDestroy() {
-    this.unSubscriber.next();
-    this.unSubscriber.complete();
-  }
-
   fetch() {
-    if (!this.unSubscriber) {
-      this.unSubscriber = new Subject();
-    }
+    this.unSubscriber$.next();
+    return this.items = createLocalPagination$({
 
-    this.unSubscriber.next();
+      pager$: this.pager$,
+      takeUntilOp: this.takeUntil,
+      filterFn: (item, query) => item.asset.id.includes(query),
 
-    let count = this.count++;
+      source$: this.workflowService
+        .assetStatusReport(this.site.code, 'ALL')
+        .pipe(
+          tap(items => {
+            items.forEach(item => {
+              this.selected[item.id] = (item.id in this.selected)
+                ? this.selected[item.id]
+                : false;
+            });
+          })
+        ),
 
-    let items$ = this.workflowService
-      .assetStatusReport(this.site.code, 'ALL')
-      .pipe(shareReplay(1));
+      filter$: this.filterQuery.valueChanges
+        .pipe(
+          debounceTime(250),
+          distinctUntilChanged(),
+          startWith(this.filterQuery.value)
+        )
 
-    let query$ = this.filterQuery
-      .valueChanges
-      .pipe(
-        debounceTime(250),
-        startWith(this.filterQuery.value)
-      );
-
-    this.items = items$.pipe(
-      combineLatest(query$,
-        (items, query) => items.filter(item => (query.trim() === '') || (item.asset.id.includes(query)))
-      ),
-      takeUntil(this.unSubscriber)
+    }).pipe(
+      tap(paged => {
+        let numOfItems = paged.queryTotal;
+        this.numOfItems = numOfItems;
+        this.numOfPages = Math.ceil((numOfItems / this.pagerConfig.pageSize));
+      }),
+      map(data => data.entries)
     );
-
-    return this.items;
-
   }
 
   selectAll() {
@@ -167,40 +175,12 @@ export class WorkflowStatesComponent implements OnInit, OnDestroy {
   }
 
   refresh() {
-    this.fetch()
-      .subscribe({
-        next: items => {
-          let numOfItems = items.length;
-          this.totalNumOfAssets = numOfItems;
-          this.numOfPages = Math.ceil((numOfItems / this.pageSize));
-          if (numOfItems < (this.pageIndex * this.pageSize)) {
-            this.pageIndex = Math.floor(this.totalNumOfAssets / this.pageSize);
-          }
-          this.setPage(items);
-          items.forEach(i => {
-            this.selected[i.id] = (i.id in this.selected) ? this.selected[i.id] : false;
-          });
-        }
-      });
+    this.fetch();
   }
 
   pageChanged($event) {
-    this.pageSize = $event.pageSize;
-    this.pageIndex = $event.pageIndex;
-    this.items.subscribe((items) => this.setPage(items));
-  }
-
-  setPage(items) {
-    let {pageSize, pageIndex, totalNumOfAssets} = this;
-    if (totalNumOfAssets < pageSize) {
-      this.pagedItems = items;
-    } else {
-      let startIndex = (pageIndex * pageSize);
-      this.pagedItems = items.slice(
-        startIndex,
-        startIndex + pageSize
-      );
-    }
+    this.pager$.next(
+      Object.assign(this.pagerConfig, $event));
   }
 
   processReportDone() {

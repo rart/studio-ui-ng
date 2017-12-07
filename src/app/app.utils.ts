@@ -1,5 +1,3 @@
-import 'rxjs/add/operator/toPromise';
-import 'rxjs/add/operator/map';
 import { MatDialog, MatDialogConfig, MatDialogRef, MatSnackBar } from '@angular/material';
 import { ComponentType } from '@angular/cdk/portal';
 import { TemplateRef } from '@angular/core';
@@ -49,6 +47,51 @@ export const uuid = () => {
 
   return result;
 };
+
+export function createLocalPagination$<T>
+({
+   source$,
+   pager$,
+   filter$ = Observable.of(''),
+   filterFn = (item, query) => true,
+   takeUntilOp = takeUntil(Observable.never()),
+
+   // can't filter directly on the filter$ since it wouldn't
+   // clear the search filter when e.g. deleting the whole query
+   // from the search input.
+   filterIf = (query, items, pagerConf) => query !== ''
+
+ }): Observable<PagedResponse<T>> {
+  return source$
+    .pipe(
+      combineLatest(pager$, filter$,
+        (items: T[], pagerConfig: PagerConfig, query: any) => {
+          let
+            filtered = items,
+            queryTotal,
+            sliceStart,
+            sliceEnd;
+          if (filterIf(query, items, pagerConfig)) {
+            filtered = items.filter(item => filterFn(item, query));
+          }
+          queryTotal = filtered.length;
+          if (queryTotal < pagerConfig.pageSize) {
+            pagerConfig.pageIndex = 0;
+          } else if (queryTotal <= (pagerConfig.pageIndex * pagerConfig.pageSize)) {
+            pagerConfig.pageIndex = Math.floor(queryTotal / pagerConfig.pageSize);
+          }
+          sliceStart = pagerConfig.pageIndex * pagerConfig.pageSize;
+          sliceEnd = pagerConfig.pageSize + (pagerConfig.pageIndex * pagerConfig.pageSize);
+          return {
+            total: items.length,
+            entries: filtered.slice(sliceStart, sliceEnd),
+            queryTotal: queryTotal
+          };
+        }
+      ),
+      takeUntilOp
+    );
+}
 
 export const asAnonymousSubscription = (unsubscribe: () => void): AnonymousSubscription => {
   return { unsubscribe: unsubscribe };
@@ -108,7 +151,7 @@ function pretty(style: LogStyle | any, ...anything) {
     let isString = (typeof something === 'string');
     if (isString) {
       console.log(`%c ${something} `, style);
-    } else  if (prettyPrintObjects) {
+    } else if (prettyPrintObjects) {
       console.log(`%c${JSON.stringify(something, null, '  ')}`, style);
     } else {
       console.log(something);
@@ -190,6 +233,10 @@ import { User } from '../app/models/user.model';
 import { Group } from '../app/models/group.model';
 import { Site } from '../app/models/site.model';
 import { APIParser } from './classes/api-parser.abstract';
+import { PagerConfig } from './classes/pager-config.interface';
+import { PagedResponse } from './classes/paged-response.interface';
+import { Observable } from 'rxjs/Observable';
+import { combineLatest, takeUntil, tap } from 'rxjs/operators';
 
 export type StudioModelType =
   typeof Asset |
@@ -219,8 +266,9 @@ export class APIParserHelper {
         return new API3Parser();
     }
   }
+
   static parse(classType: StudioModelType,
-        JSONObject: any): StudioModel {
+               JSONObject: any): StudioModel {
     let parser = parserFactory();
     return parser.parseEntity(classType, JSONObject);
   }

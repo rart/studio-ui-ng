@@ -10,36 +10,27 @@
     <table class="ui selectable flat basic table">
       <thead class="uppercase">
       <tr>
-        <th class="spacer-cell"></th>
         <th>Handle</th>
         <th>Name</th>
         <th>Description</th>
-        <th>Links</th>
         <th>Groups</th>
       </tr>
       </thead>
       <tbody>
-      <!--
-      TODO: API doesn't support search.
       <tr>
-        <td colspan="6">
-          <div class="ui transparent fluid left icon input">
-            <i class="icon search"></i>
-            <input type="text" placeholder="Search...">
-          </div>
+        <td colspan="4">
+          <mat-form-field class="no-subscript no-infix no-underline with search icon">
+            <input placeholder="Search..." i18n-placeholder
+                   matInput type="text"
+                   [formControl]="filterQuery">
+          </mat-form-field>
         </td>
       </tr>
-      -->
-      <tr class="is-interactive highlight-interaction bg" *ngFor="let site of sites" [routerLink]="['/sites', site.code]">
-        <td></td>
+      <tr class="is-interactive highlight-interaction bg"
+          *ngFor="let site of sites" [routerLink]="['/sites', site.code]">
         <td>{{site.code}}</td>
         <td>{{site.name}}</td>
         <td>{{site.description}}</td>
-        <td>
-          <div *ngIf="site.liveUrl"><a href="{{site.liveUrl}}" target="_blank">Live</a></div>
-          <div><a [routerLink]="['/site', site.code, 'dashboard']">Dashboard</a></div>
-          <div><a [routerLink]="['/site', site.code, 'preview']">Preview</a></div>
-        </td>
         <td>{{site.groups || 0}}</td>
       </tr>
       </tbody>
@@ -47,8 +38,8 @@
 
     <mat-paginator (page)="pageChanged($event)"
                    [length]="totalNumOfSites"
-                   [pageIndex]="pageIndex"
-                   [pageSize]="pageSize"
+                   [pageIndex]="(pager$ | async).pageIndex"
+                   [pageSize]="(pager$ | async).pageSize"
                    [pageSizeOptions]="pageSizeOptions">
     </mat-paginator>
 

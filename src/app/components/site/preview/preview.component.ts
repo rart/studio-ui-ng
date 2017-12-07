@@ -133,7 +133,7 @@ export class PreviewComponent extends ComponentWithState implements OnInit, Afte
 
     this.communicator.subscribe(
       message => this.processMessage(message),
-      this.until);
+      this.takeUntil);
 
     this.subscribeTo(['previewTabs']);
     this.previewTabsStateChanged();

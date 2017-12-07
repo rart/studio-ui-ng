@@ -18,8 +18,8 @@ export class ContentTreeComponent extends ComponentWithState implements OnInit {
 
   @Input() rootPath: string;
   @Input() showRoot = true;
+  @Input() site;
 
-  site = { code: 'launcher' };
   nodes;
   rootItem: Asset;
   options: ITreeOptions;

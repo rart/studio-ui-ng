@@ -167,7 +167,7 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
     if (this.priorShowCheckValue !== this.showCheck) {
       // Only good as far as single subscription...
       if (this.priorShowCheckValue === true) {
-        this.unSubscriber.next();
+        this.unSubscriber$.next();
       }
       if (this.showCheck) {
         this.selectedItemsStateChanged();

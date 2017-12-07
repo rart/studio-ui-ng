@@ -14,7 +14,10 @@ table {
   .id {
     >div {
       width: 100%;
+      display: flex;
       max-width: 100%;
+      min-height: 45px;
+      align-items: center;
     }
   }
   .state {

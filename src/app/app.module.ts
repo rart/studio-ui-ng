@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { CdkTableModule } from '@angular/cdk/table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -37,6 +37,9 @@ import {
   MatTooltipModule,
   MatStepperModule
 } from '@angular/material';
+
+// Config
+import { environment } from '../environments/environment';
 
 // Thid party
 import { MomentModule } from 'angular2-moment';
@@ -126,7 +129,7 @@ import { FontVisualizerComponent } from './components/font-visualizer/font-visua
     studioRoutes,
     HttpClientModule,
     BrowserModule,
-    // NoopAnimationsModule, // TODO: BrowserAnimationsModule
+    // NoopAnimationsModule,
     BrowserAnimationsModule,
     FormsModule,
     CdkTableModule,
@@ -144,7 +147,11 @@ import { FontVisualizerComponent } from './components/font-visualizer/font-visua
     MatProgressSpinnerModule,
     MatRadioModule,
     TreeModule,
-    MomentModule
+    MomentModule,
+    HttpClientXsrfModule.withOptions({
+      cookieName: environment.auth.cookie,
+      headerName: environment.auth.header
+    })
   ],
   entryComponents: [
     EmbeddedViewDialogComponent,

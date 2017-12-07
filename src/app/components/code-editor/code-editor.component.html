@@ -6,10 +6,22 @@
 </div>
 <div class="code-editor" #editor></div>
 <div class="edit-controls" *ngIf="editable">
-  <button class="ui red basic button" (click)="cancel($event)">
+
+  <button
+    class="ui red basic button"
+    [matMenuTriggerFor]="cancelEditConfirm">
     Cancel
   </button>
+  <mat-menu class="mat-menu-compact" #cancelEditConfirm="matMenu">
+    <button mat-menu-item>No, continue</button>
+    <button mat-menu-item
+            (click)="cancel($event)">
+      Yes, discard changes.
+    </button>
+  </mat-menu>
+
   <button class="ui blue button" (click)="save($event)">
     Save
   </button>
+
 </div>

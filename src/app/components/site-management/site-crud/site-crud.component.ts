@@ -7,6 +7,9 @@ import { MatSnackBar } from '@angular/material';
 import { SiteService } from '../../../services/site.service';
 import { Site } from '../../../models/site.model';
 import { showSnackBar, StringUtils } from '../../../app.utils';
+import { CommunicationService } from '../../../services/communication.service';
+import { WindowMessageTopicEnum } from '../../../enums/window-message-topic.enum';
+import { WindowMessageScopeEnum } from '../../../enums/window-message-scope.enum';
 
 @Component({
   selector: 'std-site-crud',
@@ -40,7 +43,8 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
               public snackBar: MatSnackBar,
               public userService: UserService,
               public groupService: GroupService,
-              public siteService: SiteService) {
+              public siteService: SiteService,
+              private communicationService: CommunicationService) {
   }
 
   ngOnInit() {
@@ -133,11 +137,7 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
     const closure = ((instance, router, snackBar, siteCode, siteName) => {
       return () => {
         instance.creationRequestPending = false;
-        if (instance.runCreationInBackground) {
-
-        } else {
-
-        }
+        // if (instance.runCreationInBackground) { } else { }
         // TODO: Go to different place depending on user type?
         showSnackBar(snackBar, `${siteName} site created successfully.`, 'Site Dashboard')
           .onAction()
@@ -147,6 +147,9 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
             }
             router.navigate(['/site', siteCode, 'dashboard']);
           });
+        instance.communicationService.publish(
+          WindowMessageTopicEnum.SITE_CREATED,
+          null, WindowMessageScopeEnum.Local);
       };
     })(this, this.router, this.snackBar, this.model.code, this.model.name);
 

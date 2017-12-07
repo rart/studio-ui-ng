@@ -9,12 +9,16 @@ import {
 import { StudioService } from '../../services/studio.service';
 import { environment } from '../../../environments/environment';
 import { AppStore } from '../../state.provider';
-import { Store } from 'redux';
 import { AppState } from '../../classes/app-state.interface';
 import { ExpandedPanelsActions } from '../../actions/expanded-panels.actions';
 import { User } from '../../models/user.model';
 import { ComponentHostDirective } from '../component-host.directive';
 import { ContentTreeComponent } from '../site/content-tree/content-tree.component';
+import { Site } from '../../models/site.model';
+import { SiteService } from '../../services/site.service';
+import { Observable } from 'rxjs/Observable';
+import { ComponentWithState } from '../../classes/component-with-state.class';
+import { SubjectStore } from '../../classes/subject-store.class';
 
 const NavItemTypesEnum = {
   Link: 'link',
@@ -35,7 +39,7 @@ const APP_NAV_KEY = 'sidebar.appnav.panel';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent implements OnInit, AfterViewInit {
+export class SidebarComponent extends ComponentWithState implements OnInit, AfterViewInit {
 
   APP_NAV_KEY = APP_NAV_KEY;
 
@@ -50,20 +54,25 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   expandedPanelMap = {};
   user: User;
 
+  sites: Observable<Site[]>;
+
   constructor(@Inject(AppStore)
-              private store: Store<AppState>,
+              protected store: SubjectStore<AppState>,
               private studioService: StudioService,
               private componentFactoryResolver: ComponentFactoryResolver,
-              private cdr: ChangeDetectorRef) {
+              private cdr: ChangeDetectorRef,
+              private siteService: SiteService) {
+    super(store);
   }
 
   ngOnInit() {
 
-    this.store.subscribe(() => this.stateChanged());
+    this.subscribeTo('expandedPanels');
+    this.expandedPanelsStateChanged();
 
-    this.user = this.store.getState().user;
+    this.user = this.state.user;
 
-    this.updateExpandedPanelMap();
+    this.sites = this.siteService.sites();
 
     this.studioService.getSidebarItems()
       .subscribe((sidebarDescriptor) => {
@@ -93,7 +102,8 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         let
           componentRef,
           viewContainerRef,
-          {component, config} = componentHost.data,
+          { site, cfg } = componentHost.data,
+          { component, config } = cfg,
           componentClass = COMPONENT_MAP[component],
           componentFactory: ComponentFactory<any>;
 
@@ -107,6 +117,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
         if (componentClass === ContentTreeComponent) {
           component = <ContentTreeComponent>componentRef.instance;
+          component.site = site;
           component.rootPath = config.path;
           component.showRoot = config.showRoot;
         }
@@ -132,14 +143,14 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
   siteNavPanelExpandedStateChange(nav, expanded) {
     let key = this.getSiteNavPanelKey(nav);
-    this.panelExpandedStatechange(key, expanded);
+    this.panelExpandedStateChanged(key, expanded);
   }
 
   appNavPanelExpandedStateChange(expanded) {
-    this.panelExpandedStatechange(APP_NAV_KEY, expanded);
+    this.panelExpandedStateChanged(APP_NAV_KEY, expanded);
   }
 
-  private panelExpandedStatechange(key, expanded) {
+  private panelExpandedStateChanged(key, expanded) {
     let action;
     this.store.dispatch(
       expanded
@@ -147,11 +158,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         : ExpandedPanelsActions.collapse(key));
   }
 
-  private stateChanged() {
-    this.updateExpandedPanelMap();
-  }
-
-  private updateExpandedPanelMap() {
+  private expandedPanelsStateChanged() {
 
     const expandedPanels = this.store.getState().expandedPanels;
     const expandedPanelMap = {};

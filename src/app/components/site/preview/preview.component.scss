@@ -74,8 +74,8 @@
   }
   .input-skin {
     height: 33px;
+    flex-grow: 1;
     display: flex;
-    flex-basis: 75%;
     overflow: hidden;
     margin-right: 5px;
     border-radius: 5px;

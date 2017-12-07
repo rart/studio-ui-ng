@@ -237,6 +237,28 @@ mat-form-field {
   }
 }
 
+.with.icon {
+  .mat-form-field-placeholder {
+    width: auto;
+    left: 1.5rem;
+  }
+  .mat-input-infix {
+    padding-left: 1.5rem;
+    &::before {
+      left: 0;
+      top: .4em;
+      position: absolute;
+      color: $color-gray;
+      @include fa-base-styles;
+    }
+  }
+  &.search {
+    .mat-input-infix::before {
+      @include fa(search);
+    }
+  }
+}
+
 /*
 
 .mat-menu-panel {

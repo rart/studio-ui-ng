@@ -1,8 +1,9 @@
-
 <div class="sidebar-scroll">
 
-  <mat-expansion-panel #appNavPanel class="studio-app-nav allow-overflow" [expanded]="expandedPanelMap[APP_NAV_KEY]">
-    <mat-expansion-panel-header (click)="appNavPanelExpandedStateChange(appNavPanel.expanded)" [collapsedHeight]="'75px'" [expandedHeight]="'75px'">
+  <mat-expansion-panel #appNavPanel class="studio-app-nav allow-overflow"
+                       [expanded]="expandedPanelMap[APP_NAV_KEY]">
+    <mat-expansion-panel-header (click)="appNavPanelExpandedStateChange(appNavPanel.expanded)"
+                                [collapsedHeight]="'75px'" [expandedHeight]="'75px'">
       <mat-panel-title>
         <img class="sidebar-logo" [src]="studioLogoUrl" i18n-alt alt="Crafter Studio">
       </mat-panel-title>
@@ -11,7 +12,6 @@
       <a class="sidebar-item"
          routerLink="{{item.config.href}}"
          routerLinkActive="active"
-         routerLinkActiveOptions="{ exact: true }"
          [routerLinkActiveOptions]="{ exact: true }"
          *ngFor="let item of appNavItems">
         <i class="{{item.iconClass}}">{{item.iconText}}</i> <span class="label">{{item.label}}</span>
@@ -19,41 +19,54 @@
     </div>
   </mat-expansion-panel>
 
-  <mat-expansion-panel class="studio-site-nav allow-overflow" expanded="true">
-    <mat-expansion-panel-header class="sidebar-heading" [collapsedHeight]="'60px'" [expandedHeight]="'60px'">
-      <mat-panel-title>Ray's Photography</mat-panel-title>
+  <mat-expansion-panel #siteNavPanel class="studio-site-nav allow-overflow"
+                       *ngFor="let site of sites | async">
+    <mat-expansion-panel-header class="sidebar-heading"
+                                [collapsedHeight]="'60px'"
+                                [expandedHeight]="'60px'">
+      <mat-panel-title>{{site.name}}</mat-panel-title>
     </mat-expansion-panel-header>
-    <div class="sidebar-items">
+    <div class="sidebar-items" *ngIf="siteNavPanel.expanded">
 
       <!-- TODO: make this into individual components? -->
-      <div *ngFor="let item of siteNavItems" [ngSwitch]="item.type">
+      <div *ngFor="let item of siteNavItems"
+           [ngSwitch]="item.type">
+
         <a class="sidebar-item"
-           routerLink="/site/launcher/{{item.config.href}}"
+           routerLink="/site/{{site.code}}/{{item.config.href}}"
            routerLinkActive="active"
            *ngSwitchCase="itemTypes.Link">
           <i class="{{item.iconClass}}"></i> <span class="label">{{item.label}}</span>
         </a>
+
         <h3 class="sidebar-sub-heading" *ngSwitchCase="itemTypes.Heading">{{item.label}}</h3>
-        <mat-expansion-panel #expPanel class="sidebar-item-container"
-                             [expanded]="expandedPanelMap[getSiteNavPanelKey(item)]"
-                             *ngSwitchCase="itemTypes.Container">
-          <mat-expansion-panel-header class="no-indicator"
-                                      (click)="siteNavPanelExpandedStateChange(item, expPanel.expanded)"
-                                      [collapsedHeight]="'auto'"
-                                      [expandedHeight]="'auto'">
+
+        <mat-expansion-panel
+          #expPanel class="sidebar-item-container"
+          [expanded]="expandedPanelMap[getSiteNavPanelKey(item)]"
+          *ngSwitchCase="itemTypes.Container">
+          <mat-expansion-panel-header
+            class="no-indicator"
+            (click)="siteNavPanelExpandedStateChange(item, expPanel.expanded)"
+            [collapsedHeight]="'auto'"
+            [expandedHeight]="'auto'">
             <mat-panel-title class="sidebar-item-heading">
-              <i class="{{item.iconClass}}"></i> <span class="label">{{item.label | i18n}}</span>
+              <i class="{{item.iconClass}}"></i>
+              <span class="label">{{item.label | i18n}}</span>
             </mat-panel-title>
           </mat-expansion-panel-header>
 
           <!-- *ngIf="expandedPanelMap[getSiteNavPanelKey(item)]" -->
-          <ng-template stdComponentHost [data]="item"></ng-template>
+          <ng-template stdComponentHost [data]="{ site: site, cfg: item }"></ng-template>
 
         </mat-expansion-panel>
+
       </div>
 
       <div class="sidebar-actions">
-        <button class="ui button fluid" *ngFor="let item of siteCommands" (click)="runCommand(item.command)">{{item.label}}</button>
+        <button class="ui button fluid" *ngFor="let item of siteCommands" (click)="runCommand(item.command)">
+          {{item.label}}
+        </button>
       </div>
 
     </div>

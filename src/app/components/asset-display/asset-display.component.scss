@@ -8,8 +8,6 @@
 @import url('https://fonts.googleapis.com/css?family=Overpass+Mono');
 @import "../../styles/settings";
 
-@import "mixins";
-
 @mixin reg-font() {
   font-family: 'Overpass Mono', monospace;
 }
@@ -93,12 +91,7 @@ mat-checkbox {
 .type,
 .status,
 .lock {
-  display: inline-block;
-  font: normal normal normal 14px/1 FontAwesome;
-  font-size: inherit;
-  text-rendering: auto;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  @include fa-base-styles;
 }
 
 .type {

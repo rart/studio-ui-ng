@@ -1,31 +1,44 @@
 import { Component, OnInit } from '@angular/core';
-import { PageEvent } from '@angular/material';
-import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog, PageEvent } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SiteService } from '../../services/site.service';
-import { openDialog, StringUtils } from '../../app.utils';
+import { createLocalPagination$, openDialog, StringUtils } from '../../app.utils';
 import { EmbeddedViewDialogComponent } from '../embedded-view-dialog/embedded-view-dialog.component';
 import { SiteCrUDComponent } from './site-crud/site-crud.component';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { debounceTime, distinctUntilChanged, startWith } from 'rxjs/operators';
+import { ComponentBase } from '../../classes/component-base.class';
+import { FormControl } from '@angular/forms';
+import { PagedResponse } from '../../classes/paged-response.interface';
+import { Site } from '../../models/site.model';
+import 'rxjs/add/observable/never';
+import { PagerConfig } from '../../classes/pager-config.interface';
 
 @Component({
   selector: 'std-site-management',
   templateUrl: './site-management.component.html',
   styleUrls: ['./site-management.component.scss']
 })
-export class SiteManagementComponent implements OnInit {
+export class SiteManagementComponent extends ComponentBase implements OnInit {
 
   sites;
-  pageSize = 5;
-  pageIndex = 0;
+  dialogRef = null;
+  filterQuery = new FormControl('');
+
   totalNumOfSites = 0;
   pageSizeOptions = [5, 10, 25, 100];
+  pagerConfig: PagerConfig = {
+    pageIndex: 0,
+    pageSize: this.pageSizeOptions[0]
+  };
 
-  dialogRef = null;
+  pager$ = new BehaviorSubject(this.pagerConfig);
 
   constructor(private siteService: SiteService,
               private activeRoute: ActivatedRoute,
               public dialog: MatDialog,
               public router: Router) {
+    super();
   }
 
   ngOnInit() {
@@ -54,24 +67,18 @@ export class SiteManagementComponent implements OnInit {
         const pageIndex = params['pageIndex'];
         const create = params['create'];
         const edit = params['edit'];
-        const state = {
-          pageSize: this.pageSize,
-          pageIndex: this.pageIndex,
-          sites: this.sites
-        };
 
         if (pageSize !== undefined) {
-          this.pageSize = pageSize;
+          this.pagerConfig.pageSize = pageSize;
         }
         if (pageIndex !== undefined) {
-          this.pageIndex = pageIndex;
+          this.pagerConfig.pageIndex = pageIndex;
+        }
+        if (pageSize !== undefined || pageIndex !== undefined) {
+          this.pager$.next(this.pagerConfig);
         }
 
-        // TODO: fetch only when changed
-        this.fetchSites();
-
         // Something fails when opening dialogs on the current callstack (without the setTimeout)
-
         if (create !== undefined) {
           setTimeout(() => this.openDialog());
         } else if (edit !== undefined && edit !== '') {
@@ -79,13 +86,24 @@ export class SiteManagementComponent implements OnInit {
         }
 
       });
+
+    this.fetchSites();
+
   }
 
   fetchSites() {
-    this.siteService.all({
-      start: (this.pageIndex * this.pageSize),
-      number: this.pageSize
-    }).subscribe(data => {
+    createLocalPagination$({
+      source$: this.siteService.sites(),
+      pager$: this.pager$,
+      takeUntilOp: this.takeUntil,
+      filterFn: (item, query) => query.trim() === '' || item.name.includes(query),
+      filter$: this.filterQuery.valueChanges
+        .pipe(
+          debounceTime(250),
+          distinctUntilChanged(),
+          startWith(this.filterQuery.value)
+        )
+    }).subscribe((data: PagedResponse<Site>) => {
       this.sites = data.entries;
       this.totalNumOfSites = data.total;
     });
@@ -108,15 +126,13 @@ export class SiteManagementComponent implements OnInit {
       .subscribe(() => {
         this.router.navigate(['/sites']);
         subscription.unsubscribe();
-        this.fetchSites();
       });
     this.dialogRef = dialogRef;
   }
 
   pageChanged($event: PageEvent) {
-    this.router.navigate(['/sites'], {
-      queryParams: { pageIndex: $event.pageIndex, pageSize: $event.pageSize }
-    });
+    this.pager$.next(
+      Object.assign(this.pagerConfig, $event));
   }
 
 }

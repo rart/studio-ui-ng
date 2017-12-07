@@ -15,7 +15,8 @@ import { ContentService } from '../../services/content.service';
 import { CodeEditor } from '../../classes/code-editor.abstract';
 import { CodeEditorFactory } from '../../classes/code-editor-factory.class';
 import { Subject } from 'rxjs/Subject';
-import { combineLatest, map } from 'rxjs/operators';
+import { combineLatest, map, takeUntil } from 'rxjs/operators';
+import { CommunicationService } from '../../services/communication.service';
 
 // TODO: how to avoid navigation when code has been entered and not saved? — also, is auto save viable?
 
@@ -53,17 +54,23 @@ export class CodeEditorComponent implements OnInit, OnChanges, OnDestroy, AfterV
   // vendor: 'ace' | 'monaco' = 'ace';
 
   private editor: CodeEditor;
+  private unSubscriber = new Subject();
 
   get elem() {
     return this.editorRef ? this.editorRef.nativeElement : null;
   }
 
-  constructor(private contentService: ContentService) {
+  constructor(private contentService: ContentService,
+              private communicationService: CommunicationService) {
 
   }
 
   ngOnInit() {
-
+    this.communicationService.resize((e) => {
+      if (this.editor && this.editor.vendor === 'monaco') {
+        this.editor.resize();
+      }
+    }, takeUntil(this.unSubscriber));
   }
 
   ngAfterViewInit() {
@@ -118,6 +125,8 @@ export class CodeEditorComponent implements OnInit, OnChanges, OnDestroy, AfterV
 
   ngOnDestroy() {
     this.editor.dispose();
+    this.unSubscriber.next();
+    this.unSubscriber.complete();
     this.$editorInitialized.complete();
   }
 

@@ -37,7 +37,7 @@
 }
 
 .studio-app-nav {
-
+  margin-bottom: $spacing-conservative;
 }
 
 .sidebar-logo {
@@ -46,7 +46,7 @@
 
 .studio-site-nav {
   margin: {
-    top: 15px;
+    bottom: 1px;
   }
 }
 
@@ -153,8 +153,13 @@ $highlight-color: #dcdcdc;
   border-color: $sidebar-border-color;
 }
 
+.mat-expanded {
+  .sidebar-heading {
+    @include open-sans-bold;
+  }
+}
+
 .sidebar-heading {
-  @include open-sans-bold;
   &, &:hover, &:focus {
     background-color: $grey-header !important;
   }

@@ -6,6 +6,7 @@ import { WindowMessage } from './window-message.class';
 import { Subject } from 'rxjs/Subject';
 import { WindowMessageScopeEnum } from '../enums/window-message-scope.enum';
 import { OperatorFunction } from 'rxjs/interfaces';
+import { AnySubscriber } from '../../@types/globals/AnyObserver.type';
 
 interface Msg {
   data: any;
@@ -20,7 +21,7 @@ export abstract class Communicator {
   protected targets: Array<any> = [];
   protected origins: Array<any> = [];
 
-  constructor () {
+  constructor() {
 
     let
       multiCaster = new Subject<WindowMessage>(),
@@ -28,7 +29,7 @@ export abstract class Communicator {
         .pipe(
           tap((event: Msg) =>
             !this.originAllowed(event.origin) &&
-            console.log('Communicator: Message received from a disallowed origin.')
+            console.log('Communicator: Message received from a disallowed origin.', event)
           ),
           filter((event: Msg) =>
             this.originAllowed(event.origin) &&
@@ -51,15 +52,15 @@ export abstract class Communicator {
 
   }
 
-  subscribe<T, R>(observer: (value) => void, ...operators: OperatorFunction<T, R>[]): Subscription {
+  subscribe<T, R>(observer: AnySubscriber, ...operators: OperatorFunction<T, R>[]): Subscription {
     return this.messages
       .pipe(...operators)
       .subscribe(observer);
   }
 
-  subscribeTo(topic: WindowMessageTopicEnum,
-              observer: (value) => void,
-              scope?: WindowMessageScopeEnum): Subscription {
+  subscribeTo<T, R>(topic: WindowMessageTopicEnum,
+                    observer: (value) => void,
+                    scope?: WindowMessageScopeEnum): Subscription {
     let operations = [];
     if (scope !== undefined) {
       operations.push(
@@ -69,11 +70,8 @@ export abstract class Communicator {
       operations.push(
         filter((message: WindowMessage) => message.topic === topic));
     }
-    operations.push(
-      multicast(() => new Subject<WindowMessage>()),
-      refCount());
     return this.messages
-      .pipe.apply(this.messages, operations)
+      .pipe(...operations)
       .subscribe(observer);
   }
 
@@ -107,11 +105,11 @@ export abstract class Communicator {
     });
   }
 
-  // publish(message: WindowMessage): void;
+  publish(message: WindowMessage): void;
 
-  // publish(topicOrMessage: WindowMessageTopicEnum,
-  //         data: any,
-  //         scope: WindowMessageScopeEnum): void;
+  publish(topic: WindowMessageTopicEnum,
+          data: any,
+          scope: WindowMessageScopeEnum): void;
 
   publish(topicOrMessage: WindowMessage | WindowMessageTopicEnum,
           data: any = null,
@@ -139,7 +137,7 @@ export abstract class Communicator {
     }
   }
 
-  sendMessage(message: WindowMessage): void {
+  sendMessage(message: WindowMessage, targetOrigin: string = '*'): void {
     this.targets.forEach((target) => {
       // TODO need to determine where to get the origin
       if (!target.postMessage) {
@@ -149,7 +147,7 @@ export abstract class Communicator {
         // Garbage collection: get rid of any windows that no longer exist.
         this.removeTarget(target);
       } else {
-        target.postMessage(message, '*');
+        (<Window>target).postMessage(message, targetOrigin);
       }
     });
   }
