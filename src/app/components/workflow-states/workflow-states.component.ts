@@ -12,9 +12,10 @@ import { WorkflowService } from '../../services/workflow.service';
 import { ActivatedRoute } from '@angular/router';
 import { WorkflowStatusEnum } from '../../enums/workflow-status.enum';
 import { MatSnackBar } from '@angular/material';
-import { createLocalPagination$, showSnackBar } from '../../app.utils';
+import { createLocalPagination$} from '../../app.utils';
 import { ComponentBase } from '../../classes/component-base.class';
 import { PagerConfig } from '../../classes/pager-config.interface';
+import { showSnackBar } from '../../utils/material.utils';
 
 @Component({
   selector: 'std-workflow-states',

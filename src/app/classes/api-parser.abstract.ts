@@ -2,7 +2,8 @@ import { Asset } from '../models/asset.model';
 import { User } from '../models/user.model';
 import { Group } from '../models/group.model';
 import { Site } from '../models/site.model';
-import { StudioModel, StudioModelType } from '../app.utils';
+import { StudioModel} from '../utils/type.utils';
+import { StudioModelType } from '../utils/type.utils';
 
 export abstract class APIParser {
 
@@ -34,16 +35,16 @@ export abstract class APIParser {
 // declare type APIParserFn<T> = (type: T, json: any) => T;
 
 // export interface APIParser {
-//   static parse<T>(type: T, JSONObject: any): T;
+//   static parseEntity<T>(type: T, JSONObject: any): T;
 // }
 
 // declare type APIParser<T> = {
-//   parse: APIParserFn<T>;
+//   parseEntity: APIParserFn<T>;
 // };
 
 // tslint:disable-next-line:interface-over-type-literal
 // declare type APIParser<T, R> = {
-//   parse: (type: T, json: any) => R;
+//   parseEntity: (type: T, json: any) => R;
 // };
 
 // export type StudioAPIVersion = 'v3' | 'v4';

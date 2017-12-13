@@ -12,29 +12,37 @@ import { combineLatest, map } from 'rxjs/operators';
 import { EntityService } from '../classes/entity-service.interface';
 import { PagedResponse } from '../classes/paged-response.interface';
 import { PostResponse } from '../classes/post-response.interface';
+import { parseEntity } from '../utils/api.utils';
 
 const baseUrl = `${environment.apiUrl}/user`;
 
 @Injectable()
 export class UserService implements EntityService<User> {
-  by(entityProperty: string, value): Observable<User> {
-    return undefined;
-  }
-
   constructor(private http: StudioHttpService) {
+
   }
 
-  all(options?): Observable<PagedResponse<User>> {
+  all(query?): Observable<User[]> {
+    return this.http
+      .get(`${baseUrl}/get-all.json`, query)
+      .map(data => data.users.map(pojo => <User>parseEntity(User, pojo)));
+  }
+
+  page(options?): Observable<PagedResponse<User>> {
     return this.http
       .get(`${baseUrl}/get-all.json`, options)
       .map(StudioHttpService.mapToPagedResponse('users', User));
+  }
+
+  by(entityProperty: string, value): Observable<User> {
+    return undefined;
   }
 
   byId(username: string): Observable<User> {
     return this.http
       .get(`${baseUrl}/get.json`, { username: username })
       .pipe(
-        map((userJSON) => User.fromJSON(userJSON)),
+        map((userJSON) => <User>parseEntity(User, userJSON)),
         combineLatest(this.isEnabled(username), (user: User, enabled: boolean) => {
           user.enabled = enabled;
           return user;

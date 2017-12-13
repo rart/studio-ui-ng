@@ -7,6 +7,8 @@ import { HttpHandler } from '@angular/common/http/src/backend';
 import { CookieService } from 'ngx-cookie-service';
 import { HttpParams } from '@angular/common/http/src/params';
 import { HttpEvent } from '@angular/common/http/src/response';
+import { parseEntity} from '../utils/api.utils';
+import { StudioModel, StudioModelType } from '../utils/type.utils';
 
 // export const mapToPostResponse = (entity) => {
 //   return (res: any) => ({ entity: entity, responseCode: res.message });
@@ -36,10 +38,10 @@ export class StudioHttpService /* extends HttpClient */ {
     return (res: any) => ({ entity: entity, responseCode: res.message });
   }
 
-  static mapToPagedResponse(entriesPropName: string, EntityClass: { fromJSON: Function }) {
+  static mapToPagedResponse(entriesPropName: string, EntityClass: StudioModelType) {
     return (data: any) => ({
       total: data.total,
-      entries: data[entriesPropName].map(entityJSON => EntityClass.fromJSON(entityJSON))
+      entries: data[entriesPropName].map(entityJSON => parseEntity(EntityClass, entityJSON))
     });
   }
 

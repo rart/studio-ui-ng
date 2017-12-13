@@ -17,7 +17,7 @@
     <a *ngSwitchCase="true" class="label" title="{{ label }}" (click)="navigate()">{{ label }}</a>
   </ng-container>
 
-  <ng-container *ngIf="showMenu || showMenu === 'hover'">
+  <ng-container *ngIf="shouldShowMenu">
     <button class="simple menu" (click)="menuButtonClicked($event)" [matMenuTriggerFor]="assetMenu">
       <i class="material-icons">more_horiz</i>
     </button>

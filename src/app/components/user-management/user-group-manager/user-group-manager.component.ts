@@ -36,9 +36,9 @@ export class UserGroupManagerComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.siteService
-      .all()
+      .page()
       .pipe(
-        combineLatest(this.groupService.allBySite(), (sitesData, groupsData) => {
+        combineLatest(this.groupService.bySite(), (sitesData, groupsData) => {
           return this.mergeSitesAndGroupsResponses(
             sitesData.entries,
             groupsData.sites);

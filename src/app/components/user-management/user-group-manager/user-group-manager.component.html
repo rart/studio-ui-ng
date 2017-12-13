@@ -1,9 +1,8 @@
 <div class="user-group-manager">
 
-  <div class="loader" *ngIf="!dataFetchComplete">
-    <mat-spinner></mat-spinner>
-    <span class="info">Loading site &amp; group information&hellip;</span>
-  </div>
+  <std-spinner class="loader" *ngIf="!dataFetchComplete">
+    Loading site &amp; group information&hellip;
+  </std-spinner>
 
   <div class="ui relaxed divided list" *ngIf="dataFetchComplete">
     <div class="item" *ngFor="let site of sites">

@@ -1,7 +1,6 @@
 import {
   Component, EventEmitter,
   HostBinding,
-  Inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -9,35 +8,37 @@ import {
   Output
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { ComponentWithState } from '../../classes/component-with-state.class';
-import { AppStore } from '../../state.provider';
-import { AppState } from '../../classes/app-state.interface';
-import { SubjectStore } from '../../classes/subject-store.class';
+import { AppState, Workspace } from '../../classes/app-state.interface';
 import { Asset } from '../../models/asset.model';
-import { ArrayUtils, StringUtils } from '../../app.utils';
+import { StringUtils } from '../../utils/string.utils';
 import { AssetTypeEnum } from '../../enums/asset-type.enum';
 import { CommunicationService } from '../../services/communication.service';
 import { AssetActionEnum, AssetMenuOption, WorkflowService } from '../../services/workflow.service';
 import { SelectedItemsActions } from '../../actions/selected-items.actions';
 import { PreviewTabsActions } from '../../actions/preview-tabs.actions';
-import { PreviewTab } from '../../classes/preview-tab.class';
+import { dispatch, NgRedux } from '@angular-redux/store';
+import { WithNgRedux } from '../../classes/with-ng-redux.class';
+import { createPreviewTabCore } from '../../utils/state.utils';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'std-asset-display',
   templateUrl: './asset-display.component.html',
   styleUrls: ['./asset-display.component.scss']
 })
-export class AssetDisplayComponent extends ComponentWithState implements OnInit, OnChanges, OnDestroy {
+export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChanges, OnDestroy {
 
-  constructor(@Inject(AppStore) protected store: SubjectStore<AppState>,
+  constructor(store: NgRedux<AppState>,
               private workflowService: WorkflowService,
               private communicationService: CommunicationService,
-              private router: Router) {
+              private router: Router,
+              private previewTabsActions: PreviewTabsActions) {
     // Init Store
     super(store);
   }
 
   @Input() asset: Asset;
+  // @Input() assetId: Asset;
   @Input() disallowWrap = true;
   @Input() showCheck = false;
   @Input() showIcons = true;
@@ -143,6 +144,10 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
   // whether to update stuff related to state.selectedItems
   private priorShowCheckValue;
 
+  // internal compiled value of the @input showmenu
+  // updated every ngOnChanges
+  shouldShowMenu = this.showMenu;
+
   ngOnInit() {
 
   }
@@ -154,9 +159,14 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
       .getAvailableAssetOptions(this.state.user, this.asset);
 
     if (this.showMenu === 'true') {
-      this.showMenu = true;
+      this.shouldShowMenu = true;
     } else if (this.showMenu === 'false') {
-      this.showMenu = false;
+      this.shouldShowMenu = false;
+    } else if (this.showMenu === 'hover') {
+      this.shouldShowMenu = true;
+    } else {
+      // by this point, showMenu should be a boolean
+      this.shouldShowMenu = this.showMenu;
     }
 
     // if (!this.showTypeIcon && !this.showStatusIcons) {
@@ -165,13 +175,14 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
     // }
 
     if (this.priorShowCheckValue !== this.showCheck) {
-      // Only good as far as single subscription...
+      // Only good as far as there's a single subscription...
       if (this.priorShowCheckValue === true) {
         this.unSubscriber$.next();
       }
       if (this.showCheck) {
-        this.selectedItemsStateChanged();
-        this.subscribeTo('selectedItems');
+        this.store.select(['workspaceRef', 'selectedItems'])
+          .pipe(this.takeUntil)
+          .subscribe(selectedItems => this.selectedItemsStateChanged(selectedItems));
       }
       this.priorShowCheckValue = this.showCheck;
     }
@@ -195,23 +206,20 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
   navigate() {
     let
       asset = this.asset,
-      tab = new PreviewTab();
-    tab.url = asset.url;
-    tab.siteCode = asset.siteCode;
-    tab.title = asset.label;
-    tab.asset = asset;
-    this.dispatch(PreviewTabsActions.nav(tab));
-    if (!this.router.url.includes('/preview')) {
-      this.router.navigate([`/preview`]);
-    }
+      tab = createPreviewTabCore({
+        url: asset.url,
+        siteCode: asset.siteCode,
+        title: asset.label,
+        assetId: asset.id
+      });
+    this.dispatch(this.previewTabsActions.nav(tab));
   }
 
+  @dispatch()
   checkedStateChange(checked) {
-    if (checked) {
-      this.store.dispatch(SelectedItemsActions.select(this.asset));
-    } else {
-      this.store.dispatch(SelectedItemsActions.deselect(this.asset));
-    }
+    return checked
+      ? SelectedItemsActions.select(this.asset.id, this.asset.siteCode)
+      : SelectedItemsActions.deselect(this.asset.id, this.asset.siteCode);
   }
 
   menuItemSelected(action) {
@@ -231,11 +239,11 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
     switch (action) {
       case AssetActionEnum.EDIT: {
         let asset = this.asset;
-        this.dispatch(PreviewTabsActions.edit({
-          url: asset.url,
-          siteCode: asset.siteCode,
-          asset
-        }));
+        // this.dispatch(PreviewTabsActions.edit({
+        //   url: asset.url,
+        //   siteCode: asset.siteCode,
+        //   asset
+        // }));
         break;
       }
       default:
@@ -248,10 +256,9 @@ export class AssetDisplayComponent extends ComponentWithState implements OnInit,
     $event.stopPropagation();
   }
 
-  private selectedItemsStateChanged() {
-    let checked: Asset[] = this.state.selectedItems;
-    this.selected = ArrayUtils.forEachBreak(checked,
-      (asset) => asset.id === this.asset.id);
+  private selectedItemsStateChanged(selectedItems) {
+    let checked = Object.keys(selectedItems);
+    this.selected = checked.includes(this.asset.id);
   }
 
 }

@@ -45,6 +45,7 @@ import { environment } from '../environments/environment';
 import { MomentModule } from 'angular2-moment';
 import { CookieService } from 'ngx-cookie-service';
 import { TreeModule } from 'angular-tree-component';
+import { DevToolsExtension, NgRedux, NgReduxModule } from '@angular-redux/store';
 
 // Studio Services
 import { UserService } from './services/user.service';
@@ -82,7 +83,6 @@ import { SiteCrUDComponent } from './components/site-management/site-crud/site-c
 import { ItemListDashletComponent } from './components/site/site-dashboard/item-list-dashlet.component';
 import { I18nPipe } from './i18n.pipe';
 import { CodeEditorComponent } from './components/code-editor/code-editor.component';
-import { AppStoreProvider } from './state.provider';
 import { AssetDisplayComponent } from './components/asset-display/asset-display.component';
 import { WorkflowStatesComponent } from './components/workflow-states/workflow-states.component';
 import { FilterWithPipe } from './filter-with.pipe';
@@ -91,10 +91,38 @@ import { ImageViewerComponent } from './components/image-viewer/image-viewer.com
 import { VideoPlayerComponent } from './components/video-player/video-player.component';
 import { AudioPlayerComponent } from './components/audio-player/audio-player.component';
 import { FontVisualizerComponent } from './components/font-visualizer/font-visualizer.component';
+import { AppState } from './classes/app-state.interface';
+import { initialState } from './utils/initial-state.utils';
+import { createEpicMiddleware } from 'redux-observable';
+import { RootEpic } from './epics/root.epic';
+import { SiteEpics } from './epics/site.epic';
+import { SiteActions } from './actions/site.actions';
+import { AuthGuard } from './auth.guard';
+import { SitesResolver } from './services/sites.resolver';
+import { StoreActionsEnum } from './enums/actions.enum';
+import { rootReducer } from './reducers/root.reducer';
+import { AssetActions } from './actions/asset.actions';
+import { PreviewTabsActions } from './actions/preview-tabs.actions';
+import { InterceptorEpic } from './epics/interceptor.epic';
+import { TabBarComponent } from './components/tab-bar/tab-bar.component';
+import { SyntaxHighlighterComponent } from './components/syntax-highlighter/syntax-highlighter.component';
+import { SpinnerComponent } from './components/spinner/spinner.component';
+
+requirejs({
+  baseUrl: `${environment.assetsUrl}/js/vendor`,
+  paths: {
+    'vs': `${environment.assetsUrl}/js/vendor/vs`,
+    'ace': `${environment.assetsUrl}/js/vendor/ace`
+  }
+});
 
 @NgModule({
   declarations: [
+
+    I18nPipe,
     SafeUrlPipe,
+    FilterWithPipe,
+
     AppComponent,
     SidebarComponent,
     DashboardComponent,
@@ -114,16 +142,17 @@ import { FontVisualizerComponent } from './components/font-visualizer/font-visua
     UserCrUDComponent,
     SiteCrUDComponent,
     ItemListDashletComponent,
-    I18nPipe,
     CodeEditorComponent,
     AssetDisplayComponent,
     WorkflowStatesComponent,
-    FilterWithPipe,
     IFrameComponent,
     ImageViewerComponent,
     VideoPlayerComponent,
     AudioPlayerComponent,
-    FontVisualizerComponent
+    FontVisualizerComponent,
+    TabBarComponent,
+    SyntaxHighlighterComponent,
+    SpinnerComponent
   ],
   imports: [
     studioRoutes,
@@ -148,6 +177,7 @@ import { FontVisualizerComponent } from './components/font-visualizer/font-visua
     MatRadioModule,
     TreeModule,
     MomentModule,
+    NgReduxModule,
     HttpClientXsrfModule.withOptions({
       cookieName: environment.auth.cookie,
       headerName: environment.auth.header
@@ -157,23 +187,55 @@ import { FontVisualizerComponent } from './components/font-visualizer/font-visua
     EmbeddedViewDialogComponent,
     SiteCrUDComponent,
     ItemListDashletComponent,
-
     ContentTreeComponent
   ],
   providers: [
+
     StudioService,
     UserService,
     SiteService,
     GroupService,
     CommunicationService,
-    SiteResolver,
     StudioHttpService,
     ContentService,
-    CookieService,
     WorkflowService,
-    AppStoreProvider
+    CookieService,
+
+    RootEpic,
+    SiteEpics,
+    InterceptorEpic,
+
+    SiteActions,
+    AssetActions,
+    PreviewTabsActions,
+
+    AuthGuard,
+    SiteResolver,
+    SitesResolver
+
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
+  constructor(private store: NgRedux<AppState>,
+              private rootEpic: RootEpic,
+              private devTools: DevToolsExtension) {
+
+    let enhancers = [];
+
+    if (!environment.production && devTools.isEnabled()) {
+      enhancers.push(devTools.enhancer());
+    }
+
+    store.configureStore(
+      rootReducer,
+      initialState,
+      [createEpicMiddleware(rootEpic.epic())],
+      enhancers);
+
+    store.dispatch({
+      type: StoreActionsEnum.STUDIO_INIT
+    });
+
+  }
 }

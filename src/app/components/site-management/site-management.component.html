@@ -4,44 +4,52 @@
     title="Site Management"
     icon="fa fa-laptop">
     <button class="ui basic green button" [routerLink]="['/sites/create']">Create Site</button>
+    <button class="ui icon button" (click)="load()"><i class="icon refresh"></i></button>
   </std-view-title-bar>
-  <div class="content">
+  <ng-container [ngSwitch]="loading$ | async">
 
-    <table class="ui selectable flat basic table">
-      <thead class="uppercase">
-      <tr>
-        <th>Handle</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Groups</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td colspan="4">
-          <mat-form-field class="no-subscript no-infix no-underline with search icon">
-            <input placeholder="Search..." i18n-placeholder
-                   matInput type="text"
-                   [formControl]="filterQuery">
-          </mat-form-field>
-        </td>
-      </tr>
-      <tr class="is-interactive highlight-interaction bg"
-          *ngFor="let site of sites" [routerLink]="['/sites', site.code]">
-        <td>{{site.code}}</td>
-        <td>{{site.name}}</td>
-        <td>{{site.description}}</td>
-        <td>{{site.groups || 0}}</td>
-      </tr>
-      </tbody>
-    </table>
+    <div class="relative position flex grow full height" *ngSwitchCase="true">
+      <std-spinner class="absolute position opaque cover">
+        Loading Sites&hellip;
+      </std-spinner>
+    </div>
 
-    <mat-paginator (page)="pageChanged($event)"
-                   [length]="totalNumOfSites"
-                   [pageIndex]="(pager$ | async).pageIndex"
-                   [pageSize]="(pager$ | async).pageSize"
-                   [pageSizeOptions]="pageSizeOptions">
-    </mat-paginator>
+    <div class="content" *ngSwitchCase="false">
+      <table class="ui selectable flat basic table">
+        <thead class="uppercase">
+        <tr>
+          <th>Handle</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Groups</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td colspan="4">
+            <mat-form-field class="no-subscript no-infix no-underline with search icon">
+              <input placeholder="Search..." i18n-placeholder
+                     matInput type="text"
+                     [formControl]="filterQuery">
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr class="is-interactive highlight-interaction bg"
+            *ngFor="let site of sites" [routerLink]="['/sites', site.code]">
+          <td>{{site.code}}</td>
+          <td>{{site.name}}</td>
+          <td>{{site.description}}</td>
+          <td>{{site.groups || 0}}</td>
+        </tr>
+        </tbody>
+      </table>
+      <mat-paginator (page)="pageChanged($event)"
+                     [length]="totalNumOfSites"
+                     [pageIndex]="(pager$ | async).pageIndex"
+                     [pageSize]="(pager$ | async).pageSize"
+                     [pageSizeOptions]="pageSizeOptions">
+      </mat-paginator>
+    </div>
 
-  </div>
+  </ng-container>
 </div>

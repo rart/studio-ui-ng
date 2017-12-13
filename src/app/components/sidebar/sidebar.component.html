@@ -1,7 +1,7 @@
 <div class="sidebar-scroll">
 
   <mat-expansion-panel #appNavPanel class="studio-app-nav allow-overflow"
-                       [expanded]="expandedPanelMap[APP_NAV_KEY]">
+                       [expanded]="expandedPanels[APP_NAV_KEY]">
     <mat-expansion-panel-header (click)="appNavPanelExpandedStateChange(appNavPanel.expanded)"
                                 [collapsedHeight]="'75px'" [expandedHeight]="'75px'">
       <mat-panel-title>
@@ -19,11 +19,14 @@
     </div>
   </mat-expansion-panel>
 
-  <mat-expansion-panel #siteNavPanel class="studio-site-nav allow-overflow"
-                       *ngFor="let site of sites | async">
-    <mat-expansion-panel-header class="sidebar-heading"
-                                [collapsedHeight]="'60px'"
-                                [expandedHeight]="'60px'">
+  <mat-expansion-panel #siteNavPanel
+                       [expanded]="true"
+                       class="studio-site-nav allow-overflow"
+                       *ngIf="site">
+    <mat-expansion-panel-header
+      class="sidebar-heading"
+      [collapsedHeight]="'60px'"
+      [expandedHeight]="'60px'">
       <mat-panel-title>{{site.name}}</mat-panel-title>
     </mat-expansion-panel-header>
     <div class="sidebar-items" *ngIf="siteNavPanel.expanded">
@@ -43,7 +46,7 @@
 
         <mat-expansion-panel
           #expPanel class="sidebar-item-container"
-          [expanded]="expandedPanelMap[getSiteNavPanelKey(item)]"
+          [expanded]="expandedPanels[getSiteNavPanelKey(item)]"
           *ngSwitchCase="itemTypes.Container">
           <mat-expansion-panel-header
             class="no-indicator"
@@ -76,10 +79,10 @@
 
 <section class="ui icon small message is-interactive highlight-interaction user-account-control" routerLink="/profile">
   <div class="ui mini image">
-    <img src="/app/assets/img/avatars/matthew.png" alt="">
+    <img [src]="user.avatarUrl" alt="">
   </div>
   <div class="content">
-    <div class="header">{{user.name}}</div>
+    <div class="header">{{user.name || user.username}}</div>
     <p>{{user.email}}</p>
   </div>
 </section>

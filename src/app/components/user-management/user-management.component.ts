@@ -9,7 +9,7 @@ import {ActivatedRoute} from '@angular/router';
 import {MatDialog} from '@angular/material';
 import {UserService} from '../../services/user.service';
 import {EmbeddedViewDialogComponent} from '../embedded-view-dialog/embedded-view-dialog.component';
-import {openDialog} from '../../app.utils';
+import {openDialog} from '../../utils/material.utils';
 import {UserCrUDComponent} from './user-crud/user-crud.component';
 
 declare var $;
@@ -81,7 +81,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   fetchUsers() {
-    this.userService.all({
+    this.userService.page({
       start: (this.pageIndex * this.pageSize),
       number: this.pageSize
     }).subscribe((data) => {

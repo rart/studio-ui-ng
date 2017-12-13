@@ -1,5 +1,4 @@
 import { Component, ElementRef, Input, OnChanges, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import { password } from '../../app.utils';
 import { MimeTypeEnum } from '../../enums/mime-type.enum';
 
 // https://brajeshwar.github.io/entities/

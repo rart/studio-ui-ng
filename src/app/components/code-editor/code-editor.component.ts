@@ -20,14 +20,6 @@ import { CommunicationService } from '../../services/communication.service';
 
 // TODO: how to avoid navigation when code has been entered and not saved? — also, is auto save viable?
 
-requirejs({
-  baseUrl: `${environment.assetsUrl}/js/vendor`,
-  paths: {
-    'vs': `${environment.assetsUrl}/js/vendor/vs`,
-    'ace': `${environment.assetsUrl}/js/vendor/ace`
-  }
-});
-
 @Component({
   selector: 'std-code-editor',
   templateUrl: 'code-editor.component.html',
@@ -86,7 +78,7 @@ export class CodeEditorComponent implements OnInit, OnChanges, OnDestroy, AfterV
     // }
     if (this.editor) {
       this.editor.option('editable', this.editable);
-      setTimeout(() => this.editor.resize());
+      // setTimeout(() => this.editor.resize());
       setTimeout(() => this.editable && this.editor.focus());
     }
     if (this.lastFileFetched !== `${asset.siteCode}:${asset.id}`) {
@@ -104,13 +96,13 @@ export class CodeEditorComponent implements OnInit, OnChanges, OnDestroy, AfterV
         this.editor.value('Loading...');
         this.editor.option('editable', false);
       }
-      let $contentRequest = this.contentService
+      let contentRequest$ = this.contentService
         .content(asset.siteCode, asset.id);
       this.contentFetchSub = ((this.editor && !shouldReplaceEditor)
-        ? $contentRequest.pipe(
+        ? contentRequest$.pipe(
           map(data => data.content)
         )
-        : $contentRequest.pipe(
+        : contentRequest$.pipe(
           combineLatest(this.$editorInitialized, (data, editor) => data.content)
         )).subscribe(content => {
         this.value = content;

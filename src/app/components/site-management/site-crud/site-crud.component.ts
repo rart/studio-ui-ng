@@ -6,10 +6,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { SiteService } from '../../../services/site.service';
 import { Site } from '../../../models/site.model';
-import { showSnackBar, StringUtils } from '../../../app.utils';
+import { StringUtils } from '../../../utils/string.utils';
 import { CommunicationService } from '../../../services/communication.service';
 import { WindowMessageTopicEnum } from '../../../enums/window-message-topic.enum';
 import { WindowMessageScopeEnum } from '../../../enums/window-message-scope.enum';
+import { showSnackBar } from '../../../utils/material.utils';
 
 @Component({
   selector: 'std-site-crud',
@@ -23,7 +24,6 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
   editMode = false;
   creationRequestPending = false;
   runCreationInBackground = false;
-  subscriptions = [];
 
   model = new Site();
 
@@ -51,59 +51,32 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
 
     this.loadBlueprints();
 
-    const listener = (params) => {
+    const subscriber = (params) => {
       if (params.siteCode || params.edit) {
         this.model.code = params.siteCode || params.edit;
         this.loadSite();
       }
     };
 
+    this.route.url
     // @see https://github.com/angular/angular/issues/20299
-    this.subscriptions.push(
-      this.route.url
-        .subscribe(() => {
-          let firstChild = this.route.firstChild;
-          while (firstChild && firstChild.firstChild) {
-            firstChild = firstChild.firstChild;
-          }
-          if (firstChild) {
-            this.subscriptions.push(
-              firstChild.params
-                .subscribe(listener),
-              firstChild.queryParams
-                .subscribe(listener));
-          }
-        }),
-      this.route.queryParams
-        .subscribe(listener)
-    );
-
-    // this.subscriptions.push(
-    //   this.route.params
-    //     .subscribe(() => {
-    //       let url = this.router.url;
-    //       if (!StringUtils.contains(url, '?')) {
-    //         let siteCode = url
-    //           .replace('/sites/', '')
-    //           .replace('create', '');
-    //         if (siteCode) {
-    //           this.model.code = siteCode;
-    //           this.loadSite();
-    //         }
-    //       }
-    //     }),
-    //   this.route.queryParams
-    //     .subscribe((params) => {
-    //       if (params.edit) {
-    //         this.model.code = params.edit;
-    //         this.loadSite();
-    //       }
-    //     }));
+      .subscribe(() => {
+        let firstChild = this.route.firstChild;
+        while (firstChild && firstChild.firstChild) {
+          firstChild = firstChild.firstChild;
+        }
+        if (firstChild) {
+          firstChild.params
+            .subscribe(subscriber);
+          firstChild.queryParams
+            .subscribe(subscriber);
+        }
+      });
 
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach((sub) => sub.unsubscribe());
+
   }
 
   loadSite() {

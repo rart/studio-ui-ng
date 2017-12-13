@@ -1,0 +1,19 @@
+:host {
+  height: 100%;
+  width: 100%;
+}
+
+.view.container {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  flex-direction: column;
+  > div {
+    margin: auto;
+  }
+  img {
+    width: 300px;
+    margin: auto;
+    display: block;
+  }
+}

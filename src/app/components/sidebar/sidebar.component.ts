@@ -9,16 +9,20 @@ import {
 import { StudioService } from '../../services/studio.service';
 import { environment } from '../../../environments/environment';
 import { AppStore } from '../../state.provider';
-import { AppState } from '../../classes/app-state.interface';
+import { AppState, StateEntity, Workspace } from '../../classes/app-state.interface';
 import { ExpandedPanelsActions } from '../../actions/expanded-panels.actions';
 import { User } from '../../models/user.model';
 import { ComponentHostDirective } from '../component-host.directive';
 import { ContentTreeComponent } from '../site/content-tree/content-tree.component';
 import { Site } from '../../models/site.model';
-import { SiteService } from '../../services/site.service';
 import { Observable } from 'rxjs/Observable';
 import { ComponentWithState } from '../../classes/component-with-state.class';
 import { SubjectStore } from '../../classes/subject-store.class';
+import { dispatch, NgRedux, select } from '@angular-redux/store';
+import { isNullOrUndefined } from 'util';
+import { combineLatest, filter, takeUntil } from 'rxjs/operators';
+import { SiteActions } from '../../actions/site.actions';
+import { WithNgRedux } from '../../classes/with-ng-redux.class';
 
 const NavItemTypesEnum = {
   Link: 'link',
@@ -34,12 +38,32 @@ const COMPONENT_MAP = {
 
 const APP_NAV_KEY = 'sidebar.appnav.panel';
 
+// const activeSiteSelector = (state: AppState) => {
+//   let
+//     id = state.activeSiteCode,
+//     siteEntityState = state.entities.site;
+//   if (!isNullOrUndefined(id) && !isNullOrUndefined(siteEntityState.list)) {
+//     return siteEntityState.byId[id];
+//   }
+//   return null;
+// };
+
+// const expandedPanelStateSelector = (state: AppState) => {
+//   let
+//     id = state.activeSiteCode,
+//     siteEntityState = state.sitesState;
+//   if (!isNullOrUndefined(id) && !isNullOrUndefined(siteEntityState.list)) {
+//     return siteEntityState[id].expandedPanels;
+//   }
+//   return null;
+// };
+
 @Component({
   selector: 'std-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent extends ComponentWithState implements OnInit, AfterViewInit {
+export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewInit {
 
   APP_NAV_KEY = APP_NAV_KEY;
 
@@ -51,31 +75,42 @@ export class SidebarComponent extends ComponentWithState implements OnInit, Afte
   siteNavItems;
   siteCommands;
   studioLogoUrl = `${environment.assetsUrl}/img/crafter_studio_360.png`;
-  expandedPanelMap = {};
   user: User;
 
-  sites: Observable<Site[]>;
+  site: Site;
+  sites: Site[];
 
-  constructor(@Inject(AppStore)
-              protected store: SubjectStore<AppState>,
+  @select(['entities', 'site'])
+  sites$: Observable<StateEntity<Site>>;
+
+  expandedPanels: { [key: string]: boolean } = {};
+
+  constructor(protected store: NgRedux<AppState>,
               private studioService: StudioService,
               private componentFactoryResolver: ComponentFactoryResolver,
-              private cdr: ChangeDetectorRef,
-              private siteService: SiteService) {
+              private cdr: ChangeDetectorRef) {
     super(store);
   }
 
   ngOnInit() {
 
-    this.subscribeTo('expandedPanels');
-    this.expandedPanelsStateChanged();
+    this.store.select(['workspaceRef'])
+      .pipe(...this.noNullsAndUnSubOps)
+      .subscribe((workspace: Workspace) => {
+        this.expandedPanels = workspace.expandedPanels;
+      });
+
+    this.store.select(['siteRef'])
+      .pipe(...this.noNullsAndUnSubOps)
+      .subscribe((site: Site) => {
+        this.site = site;
+      });
 
     this.user = this.state.user;
 
-    this.sites = this.siteService.sites();
-
-    this.studioService.getSidebarItems()
-      .subscribe((sidebarDescriptor) => {
+    this.studioService
+      .getSidebarItems()
+      .subscribe(sidebarDescriptor => {
         this.appNavItems = sidebarDescriptor.studio;
         this.siteNavItems = sidebarDescriptor.site.nav;
         this.siteCommands = sidebarDescriptor.site.commands;
@@ -150,29 +185,11 @@ export class SidebarComponent extends ComponentWithState implements OnInit, Afte
     this.panelExpandedStateChanged(APP_NAV_KEY, expanded);
   }
 
+  @dispatch()
   private panelExpandedStateChanged(key, expanded) {
-    let action;
-    this.store.dispatch(
-      expanded
-        ? ExpandedPanelsActions.expand(key)
-        : ExpandedPanelsActions.collapse(key));
-  }
-
-  private expandedPanelsStateChanged() {
-
-    const expandedPanels = this.store.getState().expandedPanels;
-    const expandedPanelMap = {};
-    const panelKeySubstr = this.getSiteNavPanelKey();
-
-    expandedPanels.forEach(key => {
-      // Filter out panels from the rest of the app.
-      if (key === APP_NAV_KEY || key.includes(panelKeySubstr)) {
-        expandedPanelMap[key] = true;
-      }
-    });
-
-    this.expandedPanelMap = expandedPanelMap;
-
+    return expanded
+      ? ExpandedPanelsActions.expand(key, this.site.code)
+      : ExpandedPanelsActions.collapse(key, this.site.code);
   }
 
 }

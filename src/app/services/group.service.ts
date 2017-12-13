@@ -11,7 +11,7 @@ export class GroupService {
 
   constructor(public http: StudioHttpService) { }
 
-  allBySite(query?) {
+  bySite(query?) {
     return this.http.get(`${baseUrl}/get-all.json`, query)
       .map((data) => ({
         total: '(not provided by API)',

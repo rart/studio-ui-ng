@@ -7,6 +7,7 @@ import { Subject } from 'rxjs/Subject';
 import { WindowMessageScopeEnum } from '../enums/window-message-scope.enum';
 import { OperatorFunction } from 'rxjs/interfaces';
 import { AnySubscriber } from '../../@types/globals/AnyObserver.type';
+import { isNullOrUndefined } from 'util';
 
 interface Msg {
   data: any;
@@ -59,20 +60,22 @@ export abstract class Communicator {
   }
 
   subscribeTo<T, R>(topic: WindowMessageTopicEnum,
-                    observer: (value) => void,
-                    scope?: WindowMessageScopeEnum): Subscription {
-    let operations = [];
-    if (scope !== undefined) {
-      operations.push(
+                    subscriber: (value) => void,
+                    scope?: WindowMessageScopeEnum,
+                    ...operations): Subscription {
+    let ops = [];
+    // operations = operations || [];
+    if (!isNullOrUndefined(scope)) {
+      ops.push(
         filter((message: WindowMessage) =>
           message.scope === scope && message.topic === topic));
     } else {
-      operations.push(
+      ops.push(
         filter((message: WindowMessage) => message.topic === topic));
     }
     return this.messages
-      .pipe(...operations)
-      .subscribe(observer);
+      .pipe(...ops.concat(operations))
+      .subscribe(subscriber);
   }
 
   addTarget(target: any): void {

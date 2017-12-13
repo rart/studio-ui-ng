@@ -23,8 +23,6 @@ import { CommunicationService } from '../../services/communication.service';
 export class IFrameComponent implements OnInit, OnDestroy, AfterViewInit, AfterContentInit, OnChanges {
 
   @ViewChild('frame') iFrameRef: ElementRef;
-  @ViewChildren('frame') iFrameQL: QueryList<HTMLElement>;
-  // private iFrame: HTMLElement;
 
   private communications = false;
 
@@ -61,10 +59,6 @@ export class IFrameComponent implements OnInit, OnDestroy, AfterViewInit, AfterC
 
   ngAfterViewInit() {
     this.communicates = this.communications;
-    this.iFrameQL.changes
-      .subscribe(iFrameQL => {
-        pretty('red', 'IFrameComponent.iFrameQL has changed!', iFrameQL);
-      });
   }
 
   ngAfterContentInit() {
@@ -74,9 +68,18 @@ export class IFrameComponent implements OnInit, OnDestroy, AfterViewInit, AfterC
   ngOnChanges() {
     // pretty('yellow', 'Changes have occurred', this.src);
     if (this.element) {
-      this.beforeNav.next();
-      this.element.src = this.src;
+      this.reload();
     }
+  }
+
+  navigate(url: string) {
+    this.beforeNav.next();
+    this.src = url;
+    this.element.src = url;
+  }
+
+  reload() {
+    this.navigate(this.src);
   }
 
   private setUpCommunications() {
@@ -101,11 +104,6 @@ export class IFrameComponent implements OnInit, OnDestroy, AfterViewInit, AfterC
         this.communicator.removeOrigin(origin);
       }
     }
-  }
-
-  reload() {
-    this.beforeNav.next();
-    this.element.src = this.src;
   }
 
 }

@@ -15,6 +15,9 @@ export enum MimeTypeEnum {
 
   // Web Code
   CSS = 'text/css',
+  LESS = 'LESS',
+  SCSS = 'application/scss',
+  SASS = 'application/sass',
   HTML = 'text/html',
   GROOVY = 'text/x-groovy',
   JAVASCRIPT = 'application/javascript',

@@ -2,24 +2,24 @@ import { AppState } from '../classes/app-state.interface';
 import { SignedAction } from '../classes/signed-action.interface';
 import { StoreActionsEnum } from '../enums/actions.enum';
 
-const affects: Array<keyof AppState> = ['expandedPanels'];
+const affects: Array<keyof AppState> = ['sitesState'];
 
 export class ExpandedPanelsActions {
   static affects = affects;
 
-  static expand(key: string): SignedAction {
-    return { type: StoreActionsEnum.EXPAND_PANEL, affects, key };
+  static expand(key: string, siteCode: string): SignedAction {
+    return { type: StoreActionsEnum.EXPAND_PANEL, affects, key, siteCode };
   }
 
-  static collapse(key: string): SignedAction {
-    return { type: StoreActionsEnum.COLLAPSE_PANEL, affects, key };
+  static collapse(key: string, siteCode: string): SignedAction {
+    return { type: StoreActionsEnum.COLLAPSE_PANEL, affects, key, siteCode };
   }
 
-  static expandMany(keys: Array<string>): SignedAction {
-    return { type: StoreActionsEnum.EXPAND_PANELS, affects, keys };
+  static expandMany(keys: Array<string>, siteCode: string): SignedAction {
+    return { type: StoreActionsEnum.EXPAND_PANELS, affects, keys, siteCode };
   }
 
-  static collapseMany(keys: Array<string>): SignedAction {
-    return { type: StoreActionsEnum.COLLAPSE_PANELS, affects, keys };
+  static collapseMany(keys: Array<string>, siteCode: string): SignedAction {
+    return { type: StoreActionsEnum.COLLAPSE_PANELS, affects, keys, siteCode };
   }
 }

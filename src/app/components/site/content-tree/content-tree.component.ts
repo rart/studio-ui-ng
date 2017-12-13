@@ -1,20 +1,20 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ITreeOptions, TREE_ACTIONS, TreeNode, ITreeState } from 'angular-tree-component';
 import { ContentService } from '../../../services/content.service';
 import { Asset } from '../../../models/asset.model';
 import { WorkflowService } from '../../../services/workflow.service';
-import { ComponentWithState } from '../../../classes/component-with-state.class';
-import { AppStore } from '../../../state.provider';
-import { SubjectStore } from '../../../classes/subject-store.class';
-import { AppState } from '../../../classes/app-state.interface';
+import { AppState, Workspace } from '../../../classes/app-state.interface';
 import { ExpandedPathsActions } from '../../../actions/expanded-paths.actions';
+import { WithNgRedux } from '../../../classes/with-ng-redux.class';
+import { NgRedux } from '@angular-redux/store';
+import { AssetActions } from '../../../actions/asset.actions';
 
 @Component({
   selector: 'std-content-tree',
   templateUrl: './content-tree.component.html',
   styleUrls: ['./content-tree.component.scss']
 })
-export class ContentTreeComponent extends ComponentWithState implements OnInit {
+export class ContentTreeComponent extends WithNgRedux implements OnInit {
 
   @Input() rootPath: string;
   @Input() showRoot = true;
@@ -30,15 +30,20 @@ export class ContentTreeComponent extends ComponentWithState implements OnInit {
     focusedNodeId: null
   };
 
-  constructor(@Inject(AppStore) protected store: SubjectStore<AppState>,
+  constructor(store: NgRedux<AppState>,
               private contentService: ContentService,
-              private workflowService: WorkflowService) {
+              private workflowService: WorkflowService,
+              private assetActions: AssetActions) {
     super(store);
   }
 
   ngOnInit() {
 
-    this.treeState.expandedNodeIds = Object.assign({}, this.state.expandedPaths);
+    this.store.select(['workspaceRef'])
+      .pipe(...this.noNullsAndUnSubOps)
+      .subscribe((workspace: Workspace) => {
+        this.treeState.expandedNodeIds = workspace.expandedPaths;
+      });
 
     this.fetch(this.site.code, this.rootPath)
       .then(item => {
@@ -46,8 +51,6 @@ export class ContentTreeComponent extends ComponentWithState implements OnInit {
       });
 
     this.setTreeOptionDefaults();
-
-    this.subscribeTo('expandedPaths');
 
   }
 
@@ -85,7 +88,14 @@ export class ContentTreeComponent extends ComponentWithState implements OnInit {
   private fetch(siteCode, path) {
     return this.contentService
       .tree(siteCode, path)
-      .toPromise();
+      .toPromise()
+      .then(item => {
+        this.dispatch(
+          (item.children && item.children.length > 0)
+            ? this.assetActions.fetchedSome([item].concat(item.children))
+            : this.assetActions.gotten(item));
+        return item;
+      });
   }
 
   private setTreeOptionDefaults() {

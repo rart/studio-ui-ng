@@ -4,7 +4,7 @@ import { User } from '../models/user.model';
 
 export const user: Reducer<User> = (state = null, action) => {
   switch (action.type) {
-    case StoreActionsEnum.STATE_INIT: {
+    case StoreActionsEnum.STUDIO_INIT: {
       return (state instanceof User)
         ? state
         : (state)

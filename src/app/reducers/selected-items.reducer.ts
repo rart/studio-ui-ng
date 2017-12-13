@@ -1,43 +1,32 @@
 import { AnyAction, Reducer } from 'redux';
-
-import { Asset } from '../models/asset.model';
 import { StoreActionsEnum } from '../enums/actions.enum';
 
-const withoutItem = (state, item) => {
-  return state.filter((stateItem) => stateItem.id !== item.id);
-};
-
-const addOne = (state, item) => {
-  return [...withoutItem(state, item), item];
-};
-
-export const selectedItems: Reducer<Array<Asset>> = (state = [], action: AnyAction) => {
+export const selectedItems: Reducer<{ [key: string]: boolean }> = (state = {}, action: AnyAction) => {
   switch (action.type) {
 
     case StoreActionsEnum.SELECT_ITEM:
-      return addOne(state, action.item);
+      return {
+        ...state,
+        [action.id]: true
+      };
 
-    case StoreActionsEnum.DESELECT_ITEM:
-      return withoutItem(state, action.item);
+    case StoreActionsEnum.DESELECT_ITEM: {
+      let nextState = { ...state };
+      delete nextState[action.id];
+      return nextState;
+    }
 
     case StoreActionsEnum.SELECT_ITEMS: {
-      let nextState = [...state];
-      action.items.forEach(item =>
-        nextState = addOne(nextState, item));
+      let nextState =  { ...state };
+      action.ids.forEach(id => nextState[id] = true);
       return nextState;
     }
 
     case StoreActionsEnum.DESELECT_ITEMS: {
-      let nextState = [...state];
-      action.items.forEach(item =>
-        nextState = withoutItem(nextState, item));
-      return nextState;
-    }
-
-    case StoreActionsEnum.STATE_INIT: {
-      return state.map((item) => (
-        (item instanceof Asset) ? item : Asset.deserialize(item)
-      ));
+      return Object.keys(state).reduce((nextState, key) => {
+        delete nextState[key];
+        return nextState;
+      }, { ...state });
     }
 
     default:

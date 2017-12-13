@@ -33,6 +33,7 @@ export enum AssetTypeEnum {
   SASS = 'sass',
   LESS = 'less',
   FREEMARKER = 'freemarker',
+  XML = 'XML',
   // Fonts
   EOT_FONT = 'eot font',
   OTF_FONT = 'otf font',

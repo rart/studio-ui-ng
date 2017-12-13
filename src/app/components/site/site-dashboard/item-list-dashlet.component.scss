@@ -22,7 +22,11 @@
     padding: 0 $spacing-mini 0 $spacing-sm;
   }
   > .bd {
-
+    &.spinning {
+      @media only screen and (max-width: 992px) {
+        min-height: 300px;
+      }
+    }
   }
   &:not(.is-dialog) {
     > .bd {
@@ -80,13 +84,8 @@
   .label {
     width: 30%;
     position: relative;
-    mat-checkbox {
-      top: 5px;
-      left: 10px;
-      position: absolute;
-    }
     > div {
-      padding-left: 35px;
+      padding-left: 5px;
     }
   }
   .url {
@@ -164,3 +163,4 @@
     margin: auto;
   }
 }
+

@@ -1,3 +1,9 @@
-<std-sidebar></std-sidebar>
-<router-outlet></router-outlet>
-
+<ng-container *ngIf="preRequisitesPassed">
+  <router-outlet></router-outlet>
+  <std-sidebar></std-sidebar>
+</ng-container>
+<ng-container *ngIf="!preRequisitesPassed">
+  <std-spinner class="absolute position full with height cover">
+    Loading Crafter Studio&hellip;
+  </std-spinner>
+</ng-container>

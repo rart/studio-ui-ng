@@ -1,26 +1,14 @@
-import { SignedAction } from '../classes/signed-action.interface';
+import { AnyAction } from 'redux';
+import { Injectable } from '@angular/core';
 import { StoreActionsEnum } from '../enums/actions.enum';
-import { AppState } from '../classes/app-state.interface';
-import { PreviewTab } from '../classes/preview-tab.class';
-import { Asset } from '../models/asset.model';
+import { AppState, PreviewTabCore } from '../classes/app-state.interface';
 
-const affects: Array<keyof AppState> = ['previewTabs'];
+const affects: Array<keyof AppState> = ['sitesState'];
 
-interface TabProps {
-  url: string;
-  siteCode: string;
-  title?: string;
-  asset?: Asset;
-}
-
-interface TabWithAsset extends TabProps {
-  asset: Asset;
-}
-
+@Injectable()
 export class PreviewTabsActions {
-  static affects = affects;
 
-  static nav(tab: TabProps): SignedAction {
+  nav(tab: PreviewTabCore): AnyAction {
     return {
       type: StoreActionsEnum.NAVIGATE_ON_ACTIVE,
       affects,
@@ -28,15 +16,7 @@ export class PreviewTabsActions {
     };
   }
 
-  static edit(tab: TabWithAsset): SignedAction {
-    return {
-      type: StoreActionsEnum.EDIT_ASSET,
-      affects,
-      tab
-    };
-  }
-
-  static open(tab: TabProps): SignedAction {
+  open(tab: PreviewTabCore): AnyAction {
     return {
       type: StoreActionsEnum.OPEN_TAB,
       affects,
@@ -44,7 +24,7 @@ export class PreviewTabsActions {
     };
   }
 
-  static openInBackground(tab: TabProps): SignedAction {
+  openInBackground(tab: PreviewTabCore): AnyAction {
     return {
       type: StoreActionsEnum.OPEN_TAB_BACKGROUND,
       affects,
@@ -52,7 +32,7 @@ export class PreviewTabsActions {
     };
   }
 
-  static close(id: string): SignedAction {
+  close(id: string): AnyAction {
     return {
       type: StoreActionsEnum.CLOSE_TAB,
       affects,
@@ -60,7 +40,7 @@ export class PreviewTabsActions {
     };
   }
 
-  static select(id: string): SignedAction {
+  select(id: string): AnyAction {
     return {
       type: StoreActionsEnum.SELECT_TAB,
       affects,
@@ -68,6 +48,25 @@ export class PreviewTabsActions {
     };
   }
 
-  // static navigate()
+  checkIn(tab: PreviewTabCore): AnyAction {
+    return {
+      type: StoreActionsEnum.GUEST_CHECK_IN,
+      tab
+    };
+  }
+
+  back(id: string) {
+    return {
+      type: StoreActionsEnum.TAB_NAVIGATE_BACK,
+      id
+    };
+  }
+
+  forward(id: string) {
+    return {
+      type: StoreActionsEnum.TAB_NAVIGATE_FORWARD,
+      id
+    };
+  }
 
 }

@@ -2,13 +2,13 @@
   <div class="title-bar transparent">
     <div class="ui address-bar">
       <section class="controls">
-        <button [disabled]="!activeTab.hasBack()" (click)="back()" class="ui mini icon button"><i class="icon chevron left"></i></button>
-        <button [disabled]="!activeTab.hasForward()" (click)="forward()" class="ui mini icon button"><i class="icon chevron right"></i></button>
-        <button [disabled]="activeTab.isNew" (click)="reload()" class="ui mini icon button"><i class="icon refresh"></i></button>
+        <button [disabled]="!activeTab.history.hasBack" (click)="back()" class="ui mini icon button"><i class="icon chevron left"></i></button>
+        <button [disabled]="!activeTab.history.hasForward" (click)="forward()" class="ui mini icon button"><i class="icon chevron right"></i></button>
+        <button [disabled]="activeTab.pending" (click)="reload()" class="ui mini icon button"><i class="icon refresh"></i></button>
         <div class="input-skin">
           <div class="site-display" *ngIf="site && sites">
             <button class="text simple" [title]="site.name" [matMenuTriggerFor]="siteSelectorMenu">
-              Site: {{activeTab.isExternal() ? '(External Page)' : site.code}} <i class="dropdown icon"></i>
+              Site: {{site.code}} <i class="dropdown icon"></i>
             </button>
             <mat-menu #siteSelectorMenu="matMenu" class="mat-menu-compact">
               <button
@@ -20,8 +20,8 @@
             </mat-menu>
           </div>
           <std-asset-display
-            *ngIf="activeTab.asset"
-            [asset]="activeTab.asset"
+            *ngIf="activeTabAsset"
+            [asset]="activeTabAsset"
             [disallowWrap]="false"
             [showLabel]="false"
             [showMenu]="false"></std-asset-display>
@@ -30,8 +30,8 @@
                  [value]="activeTab.url !== iFrameLandingUrl ? activeTab.url : ''"
                  (keyup.enter)="requestUrl(urlBox.value)" />
           <std-asset-display
-            *ngIf="activeTab.asset"
-            [asset]="activeTab.asset"
+            *ngIf="activeTabAsset"
+            [asset]="activeTabAsset"
             [disallowWrap]="false"
             [showLink]="false"
             [showLabel]="false"
@@ -40,57 +40,58 @@
         </div>
         <button (click)="addTab()" class="ui mini basic green icon button"><i class="icon plus" title="New Tab"></i></button>
       </section>
-      <nav class="tab-bar">
-        <div class="tab" *ngFor="let tab of tabs" [class.active]="tab.active">
+      <nav class="tab bar">
+        <div class="tab" *ngFor="let tab of tabs" [class.active]="tab === activeTab">
           <button (click)="selectTab(tab)" class="main" [title]="tab.title">
             <std-asset-display
-              *ngIf="tab.asset"
-              [asset]="tab.asset"
+              *ngIf="assets[tab.assetId]"
+              [asset]="assets[tab.assetId]"
               [disallowWrap]="false"
               [showLink]="false"
               [showLabel]="false"
               [showStatusIcons]="false"
               [showMenu]="false"></std-asset-display>
-            {{tab.asset ? tab.asset.label : tab.title}}
+            {{tab.assetId && assets[tab.assetId] ? assets[tab.assetId].label : tab.title}}
           </button>
           <button (click)="closeTab(tab)" class="close" title="Close" i18n>&times;</button>
         </div>
       </nav>
     </div>
   </div>
-  <div class="preview-container" [ngSwitch]="activeTab.type()">
+  <div class="preview-container" [ngSwitch]="activeTabType">
+
+    <std-syntax-highlighter
+      *ngSwitchCase="'SyntaxHighlighterComponent'"
+      [asset]="activeTabAsset"></std-syntax-highlighter>
 
     <std-code-editor
-      *ngSwitchCase="'text'"
-      (editCancelled)="codeEditorEditCancelled($event)"
-      [asset]="activeTab.asset"
-      [editable]="activeTab.edit"></std-code-editor>
+      *ngSwitchCase="'CodeEditorComponent'"
+      [asset]="activeTabAsset"
+      [editable]="false"></std-code-editor>
 
     <std-image-viewer
-      *ngSwitchCase="'image'"
-      [src]="activeTab.asset.url"></std-image-viewer>
+      *ngSwitchCase="'ImageViewerComponent'"
+      [src]="activeTabAsset.url"></std-image-viewer>
 
     <std-video-player
-      *ngSwitchCase="'video'"
-      [src]="activeTab.asset.url"
-      [type]="activeTab.asset.mimeType"></std-video-player>
+      *ngSwitchCase="'VideoPlayerComponent'"
+      [src]="activeTabAsset.url"
+      [type]="activeTabAsset.mimeType"></std-video-player>
 
     <std-audio-player
-      *ngSwitchCase="'audio'"
-      [src]="activeTab.asset.url"
-      [type]="activeTab.asset.mimeType"></std-audio-player>
+      *ngSwitchCase="'AudioPlayerComponent'"
+      [src]="activeTabAsset.url"
+      [type]="activeTabAsset.mimeType"></std-audio-player>
 
     <std-font-visualizer
-      *ngSwitchCase="'font'"
-      [src]="activeTab.asset.url"
-      [type]="activeTab.asset.mimeType"></std-font-visualizer>
+      *ngSwitchCase="'FontVisualizerComponent'"
+      [src]="activeTabAsset.url"
+      [type]="activeTabAsset.mimeType"></std-font-visualizer>
 
     <std-iframe
       *ngSwitchDefault
       (load)="onIFrameLoadEvent($event)"
       (beforeNav)="beforeIFrameNav()"
-      [src]="activeTab.url"
-      [changeTrigger]="activeTab.siteCode"
       [communicates]="true"></std-iframe>
 
   </div>

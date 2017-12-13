@@ -157,6 +157,7 @@ tree-root {
           &.tree-node-expanded {
 
           }
+          &.tree-node-leaf,
           &.tree-node-collapsed {
             std-asset-display .icons i.folder {
               &::before {

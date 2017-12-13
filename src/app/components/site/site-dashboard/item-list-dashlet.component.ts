@@ -1,25 +1,24 @@
-import { Component, ComponentFactory, Input, OnInit, Output, EventEmitter, Inject, HostBinding } from '@angular/core';
+import {
+  Component, ComponentFactory, Input, OnInit, Output, EventEmitter, Inject, HostBinding,
+  OnChanges
+} from '@angular/core';
 import { Asset } from '../../../models/asset.model';
 import { Observable } from 'rxjs/Observable';
 import { WorkflowService } from '../../../services/workflow.service';
 import { Site } from '../../../models/site.model';
 import { Router } from '@angular/router';
-import { WindowMessageScopeEnum} from '../../../enums/window-message-scope.enum';
+import { WindowMessageScopeEnum } from '../../../enums/window-message-scope.enum';
 import { CommunicationService } from '../../../services/communication.service';
 import { EmbeddedViewDialogComponent } from '../../embedded-view-dialog/embedded-view-dialog.component';
-import { ArrayUtils, openDialog } from '../../../app.utils';
+import { openDialog } from '../../../utils/material.utils';
 import { MatDialog } from '@angular/material';
-import { AppStore } from '../../../state.provider';
 import { AppState } from '../../../classes/app-state.interface';
-import { SubjectStore } from '../../../classes/subject-store.class';
-import { ExpandedPanelsActions as ExpansionAction } from '../../../actions/expanded-panels.actions';
-import { SelectedItemsActions as SelectionAction } from '../../../actions/selected-items.actions';
-import { Subscriber } from 'rxjs/Subscriber';
-import { MatMenu } from '@angular/material/menu/typings/menu-directive';
-import { ViewChild } from '@angular/core/src/metadata/di';
-import { MatMenuItem } from '@angular/material/menu/typings/menu-item';
+import { ExpandedPanelsActions } from '../../../actions/expanded-panels.actions';
 import { WindowMessageTopicEnum } from '../../../enums/window-message-topic.enum';
-import { ComponentWithState } from '../../../classes/component-with-state.class';
+import { WithNgRedux } from '../../../classes/with-ng-redux.class';
+import { dispatch, NgRedux } from '@angular-redux/store';
+import { SelectedItemsActions } from '../../../actions/selected-items.actions';
+import { SiteActions } from '../../../actions/site.actions';
 
 type Format = 'modern' | 'table';
 type ItemResponseFormat = 'categorized' | 'simple';
@@ -100,7 +99,7 @@ export declare type FetchType =
   templateUrl: './item-list-dashlet.component.html',
   styleUrls: ['./item-list-dashlet.component.scss']
 })
-export class ItemListDashletComponent extends ComponentWithState implements OnInit {
+export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnChanges {
   /* tslint:disable:no-unused-expression */
 
   UI_FORMAT_MODERN: Format = 'modern';
@@ -125,11 +124,12 @@ export class ItemListDashletComponent extends ComponentWithState implements OnIn
 
   collection: Observable<Asset[]>;
 
-  cachedPanelKeys: Array<string> = [];
-  expandedState = {};
+  cachedItemIds: string[] = []; // cache of all the asset ids this dashlet is handling
+  cachedPanelKeys: string[] = []; // cache of all panel ids this dashlet is handling
+  contentItems: Asset[] = []; // the list of items TODO: get form state asset store
 
-  contentItems: Array<Asset> = [];
-  checkedState = {};
+  expandedStateRef = {};
+  selectedItemsRef = {};
 
   areAllChecked = false;
   areAllUnchecked = true;
@@ -172,15 +172,15 @@ export class ItemListDashletComponent extends ComponentWithState implements OnIn
       numOfItemsMenuOption
     ]
   };
-  itemMenuMap = {};
 
   private cachePreInitialized = false;
 
-  constructor(@Inject(AppStore) protected store: SubjectStore<AppState>,
+  constructor(store: NgRedux<AppState>,
               private router: Router,
               public dialog: MatDialog,
               private communicationService: CommunicationService,
-              private workflowService: WorkflowService) {
+              private workflowService: WorkflowService,
+              private siteActions: SiteActions) {
     super(store);
   }
 
@@ -199,24 +199,24 @@ export class ItemListDashletComponent extends ComponentWithState implements OnIn
 
     (!this.isDialog) && (this.finished = null);
 
-    this.updateLocalStates();
+    this.store.select(['workspaceRef', 'expandedPanels'])
+      .pipe(...this.noNullsAndUnSubOps)
+      .subscribe(expandedPanels => this.updateLocalExpandedState(expandedPanels));
 
-    this.subscribeTo({
-      'selectedItems': () => this.updateLocalCheckedState(),
-      'expandedPanels': () => this.updateLocalExpandedState()
-    });
+    this.store.select(['workspaceRef', 'selectedItemsRef'])
+      .pipe(...this.noNullsAndUnSubOps)
+      .subscribe(selectedItemsRef => this.updateLocalCheckedState(selectedItemsRef));
 
   }
 
+  ngOnChanges() {
+    // this.updateLocalStates();
+  }
+
   menuOptionClicked(action, value?) {
+    // each filter sets the property on the this.query attr.
+    // refresh uses the query to fetch.
     this.refresh();
-    // switch (action) {
-    //   case 'sortBy':
-    //   case 'sortDirection':
-    //   case 'includeInProgress':
-    //     this.collection = this.fetch();
-    //     break;
-    // }
   }
 
   refresh() {
@@ -226,17 +226,6 @@ export class ItemListDashletComponent extends ComponentWithState implements OnIn
         this.collection = Observable.of(items);
         this.afterItemsFetched(items);
       });
-  }
-
-  menuActionClicked(action, item) {
-    switch (action) {
-      case ItemActionEnum.PREVIEW: {
-        this.requestPreview(item);
-        break;
-      }
-      default:
-        break;
-    }
   }
 
   requestPreview(item) {
@@ -249,15 +238,12 @@ export class ItemListDashletComponent extends ComponentWithState implements OnIn
 
   allExpanded() {
 
-    const state = this.state.expandedPanels;
+    const state = this.expandedStateRef;
     const panelKeys = this.cachedPanelKeys;
-
-    let countSome = 0;
-    let countForBreak = 0;
 
     // If the loop breaks, it means one item wasn't found in the state,
     // meaning a panel is not expanded and hence not all are expanded.
-    let didNotFindOne = panelKeys.some(key => !state.includes(key));
+    let didNotFindOne = panelKeys.some(key => !state[key]);
 
     return !didNotFindOne;
 
@@ -265,45 +251,39 @@ export class ItemListDashletComponent extends ComponentWithState implements OnIn
 
   allCollapsed() {
 
-    const state = this.state.expandedPanels;
-    const panelKeys = this.cachedPanelKeys; // Object.keys(this.expandedState);
+    const state = this.expandedStateRef;
+    const panelKeys = this.cachedPanelKeys;
 
     // If the loop breaks, it means the item was found in the state
     // meaning at least that panel is expanded and not all are collapsed.
-    let foundOneKey = panelKeys.some(key => state.includes(key));
+    let foundOneKey = panelKeys.some(key => state[key]);
 
     return !foundOneKey;
   }
 
+  @dispatch()
   expandAll() {
-    this.store.dispatch(
-      ExpansionAction.expandMany(this.cachedPanelKeys));
+    return ExpandedPanelsActions.expandMany(this.cachedPanelKeys, this.site.code);
   }
 
+  @dispatch()
   collapseAll() {
-    this.store.dispatch(
-      ExpansionAction.collapseMany(this.cachedPanelKeys));
+    return ExpandedPanelsActions.collapseMany(this.cachedPanelKeys, this.site.code);
   }
 
+  @dispatch()
   expandedStateChange(entry, expanded) {
-
     let key = this.getPanelKey(entry);
-    if (expanded) {
-      this.store.dispatch(ExpansionAction.expand(key));
-    } else {
-      this.store.dispatch(ExpansionAction.collapse(key));
-    }
-
+    return expanded
+      ? ExpandedPanelsActions.expand(key, this.site.code)
+      : ExpandedPanelsActions.collapse(key, this.site.code);
   }
 
   allChecked() {
 
-    const state = this.state.selectedItems;
-    const items = this.contentItems;
-
-    const reducer = (ids, item) => ids.concat(item.id);
-    const stateIDs = state.reduce(reducer, []);
-    const itemsIDs = items.reduce(reducer, []);
+    const state = this.selectedItemsRef;
+    const stateIDs = Object.keys(state);
+    const itemsIDs = this.cachedItemIds;
 
     let oneNotFound = itemsIDs.some(id => !stateIDs.includes(id));
 
@@ -313,12 +293,9 @@ export class ItemListDashletComponent extends ComponentWithState implements OnIn
 
   allUnchecked() {
 
-    const state = this.state.selectedItems;
-    const items = this.contentItems;
-
-    const reducer = (ids, item) => ids.concat(item.id);
-    const stateIDs = state.reduce(reducer, []);
-    const itemsIDs = items.reduce(reducer, []);
+    const state = this.selectedItemsRef;
+    const stateIDs = Object.keys(state);
+    const itemsIDs = this.cachedItemIds;
 
     let oneFound = itemsIDs.some(id => stateIDs.includes(id));
 
@@ -326,35 +303,36 @@ export class ItemListDashletComponent extends ComponentWithState implements OnIn
 
   }
 
+  @dispatch()
   checkAll() {
-    this.store.dispatch(
-      SelectionAction.selectMany(this.contentItems));
+    return SelectedItemsActions.selectMany(
+      this.cachedItemIds,
+      this.site.code);
   }
 
+  @dispatch()
   uncheckAll() {
-    this.store.dispatch(
-      SelectionAction.deselectMany(this.contentItems));
+    return SelectedItemsActions.deselectMany(
+      this.cachedItemIds,
+      this.site.code);
   }
 
+  @dispatch()
   checkedStateChange(item, checked) {
-    if (checked) {
-      this.store.dispatch(
-        SelectionAction.select(item));
-    } else {
-      this.store.dispatch(
-        SelectionAction.deselect(item));
-    }
+    return checked
+      ? SelectedItemsActions.select(item.id, this.site.code)
+      : SelectedItemsActions.deselect(item.id, this.site.code);
   }
 
   shareCache(collection: Observable<Asset[]>,
              contentItems: Asset[],
-             itemMenuMap: Object,
-             cachedPanelKeys: Array<string>) {
+             cachedPanelKeys: string[],
+             cachedItemIds: string[]) {
 
     this.collection = collection;
     this.contentItems = contentItems;
-    this.itemMenuMap = itemMenuMap;
     this.cachedPanelKeys = cachedPanelKeys;
+    this.cachedItemIds = cachedItemIds;
 
     this.cachePreInitialized = true;
 
@@ -385,8 +363,8 @@ export class ItemListDashletComponent extends ComponentWithState implements OnIn
           instance.shareCache(
             this.collection,
             this.contentItems,
-            this.itemMenuMap,
-            this.cachedPanelKeys);
+            this.cachedPanelKeys,
+            this.cachedItemIds);
 
         }
       }
@@ -398,7 +376,7 @@ export class ItemListDashletComponent extends ComponentWithState implements OnIn
   }
 
   getPanelKey(item?) {
-    return `${this.fetchType}.panel.${item ? item.label : ''}`;
+    return `${this.fetchType}.panel.${item ? item.label.toLowerCase() : ''}`;
   }
 
   private fetch(): Observable<Asset[]> {
@@ -429,30 +407,10 @@ export class ItemListDashletComponent extends ComponentWithState implements OnIn
       .map((data) => data.entries);
   }
 
-  private cacheItemMenus(items) {
-    let
-      itemMenuMap = this.itemMenuMap,
-      getMenuItemsFor = this.getItemMenu;
-    items.forEach(item =>
-      itemMenuMap[item.id] = getMenuItemsFor(item));
-  }
-
-  private updateLocalStates() {
-    this.updateLocalCheckedState();
-    this.updateLocalExpandedState();
-  }
-
-  private updateLocalExpandedState() {
+  private updateLocalExpandedState(expandedPanels) {
     if (this.type === 'categorized') {
 
-      let
-        state = this.state,
-        expandedPanels = state.expandedPanels,
-        expandedState = this.expandedState = {};
-
-      expandedPanels.forEach(key => {
-        expandedState[key] = true;
-      });
+      this.expandedStateRef = expandedPanels;
 
       this.areAllExpanded = this.allExpanded();
       this.areAllCollapsed = this.allCollapsed();
@@ -460,19 +418,9 @@ export class ItemListDashletComponent extends ComponentWithState implements OnIn
     }
   }
 
-  private updateLocalCheckedState() {
+  private updateLocalCheckedState(selectedItemsRef) {
 
-    let
-      state = this.state,
-      siteCode = this.site.code,
-      selectedItems = state.selectedItems,
-      checkedState = this.checkedState = {};
-
-    selectedItems.forEach((item) => {
-      if (item.siteCode === siteCode) {
-        checkedState[item.id] = true;
-      }
-    });
+    this.selectedItemsRef = selectedItemsRef;
 
     this.areAllChecked = this.allChecked();
     this.areAllUnchecked = this.allUnchecked();
@@ -481,40 +429,26 @@ export class ItemListDashletComponent extends ComponentWithState implements OnIn
 
   private afterItemsFetched(items) {
 
-    this.itemMenuMap = {};
+    this.cachedItemIds = [];
     this.cachedPanelKeys = [];
     this.contentItems = (this.type === 'categorized')
-      ? items.reduce((nextItems, item) =>
-        item.hasChildren
-          ? nextItems.concat(item.children)
-          : nextItems, [])
+      ? items.reduce((nextItems, item) => item.hasChildren
+        ? nextItems.concat(item.children)
+        : nextItems, [])
       : items;
 
-    // Excludes panels that have no children.
-    items.forEach(item => (item.hasChildren) &&
-      this.cachedPanelKeys.push(this.getPanelKey(item)));
+    if (this.type === 'categorized') {
+      // Excludes panels that have no children.
+      items.forEach(item => (item.hasChildren) &&
+        this.cachedPanelKeys.push(this.getPanelKey(item)));
+    }
 
-    this.contentItems.forEach(item =>
-      this.itemMenuMap[item.id] = this.getItemMenu(item));
+    this.contentItems.forEach(item => {
+      this.cachedItemIds.push(item.id);
+    });
 
     this.runUIStateChecks();
 
-  }
-
-  private getItemMenu(item) {
-    return [
-      { label: 'Preview', action: ItemActionEnum.PREVIEW },
-      DIVIDER,
-      { label: 'Schedule', action: '' },
-      { label: 'Approve & Publish', action: '' },
-      DIVIDER,
-      { label: 'Edit', action: '' },
-      { label: 'Delete', action: '' },
-      { label: 'History', action: '' },
-      { label: 'Dependencies', action: '' },
-      DIVIDER,
-      { label: 'Form (readonly)', action: '' }
-    ];
   }
 
   private runUIStateChecks() {

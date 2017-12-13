@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { User } from '../../../models/user.model';
-import { showSnackBar } from '../../../app.utils';
+import { showSnackBar } from '../../../utils/material.utils';
 import { Change, ChangeType } from '../../../classes/change-tracker.class';
 import { GroupService } from '../../../services/group.service';
 import { AVATARS } from '../../../app.utils';

@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import { StudioHttpService } from './http.service';
 import { Asset } from '../models/asset.model';
 import { Observable } from 'rxjs/Observable';
-import { parse } from '../app.utils';
+import { parseEntity } from '../utils/api.utils';
 
 const baseUrl = `${environment.apiUrl}/content`;
 
@@ -18,7 +18,7 @@ export class ContentService {
     return this.httpService.get(
       `${baseUrl}/get-items-tree.json`,
       { site: siteCode, path: assetId, depth })
-      .pipe(map(response => <Asset>parse(Asset, response.item)));
+      .pipe(map(response => <Asset>parseEntity(Asset, response.item)));
   }
 
   content(siteCode, assetId, edit = false): Observable<{ id, content }> {

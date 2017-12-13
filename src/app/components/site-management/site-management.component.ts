@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog, PageEvent } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SiteService } from '../../services/site.service';
-import { createLocalPagination$, openDialog, StringUtils } from '../../app.utils';
+import { createLocalPagination$} from '../../app.utils';
 import { EmbeddedViewDialogComponent } from '../embedded-view-dialog/embedded-view-dialog.component';
 import { SiteCrUDComponent } from './site-crud/site-crud.component';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -13,13 +13,21 @@ import { PagedResponse } from '../../classes/paged-response.interface';
 import { Site } from '../../models/site.model';
 import 'rxjs/add/observable/never';
 import { PagerConfig } from '../../classes/pager-config.interface';
+import { dispatch, NgRedux, select } from '@angular-redux/store';
+import { Observable } from 'rxjs/Observable';
+import { SiteActions } from '../../actions/site.actions';
+import { AppState } from '../../classes/app-state.interface';
+import { WithNgRedux } from '../../classes/with-ng-redux.class';
+import { isNullOrUndefined } from 'util';
+import { openDialog } from '../../utils/material.utils';
+import { StringUtils } from '../../utils/string.utils';
 
 @Component({
   selector: 'std-site-management',
   templateUrl: './site-management.component.html',
   styleUrls: ['./site-management.component.scss']
 })
-export class SiteManagementComponent extends ComponentBase implements OnInit {
+export class SiteManagementComponent extends WithNgRedux implements OnInit {
 
   sites;
   dialogRef = null;
@@ -34,18 +42,24 @@ export class SiteManagementComponent extends ComponentBase implements OnInit {
 
   pager$ = new BehaviorSubject(this.pagerConfig);
 
-  constructor(private siteService: SiteService,
-              private activeRoute: ActivatedRoute,
+  constructor(store: NgRedux<AppState>,
+              public router: Router,
               public dialog: MatDialog,
-              public router: Router) {
-    super();
+              private siteActions: SiteActions,
+              private activeRoute: ActivatedRoute) {
+    super(store);
   }
+
+  @select(['entities', 'site', 'list'])
+  sites$: Observable<Site[]>;
+
+  @select(['entities', 'site', 'loading'])
+  loading$: Observable<boolean>;
 
   ngOnInit() {
 
-    // @see https://github.com/angular/angular/issues/20299
-
     this.activeRoute.url
+    // @see https://github.com/angular/angular/issues/20299
       .subscribe(() => {
         let url = this.router.url;
         if (StringUtils.contains(url, '/create')) {
@@ -87,13 +101,18 @@ export class SiteManagementComponent extends ComponentBase implements OnInit {
 
       });
 
-    this.fetchSites();
+    this.initPaginator();
 
   }
 
-  fetchSites() {
+  @dispatch() load() {
+    return this.siteActions.fetch();
+  }
+
+  initPaginator() {
     createLocalPagination$({
-      source$: this.siteService.sites(),
+      source$: this.sites$
+        .filter(sites => !isNullOrUndefined(sites)),
       pager$: this.pager$,
       takeUntilOp: this.takeUntil,
       filterFn: (item, query) => query.trim() === '' || item.name.includes(query),

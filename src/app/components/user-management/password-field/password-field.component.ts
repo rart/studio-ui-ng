@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
-import {password} from '../../../app.utils';
+import { StringUtils } from '../../../utils/string.utils';
 
 const TYPE_TEXT = 'text';
 const TYPE_PASSWORD = 'password';
@@ -42,7 +42,7 @@ const TYPE_PASSWORD = 'password';
     }
   }
   generatePassword() {
-    const passwd: string = password();
+    const passwd: string = StringUtils.password();
     this.formControlRef.setValue(passwd);
     this.model.password = passwd;
   }

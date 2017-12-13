@@ -1,4 +1,5 @@
-import { StringUtils, uuid, makeSub } from '../app.utils';
+import { StringUtils } from '../utils/string.utils';
+import { v4 as uuid } from 'uuid';
 import { Asset } from '../models/asset.model';
 import { AssetTypeEnum } from '../enums/asset-type.enum';
 
@@ -21,6 +22,9 @@ export interface PreviewTabProps {
   active: boolean;
 }
 
+/**
+ * @deprecated
+ */
 export class PreviewTab implements PreviewTabProps {
 
   readonly id: string;
@@ -189,6 +193,9 @@ export class PreviewTab implements PreviewTabProps {
       switch (asset.type) {
         case AssetTypeEnum.CSS:
         case AssetTypeEnum.HTML:
+        case AssetTypeEnum.SCSS:
+        case AssetTypeEnum.SASS:
+        case AssetTypeEnum.LESS:
         case AssetTypeEnum.GROOVY:
         case AssetTypeEnum.JAVASCRIPT:
         case AssetTypeEnum.FREEMARKER:

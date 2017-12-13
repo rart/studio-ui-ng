@@ -1,9 +1,7 @@
-<div class="loader take-over" *ngIf="!libsFetchComplete">
-  <div class="wrapper">
-    <mat-spinner></mat-spinner>
-    <div class="info">Loading Editor...</div>
-  </div>
-</div>
+<std-spinner *ngIf="!libsFetchComplete" class="take over">
+  <ng-container i18n>Loading Visualizer...</ng-container>
+</std-spinner>
+
 <div class="code-editor" #editor></div>
 <div class="edit-controls" *ngIf="editable">
 

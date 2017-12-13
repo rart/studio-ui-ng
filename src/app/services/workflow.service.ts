@@ -5,7 +5,7 @@ import { environment } from '../../environments/environment';
 import { Asset } from '../models/asset.model';
 import { PostResponse } from '../classes/post-response.interface';
 import { ResponseCodesEnum } from '../enums/response-codes.enum';
-import { parse } from '../app.utils';
+import { parseEntity } from '../utils/api.utils';
 
 const workflow = `${environment.apiUrl}/workflow`;
 const deployment = `${environment.apiUrl}/deployment`;
@@ -19,7 +19,7 @@ const mappingFn = (data) => ({
   total: data.total,
   sortedBy: data.sortedBy,
   ascending: (data.ascending === 'true'),
-  entries: (data.documents || []).map((entry) => <Asset>parse(Asset, entry))
+  entries: (data.documents || []).map((entry) => <Asset>parseEntity(Asset, entry))
 });
 
 const sortByFieldMap = {

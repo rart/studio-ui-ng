@@ -5,7 +5,7 @@ import { Asset } from '../models/asset.model';
 import { User } from '../models/user.model';
 import { Group } from '../models/group.model';
 import { Site } from '../models/site.model';
-import { AVATARS, parse } from '../app.utils';
+import { AVATARS } from '../app.utils';
 import { APIParser } from './api-parser.abstract';
 
 export class API3Parser extends APIParser {
@@ -61,6 +61,12 @@ export class API3Parser extends APIParser {
     // so currently acknowledging woff2 by extensions
     if (asset.label.endsWith('.woff2')) {
       asset.mimeType = MimeTypeEnum.WOFF2;
+    } else if (asset.label.endsWith('.scss')) {
+      asset.mimeType = MimeTypeEnum.SCSS;
+    } else if (asset.label.endsWith('.sass')) {
+      asset.mimeType = MimeTypeEnum.SASS;
+    } else if (asset.label.endsWith('.less')) {
+      asset.mimeType = MimeTypeEnum.LESS;
     } else {
       asset.mimeType = json.mimeType;
     }
@@ -73,6 +79,12 @@ export class API3Parser extends APIParser {
     } else if (asset.mimeType === MimeTypeEnum.WOFF2) {
       // see comment above
       asset.type = AssetTypeEnum.WOFF2_FONT;
+    } else if (asset.mimeType === MimeTypeEnum.SCSS) {
+      asset.type = AssetTypeEnum.SCSS;
+    } else if (asset.mimeType === MimeTypeEnum.SASS) {
+      asset.type = AssetTypeEnum.SASS;
+    } else if (asset.mimeType === MimeTypeEnum.LESS) {
+      asset.type = AssetTypeEnum.LESS;
     } else {
       switch (json.mimeType) {
         case MimeTypeEnum.HTML:
@@ -237,10 +249,10 @@ export class API3Parser extends APIParser {
       let userGroups = [];
 
       user.sites = json.sites.map((siteJSON) => {
-        let site = <Site>parse(Site, siteJSON);
+        let site = this.site(siteJSON);
         userGroups = userGroups.concat(
           siteJSON.groups.map((groupJSON) => {
-            let group = <Group>parse(Group, groupJSON);
+            let group = this.group(groupJSON);
             group.site = site;
             return group;
           })
@@ -261,7 +273,7 @@ export class API3Parser extends APIParser {
     model.id = json.group_id;
     model.name = json.group_name;
     model.site = (json.site) ? this.site(json) : undefined;
-    // model.siteCode = (json.site) ? parse(Site, json) : undefined;
+    // model.siteCode = (json.site) ? this.site(json) : undefined;
     return model;
   }
 
