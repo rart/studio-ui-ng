@@ -5,7 +5,7 @@ import { StateEntity } from '../classes/app-state.interface';
 import { createEntityState, createLookupTable } from '../utils/state.utils';
 import { Asset } from '../models/asset.model';
 
-export const asset: Reducer<StateEntity<Asset>> =
+export const assets: Reducer<StateEntity<Asset>> =
   (state = createEntityState<Asset>({}), action: AnyAction): StateEntity<Asset> => {
     switch (action.type) {
 

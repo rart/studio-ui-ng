@@ -108,6 +108,9 @@ import { TabBarComponent } from './components/tab-bar/tab-bar.component';
 import { SyntaxHighlighterComponent } from './components/syntax-highlighter/syntax-highlighter.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 
+import { pretty } from './utils/logging.utils';
+pretty('GREEN', 'Studio Initializing...'); // This is just for pretty to be available globally, really.
+
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
   paths: {

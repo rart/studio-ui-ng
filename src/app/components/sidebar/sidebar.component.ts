@@ -41,7 +41,7 @@ const APP_NAV_KEY = 'sidebar.appnav.panel';
 // const activeProjectSelector = (state: AppState) => {
 //   let
 //     id = state.activeProjectCode,
-//     projectEntityState = state.entities.project;
+//     projectEntityState = state.entities.projects;
 //   if (!isNullOrUndefined(id) && !isNullOrUndefined(projectEntityState.list)) {
 //     return projectEntityState.byId[id];
 //   }
@@ -51,7 +51,7 @@ const APP_NAV_KEY = 'sidebar.appnav.panel';
 // const expandedPanelStateSelector = (state: AppState) => {
 //   let
 //     id = state.activeProjectCode,
-//     projectEntityState = state.projectsState;
+//     projectEntityState = state.workspaces;
 //   if (!isNullOrUndefined(id) && !isNullOrUndefined(projectEntityState.list)) {
 //     return projectEntityState[id].expandedPanels;
 //   }
@@ -80,7 +80,7 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
   project: Project;
   projects: Project[];
 
-  @select(['entities', 'project'])
+  @select(['entities', 'projects'])
   projects$: Observable<StateEntity<Project>>;
 
   expandedPanels: { [key: string]: boolean } = {};

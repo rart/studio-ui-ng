@@ -1,7 +1,7 @@
 import { AnyAction, combineReducers, Reducer } from 'redux';
 
 import { StoreActionsEnum } from '../enums/actions.enum';
-import { ProjectStateContainer, Workspace } from '../classes/app-state.interface';
+import { Workspaces, Workspace } from '../classes/app-state.interface';
 import { previewTabs } from './preview-tabs.reducer';
 import { selectedItems } from './selected-items.reducer';
 import { expandedPanels } from './expanded-panels.reducer';
@@ -16,7 +16,7 @@ const reducer = combineReducers<Workspace>({
   expandedPaths
 });
 
-export const projectsState: Reducer<ProjectStateContainer> =
+export const workspaces: Reducer<Workspaces> =
   (state = {}, action: AnyAction) => {
     switch (action.type) {
 
@@ -27,7 +27,7 @@ export const projectsState: Reducer<ProjectStateContainer> =
         let
           hasChanged = false,
           next = (action.projectCode ? [action.projectCode] : Object.keys(state))
-            .reduce((nextState: ProjectStateContainer, projectCode: string) => {
+            .reduce((nextState: Workspaces, projectCode: string) => {
               let prevStateForProject = state[projectCode];
               let nextStateForProject = reducer(prevStateForProject, action);
               if (typeof nextStateForProject === 'undefined') {

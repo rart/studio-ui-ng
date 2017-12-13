@@ -17,7 +17,7 @@ export class GroupService {
     return this.http.get(`${baseUrl}/get-all.json`, query)
       .map((data) => ({
         total: '(not provided by API)',
-        projects: data.projects.map((dataItem) => {
+        projects: data.sites.map((dataItem) => {
           return parseEntity(Project, dataItem);
         })
       }));
@@ -27,7 +27,7 @@ export class GroupService {
     return this.http
       .post(`${baseUrl}/add-user.json`, {
         username: data.username,
-        site_id: data.siteCode,
+        site_id: data.projectCode,
         group_name: data.groupName
       });
   }
@@ -36,7 +36,7 @@ export class GroupService {
     return this.http
       .post(`${baseUrl}/remove-user.json`, {
         username: data.username,
-        site_id: data.siteCode,
+        site_id: data.projectCode,
         group_name: data.groupName
       });
   }

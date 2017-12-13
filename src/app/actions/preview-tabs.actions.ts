@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { StoreActionsEnum } from '../enums/actions.enum';
 import { AppState, PreviewTabCore } from '../classes/app-state.interface';
 
-const affects: Array<keyof AppState> = ['projectsState'];
+const affects: Array<keyof AppState> = ['workspaces'];
 
 @Injectable()
 export class PreviewTabsActions {

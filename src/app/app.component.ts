@@ -18,14 +18,14 @@ export class AppComponent implements OnInit {
   @HostBinding('class.sidebar-collapsed')
   sidebarCollapsed = false;
 
-  @select(['entities', 'project'])
-  projectsState$: Observable<StateEntity<Project>>;
+  @select(['entities', 'projects'])
+  projectsEntity$: Observable<StateEntity<Project>>;
 
   preRequisitesPassed = false;
   preRequisitesPassed$ = new Subject();
 
   ngOnInit() {
-    this.projectsState$
+    this.projectsEntity$
       .pipe(takeUntil(this.preRequisitesPassed$))
       .subscribe(data => {
         if (this.preRequisitesPassed = !isNullOrUndefined(data.byId)) {

@@ -56,19 +56,19 @@ const isExternalURL = (url) => {
 // Studio Form Engine URLs are like...
 // /studio/form?
 //  form=/page/entry&
-//  path=/project/webproject/index.xml&
+//  path=/site/website/index.xml&
 //  iceComponent=true&
-//  project=launcher&
+//  site=launcher&
 //  edit=true&
 //  editorId=b0665d96-2395-14b5-7f2b-3db8fa7286e3
 
 // tslint:disable-next-line:max-line-length
-// /studio/form?form=/page/entry&path=/project/webproject/index.xml&iceComponent=true&project=launcher&edit=true&editorId=b0665d96-2395-14b5-7f2b-3db8fa7286e3
+// /studio/form?form=/page/entry&path=/site/website/index.xml&iceComponent=true&site=launcher&edit=true&editorId=b0665d96-2395-14b5-7f2b-3db8fa7286e3
 // https://angular.io/guide/router#router-events
 
 // CStudioAuthoring.Operations.editContent(
 //   content.form,
-//   CStudioAuthoringContext.projectId,
+//   CStudioAuthoringContext.siteId,
 //   content.uri,
 //   content.nodeRef,
 //   content.uri,
@@ -168,7 +168,7 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
 
   ngOnInit() {
 
-    this.projects$ = this.select(['entities', 'project', 'byId'])
+    this.projects$ = this.select(['entities', 'projects', 'byId'])
       .pipe(
         map(lookupTable => Object.values(lookupTable)),
         ...this.noNullsAndUnSubOps
@@ -232,7 +232,7 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
         }
       });
 
-    this.select<LookUpTable<Asset>>(['entities', 'asset', 'byId'])
+    this.select<LookUpTable<Asset>>(['entities', 'assets', 'byId'])
       .pipe(...this.noNullsAndUnSubOps)
       .subscribe((lookupTable: LookUpTable<Asset>) => {
         this.assets = lookupTable;

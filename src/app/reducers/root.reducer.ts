@@ -3,9 +3,8 @@ import { StoreActionsEnum } from '../enums/actions.enum';
 import { combineReducers } from 'redux';
 import { user } from './user.reducer';
 import { entities } from './entities.reducer';
-import { projectsState } from './projects-state.reducer';
+import { workspaces } from './projects-state.reducer';
 import { activeProjectCode } from './active-project-code.reducer';
-import { createPreviewTab, createPreviewTabStateContainer } from '../utils/state.utils';
 
 const foo = (state = null) => state;
 
@@ -13,7 +12,7 @@ export const reducerMap = {
 
   user,
   entities,
-  projectsState,
+  workspaces,
   activeProjectCode,
 
   // "virtual" props handled by root reducer need
@@ -47,7 +46,7 @@ export function rootReducer(state = {} as AppState, action) {
     case StoreActionsEnum.SELECT_TAB:
       return (projectCodeActive)
         ? spreadRoot(nextState, {
-          workspaceRef: nextState.projectsState[projectCodeActive]
+          workspaceRef: nextState.workspaces[projectCodeActive]
         })
         : nextState;
 
@@ -59,7 +58,7 @@ export function rootReducer(state = {} as AppState, action) {
         ? spreadRoot(nextState, {
           workspaceRef: {
             ...nextState.workspaceRef,
-            expandedPanels: nextState.projectsState[projectCodeActive].expandedPanels
+            expandedPanels: nextState.workspaces[projectCodeActive].expandedPanels
           }
         })
         : nextState;
@@ -73,7 +72,7 @@ export function rootReducer(state = {} as AppState, action) {
         ? spreadRoot(nextState, {
           workspaceRef: {
             ...nextState.workspaceRef,
-            selectedItems: nextState.projectsState[projectCodeActive].selectedItems
+            selectedItems: nextState.workspaces[projectCodeActive].selectedItems
           }
         })
         : nextState;
@@ -82,7 +81,7 @@ export function rootReducer(state = {} as AppState, action) {
       return (projectCodeActive)
         ? spreadRoot(nextState, {
           projectRef: action.projects.find(project => project.code === projectCodeActive),
-          workspaceRef: nextState.projectsState[projectCodeActive]
+          workspaceRef: nextState.workspaces[projectCodeActive]
         })
         : nextState;
 
@@ -91,8 +90,8 @@ export function rootReducer(state = {} as AppState, action) {
     case StoreActionsEnum.SELECT_PROJECT: {
       let newActiveCode = action.code;
       return spreadRoot(nextState, {
-        projectRef: nextState.entities.project.byId[newActiveCode],
-        workspaceRef: nextState.projectsState[newActiveCode]
+        projectRef: nextState.entities.projects.byId[newActiveCode],
+        workspaceRef: nextState.workspaces[newActiveCode]
       });
     }
 

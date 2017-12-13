@@ -23,7 +23,7 @@ import { openDialog } from '../../utils/material.utils';
 import { StringUtils } from '../../utils/string.utils';
 
 const anonym = (state: AppState) => {
-  return Object.values(state.entities.project.byId);
+  return Object.values(state.entities.projects.byId);
 };
 
 @Component({
@@ -57,7 +57,7 @@ export class ProjectManagementComponent extends WithNgRedux implements OnInit {
   @select(anonym)
   projects$: Observable<Project[]>;
 
-  @select(['entities', 'project', 'loading'])
+  @select(['entities', 'projects', 'loading'])
   loading$: Observable<boolean>;
 
   ngOnInit() {

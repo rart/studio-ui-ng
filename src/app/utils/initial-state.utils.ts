@@ -14,7 +14,7 @@ export const initialState: AppState = {
     projects: null,
     groups: []
   },
-  projectsState: {
+  workspaces: {
     'launcher': {
       previewTabs: {
         activeId: 'DEFAULT_TAB_ID',

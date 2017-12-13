@@ -4,14 +4,16 @@ import { Project } from '../models/project.model';
 import { Group } from '../models/group.model';
 import { StudioModel } from '../utils/type.utils';
 
-export interface AppState extends ActiveState {
+export interface AppState {
   user: any;
-  projectsState: ProjectStateContainer;
-  entities?: StateEntities; // do not persist
-  // [anything: string]: any;
+  projectRef?: any; // "Virtual" prop, a ref to entities.projects[projectCode]
+  workspaceRef?: Workspace; // "Virtual" prop, a ref to workspaces[projectCode]
+  activeProjectCode: string; // The active project's code
+  workspaces: Workspaces;
+  entities?: Entities; // do not persist
 }
 
-export interface ProjectStateContainer {
+export interface Workspaces {
   [projectId: string]: Workspace;
 }
 
@@ -33,14 +35,14 @@ export interface Settings {
   [props: string]: any;
 }
 
-export interface StateEntities {
-  project?: StateEntity<Project>;
-  user?: StateEntity<User>;
-  group?: StateEntity<Group>;
-  asset?: StateEntity<Asset>;
-  // role?: StateEntity<StudioModel>;
-  // permission?: StateEntity<StudioModel>;
-  [key: string]: StateEntity<StudioModel>;
+export interface Entities {
+  projects?: StateEntity<Project>;
+  users?: StateEntity<User>;
+  groups?: StateEntity<Group>;
+  assets?: StateEntity<Asset>;
+  // roles?: StateEntity<StudioModel>;
+  // permissions?: StateEntity<StudioModel>;
+  [pluralEntityName: string]: StateEntity<StudioModel>;
 }
 
 export interface StateEntity<T> {
@@ -48,12 +50,6 @@ export interface StateEntity<T> {
   order?: string[];
   loading: boolean;
   byId: LookUpTable<T>;
-}
-
-export interface ActiveState {
-  projectRef?: any;
-  activeProjectCode: string; // The active project's code
-  workspaceRef?: Workspace;
 }
 
 export interface PreviewTabHistory {

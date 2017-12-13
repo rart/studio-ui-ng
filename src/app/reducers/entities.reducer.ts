@@ -1,11 +1,11 @@
-import { StateEntities } from '../classes/app-state.interface';
+import { Entities } from '../classes/app-state.interface';
 import { combineReducers } from 'redux';
-import { project } from './entities.project.reducer';
-import { asset } from './entities.asset.reducer';
+import { projects } from './projects.entity.reducer';
+import { assets } from './assets.entity.reducer';
 
-export const entities = combineReducers<StateEntities>({
-  project,
-  asset
+export const entities = combineReducers<Entities>({
+  projects,
+  assets
 });
 
 // export function entities(state = {}, action): Reducer<> {
