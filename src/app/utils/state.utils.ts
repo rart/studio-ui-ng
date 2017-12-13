@@ -5,7 +5,7 @@ import {
   PreviewTab,
   PreviewTabCore,
   PreviewTabHistory,
-  PreviewTabStateContainer,
+  PreviewTabStateContainer, StateEntity,
   Workspace
 } from '../classes/app-state.interface';
 import { Asset } from '../models/asset.model';
@@ -15,17 +15,22 @@ import { by } from 'protractor';
 const DEFAULT_TAB_TITLE = '...';
 
 export const createEntityState =
-  ({
-     list = null as any[],
+  <T>({
+     order = undefined as any[],
      error = null as any,
      loading = false,
      byId = null as EntityLookupTable<any>
-   }) => ({
-    list,
-    error,
-    loading,
-    byId
-  });
+   }): StateEntity<T> => {
+    let obj: StateEntity<any> = {
+      error,
+      loading,
+      byId
+    };
+    if (!isNullOrUndefined(order)) {
+      obj.order = order;
+    }
+    return obj;
+  };
 
 export function createLookupTable<T>(items: T[], idProp = 'id'): EntityLookupTable<T> {
   return items

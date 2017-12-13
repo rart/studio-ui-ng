@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
     this.sitesState$
       .pipe(takeUntil(this.preRequisitesPassed$))
       .subscribe(data => {
-        if (this.preRequisitesPassed = !isNullOrUndefined(data.list)) {
+        if (this.preRequisitesPassed = !isNullOrUndefined(data.byId)) {
           this.preRequisitesPassed$.next();
         }
       });

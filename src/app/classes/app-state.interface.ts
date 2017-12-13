@@ -45,9 +45,9 @@ export interface StateEntities {
 
 export interface StateEntity<T> {
   error: any;
-  list: T[];
+  order?: string[];
   loading: boolean;
-  byId: { [entityId: string]: T };
+  byId: LookUpTable<T>;
 }
 
 export interface ActiveState {

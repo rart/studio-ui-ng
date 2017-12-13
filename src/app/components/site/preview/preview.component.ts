@@ -168,8 +168,11 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
 
   ngOnInit() {
 
-    this.sites$ = this.select(['entities', 'site', 'list'])
-      .pipe(...this.noNullsAndUnSubOps) as Observable<Site[]>;
+    this.sites$ = this.select(['entities', 'site', 'byId'])
+      .pipe(
+        map(lookupTable => Object.values(lookupTable)),
+        ...this.noNullsAndUnSubOps
+      ) as Observable<Site[]>;
 
     let {
       sites$,

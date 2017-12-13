@@ -12,14 +12,12 @@ export const site: Reducer<StateEntity<Site>> =
       case StoreActionsEnum.FETCH_SITES:
         return createEntityState({
           loading: true,
-          byId: state.byId,
-          list: state.list
+          byId: state.byId
         });
 
       case StoreActionsEnum.SITES_FETCHED:
         return createEntityState({
-          byId: createLookupTable(action.sites, 'code'),
-          list: action.sites
+          byId: createLookupTable(action.sites, 'code')
         });
 
       case StoreActionsEnum.SITES_FETCH_ERROR:

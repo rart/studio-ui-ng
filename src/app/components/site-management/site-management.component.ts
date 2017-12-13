@@ -22,6 +22,10 @@ import { isNullOrUndefined } from 'util';
 import { openDialog } from '../../utils/material.utils';
 import { StringUtils } from '../../utils/string.utils';
 
+const anonym = (state: AppState) => {
+  return Object.values(state.entities.site.byId);
+};
+
 @Component({
   selector: 'std-site-management',
   templateUrl: './site-management.component.html',
@@ -50,7 +54,7 @@ export class SiteManagementComponent extends WithNgRedux implements OnInit {
     super(store);
   }
 
-  @select(['entities', 'site', 'list'])
+  @select(anonym)
   sites$: Observable<Site[]>;
 
   @select(['entities', 'site', 'loading'])
