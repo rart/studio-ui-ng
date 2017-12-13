@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FetchType } from './item-list-dashlet.component';
-import { Site } from '../../../models/site.model';
+import { Project } from '../../../models/project.model';
 import { AssetMenuOption, WorkflowService } from '../../../services/workflow.service';
 import { SubjectStore } from '../../../classes/subject-store.class';
 import { AppStore } from '../../../state.provider';
@@ -10,13 +10,13 @@ import { WithNgRedux } from '../../../classes/with-ng-redux.class';
 import { NgRedux } from '@angular-redux/store';
 
 @Component({
-  selector: 'std-site-dashboard',
-  templateUrl: './site-dashboard.component.html',
-  styleUrls: ['./site-dashboard.component.scss']
+  selector: 'std-project-dashboard',
+  templateUrl: './project-dashboard.component.html',
+  styleUrls: ['./project-dashboard.component.scss']
 })
-export class SiteDashboardComponent extends WithNgRedux implements OnInit {
+export class ProjectDashboardComponent extends WithNgRedux implements OnInit {
 
-  site: Site;
+  project: Project;
 
   activity: FetchType = 'activity';
   published: FetchType = 'published';
@@ -34,7 +34,7 @@ export class SiteDashboardComponent extends WithNgRedux implements OnInit {
   ngOnInit() {
 
     this.route.data
-      .subscribe(data => this.site = data.site);
+      .subscribe(data => this.project = data.project);
 
     this.store.select(['workspaceRef', 'selectedItems'])
       .pipe(...this.noNullsAndUnSubOps)

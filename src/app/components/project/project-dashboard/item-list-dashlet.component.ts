@@ -5,7 +5,7 @@ import {
 import { Asset } from '../../../models/asset.model';
 import { Observable } from 'rxjs/Observable';
 import { WorkflowService } from '../../../services/workflow.service';
-import { Site } from '../../../models/site.model';
+import { Project } from '../../../models/project.model';
 import { Router } from '@angular/router';
 import { WindowMessageScopeEnum } from '../../../enums/window-message-scope.enum';
 import { CommunicationService } from '../../../services/communication.service';
@@ -18,7 +18,7 @@ import { WindowMessageTopicEnum } from '../../../enums/window-message-topic.enum
 import { WithNgRedux } from '../../../classes/with-ng-redux.class';
 import { dispatch, NgRedux } from '@angular-redux/store';
 import { SelectedItemsActions } from '../../../actions/selected-items.actions';
-import { SiteActions } from '../../../actions/site.actions';
+import { ProjectActions } from '../../../actions/project.actions';
 
 type Format = 'modern' | 'table';
 type ItemResponseFormat = 'categorized' | 'simple';
@@ -114,7 +114,7 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
 
   @Input() title: string;
   @Input() fetchType: FetchType;
-  @Input() site: Site;
+  @Input() project: Project;
   @Input() settings;
   @Input() uiFormat: Format = 'modern';
   @Input() canExpand = true;
@@ -180,7 +180,7 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
               public dialog: MatDialog,
               private communicationService: CommunicationService,
               private workflowService: WorkflowService,
-              private siteActions: SiteActions) {
+              private projectActions: ProjectActions) {
     super(store);
   }
 
@@ -263,20 +263,20 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
 
   @dispatch()
   expandAll() {
-    return ExpandedPanelsActions.expandMany(this.cachedPanelKeys, this.site.code);
+    return ExpandedPanelsActions.expandMany(this.cachedPanelKeys, this.project.code);
   }
 
   @dispatch()
   collapseAll() {
-    return ExpandedPanelsActions.collapseMany(this.cachedPanelKeys, this.site.code);
+    return ExpandedPanelsActions.collapseMany(this.cachedPanelKeys, this.project.code);
   }
 
   @dispatch()
   expandedStateChange(entry, expanded) {
     let key = this.getPanelKey(entry);
     return expanded
-      ? ExpandedPanelsActions.expand(key, this.site.code)
-      : ExpandedPanelsActions.collapse(key, this.site.code);
+      ? ExpandedPanelsActions.expand(key, this.project.code)
+      : ExpandedPanelsActions.collapse(key, this.project.code);
   }
 
   allChecked() {
@@ -307,21 +307,21 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
   checkAll() {
     return SelectedItemsActions.selectMany(
       this.cachedItemIds,
-      this.site.code);
+      this.project.code);
   }
 
   @dispatch()
   uncheckAll() {
     return SelectedItemsActions.deselectMany(
       this.cachedItemIds,
-      this.site.code);
+      this.project.code);
   }
 
   @dispatch()
   checkedStateChange(item, checked) {
     return checked
-      ? SelectedItemsActions.select(item.id, this.site.code)
-      : SelectedItemsActions.deselect(item.id, this.site.code);
+      ? SelectedItemsActions.select(item.id, this.project.code)
+      : SelectedItemsActions.deselect(item.id, this.project.code);
   }
 
   shareCache(collection: Observable<Asset[]>,
@@ -355,7 +355,7 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
           let instance = <ItemListDashletComponent>(componentRef['instance']);
 
           instance.isDialog = true;
-          instance.site = this.site;
+          instance.project = this.project;
           instance.title = this.title;
           instance.uiFormat = 'table';
           instance.fetchType = this.fetchType;
@@ -403,7 +403,7 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
         throw new Error('Unrecognized FetchType specified for ItemListDashletComponent');
       }
     }
-    return service[fn](Object.assign({ siteCode: this.site.code }, this.query))
+    return service[fn](Object.assign({ projectCode: this.project.code }, this.query))
       .map((data) => data.entries);
   }
 

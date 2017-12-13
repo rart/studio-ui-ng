@@ -13,15 +13,15 @@ import { AppState, StateEntity, Workspace } from '../../classes/app-state.interf
 import { ExpandedPanelsActions } from '../../actions/expanded-panels.actions';
 import { User } from '../../models/user.model';
 import { ComponentHostDirective } from '../component-host.directive';
-import { ContentTreeComponent } from '../site/content-tree/content-tree.component';
-import { Site } from '../../models/site.model';
+import { ContentTreeComponent } from '../project/content-tree/content-tree.component';
+import { Project } from '../../models/project.model';
 import { Observable } from 'rxjs/Observable';
 import { ComponentWithState } from '../../classes/component-with-state.class';
 import { SubjectStore } from '../../classes/subject-store.class';
 import { dispatch, NgRedux, select } from '@angular-redux/store';
 import { isNullOrUndefined } from 'util';
 import { combineLatest, filter, takeUntil } from 'rxjs/operators';
-import { SiteActions } from '../../actions/site.actions';
+import { ProjectActions } from '../../actions/project.actions';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 
 const NavItemTypesEnum = {
@@ -38,22 +38,22 @@ const COMPONENT_MAP = {
 
 const APP_NAV_KEY = 'sidebar.appnav.panel';
 
-// const activeSiteSelector = (state: AppState) => {
+// const activeProjectSelector = (state: AppState) => {
 //   let
-//     id = state.activeSiteCode,
-//     siteEntityState = state.entities.site;
-//   if (!isNullOrUndefined(id) && !isNullOrUndefined(siteEntityState.list)) {
-//     return siteEntityState.byId[id];
+//     id = state.activeProjectCode,
+//     projectEntityState = state.entities.project;
+//   if (!isNullOrUndefined(id) && !isNullOrUndefined(projectEntityState.list)) {
+//     return projectEntityState.byId[id];
 //   }
 //   return null;
 // };
 
 // const expandedPanelStateSelector = (state: AppState) => {
 //   let
-//     id = state.activeSiteCode,
-//     siteEntityState = state.sitesState;
-//   if (!isNullOrUndefined(id) && !isNullOrUndefined(siteEntityState.list)) {
-//     return siteEntityState[id].expandedPanels;
+//     id = state.activeProjectCode,
+//     projectEntityState = state.projectsState;
+//   if (!isNullOrUndefined(id) && !isNullOrUndefined(projectEntityState.list)) {
+//     return projectEntityState[id].expandedPanels;
 //   }
 //   return null;
 // };
@@ -72,16 +72,16 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
 
   itemTypes = NavItemTypesEnum;
   appNavItems;
-  siteNavItems;
-  siteCommands;
+  projectNavItems;
+  projectCommands;
   studioLogoUrl = `${environment.assetsUrl}/img/crafter_studio_360.png`;
   user: User;
 
-  site: Site;
-  sites: Site[];
+  project: Project;
+  projects: Project[];
 
-  @select(['entities', 'site'])
-  sites$: Observable<StateEntity<Site>>;
+  @select(['entities', 'project'])
+  projects$: Observable<StateEntity<Project>>;
 
   expandedPanels: { [key: string]: boolean } = {};
 
@@ -100,10 +100,10 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
         this.expandedPanels = workspace.expandedPanels;
       });
 
-    this.store.select(['siteRef'])
+    this.store.select(['projectRef'])
       .pipe(...this.noNullsAndUnSubOps)
-      .subscribe((site: Site) => {
-        this.site = site;
+      .subscribe((project: Project) => {
+        this.project = project;
       });
 
     this.user = this.state.user;
@@ -112,8 +112,8 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
       .getSidebarItems()
       .subscribe(sidebarDescriptor => {
         this.appNavItems = sidebarDescriptor.studio;
-        this.siteNavItems = sidebarDescriptor.site.nav;
-        this.siteCommands = sidebarDescriptor.site.commands;
+        this.projectNavItems = sidebarDescriptor.project.nav;
+        this.projectCommands = sidebarDescriptor.project.commands;
       });
 
   }
@@ -137,7 +137,7 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
         let
           componentRef,
           viewContainerRef,
-          { site, cfg } = componentHost.data,
+          { project, cfg } = componentHost.data,
           { component, config } = cfg,
           componentClass = COMPONENT_MAP[component],
           componentFactory: ComponentFactory<any>;
@@ -152,7 +152,7 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
 
         if (componentClass === ContentTreeComponent) {
           component = <ContentTreeComponent>componentRef.instance;
-          component.site = site;
+          component.project = project;
           component.rootPath = config.path;
           component.showRoot = config.showRoot;
         }
@@ -167,17 +167,17 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
     console.log(`Command ${command} requested`);
   }
 
-  getSiteNavPanelKey(item?) {
+  getProjectNavPanelKey(item?) {
     let id = item
       ? item.label
         .toLowerCase()
         .replace(/ /g, '')
       : '';
-    return `sidebar.sitenav.${id}`;
+    return `sidebar.projectnav.${id}`;
   }
 
-  siteNavPanelExpandedStateChange(nav, expanded) {
-    let key = this.getSiteNavPanelKey(nav);
+  projectNavPanelExpandedStateChange(nav, expanded) {
+    let key = this.getProjectNavPanelKey(nav);
     this.panelExpandedStateChanged(key, expanded);
   }
 
@@ -188,8 +188,8 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
   @dispatch()
   private panelExpandedStateChanged(key, expanded) {
     return expanded
-      ? ExpandedPanelsActions.expand(key, this.site.code)
-      : ExpandedPanelsActions.collapse(key, this.site.code);
+      ? ExpandedPanelsActions.expand(key, this.project.code)
+      : ExpandedPanelsActions.collapse(key, this.project.code);
   }
 
 }

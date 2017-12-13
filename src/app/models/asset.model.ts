@@ -16,7 +16,7 @@ export interface AssetProps {
   url: string;
   label: string;
   contentModelId: string;
-  siteCode: string;
+  projectCode: string;
   children: AssetProps[];
   numOfChildren: number;
   lockedBy: UserProps;
@@ -35,7 +35,7 @@ export class Asset implements AssetProps {
   url: string;
   label: string;
   contentModelId: string;
-  siteCode: string;
+  projectCode: string;
   children: Asset[];
   numOfChildren: number;
   lockedBy: User;

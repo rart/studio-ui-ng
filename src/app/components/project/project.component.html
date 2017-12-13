@@ -1,10 +1,10 @@
 <div class="view-container">
   <std-view-title-bar
     i18n-title
-    [title]="site.name"
+    [title]="project.name"
     icon="fa fa-tachometer"
     max="readability">
-    <button class="ui basic blue button" (click)="$event">Edit Site</button>
+    <button class="ui basic blue button" (click)="$event">Edit Project</button>
   </std-view-title-bar>
   <div class="content set-max readability responsive-box">
 
@@ -12,19 +12,19 @@
       <tbody>
       <tr>
         <td class="text-right" i18n>Name</td>
-        <td>{{site.name}}</td>
+        <td>{{project.name}}</td>
       </tr>
       <tr>
         <td class="text-right" i18n>Code</td>
-        <td>{{site.code}}</td>
+        <td>{{project.code}}</td>
       </tr>
       <tr>
         <td class="text-right" i18n>Description</td>
-        <td>{{site.description}}</td>
+        <td>{{project.description}}</td>
       </tr>
       <tr>
         <td class="text-right" i18n>Live Link</td>
-        <td>{{site.liveUrl}}</td>
+        <td>{{project.liveUrl}}</td>
       </tr>
       <tr>
         <td class="text-right" i18n>Groups</td>

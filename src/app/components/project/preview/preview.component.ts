@@ -16,8 +16,8 @@ import { dispatch, NgRedux, select } from '@angular-redux/store';
 import { CookieService } from 'ngx-cookie-service';
 
 import { WithNgRedux } from '../../../classes/with-ng-redux.class';
-import { SiteService } from '../../../services/site.service';
-import { Site } from '../../../models/site.model';
+import { ProjectService } from '../../../services/project.service';
+import { Project } from '../../../models/project.model';
 import { CommunicationService } from '../../../services/communication.service';
 import { WindowMessageScopeEnum } from '../../../enums/window-message-scope.enum';
 import { Asset } from '../../../models/asset.model';
@@ -47,7 +47,7 @@ const ERROR_PAGE_TITLE = '** Crafter Studio Preview ERROR **';
 const IFRAME_LANDING_URL = '/app/assets/guest.landing.html';
 const IFRAME_ERROR_URL = '/app/assets/guest.500.html';
 const IFRAME_LOAD_CONTROL_TIMEOUT = 5000;
-const SITE_HOME_PAGE = '/';
+const PROJECT_HOME_PAGE = '/';
 
 const isExternalURL = (url) => {
   return (StringUtils.startsWith(url, 'http') || StringUtils.startsWith(url, '//'));
@@ -56,19 +56,19 @@ const isExternalURL = (url) => {
 // Studio Form Engine URLs are like...
 // /studio/form?
 //  form=/page/entry&
-//  path=/site/website/index.xml&
+//  path=/project/webproject/index.xml&
 //  iceComponent=true&
-//  site=launcher&
+//  project=launcher&
 //  edit=true&
 //  editorId=b0665d96-2395-14b5-7f2b-3db8fa7286e3
 
 // tslint:disable-next-line:max-line-length
-// /studio/form?form=/page/entry&path=/site/website/index.xml&iceComponent=true&site=launcher&edit=true&editorId=b0665d96-2395-14b5-7f2b-3db8fa7286e3
+// /studio/form?form=/page/entry&path=/project/webproject/index.xml&iceComponent=true&project=launcher&edit=true&editorId=b0665d96-2395-14b5-7f2b-3db8fa7286e3
 // https://angular.io/guide/router#router-events
 
 // CStudioAuthoring.Operations.editContent(
 //   content.form,
-//   CStudioAuthoringContext.siteId,
+//   CStudioAuthoringContext.projectId,
 //   content.uri,
 //   content.nodeRef,
 //   content.uri,
@@ -123,10 +123,10 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
   @ViewChildren('urlBox') input: QueryList<ElementRef>;
   @ViewChild(IFrameComponent) iFrameComponent: IFrameComponent;
 
-  sites$: Observable<Site[]>;
+  projects$: Observable<Project[]>;
 
-  site: Site;
-  sites: Array<Site>;
+  project: Project;
+  projects: Array<Project>;
   assets: LookUpTable<Asset> = {};
 
   tabs: PreviewTab[];
@@ -158,7 +158,7 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
   constructor(store: NgRedux<AppState>,
               private router: Router,
               private route: ActivatedRoute,
-              private siteService: SiteService,
+              private projectService: ProjectService,
               private cookieService: CookieService,
               private communicator: CommunicationService,
               private snackBar: MatSnackBar,
@@ -168,14 +168,14 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
 
   ngOnInit() {
 
-    this.sites$ = this.select(['entities', 'site', 'byId'])
+    this.projects$ = this.select(['entities', 'project', 'byId'])
       .pipe(
         map(lookupTable => Object.values(lookupTable)),
         ...this.noNullsAndUnSubOps
-      ) as Observable<Site[]>;
+      ) as Observable<Project[]>;
 
     let {
-      sites$,
+      projects$,
       route,
       communicator,
       checkIn$,
@@ -183,17 +183,17 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
       previewTabs$
     } = this;
 
-    sites$
-      .subscribe(entries => this.sites = entries);
+    projects$
+      .subscribe(entries => this.projects = entries);
 
     route.data
-      .pipe(filter(data => data.site), map(data => data.site))
-      .subscribe(site => {
-        this.site = site;
+      .pipe(filter(data => data.project), map(data => data.project))
+      .subscribe(project => {
+        this.project = project;
         // TODO
         // let tab = new PreviewTab();
-        // tab.url = SITE_HOME_PAGE;
-        // tab.siteCode = site.code;
+        // tab.url = PROJECT_HOME_PAGE;
+        // tab.projectCode = project.code;
         // this.dispatch(PreviewTabsActions.nav(tab));
       });
 
@@ -270,16 +270,16 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
 
     this.previewTabsObserver$.next(tab.url);
 
-    if (isNullOrUndefined(this.site) || (this.site.code !== tab.siteCode)) {
-      if (tab.siteCode) {
-        this.setSite(tab.siteCode);
+    if (isNullOrUndefined(this.project) || (this.project.code !== tab.projectCode)) {
+      if (tab.projectCode) {
+        this.setProject(tab.projectCode);
       } else {
         let code = this.cookieService.get(COOKIE);
         if (code) {
-          this.setSite(code);
+          this.setProject(code);
         } else {
-          this.sites$
-            .subscribe(sites => this.setSite(sites[0].code));
+          this.projects$
+            .subscribe(projects => this.setProject(projects[0].code));
         }
       }
     }
@@ -294,7 +294,7 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
     // Filter out tabs that are already opened
       .filter((data) => (
         tabs.filter((previewTab, i) => {
-          if (data[0] === previewTab.siteCode && data[1] === previewTab.url) {
+          if (data[0] === previewTab.projectCode && data[1] === previewTab.url) {
             if (firstFoundIndex === null) {
               // First found currently opened tab from the requested 'open' tabs
               // will be given focus
@@ -312,23 +312,23 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
     } else {
       tabsToOpen.forEach((item, i) => {
         let url = item[1];
-        let siteCode = item[0];
+        let projectCode = item[0];
         let title = (item[2] || '');
         if (i === 0) {
           tab = this.activeTab;
           tab.url = url;
           tab.title = title;
           tab.isNew = false;
-          tab.siteCode = siteCode;
+          tab.projectCode = projectCode;
         } else {
           tab = createPreviewTabCore({
-            url, title, siteCode, assetId: null
+            url, title, projectCode, assetId: null
           });
         }
       });
-      this.requestGuestNavigation(tab.url, tab.siteCode);
+      this.requestGuestNavigation(tab.url, tab.projectCode);
     }
-    this.router.navigate([`/site/${tabs[0].siteCode}/preview`]);
+    this.router.navigate([`/project/${tabs[0].projectCode}/preview`]);
   }
 
   private processMessage(message) {
@@ -365,7 +365,7 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
 
       // TODO: temp, guest should send these props once the API powers it
       delete data.location;
-      data.siteCode = this.activeTab.siteCode;
+      data.projectCode = this.activeTab.projectCode;
       data.assetId = this.activeTab.assetId;
 
       this.store.dispatch(
@@ -379,13 +379,13 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
     clearTimeout(this.guestLoadControlTimeout);
   }
 
-  private requestGuestNavigation(url, siteCode = this.site ? this.site.code : null) {
+  private requestGuestNavigation(url, projectCode = this.project ? this.project.code : null) {
     clearTimeout(this.guestLoadControlTimeout);
-    if (siteCode) {
-      this.sites$
+    if (projectCode) {
+      this.projects$
         .subscribe(() => {
-          this.setSite(siteCode);
-          this.requestGuestNavigation(url, siteCode);
+          this.setProject(projectCode);
+          this.requestGuestNavigation(url, projectCode);
         });
     } else {
       // If an external URL is loaded if there's an error in the load
@@ -402,19 +402,19 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
     this.communicator.publish(topic, data, scope);
   }
 
-  private setSite(siteOrSiteCode) {
-    if (siteOrSiteCode instanceof Site) {
-      this.site = siteOrSiteCode;
-    } else if (!this.site || this.site.code !== siteOrSiteCode) {
-      // pretty('yellow', `setSite(${siteOrSiteCode})`);
-      if (this.sites) {
-        this.site = this.sites
-          .find(site => site.code === siteOrSiteCode);
+  private setProject(projectOrProjectCode) {
+    if (projectOrProjectCode instanceof Project) {
+      this.project = projectOrProjectCode;
+    } else if (!this.project || this.project.code !== projectOrProjectCode) {
+      // pretty('yellow', `setProject(${projectOrProjectCode})`);
+      if (this.projects) {
+        this.project = this.projects
+          .find(project => project.code === projectOrProjectCode);
       } else {
-        this.sites$
+        this.projects$
           .subscribe(() => {
-            // pretty('red', 'this.sites$ (next)');
-            this.setSite(siteOrSiteCode);
+            // pretty('red', 'this.projects$ (next)');
+            this.setProject(projectOrProjectCode);
           });
       }
     }
@@ -434,8 +434,8 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
 
   beforeIFrameNav() {
     let tab = this.activeTab;
-    if (tab.siteCode) {
-      this.cookieService.set(COOKIE, tab.siteCode, null, '/');
+    if (tab.projectCode) {
+      this.cookieService.set(COOKIE, tab.projectCode, null, '/');
     }
   }
 
@@ -459,7 +459,7 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
     return this.previewTabActions.open(createPreviewTabCore({
       url: this.iFrameLandingUrl,
       title: 'New Tab',
-      siteCode: this.site.code
+      projectCode: this.project.code
     }));
   }
 
@@ -471,15 +471,15 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
     return this.previewTabActions.nav(
       createPreviewTabCore({
         url,
-        siteCode: this.activeTab.siteCode
+        projectCode: this.activeTab.projectCode
       }));
   }
 
   @dispatch()
-  changeSite(site) {
+  changeProject(project) {
     return this.previewTabActions.nav(createPreviewTabCore({
-      url: SITE_HOME_PAGE,
-      siteCode: site.code
+      url: PROJECT_HOME_PAGE,
+      projectCode: project.code
     }));
   }
 

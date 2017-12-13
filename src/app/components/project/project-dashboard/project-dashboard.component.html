@@ -1,6 +1,6 @@
 <div class="view-container">
   <std-view-title-bar
-    i18n-title [title]="!site ? 'Site Dashboard' : site.name + ' Dashboard'"
+    i18n-title [title]="!project ? 'Project Dashboard' : project.name + ' Dashboard'"
     icon="fa fa-tachometer">
     <div class="ui flat basic extremely compact buttons"
          [class.tiny]="actions.length > 3 && actions.length <= 5"
@@ -14,14 +14,14 @@
       <div class="ui two column doubling grid top padded">
         <div class="column">
           <std-item-list-dashlet
-            [site]="site"
+            [project]="project"
             [fetchType]="pending"
             title="Pending Approval">
           </std-item-list-dashlet>
         </div>
         <div class="column">
           <std-item-list-dashlet
-            [site]="site"
+            [project]="project"
             [fetchType]="scheduled"
             title="Scheduled">
           </std-item-list-dashlet>
@@ -30,14 +30,14 @@
       <div class="ui two column doubling grid bottom padded">
         <div class="column">
           <std-item-list-dashlet
-            [site]="site"
+            [project]="project"
             [fetchType]="activity"
             title="My Activity">
           </std-item-list-dashlet>
         </div>
         <div class="column">
           <std-item-list-dashlet
-            [site]="site"
+            [project]="project"
             [fetchType]="published"
             title="Published">
           </std-item-list-dashlet>

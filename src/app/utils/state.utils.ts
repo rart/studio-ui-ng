@@ -52,29 +52,29 @@ export const createPreviewTabHistory =
   });
 
 export const createPreviewTabHistoryEntry =
-  ({ url, siteCode, assetId, title }): PreviewTabCore => ({
+  ({ url, projectCode, assetId, title }): PreviewTabCore => ({
     url,
     title,
-    siteCode,
+    projectCode,
     assetId
   });
 
 export const createPreviewTab =
-  ({ siteCode, url, assetId = null as string, title = DEFAULT_TAB_TITLE }): PreviewTab => ({
+  ({ projectCode, url, assetId = null as string, title = DEFAULT_TAB_TITLE }): PreviewTab => ({
     id: uuid(),
     pending: true,
     url,
     title,
-    siteCode,
+    projectCode,
     assetId,
-    history: createPreviewTabHistory({ initialEntry: { siteCode, url, assetId, title } })
+    history: createPreviewTabHistory({ initialEntry: { projectCode, url, assetId, title } })
   });
 
 export const createPreviewTabCore =
-  ({ siteCode, url, title = DEFAULT_TAB_TITLE, assetId = null as string }): PreviewTabCore => ({
+  ({ projectCode, url, title = DEFAULT_TAB_TITLE, assetId = null as string }): PreviewTabCore => ({
     url,
     title,
-    siteCode,
+    projectCode,
     assetId
   });
 
@@ -90,7 +90,7 @@ export const createPreviewTabStateContainer =
         url: '',
         title: '',
         assetId: null,
-        siteCode: null
+        projectCode: null
       });
       byId = { [tab.id]: tab };
     }
@@ -115,8 +115,8 @@ export const createPreviewTabStateContainer =
             history: createPreviewTabHistory({
               initialEntry: {
                 assetId: value.assetId,
-                siteCode: value.siteCode,
-                title: value.siteCode,
+                projectCode: value.projectCode,
+                title: value.projectCode,
                 url: value.url
               }
             })
@@ -132,7 +132,7 @@ export const createPreviewTabStateContainer =
     };
   };
 
-export const createSiteState =
+export const createProjectState =
   ({
      settings = {},
      previewTabs = createPreviewTabStateContainer({}),

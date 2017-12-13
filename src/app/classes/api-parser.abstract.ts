@@ -1,7 +1,7 @@
 import { Asset } from '../models/asset.model';
 import { User } from '../models/user.model';
 import { Group } from '../models/group.model';
-import { Site } from '../models/site.model';
+import { Project } from '../models/project.model';
 import { StudioModel} from '../utils/type.utils';
 import { StudioModelType } from '../utils/type.utils';
 
@@ -17,14 +17,18 @@ export abstract class APIParser {
 
   protected abstract group(json: any): Group;
 
-  protected abstract site(json: any): Site;
+  protected abstract project(json: any): Project;
 
   parseEntity(classType: StudioModelType, JSONObject: any): StudioModel {
     switch (classType) {
+      case Project:
+        return this.project(JSONObject);
       case Asset:
         return this.asset(JSONObject);
       case User:
         return this.user(JSONObject);
+      case Group:
+        return this.group(JSONObject);
     }
   }
 

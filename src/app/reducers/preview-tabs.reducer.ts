@@ -16,7 +16,7 @@ import {
 
 /*
  * !!!!!!!!!!!!!!!!!! NOTE TO DEVELOPERS !!!!!!!!!!!!!!!!!!
- * Update root reducer workspaceRef & siteRef when ever action affects the workspace
+ * Update root reducer workspaceRef & projectRef when ever action affects the workspace
  * */
 
 // TODO REMOVE
@@ -191,7 +191,7 @@ function trackHistoryEntry(state: PreviewTabStateContainer, tab: PreviewTab, new
     currentEntry = history.entries[index];
   if (
     (isNullOrUndefined(currentEntry)) ||
-    (currentEntry.siteCode !== newEntry.siteCode) ||
+    (currentEntry.projectCode !== newEntry.projectCode) ||
     (currentEntry.url !== newEntry.url)) {
     let sliceHistory = (index < (history.entries.length - 1));
     return {
@@ -316,8 +316,8 @@ function trackHistoryEntry(state: PreviewTabStateContainer, tab: PreviewTab, new
 //   return (index !== -1) && state[index];
 // }
 //
-// function findTabByUrlAndSiteCode(state, url, siteCode) {
-//   let index = state.findIndex(tab => (tab.url === url) && (tab.siteCode === siteCode));
+// function findTabByUrlAndProjectCode(state, url, projectCode) {
+//   let index = state.findIndex(tab => (tab.url === url) && (tab.projectCode === projectCode));
 //   return (index !== -1) && state[index];
 // }
 //
@@ -336,7 +336,7 @@ function trackHistoryEntry(state: PreviewTabStateContainer, tab: PreviewTab, new
 //
 // function navigateWith(tab, source) {
 //   tab.navigate(
-//     source.siteCode,
+//     source.projectCode,
 //     source.url,
 //     source.title || undefined,
 //     source.asset || undefined,

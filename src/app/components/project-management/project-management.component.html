@@ -1,16 +1,16 @@
 <div class="view-container">
   <std-view-title-bar
     i18n-title
-    title="Site Management"
+    title="Project Management"
     icon="fa fa-laptop">
-    <button class="ui basic green button" [routerLink]="['/sites/create']">Create Site</button>
+    <button class="ui basic green button" [routerLink]="['/projects/create']">Create Project</button>
     <button class="ui icon button" (click)="load()"><i class="icon refresh"></i></button>
   </std-view-title-bar>
   <ng-container [ngSwitch]="loading$ | async">
 
     <div class="relative position flex grow full height" *ngSwitchCase="true">
       <std-spinner class="absolute position opaque cover">
-        Loading Sites&hellip;
+        Loading Projects&hellip;
       </std-spinner>
     </div>
 
@@ -35,16 +35,16 @@
           </td>
         </tr>
         <tr class="is-interactive highlight-interaction bg"
-            *ngFor="let site of sites" [routerLink]="['/sites', site.code]">
-          <td>{{site.code}}</td>
-          <td>{{site.name}}</td>
-          <td>{{site.description}}</td>
-          <td>{{site.groups || 0}}</td>
+            *ngFor="let project of projects" [routerLink]="['/projects', project.code]">
+          <td>{{project.code}}</td>
+          <td>{{project.name}}</td>
+          <td>{{project.description}}</td>
+          <td>{{project.groups || 0}}</td>
         </tr>
         </tbody>
       </table>
       <mat-paginator (page)="pageChanged($event)"
-                     [length]="totalNumOfSites"
+                     [length]="totalNumOfProjects"
                      [pageIndex]="(pager$ | async).pageIndex"
                      [pageSize]="(pager$ | async).pageSize"
                      [pageSizeOptions]="pageSizeOptions">

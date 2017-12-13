@@ -18,7 +18,7 @@ export class ContentTreeComponent extends WithNgRedux implements OnInit {
 
   @Input() rootPath: string;
   @Input() showRoot = true;
-  @Input() site;
+  @Input() project;
 
   nodes;
   rootItem: Asset;
@@ -45,7 +45,7 @@ export class ContentTreeComponent extends WithNgRedux implements OnInit {
         this.treeState.expandedNodeIds = workspace.expandedPaths;
       });
 
-    this.fetch(this.site.code, this.rootPath)
+    this.fetch(this.project.code, this.rootPath)
       .then(item => {
         this.rootPathLoaded(item);
       });
@@ -85,9 +85,9 @@ export class ContentTreeComponent extends WithNgRedux implements OnInit {
     }
   }
 
-  private fetch(siteCode, path) {
+  private fetch(projectCode, path) {
     return this.contentService
-      .tree(siteCode, path)
+      .tree(projectCode, path)
       .toPromise()
       .then(item => {
         this.dispatch(
@@ -112,7 +112,7 @@ export class ContentTreeComponent extends WithNgRedux implements OnInit {
       useVirtualScroll: false,
       getChildren: (node: TreeNode) => {
         return this
-          .fetch(this.site.code, (<Asset>node.data).id)
+          .fetch(this.project.code, (<Asset>node.data).id)
           .then(item => item.children);
       },
       actionMapping: {

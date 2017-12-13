@@ -1,22 +1,24 @@
 import { Injectable } from '@angular/core';
 
-import {environment} from '../../environments/environment';
-import {Site} from '../models/site.model';
-import {StudioHttpService} from './http.service';
+import { environment } from '../../environments/environment';
+import { Project } from '../models/project.model';
+import { StudioHttpService } from './http.service';
+import { parseEntity } from '../utils/api.utils';
 
 const baseUrl = `${environment.apiUrl}/group`;
 
 @Injectable()
 export class GroupService {
 
-  constructor(public http: StudioHttpService) { }
+  constructor(public http: StudioHttpService) {
+  }
 
-  bySite(query?) {
+  byProject(query?) {
     return this.http.get(`${baseUrl}/get-all.json`, query)
       .map((data) => ({
         total: '(not provided by API)',
-        sites: data.sites.map((dataItem) => {
-          return Site.fromJSON(dataItem);
+        projects: data.projects.map((dataItem) => {
+          return parseEntity(Project, dataItem);
         })
       }));
   }

@@ -1,21 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, PageEvent } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SiteService } from '../../services/site.service';
+import { ProjectService } from '../../services/project.service';
 import { createLocalPagination$} from '../../app.utils';
 import { EmbeddedViewDialogComponent } from '../embedded-view-dialog/embedded-view-dialog.component';
-import { SiteCrUDComponent } from './site-crud/site-crud.component';
+import { ProjectCrUDComponent } from './project-crud/project-crud.component';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { debounceTime, distinctUntilChanged, startWith } from 'rxjs/operators';
 import { ComponentBase } from '../../classes/component-base.class';
 import { FormControl } from '@angular/forms';
 import { PagedResponse } from '../../classes/paged-response.interface';
-import { Site } from '../../models/site.model';
+import { Project } from '../../models/project.model';
 import 'rxjs/add/observable/never';
 import { PagerConfig } from '../../classes/pager-config.interface';
 import { dispatch, NgRedux, select } from '@angular-redux/store';
 import { Observable } from 'rxjs/Observable';
-import { SiteActions } from '../../actions/site.actions';
+import { ProjectActions } from '../../actions/project.actions';
 import { AppState } from '../../classes/app-state.interface';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { isNullOrUndefined } from 'util';
@@ -23,21 +23,21 @@ import { openDialog } from '../../utils/material.utils';
 import { StringUtils } from '../../utils/string.utils';
 
 const anonym = (state: AppState) => {
-  return Object.values(state.entities.site.byId);
+  return Object.values(state.entities.project.byId);
 };
 
 @Component({
-  selector: 'std-site-management',
-  templateUrl: './site-management.component.html',
-  styleUrls: ['./site-management.component.scss']
+  selector: 'std-project-management',
+  templateUrl: './project-management.component.html',
+  styleUrls: ['./project-management.component.scss']
 })
-export class SiteManagementComponent extends WithNgRedux implements OnInit {
+export class ProjectManagementComponent extends WithNgRedux implements OnInit {
 
-  sites;
+  projects;
   dialogRef = null;
   filterQuery = new FormControl('');
 
-  totalNumOfSites = 0;
+  totalNumOfProjects = 0;
   pageSizeOptions = [5, 10, 25, 100];
   pagerConfig: PagerConfig = {
     pageIndex: 0,
@@ -49,15 +49,15 @@ export class SiteManagementComponent extends WithNgRedux implements OnInit {
   constructor(store: NgRedux<AppState>,
               public router: Router,
               public dialog: MatDialog,
-              private siteActions: SiteActions,
+              private projectActions: ProjectActions,
               private activeRoute: ActivatedRoute) {
     super(store);
   }
 
   @select(anonym)
-  sites$: Observable<Site[]>;
+  projects$: Observable<Project[]>;
 
-  @select(['entities', 'site', 'loading'])
+  @select(['entities', 'project', 'loading'])
   loading$: Observable<boolean>;
 
   ngOnInit() {
@@ -71,7 +71,7 @@ export class SiteManagementComponent extends WithNgRedux implements OnInit {
         } else if (this.activeRoute.firstChild) {
           this.activeRoute.firstChild.params
             .subscribe((params) => {
-              if (params.siteCode) {
+              if (params.projectCode) {
                 setTimeout(() =>
                   this.openDialog({ code: params.code || params.edit }));
               }
@@ -110,13 +110,13 @@ export class SiteManagementComponent extends WithNgRedux implements OnInit {
   }
 
   @dispatch() load() {
-    return this.siteActions.fetch();
+    return this.projectActions.fetch();
   }
 
   initPaginator() {
     createLocalPagination$({
-      source$: this.sites$
-        .filter(sites => !isNullOrUndefined(sites)),
+      source$: this.projects$
+        .filter(projects => !isNullOrUndefined(projects)),
       pager$: this.pager$,
       takeUntilOp: this.takeUntil,
       filterFn: (item, query) => query.trim() === '' || item.name.includes(query),
@@ -126,14 +126,14 @@ export class SiteManagementComponent extends WithNgRedux implements OnInit {
           distinctUntilChanged(),
           startWith(this.filterQuery.value)
         )
-    }).subscribe((data: PagedResponse<Site>) => {
-      this.sites = data.entries;
-      this.totalNumOfSites = data.total;
+    }).subscribe((data: PagedResponse<Project>) => {
+      this.projects = data.entries;
+      this.totalNumOfProjects = data.total;
     });
   }
 
-  createSite() {
-    this.router.navigate(['/sites'], { queryParams: { create: 'true' } });
+  createProject() {
+    this.router.navigate(['/projects'], { queryParams: { create: 'true' } });
   }
 
   openDialog(data = {}) {
@@ -142,12 +142,12 @@ export class SiteManagementComponent extends WithNgRedux implements OnInit {
       width: '800px',
       disableClose: true,
       data: Object.assign({
-        component: SiteCrUDComponent
+        component: ProjectCrUDComponent
       }, data)
     });
     subscription = dialogRef.afterClosed()
       .subscribe(() => {
-        this.router.navigate(['/sites']);
+        this.router.navigate(['/projects']);
         subscription.unsubscribe();
       });
     this.dialogRef = dialogRef;

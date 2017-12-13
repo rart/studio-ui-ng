@@ -7,9 +7,9 @@ import {
   EventEmitter
 } from '@angular/core';
 import { User } from '../../../models/user.model';
-import { SiteService } from '../../../services/site.service';
+import { ProjectService } from '../../../services/project.service';
 import { GroupService } from '../../../services/group.service';
-import { Site } from '../../../models/site.model';
+import { Project } from '../../../models/project.model';
 import { Change, ChangeTracker, ChangeTrackerType, ChangeType } from '../../../classes/change-tracker.class';
 import { combineLatest } from 'rxjs/operators';
 
@@ -26,200 +26,200 @@ export class UserGroupManagerComponent implements OnInit, OnChanges {
 
   changeTracker;
   dataFetchComplete = false;
-  notAMemberGroupsBySite;
+  notAMemberGroupsByProject;
 
-  sites;
+  projects;
 
-  constructor(public siteService: SiteService,
+  constructor(public projectService: ProjectService,
               public groupService: GroupService) {
   }
 
   ngOnInit() {
-    this.siteService
+    this.projectService
       .page()
       .pipe(
-        combineLatest(this.groupService.bySite(), (sitesData, groupsData) => {
-          return this.mergeSitesAndGroupsResponses(
-            sitesData.entries,
-            groupsData.sites);
+        combineLatest(this.groupService.byProject(), (projectsData, groupsData) => {
+          return this.mergeProjectsAndGroupsResponses(
+            projectsData.entries,
+            groupsData.projects);
         })
       )
-      .subscribe(sites => {
-        this.sites = sites;
+      .subscribe(projects => {
+        this.projects = projects;
         this.dataFetchComplete = true;
-        this.setNotAMemberGroupBySite();
+        this.setNotAMemberGroupByProject();
       });
   }
 
   ngOnChanges() {
     if (this.changeRollBack) {
       let change = this.changeRollBack as Change;
-      let site = this.findSiteByCode(change.value.siteCode);
-      let group = site.groups.filter((g) => g.name === change.value.groupName)[0];
+      let project = this.findProjectByCode(change.value.projectCode);
+      let group = project.groups.filter((g) => g.name === change.value.groupName)[0];
       if (change.type === ChangeType.Add) {
-        this.removeFromGroup(site, group, true);
+        this.removeFromGroup(project, group, true);
       } else /* if (change.type === ChangeType.Remove) */ {
-        this.addToGroup(site, group, true);
+        this.addToGroup(project, group, true);
       }
       // this.changeRollBack = null;
     }
   }
 
-  setNotAMemberGroupBySite() {
+  setNotAMemberGroupByProject() {
     if (this.dataFetchComplete) {
-      let notAMemberGroupsBySite = {};
-      this.sites.forEach((site) => {
-        // site Not A Member Groups (NMG)
-        let siteNMG = this.getUserNotAMemberGroupsBySite(site);
-        notAMemberGroupsBySite[site.code] = siteNMG;
+      let notAMemberGroupsByProject = {};
+      this.projects.forEach((project) => {
+        // project Not A Member Groups (NMG)
+        let projectNMG = this.getUserNotAMemberGroupsByProject(project);
+        notAMemberGroupsByProject[project.code] = projectNMG;
       });
-      this.notAMemberGroupsBySite = notAMemberGroupsBySite;
+      this.notAMemberGroupsByProject = notAMemberGroupsByProject;
     }
   }
 
-  hasSite(siteCode) {
-    if (this.user && this.user.sites) {
-      const result = this.user.sites.filter((site) => site.code === siteCode);
+  hasProject(projectCode) {
+    if (this.user && this.user.projects) {
+      const result = this.user.projects.filter((project) => project.code === projectCode);
       return result.length > 0;
     }
     return false;
   }
 
-  findSiteByCode(code) {
-    return this.sites.filter((site) => site.code === code)[0];
+  findProjectByCode(code) {
+    return this.projects.filter((project) => project.code === code)[0];
   }
 
-  findSiteInUser(site) {
+  findProjectInUser(project) {
     let user = this.user,
-      userSites = user.sites;
-    for (let i = 0, l = userSites.length; i < l; ++i) {
-      if (userSites[i].code === site.code) {
-        return userSites[i];
+      userProjects = user.projects;
+    for (let i = 0, l = userProjects.length; i < l; ++i) {
+      if (userProjects[i].code === project.code) {
+        return userProjects[i];
       }
     }
   }
 
-  findGroupInUser(site) {
+  findGroupInUser(project) {
 
   }
 
-  getUserGroupsBySite(site) {
+  getUserGroupsByProject(project) {
     let user = this.user,
       userGroups = user.groups;
     if (!userGroups || userGroups.length === 0) {
       return [];
     } else {
       return userGroups.filter((userGroup) =>
-        userGroup.site.code === site.code);
+        userGroup.project.code === project.code);
     }
   }
 
-  getUserNotAMemberGroupsBySite(site) {
+  getUserNotAMemberGroupsByProject(project) {
     let
       user = this.user,
       userGroups = user.groups,
-      siteGroups = site.groups;
-    if (userGroups && siteGroups && userGroups.length && siteGroups.length) {
+      projectGroups = project.groups;
+    if (userGroups && projectGroups && userGroups.length && projectGroups.length) {
       let groupsNotMemeberOf = [],
-        userGroupsFromSite = userGroups.filter((userGroup) =>
-          userGroup.site.code === site.code);
-      siteGroups.filter((siteGroup) => {
+        userGroupsFromProject = userGroups.filter((userGroup) =>
+          userGroup.project.code === project.code);
+      projectGroups.filter((projectGroup) => {
         let userBelongsToGroup = false;
-        for (let i = 0; i < userGroupsFromSite.length; ++i) {
-          if (siteGroup.name === userGroupsFromSite[i].name) {
+        for (let i = 0; i < userGroupsFromProject.length; ++i) {
+          if (projectGroup.name === userGroupsFromProject[i].name) {
             userBelongsToGroup = true;
             break;
           }
         }
         if (!userBelongsToGroup) {
-          groupsNotMemeberOf.push(siteGroup);
+          groupsNotMemeberOf.push(projectGroup);
         }
       });
       return groupsNotMemeberOf;
     } else {
-      return siteGroups || [];
+      return projectGroups || [];
     }
   }
 
-  addToGroup(site, group, silent = false) {
+  addToGroup(project, group, silent = false) {
     let user = this.user;
     user.groups.push(group);
-    user.sites.push(site);
-    this.setNotAMemberGroupBySite();
-    this.trackChange(ChangeType.Add, site.code, group.name, silent);
+    user.projects.push(project);
+    this.setNotAMemberGroupByProject();
+    this.trackChange(ChangeType.Add, project.code, group.name, silent);
   }
 
-  removeFromGroup(site, group, silent = false) {
+  removeFromGroup(project, group, silent = false) {
 
     let user = this.user,
-      userSites = user.sites;
+      userProjects = user.projects;
 
     let newGroups = user.groups.filter((userGroup) => {
       return (userGroup.name !== group.name) ||
-        (userGroup.site.code !== site.code);
+        (userGroup.project.code !== project.code);
     });
 
-    let stillBelongsToSite = false;
+    let stillBelongsToProject = false;
     for (let i = 0, l = newGroups.length; i < l; ++i) {
-      if (newGroups[i].site.code === site.code) {
-        stillBelongsToSite = true;
+      if (newGroups[i].project.code === project.code) {
+        stillBelongsToProject = true;
         break;
       }
     }
 
-    if (!stillBelongsToSite) {
-      user.sites = user.sites.filter((userSite) =>
-        userSite.code !== site.code);
+    if (!stillBelongsToProject) {
+      user.projects = user.projects.filter((userProject) =>
+        userProject.code !== project.code);
     }
 
     user.groups = newGroups;
-    this.setNotAMemberGroupBySite();
-    this.trackChange(ChangeType.Remove, site.code, group.name, silent);
+    this.setNotAMemberGroupByProject();
+    this.trackChange(ChangeType.Remove, project.code, group.name, silent);
 
   }
 
   // TODO API needs change. Update when changed.
   // this should be not needed once the API supports
-  // fetching site with it's respective groups.
-  mergeSitesAndGroupsResponses(sites: Site[], groupSites: Site[]) {
-    let sitesMap = {};
-    let groupSitesMap = {};
-    groupSites.forEach(site => {
-      groupSitesMap[site.code] = site;
+  // fetching project with it's respective groups.
+  mergeProjectsAndGroupsResponses(projects: Project[], groupProjects: Project[]) {
+    let projectsMap = {};
+    let groupProjectsMap = {};
+    groupProjects.forEach(project => {
+      groupProjectsMap[project.code] = project;
     });
-    sites.forEach(site => {
-      sitesMap[site.code] = site;
-      if (!groupSitesMap[site.code]) {
-        groupSitesMap[site.code] = site;
-        groupSites.push(site);
+    projects.forEach(project => {
+      projectsMap[project.code] = project;
+      if (!groupProjectsMap[project.code]) {
+        groupProjectsMap[project.code] = project;
+        groupProjects.push(project);
       }
     });
-    groupSites.forEach(site => {
-      if (!sitesMap[site.code]) {
-        sitesMap[site.code] = site;
-        sites.push(site);
+    groupProjects.forEach(project => {
+      if (!projectsMap[project.code]) {
+        projectsMap[project.code] = project;
+        projects.push(project);
       }
     });
-    sites.forEach(site => {
-      site.completeMissingInformation(groupSitesMap[site.code]);
-      groupSitesMap[site.code].completeMissingInformation(site);
+    projects.forEach(project => {
+      project.completeMissingInformation(groupProjectsMap[project.code]);
+      groupProjectsMap[project.code].completeMissingInformation(project);
     });
-    // console.log(sites, groupSites);
+    // console.log(projects, groupProjects);
     // For some reason the sites/all call returns more results
     // than group/bySite call; so now that both array of sites
-    // are complete in info and number of sites...
-    return sites;
+    // are complete in info and number of projects...
+    return projects;
   }
 
-  trackChange(type: ChangeType, siteCode, groupName, silent = false) {
+  trackChange(type: ChangeType, projectCode, groupName, silent = false) {
     if (!this.changeTracker) {
       this.changeTracker = ChangeTracker.create(ChangeTrackerType.ADD_REMOVE, (v1, v2) => {
-        return (v1.siteCode === v2.siteCode) &&
+        return (v1.projectCode === v2.projectCode) &&
           (v1.groupName === v2.groupName);
       });
     }
     let tracker = this.changeTracker;
-    let value = { siteCode, groupName };
+    let value = { projectCode, groupName };
     let change = { type, value };
     tracker.track(change);
     if (!silent) {

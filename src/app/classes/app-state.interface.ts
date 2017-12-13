@@ -1,18 +1,18 @@
 import { Asset } from '../models/asset.model';
 import { User } from '../models/user.model';
-import { Site } from '../models/site.model';
+import { Project } from '../models/project.model';
 import { Group } from '../models/group.model';
 import { StudioModel } from '../utils/type.utils';
 
 export interface AppState extends ActiveState {
   user: any;
-  sitesState: SiteStateContainer;
+  projectsState: ProjectStateContainer;
   entities?: StateEntities; // do not persist
   // [anything: string]: any;
 }
 
-export interface SiteStateContainer {
-  [siteId: string]: Workspace;
+export interface ProjectStateContainer {
+  [projectId: string]: Workspace;
 }
 
 export interface PreviewTabStateContainer {
@@ -34,7 +34,7 @@ export interface Settings {
 }
 
 export interface StateEntities {
-  site?: StateEntity<Site>;
+  project?: StateEntity<Project>;
   user?: StateEntity<User>;
   group?: StateEntity<Group>;
   asset?: StateEntity<Asset>;
@@ -51,8 +51,8 @@ export interface StateEntity<T> {
 }
 
 export interface ActiveState {
-  siteRef?: any;
-  activeSiteCode: string; // The active site's code
+  projectRef?: any;
+  activeProjectCode: string; // The active project's code
   workspaceRef?: Workspace;
 }
 
@@ -67,7 +67,7 @@ export interface PreviewTabCore {
   url: string;
   title: string;
   assetId: string;
-  siteCode: string;
+  projectCode: string;
 }
 
 export interface PreviewTab extends PreviewTabCore {

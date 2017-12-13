@@ -11,20 +11,20 @@ const baseUrl = `${environment.apiUrl}/content`;
 @Injectable()
 export class ContentService {
 
-  constructor(private httpService: StudioHttpService) {
+  constructor(private http: StudioHttpService) {
   }
 
-  tree(siteCode, assetId, depth = 1) {
-    return this.httpService.get(
+  tree(projectCode, assetId, depth = 1) {
+    return this.http.get(
       `${baseUrl}/get-items-tree.json`,
-      { site: siteCode, path: assetId, depth })
+      { site: projectCode, path: assetId, depth })
       .pipe(map(response => <Asset>parseEntity(Asset, response.item)));
   }
 
-  content(siteCode, assetId, edit = false): Observable<{ id, content }> {
-    return this.httpService.get(
+  content(projectCode, assetId, edit = false): Observable<{ id, content }> {
+    return this.http.get(
       `${baseUrl}/get-content.json`,
-      { site: siteCode, path: assetId, edit })
+      { site: projectCode, path: assetId, edit })
       .pipe(
         map((resp: any) => ({ id: assetId, content: resp.content }))
       );

@@ -1,4 +1,4 @@
-import { Site } from './site.model';
+import { Project } from './project.model';
 import { Group } from './group.model';
 import { AVATARS } from '../app.utils';
 
@@ -10,7 +10,7 @@ export interface UserProps {
   lastName: string;
   managedExternally?: boolean;
   enabled?: boolean;
-  sites?: Array<Site>;
+  projects?: Array<Project>;
   groups?: Array<Group>;
 }
 
@@ -22,7 +22,7 @@ export class User implements UserProps {
   lastName: string;
   managedExternally: boolean;
   enabled: boolean;
-  sites: Array<Site>;
+  projects: Array<Project>;
   groups: Array<Group>;
   password: string;
 
@@ -56,8 +56,8 @@ export class User implements UserProps {
     }
     let model = new User();
     Object.keys(json).forEach(prop => {
-      if (prop === 'sites') {
-        model[prop] = json.sites ? json.sites.map(siteJson => Site.deserialize(siteJson)) : null;
+      if (prop === 'projects') {
+        model[prop] = json.projects ? json.projects.map(projectJson => Project.deserialize(projectJson)) : null;
       } else if (prop === 'groups') {
         model[prop] = json.groups ? json.groups.map(groupJson => Group.deserialize(groupJson)) : null;
       } else {

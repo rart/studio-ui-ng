@@ -40,7 +40,7 @@ export const asset: Reducer<StateEntity<Asset>> =
           }
         });
 
-      case StoreActionsEnum.SITES_FETCH_ERROR:
+      case StoreActionsEnum.PROJECTS_FETCH_ERROR:
         return {
           ...state,
           error: new Error('')

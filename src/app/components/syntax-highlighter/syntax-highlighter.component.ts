@@ -102,7 +102,7 @@ export class SyntaxHighlighterComponent extends ComponentBase implements OnInit,
         });
 
       this.contentService
-        .content(asset.siteCode, asset.id)
+        .content(asset.projectCode, asset.id)
         .pipe(takeUntil(this.unSubscriber$))
         .subscribe(data => content$.next(data.content));
 

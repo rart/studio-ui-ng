@@ -6,7 +6,7 @@ import { AssetTypeEnum } from '../enums/asset-type.enum';
 interface HistoryItem {
   url: string;
   title: string;
-  siteCode: string;
+  projectCode: string;
   asset: Asset;
   edit: boolean;
 }
@@ -16,7 +16,7 @@ export interface PreviewTabProps {
   url: string;
   title: string;
   asset: Asset;
-  siteCode: string;
+  projectCode: string;
   edit: boolean;
   isNew: boolean;
   active: boolean;
@@ -32,7 +32,7 @@ export class PreviewTab implements PreviewTabProps {
   url: string;
   title: string;
   asset: Asset = null;
-  siteCode: string = null;
+  projectCode: string = null;
   edit = false;
 
   isNew = false;
@@ -45,7 +45,7 @@ export class PreviewTab implements PreviewTabProps {
   /**
    * @param url {string}
    * @param title {string}
-   * @param siteCode {string} The identifying code of the site this tab refers to
+   * @param projectCode {string} The identifying code of the project this tab refers to
    * @param isNew {boolean} The tab has a 'blank' URL pending user input
    **/
   constructor(id = uuid()) {
@@ -54,10 +54,10 @@ export class PreviewTab implements PreviewTabProps {
 
   static deserialize(json) {
     let tab = new PreviewTab();
-    let { url, title, siteCode, asset, edit = false, isNew = false, active = false } = json;
+    let { url, title, projectCode, asset, edit = false, isNew = false, active = false } = json;
     tab.isNew = isNew;
     tab.active = active;
-    tab.navigate(siteCode, url, title, asset, edit);
+    tab.navigate(projectCode, url, title, asset, edit);
     return tab;
   }
 
@@ -66,35 +66,35 @@ export class PreviewTab implements PreviewTabProps {
    * instance's current state/values
    * */
   private updateHistory() {
-    let { url, title, siteCode, asset, edit } = this;
+    let { url, title, projectCode, asset, edit } = this;
     if (this.history.length === 0) {
-      this.track({ url, title, siteCode, asset, edit });
+      this.track({ url, title, projectCode, asset, edit });
     } else {
       this.history[this.historyIndex].url = url;
       this.history[this.historyIndex].edit = edit;
       this.history[this.historyIndex].title = title;
       this.history[this.historyIndex].asset = asset;
-      this.history[this.historyIndex].siteCode = siteCode;
+      this.history[this.historyIndex].projectCode = projectCode;
     }
   }
 
   private setValues(url: string,
                     title: string,
-                    siteCode: string,
+                    projectCode: string,
                     asset: Asset,
                     edit: boolean) {
     this.url = url;
     this.title = title;
     this.asset = asset;
-    this.siteCode = siteCode;
+    this.projectCode = projectCode;
     this.edit = edit;
   }
 
   back() {
     let history = this.history;
     if (this.hasBack()) {
-      let { url, title, siteCode, asset, edit } = history[--this.historyIndex];
-      this.setValues(url, title, siteCode, asset, edit);
+      let { url, title, projectCode, asset, edit } = history[--this.historyIndex];
+      this.setValues(url, title, projectCode, asset, edit);
       this.pending = true;
       return true;
     } else {
@@ -109,8 +109,8 @@ export class PreviewTab implements PreviewTabProps {
   forward() {
     let history = this.history;
     if (this.hasForward()) {
-      let { url, title, siteCode, asset, edit } = history[++this.historyIndex];
-      this.setValues(url, title, siteCode, asset, edit);
+      let { url, title, projectCode, asset, edit } = history[++this.historyIndex];
+      this.setValues(url, title, projectCode, asset, edit);
       this.pending = true;
       return true;
     } else {
@@ -122,22 +122,22 @@ export class PreviewTab implements PreviewTabProps {
     return (this.history.length > 1) && (this.historyIndex < (this.history.length - 1));
   }
 
-  navigate(siteCode: string,
+  navigate(projectCode: string,
            url: string,
            title = '...',
            asset: Asset = this.asset,
            edit = this.edit) {
-    this.track({ url, title, siteCode, asset, edit });
-    this.setValues(url, title, siteCode, asset, edit);
+    this.track({ url, title, projectCode, asset, edit });
+    this.setValues(url, title, projectCode, asset, edit);
   }
 
   update(url: string,
          title: string,
-         siteCode: string = this.siteCode,
+         projectCode: string = this.projectCode,
          asset: Asset = this.asset,
          edit = this.edit) {
 
-    this.setValues(url, title, siteCode, asset, edit);
+    this.setValues(url, title, projectCode, asset, edit);
     this.updateHistory();
 
     this.pending = false;
@@ -145,7 +145,7 @@ export class PreviewTab implements PreviewTabProps {
   }
 
   editing(isEditing: boolean) {
-    this.navigate(this.siteCode, this.url, this.title, this.asset, isEditing);
+    this.navigate(this.projectCode, this.url, this.title, this.asset, isEditing);
   }
 
   notifyExternalLoad(url = this.url, title = 'External Page') {
@@ -157,7 +157,7 @@ export class PreviewTab implements PreviewTabProps {
       history = this.history,
       currentEntry = history[this.historyIndex];
     if ((!currentEntry) ||
-      (currentEntry.siteCode !== newEntry.siteCode) ||
+      (currentEntry.projectCode !== newEntry.projectCode) ||
       (currentEntry.url !== newEntry.url) ||
       (currentEntry.edit !== newEntry.edit)) {
       let

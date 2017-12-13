@@ -4,7 +4,7 @@ import { MimeTypeEnum } from '../enums/mime-type.enum';
 import { Asset } from '../models/asset.model';
 import { User } from '../models/user.model';
 import { Group } from '../models/group.model';
-import { Site } from '../models/site.model';
+import { Project } from '../models/project.model';
 import { AVATARS } from '../app.utils';
 import { APIParser } from './api-parser.abstract';
 
@@ -51,7 +51,7 @@ export class API3Parser extends APIParser {
     asset.id = json.uri || json.path;
     asset.lastEditedOn = json.lastEditDate || json.eventDate;
     asset.url = (json.browserUri === '') ? '/' : json.browserUri;
-    asset.siteCode = json.site;
+    asset.projectCode = json.site;
     asset.numOfChildren = json.numOfChildren;
     asset.contentModelId = json.form;
     asset.renderingTemplates = json.renderingTemplates;
@@ -235,30 +235,30 @@ export class API3Parser extends APIParser {
     user.lastName = json.last_name;
     user.managedExternally = json.externally_managed;
     user.enabled = json.enabled || false;
-    user.sites = [];
+    user.projects = [];
     user.groups = [];
 
     user.avatarUrl = AVATARS[ Math.floor(Math.random() * AVATARS.length) ];
 
     // When fetching a user model, the API returns the groups the
-    // user belongs to inside of the site. Instead of the groups that
-    // belong to the site. Here, site.groups are set to null and user.groups
-    // are set to the site.groups that come from API
-    if (json.sites && json.sites.length) {
+    // user belongs to inside of the project. Instead of the groups that
+    // belong to the project. Here, project.groups are set to null and user.groups
+    // are set to the project.groups that come from API
+    if (json.projects && json.projects.length) {
 
       let userGroups = [];
 
-      user.sites = json.sites.map((siteJSON) => {
-        let site = this.site(siteJSON);
+      user.projects = json.projects.map((projectJSON) => {
+        let project = this.project(projectJSON);
         userGroups = userGroups.concat(
-          siteJSON.groups.map((groupJSON) => {
+          projectJSON.groups.map((groupJSON) => {
             let group = this.group(groupJSON);
-            group.site = site;
+            group.project = project;
             return group;
           })
         );
-        site.groups = null;
-        return site;
+        project.groups = null;
+        return project;
       });
 
       user.groups = userGroups;
@@ -272,30 +272,30 @@ export class API3Parser extends APIParser {
     let model = new Group();
     model.id = json.group_id;
     model.name = json.group_name;
-    model.site = (json.site) ? this.site(json) : undefined;
-    // model.siteCode = (json.site) ? this.site(json) : undefined;
+    model.project = (json.project) ? this.project(json) : undefined;
+    // model.projectCode = (json.project) ? model.project : undefined;
     return model;
   }
 
-  protected site(json: any): Site {
-    let site = new Site();
-    site.id = json.id;
-    site.code = json.siteId || json.site_id;
-    site.name = json.name || json.site_name;
-    site.description = json.description;
-    site.status = json.status;
-    site.liveUrl = json.liveUrl;
-    site.lastCommitId = json.lastCommitId;
-    site.publishingEnabled = json.publishingEnabled;
-    site.publishingStatusMessage = json.publishingStatusMessage;
-    site.groups = (json.groups && json.groups.length)
+  protected project(json: any): Project {
+    let project = new Project();
+    project.id = json.id;
+    project.code = json.siteId || json.site_id;
+    project.name = json.name || json.site_name;
+    project.description = json.description;
+    project.status = json.status;
+    project.liveUrl = json.liveUrl;
+    project.lastCommitId = json.lastCommitId;
+    project.publishingEnabled = json.publishingEnabled;
+    project.publishingStatusMessage = json.publishingStatusMessage;
+    project.groups = (json.groups && json.groups.length)
       ? json.groups.map((groupJSON) => {
         let group = this.group(groupJSON);
-        group.site = site;
+        group.project = project;
         return group;
       })
       : undefined;
-    return site;
+    return project;
   }
 
 }

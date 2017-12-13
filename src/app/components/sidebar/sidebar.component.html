@@ -19,24 +19,24 @@
     </div>
   </mat-expansion-panel>
 
-  <mat-expansion-panel #siteNavPanel
+  <mat-expansion-panel #projectNavPanel
                        [expanded]="true"
-                       class="studio-site-nav allow-overflow"
-                       *ngIf="site">
+                       class="studio-project-nav allow-overflow"
+                       *ngIf="project">
     <mat-expansion-panel-header
       class="sidebar-heading"
       [collapsedHeight]="'60px'"
       [expandedHeight]="'60px'">
-      <mat-panel-title>{{site.name}}</mat-panel-title>
+      <mat-panel-title>{{project.name}}</mat-panel-title>
     </mat-expansion-panel-header>
-    <div class="sidebar-items" *ngIf="siteNavPanel.expanded">
+    <div class="sidebar-items" *ngIf="projectNavPanel.expanded">
 
       <!-- TODO: make this into individual components? -->
-      <div *ngFor="let item of siteNavItems"
+      <div *ngFor="let item of projectNavItems"
            [ngSwitch]="item.type">
 
         <a class="sidebar-item"
-           routerLink="/site/{{site.code}}/{{item.config.href}}"
+           routerLink="/project/{{project.code}}/{{item.config.href}}"
            routerLinkActive="active"
            *ngSwitchCase="itemTypes.Link">
           <i class="{{item.iconClass}}"></i> <span class="label">{{item.label}}</span>
@@ -46,11 +46,11 @@
 
         <mat-expansion-panel
           #expPanel class="sidebar-item-container"
-          [expanded]="expandedPanels[getSiteNavPanelKey(item)]"
+          [expanded]="expandedPanels[getProjectNavPanelKey(item)]"
           *ngSwitchCase="itemTypes.Container">
           <mat-expansion-panel-header
             class="no-indicator"
-            (click)="siteNavPanelExpandedStateChange(item, expPanel.expanded)"
+            (click)="projectNavPanelExpandedStateChange(item, expPanel.expanded)"
             [collapsedHeight]="'auto'"
             [expandedHeight]="'auto'">
             <mat-panel-title class="sidebar-item-heading">
@@ -59,15 +59,15 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
 
-          <!-- *ngIf="expandedPanelMap[getSiteNavPanelKey(item)]" -->
-          <ng-template stdComponentHost [data]="{ site: site, cfg: item }"></ng-template>
+          <!-- *ngIf="expandedPanelMap[getProjectNavPanelKey(item)]" -->
+          <ng-template stdComponentHost [data]="{ project: project, cfg: item }"></ng-template>
 
         </mat-expansion-panel>
 
       </div>
 
       <div class="sidebar-actions">
-        <button class="ui button fluid" *ngFor="let item of siteCommands" (click)="runCommand(item.command)">
+        <button class="ui button fluid" *ngFor="let item of projectCommands" (click)="runCommand(item.command)">
           {{item.label}}
         </button>
       </div>

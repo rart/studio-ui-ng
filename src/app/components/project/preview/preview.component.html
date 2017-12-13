@@ -6,16 +6,16 @@
         <button [disabled]="!activeTab.history.hasForward" (click)="forward()" class="ui mini icon button"><i class="icon chevron right"></i></button>
         <button [disabled]="activeTab.pending" (click)="reload()" class="ui mini icon button"><i class="icon refresh"></i></button>
         <div class="input-skin">
-          <div class="site-display" *ngIf="site && sites">
-            <button class="text simple" [title]="site.name" [matMenuTriggerFor]="siteSelectorMenu">
-              Site: {{site.code}} <i class="dropdown icon"></i>
+          <div class="project-display" *ngIf="project && projects">
+            <button class="text simple" [title]="project.name" [matMenuTriggerFor]="projectSelectorMenu">
+              Project: {{project.code}} <i class="dropdown icon"></i>
             </button>
-            <mat-menu #siteSelectorMenu="matMenu" class="mat-menu-compact">
+            <mat-menu #projectSelectorMenu="matMenu" class="mat-menu-compact">
               <button
                 mat-menu-item
-                *ngFor="let siteItem of sites$ | async"
-                (click)="changeSite(siteItem)">
-                {{siteItem.name}}
+                *ngFor="let projectItem of projects$ | async"
+                (click)="changeProject(projectItem)">
+                {{projectItem.name}}
               </button>
             </mat-menu>
           </div>

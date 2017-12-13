@@ -4,8 +4,8 @@ import { GroupService } from '../../../services/group.service';
 import { UserService } from '../../../services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
-import { SiteService } from '../../../services/site.service';
-import { Site } from '../../../models/site.model';
+import { ProjectService } from '../../../services/project.service';
+import { Project } from '../../../models/project.model';
 import { StringUtils } from '../../../utils/string.utils';
 import { CommunicationService } from '../../../services/communication.service';
 import { WindowMessageTopicEnum } from '../../../enums/window-message-topic.enum';
@@ -13,11 +13,11 @@ import { WindowMessageScopeEnum } from '../../../enums/window-message-scope.enum
 import { showSnackBar } from '../../../utils/material.utils';
 
 @Component({
-  selector: 'std-site-crud',
-  templateUrl: './site-crud.component.html',
-  styleUrls: ['./site-crud.component.scss']
+  selector: 'std-project-crud',
+  templateUrl: './project-crud.component.html',
+  styleUrls: ['./project-crud.component.scss']
 })
-export class SiteCrUDComponent implements OnInit, OnDestroy {
+export class ProjectCrUDComponent implements OnInit, OnDestroy {
 
   @Output() finished = new EventEmitter();
 
@@ -25,7 +25,7 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
   creationRequestPending = false;
   runCreationInBackground = false;
 
-  model = new Site();
+  model = new Project();
 
   blueprints = [];
 
@@ -43,7 +43,7 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
               public snackBar: MatSnackBar,
               public userService: UserService,
               public groupService: GroupService,
-              public siteService: SiteService,
+              public projectService: ProjectService,
               private communicationService: CommunicationService) {
   }
 
@@ -52,9 +52,9 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
     this.loadBlueprints();
 
     const subscriber = (params) => {
-      if (params.siteCode || params.edit) {
-        this.model.code = params.siteCode || params.edit;
-        this.loadSite();
+      if (params.projectCode || params.edit) {
+        this.model.code = params.projectCode || params.edit;
+        this.loadProject();
       }
     };
 
@@ -79,18 +79,18 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
 
   }
 
-  loadSite() {
-    this.siteService
+  loadProject() {
+    this.projectService
       .byId(this.model.code)
-      .subscribe((site) => {
-        this.model = site;
+      .subscribe((project) => {
+        this.model = project;
         this.editMode = true;
         // if (this.blueprints.length) {}
       });
   }
 
   loadBlueprints() {
-    this.siteService
+    this.projectService
       .allBlueprints()
       .subscribe((blueprints) => {
         this.blueprints = blueprints;
@@ -98,7 +98,7 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
       });
   }
 
-  autoSiteCode() {
+  autoProjectCode() {
     this.model.name = StringUtils.capitalizeWords(this.model.name || '');
     this.model.code = ((this.model.name || '')
       .replace(/\s+/g, '-')
@@ -107,48 +107,48 @@ export class SiteCrUDComponent implements OnInit, OnDestroy {
 
   create() {
 
-    const closure = ((instance, router, snackBar, siteCode, siteName) => {
+    const closure = ((instance, router, snackBar, projectCode, projectName) => {
       return () => {
         instance.creationRequestPending = false;
         // if (instance.runCreationInBackground) { } else { }
         // TODO: Go to different place depending on user type?
-        showSnackBar(snackBar, `${siteName} site created successfully.`, 'Site Dashboard')
+        showSnackBar(snackBar, `${projectName} project created successfully.`, 'Project Dashboard')
           .onAction()
           .subscribe(() => {
             if (!instance.runCreationInBackground) {
               instance.done();
             }
-            router.navigate(['/site', siteCode, 'dashboard']);
+            router.navigate(['/project', projectCode, 'dashboard']);
           });
         instance.communicationService.publish(
-          WindowMessageTopicEnum.SITE_CREATED,
+          WindowMessageTopicEnum.PROJECT_CREATED,
           null, WindowMessageScopeEnum.Local);
       };
     })(this, this.router, this.snackBar, this.model.code, this.model.name);
 
     this.creationRequestPending = true;
-    this.siteService
+    this.projectService
       .create(this.model)
       .subscribe(closure);
 
   }
 
-  runSiteCreationInBackground() {
+  runProjectCreationInBackground() {
     this.runCreationInBackground = true;
     this.done();
   }
 
   update() {
-    this.siteService
+    this.projectService
       .update(this.model);
   }
 
   delete() {
-    this.siteService
+    this.projectService
       .delete(this.model)
       .subscribe(() => {
         this.done();
-        showSnackBar(this.snackBar, `${this.model.name} site deleted successfully.`);
+        showSnackBar(this.snackBar, `${this.model.name} project deleted successfully.`);
       });
   }
 

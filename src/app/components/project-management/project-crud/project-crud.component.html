@@ -1,31 +1,31 @@
 <h2>
   <span *ngIf="editMode">Editing &quot;{{model.name}}&quot;</span>
-  <span *ngIf="!editMode">New Site</span>
+  <span *ngIf="!editMode">New Project</span>
 </h2>
 
 <mat-tab-group>
-  <mat-tab i18n-label label="Site Information">
+  <mat-tab i18n-label label="Project Information">
 
     <div class="mat-form full-width">
       <div class="two column ui reset grid">
         <div class="column">
           <mat-form-field [class.no-underline]="editMode">
-            <input matInput i18n-placeholder placeholder="Site Name"
+            <input matInput i18n-placeholder placeholder="Project Name"
                    [readonly]="editMode"
-                   (blur)="autoSiteCode()"
+                   (blur)="autoProjectCode()"
                    [(ngModel)]="model.name"
                    [formControl]="nameFormControl">
             <mat-error i18n *ngIf="nameFormControl.hasError('required')">
-              Site name is <strong>required</strong>
+              Project name is <strong>required</strong>
             </mat-error>
           </mat-form-field>
           <mat-form-field [class.no-underline]="editMode">
-            <input matInput i18n-placeholder placeholder="Site Handle"
+            <input matInput i18n-placeholder placeholder="Project Handle"
                    [readonly]="editMode"
                    [(ngModel)]="model.code"
                    [formControl]="codeFormControl">
             <mat-error i18n *ngIf="codeFormControl.hasError('required')">
-              Site code is <strong>required</strong>
+              Project code is <strong>required</strong>
             </mat-error>
           </mat-form-field>
           <mat-form-field *ngIf="!editMode">
@@ -74,14 +74,14 @@
 
     <button class="ui basic button labeled red icon" [matMenuTriggerFor]="deleteConfirm">
       <i class="trash icon"></i>
-      <ng-container i18n>Delete Site</ng-container>
+      <ng-container i18n>Delete Project</ng-container>
     </button>
     <mat-menu #deleteConfirm="matMenu">
       <button mat-menu-item>Cancel</button>
       <button mat-menu-item [matMenuTriggerFor]="deleteOptions"><i class="warning icon"></i> Confirm Deletion?</button>
     </mat-menu>
     <mat-menu #deleteOptions="matMenu">
-      <button mat-menu-item (click)="delete()">Yes, permanently delete site.</button>
+      <button mat-menu-item (click)="delete()">Yes, permanently delete project.</button>
     </mat-menu>
 
   </div>
@@ -92,11 +92,11 @@
        style="margin-top: -123px; display: block !important;">
     <div class="ui icon header">
       <i class="coffee icon"></i>
-      Creating site, please hold&hellip;
+      Creating project, please hold&hellip;
     </div>
     <div class="actions text-center">
       <div class="pad-bottom">
-        <button class="ui inverted button" (click)="runSiteCreationInBackground()">
+        <button class="ui inverted button" (click)="runProjectCreationInBackground()">
           <i class="checkmark icon"></i>
           <ng-container i18n>Run In Background</ng-container>
         </button>

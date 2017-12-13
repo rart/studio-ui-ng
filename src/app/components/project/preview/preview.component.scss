@@ -51,12 +51,12 @@
     }
   }
   .control,
-  .site-display,
+  .project-display,
   input.address-input {
     margin: 0;
     padding: 0;
   }
-  .site-display,
+  .project-display,
   input.address-input {
     border: none;
     background: transparent;
@@ -85,7 +85,7 @@
     padding-right: .2em;
     box-shadow: inset -1px 1px 3px rgba(#333,.3);
   }
-  .site-display {
+  .project-display {
     height: 100%;
     .icon {
 
@@ -105,7 +105,7 @@
     border: none;
     outline: none;
   }
-  .sitemap-button {
+  .projectmap-button {
     width: 30px;
     flex-basis: 30px;
     border-top-left-radius: 0;

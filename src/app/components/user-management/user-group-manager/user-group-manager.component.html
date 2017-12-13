@@ -1,34 +1,34 @@
 <div class="user-group-manager">
 
   <std-spinner class="loader" *ngIf="!dataFetchComplete">
-    Loading site &amp; group information&hellip;
+    Loading project &amp; group information&hellip;
   </std-spinner>
 
   <div class="ui relaxed divided list" *ngIf="dataFetchComplete">
-    <div class="item" *ngFor="let site of sites">
+    <div class="item" *ngFor="let project of projects">
       <div class="content flex">
         <div class="meta">
-          <h4 class="header">{{site.name || site.code}}</h4>
-          <div class="description">{{site.description || '(No description set.)'}}</div>
+          <h4 class="header">{{project.name || project.code}}</h4>
+          <div class="description">{{project.description || '(No description set.)'}}</div>
         </div>
         <div class="action">
 
-          <div [ngSwitch]="hasSite(site.code)">
+          <div [ngSwitch]="hasProject(project.code)">
             <div *ngSwitchCase="true">
 
               <a class="ui label transition visible"
-                 (click)="removeFromGroup(site, userGroup)"
-                 *ngFor="let userGroup of getUserGroupsBySite(site)">
+                 (click)="removeFromGroup(project, userGroup)"
+                 *ngFor="let userGroup of getUserGroupsByProject(project)">
                 {{userGroup.name}} <i class="delete icon"></i>
               </a>
-              <ng-container *ngIf="notAMemberGroupsBySite[site.code].length">
+              <ng-container *ngIf="notAMemberGroupsByProject[project.code].length">
                 <button class="ui basic green mini icon button" [matMenuTriggerFor]="appMenu">
                   <i class="icon add"></i>
                 </button>
                 <mat-menu #appMenu="matMenu">
                   <button mat-menu-item
-                          *ngFor="let group of notAMemberGroupsBySite[site.code]"
-                          (click)="addToGroup(site, group)">{{group.name}}</button>
+                          *ngFor="let group of notAMemberGroupsByProject[project.code]"
+                          (click)="addToGroup(project, group)">{{group.name}}</button>
                 </mat-menu>
               </ng-container>
 
@@ -40,7 +40,7 @@
                 <i class="icon add"></i> <ng-container i18n>Add to role</ng-container>
               </button>
               <mat-menu #appMenu="matMenu">
-                <button mat-menu-item *ngFor="let group of site.groups" (click)="addToGroup(site, group)">{{group.name}}</button>
+                <button mat-menu-item *ngFor="let group of project.groups" (click)="addToGroup(project, group)">{{group.name}}</button>
               </mat-menu>
 
             </div>

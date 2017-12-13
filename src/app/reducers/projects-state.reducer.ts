@@ -1,13 +1,13 @@
 import { AnyAction, combineReducers, Reducer } from 'redux';
 
 import { StoreActionsEnum } from '../enums/actions.enum';
-import { SiteStateContainer, Workspace } from '../classes/app-state.interface';
+import { ProjectStateContainer, Workspace } from '../classes/app-state.interface';
 import { previewTabs } from './preview-tabs.reducer';
 import { selectedItems } from './selected-items.reducer';
 import { expandedPanels } from './expanded-panels.reducer';
 import { expandedPaths } from './expanded-paths.reducer';
 import { isNullOrUndefined } from 'util';
-import { createSiteState } from '../utils/state.utils';
+import { createProjectState } from '../utils/state.utils';
 
 const reducer = combineReducers<Workspace>({
   previewTabs,
@@ -16,26 +16,26 @@ const reducer = combineReducers<Workspace>({
   expandedPaths
 });
 
-export const sitesState: Reducer<SiteStateContainer> =
+export const projectsState: Reducer<ProjectStateContainer> =
   (state = {}, action: AnyAction) => {
     switch (action.type) {
 
-      case StoreActionsEnum.SELECT_SITE:
-        return createSiteStateIfUndefined(state, action.code);
+      case StoreActionsEnum.SELECT_PROJECT:
+        return createProjectStateIfUndefined(state, action.code);
 
       default: {
         let
           hasChanged = false,
-          next = (action.siteCode ? [action.siteCode] : Object.keys(state))
-            .reduce((nextState: SiteStateContainer, siteCode: string) => {
-              let prevStateForSite = state[siteCode];
-              let nextStateForSite = reducer(prevStateForSite, action);
-              if (typeof nextStateForSite === 'undefined') {
+          next = (action.projectCode ? [action.projectCode] : Object.keys(state))
+            .reduce((nextState: ProjectStateContainer, projectCode: string) => {
+              let prevStateForProject = state[projectCode];
+              let nextStateForProject = reducer(prevStateForProject, action);
+              if (typeof nextStateForProject === 'undefined') {
                 throw new Error(
-                  getUndefinedStateErrorMessage(siteCode, action));
+                  getUndefinedStateErrorMessage(projectCode, action));
               }
-              nextState[siteCode] = nextStateForSite;
-              hasChanged = hasChanged || nextStateForSite !== prevStateForSite;
+              nextState[projectCode] = nextStateForProject;
+              hasChanged = hasChanged || nextStateForProject !== prevStateForProject;
               return nextState;
             }, {});
         return hasChanged ? next : state;
@@ -44,11 +44,11 @@ export const sitesState: Reducer<SiteStateContainer> =
     }
   };
 
-export function createSiteStateIfUndefined(state, siteCode) {
-  if (isNullOrUndefined(state[siteCode])) {
+export function createProjectStateIfUndefined(state, projectCode) {
+  if (isNullOrUndefined(state[projectCode])) {
     return {
       ...state,
-      [siteCode]: createSiteState({})
+      [projectCode]: createProjectState({})
     };
   }
   return state;
@@ -65,12 +65,12 @@ function getUndefinedStateErrorMessage(key, action) {
 }
 
 // switch (action.type) {
-//   case StoreActionsEnum.SELECT_SITE:
+//   case StoreActionsEnum.SELECT_PROJECT:
 //     let
 //       nextState = state,
-//       siteCode = action.code;
-//     if (siteCode) {
-//       nextState = createSiteStateIfUndefined(nextState, siteCode);
+//       projectCode = action.code;
+//     if (projectCode) {
+//       nextState = createProjectStateIfUndefined(nextState, projectCode);
 //       nextState[action.code] = reducer(nextState[action.code], action);
 //     }
 //     return nextState;

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SiteEpics } from './site.epic';
+import { ProjectEpics } from './project.epic';
 import { combineEpics } from 'redux-observable';
 import { switchMap } from 'rxjs/operators';
 import { isArray } from 'util';
@@ -17,14 +17,14 @@ export class RootEpic {
     };
   }
 
-  constructor(private siteEpic: SiteEpics,
+  constructor(private projectEpic: ProjectEpics,
               private interceptor: InterceptorEpic) {
 
   }
 
   epic() {
     return combineEpics(...[
-      ...this.siteEpic.epics(),
+      ...this.projectEpic.epics(),
       ...this.interceptor.epics()
     ]);
   }

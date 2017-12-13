@@ -3,8 +3,8 @@ import { StoreActionsEnum } from '../enums/actions.enum';
 import { combineReducers } from 'redux';
 import { user } from './user.reducer';
 import { entities } from './entities.reducer';
-import { sitesState } from './sites-state.reducer';
-import { activeSiteCode } from './active-site-code.reducer';
+import { projectsState } from './projects-state.reducer';
+import { activeProjectCode } from './active-project-code.reducer';
 import { createPreviewTab, createPreviewTabStateContainer } from '../utils/state.utils';
 
 const foo = (state = null) => state;
@@ -13,13 +13,13 @@ export const reducerMap = {
 
   user,
   entities,
-  sitesState,
-  activeSiteCode,
+  projectsState,
+  activeProjectCode,
 
   // "virtual" props handled by root reducer need
   // a foo reducer for redux core not to complain
   // since the combined reducer runs first
-  siteRef: foo,
+  projectRef: foo,
   workspaceRef: foo
 
 };
@@ -29,7 +29,7 @@ const appReducer = combineReducers<AppState>(reducerMap);
 export function rootReducer(state = {} as AppState, action) {
 
   let nextState = appReducer(state, action);
-  let siteCodeActive = nextState.activeSiteCode;
+  let projectCodeActive = nextState.activeProjectCode;
 
   switch (action.type) {
 
@@ -45,9 +45,9 @@ export function rootReducer(state = {} as AppState, action) {
     case StoreActionsEnum.CLOSE_TAB:
     case StoreActionsEnum.OPEN_TAB_BACKGROUND:
     case StoreActionsEnum.SELECT_TAB:
-      return (siteCodeActive)
+      return (projectCodeActive)
         ? spreadRoot(nextState, {
-          workspaceRef: nextState.sitesState[siteCodeActive]
+          workspaceRef: nextState.projectsState[projectCodeActive]
         })
         : nextState;
 
@@ -55,11 +55,11 @@ export function rootReducer(state = {} as AppState, action) {
     case StoreActionsEnum.EXPAND_PANELS:
     case StoreActionsEnum.COLLAPSE_PANEL:
     case StoreActionsEnum.COLLAPSE_PANELS: {
-      return (siteCodeActive)
+      return (projectCodeActive)
         ? spreadRoot(nextState, {
           workspaceRef: {
             ...nextState.workspaceRef,
-            expandedPanels: nextState.sitesState[siteCodeActive].expandedPanels
+            expandedPanels: nextState.projectsState[projectCodeActive].expandedPanels
           }
         })
         : nextState;
@@ -69,36 +69,36 @@ export function rootReducer(state = {} as AppState, action) {
     case StoreActionsEnum.SELECT_ITEMS:
     case StoreActionsEnum.DESELECT_ITEM:
     case StoreActionsEnum.DESELECT_ITEMS:
-      return (siteCodeActive)
+      return (projectCodeActive)
         ? spreadRoot(nextState, {
           workspaceRef: {
             ...nextState.workspaceRef,
-            selectedItems: nextState.sitesState[siteCodeActive].selectedItems
+            selectedItems: nextState.projectsState[projectCodeActive].selectedItems
           }
         })
         : nextState;
 
-    case StoreActionsEnum.SITES_FETCHED: {
-      return (siteCodeActive)
+    case StoreActionsEnum.PROJECTS_FETCHED: {
+      return (projectCodeActive)
         ? spreadRoot(nextState, {
-          siteRef: action.sites.find(site => site.code === siteCodeActive),
-          workspaceRef: nextState.sitesState[siteCodeActive]
+          projectRef: action.projects.find(project => project.code === projectCodeActive),
+          workspaceRef: nextState.projectsState[projectCodeActive]
         })
         : nextState;
 
     }
 
-    case StoreActionsEnum.SELECT_SITE: {
+    case StoreActionsEnum.SELECT_PROJECT: {
       let newActiveCode = action.code;
       return spreadRoot(nextState, {
-        siteRef: nextState.entities.site.byId[newActiveCode],
-        workspaceRef: nextState.sitesState[newActiveCode]
+        projectRef: nextState.entities.project.byId[newActiveCode],
+        workspaceRef: nextState.projectsState[newActiveCode]
       });
     }
 
-    case StoreActionsEnum.DESELECT_SITE: {
+    case StoreActionsEnum.DESELECT_PROJECT: {
       spreadRoot(nextState, {
-        siteRef: null,
+        projectRef: null,
         workspaceRef: null
       });
       break;

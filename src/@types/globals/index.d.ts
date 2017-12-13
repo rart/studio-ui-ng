@@ -19,11 +19,11 @@ declare type StudioAPIVersion = 'v3' | 'v4';
 // declare type StudioModelType =
 //   typeof Asset |
 //   typeof User |
-//   typeof Site |
+//   typeof Project |
 //   typeof Group;
 //
 // declare type StudioModel =
 //   Asset |
 //   User |
-//   Site |
+//   Project |
 //   Group;

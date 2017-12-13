@@ -185,33 +185,33 @@ export class UserCrUDComponent implements OnInit {
     this.userGroupsHasChanges = data.hasChanges;
     let change = data.change;
     if (ChangeType.Add === change.type) {
-      this.addToGroup(change.value.siteCode, change.value.groupName);
+      this.addToGroup(change.value.projectCode, change.value.groupName);
     } else /* if (ChangeType.Remove === change.type) */ {
-      this.removeFromGroup(change.value.siteCode, change.value.groupName);
+      this.removeFromGroup(change.value.projectCode, change.value.groupName);
     }
   }
 
-  addToGroup(siteCode, groupName) {
+  addToGroup(projectCode, groupName) {
     this.groupService
-      .addUser({ username: this.model.username, siteCode, groupName })
+      .addUser({ username: this.model.username, projectCode, groupName })
       .subscribe(() =>
         showSnackBar(this.snackBar, `${this.fullName()} added to ${groupName}`, 'Undo', { duration: 10000 })
           .onAction()
           .subscribe(() => {
-            this.groupChangeRollback = { type: ChangeType.Add, value: { siteCode, groupName } };
-            this.removeFromGroup(siteCode, groupName);
+            this.groupChangeRollback = { type: ChangeType.Add, value: { projectCode, groupName } };
+            this.removeFromGroup(projectCode, groupName);
           }));
   }
 
-  removeFromGroup(siteCode, groupName) {
+  removeFromGroup(projectCode, groupName) {
     this.groupService
-      .removeUser({ username: this.model.username, siteCode, groupName })
+      .removeUser({ username: this.model.username, projectCode, groupName })
       .subscribe(() =>
         showSnackBar(this.snackBar, `${this.fullName()} removed from ${groupName}`, 'Undo', { duration: 10000 })
           .onAction()
           .subscribe(() => {
-            this.groupChangeRollback = { type: ChangeType.Remove, value: { siteCode, groupName } };
-            this.addToGroup(siteCode, groupName);
+            this.groupChangeRollback = { type: ChangeType.Remove, value: { projectCode, groupName } };
+            this.addToGroup(projectCode, groupName);
           }));
   }
 

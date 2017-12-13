@@ -11,9 +11,9 @@
     {
       "iconClass": "fa fa-laptop",
       "iconText": "",
-      "label": "Sites",
+      "label": "Projects",
       "config": {
-        "href": "/sites"
+        "href": "/projects"
       }
     },
     {
@@ -21,11 +21,11 @@
       "iconText": "",
       "label": "Help",
       "config": {
-        "href": "/site/launcher/preview"
+        "href": "/project/launcher/preview"
       }
     }
   ],
-  "site": {
+  "project": {
     "nav": [
       {
         "type": "link",
@@ -71,7 +71,7 @@
       },
       {
         "type": "container",
-        "label": "Site Assets",
+        "label": "Assets",
         "iconClass": "fa fa-file-text-o",
         "component": "wcm-root-folder",
         "config": {
@@ -86,7 +86,7 @@
         "component": "wcm-root-folder",
         "config": {
           "showRoot": false,
-          "path": "/site/components"
+          "path": "/project/components"
         }
       },
       {

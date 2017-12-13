@@ -81,8 +81,8 @@ export class CodeEditorComponent implements OnInit, OnChanges, OnDestroy, AfterV
       // setTimeout(() => this.editor.resize());
       setTimeout(() => this.editable && this.editor.focus());
     }
-    if (this.lastFileFetched !== `${asset.siteCode}:${asset.id}`) {
-      this.lastFileFetched = `${asset.siteCode}:${asset.id}`;
+    if (this.lastFileFetched !== `${asset.projectCode}:${asset.id}`) {
+      this.lastFileFetched = `${asset.projectCode}:${asset.id}`;
       if (this.contentFetchSub) {
         this.contentFetchSub.unsubscribe();
       }
@@ -97,7 +97,7 @@ export class CodeEditorComponent implements OnInit, OnChanges, OnDestroy, AfterV
         this.editor.option('editable', false);
       }
       let contentRequest$ = this.contentService
-        .content(asset.siteCode, asset.id);
+        .content(asset.projectCode, asset.id);
       this.contentFetchSub = ((this.editor && !shouldReplaceEditor)
         ? contentRequest$.pipe(
           map(data => data.content)

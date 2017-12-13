@@ -3,43 +3,43 @@ import { SignedAction } from '../classes/signed-action.interface';
 import { StoreActionsEnum } from '../enums/actions.enum';
 import { AppState } from '../classes/app-state.interface';
 
-const affects: Array<keyof AppState> = ['sitesState'];
+const affects: Array<keyof AppState> = ['projectsState'];
 
 export class SelectedItemsActions {
   static affects = affects;
 
-  static select(id: string, siteCode: string): SignedAction {
+  static select(id: string, projectCode: string): SignedAction {
     return {
       type: StoreActionsEnum.SELECT_ITEM,
       affects,
-      siteCode,
+      projectCode,
       id
     };
   }
 
-  static deselect(id: string, siteCode: string): SignedAction {
+  static deselect(id: string, projectCode: string): SignedAction {
     return {
       type: StoreActionsEnum.DESELECT_ITEM,
       affects,
-      siteCode,
+      projectCode,
       id
     };
   }
 
-  static selectMany(ids: string[], siteCode: string): SignedAction {
+  static selectMany(ids: string[], projectCode: string): SignedAction {
     return {
       type: StoreActionsEnum.SELECT_ITEMS,
       affects,
-      siteCode,
+      projectCode,
       ids
     };
   }
 
-  static deselectMany(ids: string[], siteCode: string): SignedAction {
+  static deselectMany(ids: string[], projectCode: string): SignedAction {
     return {
       type: StoreActionsEnum.DESELECT_ITEMS,
       affects,
-      siteCode,
+      projectCode,
       ids
     };
   }

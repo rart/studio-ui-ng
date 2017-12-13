@@ -2,49 +2,49 @@ import { AnyAction, Reducer } from 'redux';
 
 import { StoreActionsEnum } from '../enums/actions.enum';
 import { StateEntity } from '../classes/app-state.interface';
-import { Site } from '../models/site.model';
+import { Project } from '../models/project.model';
 import { createEntityState, createLookupTable } from '../utils/state.utils';
 
-export const site: Reducer<StateEntity<Site>> =
-  (state = createEntityState({}), action: AnyAction): StateEntity<Site> => {
+export const project: Reducer<StateEntity<Project>> =
+  (state = createEntityState({}), action: AnyAction): StateEntity<Project> => {
     switch (action.type) {
 
-      case StoreActionsEnum.FETCH_SITES:
+      case StoreActionsEnum.FETCH_PROJECTS:
         return createEntityState({
           loading: true,
           byId: state.byId
         });
 
-      case StoreActionsEnum.SITES_FETCHED:
+      case StoreActionsEnum.PROJECTS_FETCHED:
         return createEntityState({
-          byId: createLookupTable(action.sites, 'code')
+          byId: createLookupTable(action.projects, 'code')
         });
 
-      case StoreActionsEnum.SITES_FETCH_ERROR:
+      case StoreActionsEnum.PROJECTS_FETCH_ERROR:
         return {
           ...state,
           error: new Error('')
         };
 
-      case StoreActionsEnum.FETCH_SITE:
+      case StoreActionsEnum.FETCH_PROJECT:
         return state;
 
-      case StoreActionsEnum.CREATE_SITE:
+      case StoreActionsEnum.CREATE_PROJECT:
         return state;
 
-      case StoreActionsEnum.UPDATE_SITE:
+      case StoreActionsEnum.UPDATE_PROJECT:
         return state;
 
-      case StoreActionsEnum.DELETE_SITE:
+      case StoreActionsEnum.DELETE_PROJECT:
         return state;
 
-      case StoreActionsEnum.SITE_CREATED:
+      case StoreActionsEnum.PROJECT_CREATED:
         return state;
 
-      case StoreActionsEnum.SITE_UPDATED:
+      case StoreActionsEnum.PROJECT_UPDATED:
         return state;
 
-      case StoreActionsEnum.SITE_DELETED:
+      case StoreActionsEnum.PROJECT_DELETED:
         return state;
 
       default:

@@ -3,7 +3,7 @@ import { StateEntity } from './classes/app-state.interface';
 import { select } from '@angular-redux/store';
 import { Observable } from 'rxjs/Observable';
 import { isNullOrUndefined } from 'util';
-import { Site } from './models/site.model';
+import { Project } from './models/project.model';
 import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';
 
@@ -18,14 +18,14 @@ export class AppComponent implements OnInit {
   @HostBinding('class.sidebar-collapsed')
   sidebarCollapsed = false;
 
-  @select(['entities', 'site'])
-  sitesState$: Observable<StateEntity<Site>>;
+  @select(['entities', 'project'])
+  projectsState$: Observable<StateEntity<Project>>;
 
   preRequisitesPassed = false;
   preRequisitesPassed$ = new Subject();
 
   ngOnInit() {
-    this.sitesState$
+    this.projectsState$
       .pipe(takeUntil(this.preRequisitesPassed$))
       .subscribe(data => {
         if (this.preRequisitesPassed = !isNullOrUndefined(data.byId)) {

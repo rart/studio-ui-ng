@@ -1,27 +1,27 @@
 import { Routes, RouterModule, CanActivate, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 
 import { AuthGuard } from './auth.guard';
-import { SiteResolver } from './services/site.resolver';
-import { SitesResolver } from './services/sites.resolver';
+import { ProjectResolver } from './services/project.resolver';
+import { ProjectsResolver } from './services/projects.resolver';
 
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { SiteDashboardComponent } from './components/site/site-dashboard/site-dashboard.component';
+import { ProjectDashboardComponent } from './components/project/project-dashboard/project-dashboard.component';
 import { UserManagementComponent } from './components/user-management/user-management.component';
 import { NotImplementedComponent } from './components/not-implemented/not-implemented.component';
 import { UserProfileComponent } from './components/user-management/user-profile/user-profile.component';
-import { SiteComponent } from './components/site/site.component';
-import { SiteManagementComponent } from './components/site-management/site-management.component';
-import { PreviewComponent } from './components/site/preview/preview.component';
+import { ProjectComponent } from './components/project/project.component';
+import { ProjectManagementComponent } from './components/project-management/project-management.component';
+import { PreviewComponent } from './components/project/preview/preview.component';
 import { UserCrUDComponent } from './components/user-management/user-crud/user-crud.component';
 import { WorkflowStatesComponent } from './components/workflow-states/workflow-states.component';
 
 // Not having as a route requires for it to be added as entry component on AppModule
-// import {SiteCrUDComponent} from './components/site-management/site-crud/site-crud.component';
+// import {ProjectCrUDComponent} from './components/project-management/project-crud/project-crud.component';
 
 const routes: Routes = [
   {
     path: '',
-    resolve: { sites: SitesResolver },
+    resolve: { projects: ProjectsResolver },
     data: { title: 'Crafter Studio' },
     canActivate: [AuthGuard],
     children: [
@@ -44,16 +44,16 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'sites',
-        component: SiteManagementComponent,
+        path: 'projects',
+        component: ProjectManagementComponent,
         children: [
           {
             path: 'create',
-            component: SiteManagementComponent
+            component: ProjectManagementComponent
           },
           {
-            path: ':siteCode',
-            component: SiteManagementComponent
+            path: ':projectCode',
+            component: ProjectManagementComponent
           }
         ]
       },
@@ -66,16 +66,16 @@ const routes: Routes = [
         component: UserProfileComponent
       },
       {
-        path: 'site/:site',
-        resolve: { site: SiteResolver },
+        path: 'project/:project',
+        resolve: { project: ProjectResolver },
         children: [
           {
             path: '',
-            component: SiteComponent
+            component: ProjectComponent
           },
           {
             path: 'dashboard',
-            component: SiteDashboardComponent
+            component: ProjectDashboardComponent
           },
           {
             path: 'preview',

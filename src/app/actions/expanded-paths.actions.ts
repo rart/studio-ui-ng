@@ -2,7 +2,7 @@ import { AppState } from '../classes/app-state.interface';
 import { SignedAction } from '../classes/signed-action.interface';
 import { StoreActionsEnum } from '../enums/actions.enum';
 
-const affects: Array<keyof AppState> = ['sitesState'];
+const affects: Array<keyof AppState> = ['projectsState'];
 
 export class ExpandedPathsActions {
   static affects = affects;

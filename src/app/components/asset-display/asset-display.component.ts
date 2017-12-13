@@ -208,7 +208,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
       asset = this.asset,
       tab = createPreviewTabCore({
         url: asset.url,
-        siteCode: asset.siteCode,
+        projectCode: asset.projectCode,
         title: asset.label,
         assetId: asset.id
       });
@@ -218,8 +218,8 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
   @dispatch()
   checkedStateChange(checked) {
     return checked
-      ? SelectedItemsActions.select(this.asset.id, this.asset.siteCode)
-      : SelectedItemsActions.deselect(this.asset.id, this.asset.siteCode);
+      ? SelectedItemsActions.select(this.asset.id, this.asset.projectCode)
+      : SelectedItemsActions.deselect(this.asset.id, this.asset.projectCode);
   }
 
   menuItemSelected(action) {
@@ -241,7 +241,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
         let asset = this.asset;
         // this.dispatch(PreviewTabsActions.edit({
         //   url: asset.url,
-        //   siteCode: asset.siteCode,
+        //   projectCode: asset.projectCode,
         //   asset
         // }));
         break;

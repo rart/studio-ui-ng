@@ -31,7 +31,7 @@ const sortByFieldMap = {
 };
 
 const mix = (query, mixin = {}) => Object.assign({
-  site: query.siteCode,
+  site: query.projectCode,
   sort: query.sortBy ? sortByFieldMap[query.sortBy] : 'eventDate',
   ascending: (query.sortDirection === 'ASC'),
   // TODO: check cache is not a problem just getting the buster at initialization
@@ -63,7 +63,7 @@ export class WorkflowService {
   }
 
   fetchPendingApproval(query: {
-    siteCode,
+    projectCode,
     sortBy?,
     sortDirection?: 'ASC' | 'DESC',
     includeInProgress?
@@ -75,7 +75,7 @@ export class WorkflowService {
   }
 
   fetchScheduled(query: {
-    siteCode,
+    projectCode,
     sortBy?,
     sortDirection?: 'ASC' | 'DESC',
     filterType?: 'ALL' | 'PAGES' | 'COMPONENTS' | 'DOCUMENTS'
@@ -87,7 +87,7 @@ export class WorkflowService {
   }
 
   fetchDeploymentHistory(query: {
-    siteCode,
+    projectCode,
     num?: number,
     days?: number,
     sortBy?: string,
@@ -103,7 +103,7 @@ export class WorkflowService {
   }
 
   fetchUserActivities(query: {
-    siteCode,
+    projectCode,
     username?: string,
     num?: number,
     sortBy?: string,
@@ -143,17 +143,17 @@ export class WorkflowService {
     ];
   }
 
-  assetStatusReport(siteCode, state) {
+  assetStatusReport(projectCode, state) {
     return this.http.get(
       `${content}/get-item-states.json`,
-      { site: siteCode, state })
+      { site: projectCode, state })
       .pipe(
-        map(response => <{ objectId, path, site, state, systemProcessing }[]>response.items),
+        map(response => <{ objectId, path, project, state, systemProcessing }[]>response.items),
         map(items => items.map(item => ({
           id: item.objectId,
           asset: {
             id: item.path,
-            siteCode: item.site,
+            projectCode: item.project,
             workflowStatus: item.state
           },
           processing: item.systemProcessing
@@ -161,18 +161,18 @@ export class WorkflowService {
       );
   }
 
-  setAssetStatus(siteCode, assetId, assetWorkflowStatus, processing) {
+  setAssetStatus(projectCode, assetId, assetWorkflowStatus, processing) {
     let entity = {
       done: true,
       id: assetId,
-      siteCode: siteCode,
+      projectCode: projectCode,
       processing: processing,
       workflowStatus: assetWorkflowStatus
     };
     return this.http.post(
       `${content}/set-item-state.json`, null, {
         params: {
-          site: siteCode,
+          site: projectCode,
           path: assetId,
           state: assetWorkflowStatus,
           systemprocessing: processing,
@@ -182,7 +182,7 @@ export class WorkflowService {
       .pipe(
         map((resp: { result: string }) => {
           if (resp.result.toLowerCase() === 'success') {
-            return <PostResponse<{ id, siteCode, processing, workflowStatus }>>{
+            return <PostResponse<{ id, projectCode, processing, workflowStatus }>>{
               responseCode: ResponseCodesEnum.OK,
               entity
             };

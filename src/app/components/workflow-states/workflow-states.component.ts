@@ -12,7 +12,7 @@ import { WorkflowService } from '../../services/workflow.service';
 import { ActivatedRoute } from '@angular/router';
 import { WorkflowStatusEnum } from '../../enums/workflow-status.enum';
 import { MatSnackBar } from '@angular/material';
-import { createLocalPagination$} from '../../app.utils';
+import { createLocalPagination$ } from '../../app.utils';
 import { ComponentBase } from '../../classes/component-base.class';
 import { PagerConfig } from '../../classes/pager-config.interface';
 import { showSnackBar } from '../../utils/material.utils';
@@ -24,7 +24,7 @@ import { showSnackBar } from '../../utils/material.utils';
 })
 export class WorkflowStatesComponent extends ComponentBase implements OnInit, OnDestroy {
 
-  site;
+  project;
   items;
   selected = {};
   filterQuery = new FormControl('');
@@ -54,7 +54,7 @@ export class WorkflowStatesComponent extends ComponentBase implements OnInit, On
   ngOnInit() {
 
     this.route.data
-      .subscribe(data => this.site = data.site);
+      .subscribe(data => this.project = data.project);
 
     this.refresh();
 
@@ -69,8 +69,9 @@ export class WorkflowStatesComponent extends ComponentBase implements OnInit, On
       filterFn: (item, query) => item.asset.id.includes(query),
 
       source$: this.workflowService
-        .assetStatusReport(this.site.code, 'ALL')
+        .assetStatusReport(this.project.code, 'ALL')
         .pipe(
+          shareReplay(1),
           tap(items => {
             items.forEach(item => {
               this.selected[item.id] = (item.id in this.selected)
@@ -107,7 +108,7 @@ export class WorkflowStatesComponent extends ComponentBase implements OnInit, On
 
   itemStatusChanged(i) {
     return this.workflowService
-      .setAssetStatus(this.site.code, i.asset.id, i.asset.workflowStatus, i.processing)
+      .setAssetStatus(this.project.code, i.asset.id, i.asset.workflowStatus, i.processing)
       .subscribe(() => {
         showSnackBar(this.snackBar, 'Status set successfully.');
       });
@@ -132,7 +133,7 @@ export class WorkflowStatesComponent extends ComponentBase implements OnInit, On
           accumulator = [];
 
         items = items
-          // Based on the selection, get the full item data from the previous fetch
+        // Based on the selection, get the full item data from the previous fetch
           .filter((item) => selectedIds.includes(item.id));
 
         items
@@ -143,7 +144,7 @@ export class WorkflowStatesComponent extends ComponentBase implements OnInit, On
             // Gather all the observable requests to services to be able to merge them later
             processes.push(
               this.workflowService.setAssetStatus(
-                item.asset.siteCode,
+                item.asset.projectCode,
                 item.asset.id,
                 newWorkflowState,
                 item.processing).pipe(shareReplay(1)));
@@ -162,7 +163,8 @@ export class WorkflowStatesComponent extends ComponentBase implements OnInit, On
           );
 
         this.bulkProcessingItems.subscribe({
-          next(completionReport) { },
+          next(completionReport) {
+          },
           error: (e) => console.error('An error has occurred', e),
           complete: () => {
             this.bulkProcessing = false;
