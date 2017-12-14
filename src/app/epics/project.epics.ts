@@ -64,58 +64,11 @@ export class ProjectEpics {
 
   epics() {
     return [
-      (action$) => this.all(action$),
-      (action$) => this.create(action$),
-      (action$) => this.update(action$),
-      (action$) => this.delete(action$)
+      (action$, store, dependencies) => this.all(action$, store, dependencies),
+      (action$, store, dependencies) => this.create(action$, store, dependencies),
+      (action$, store, dependencies) => this.update(action$, store, dependencies),
+      (action$, store, dependencies) => this.delete(action$, store, dependencies)
     ];
   }
-
-  // private select = RootEpic.createEpic(
-  //   StoreActionsEnum.SELECT_PROJECT,
-  //   (project: Project) => {
-  //
-  //   });
-
-  // private all(action$) {
-  //   console.log(action$);
-  //   return action$.ofType(StoreActionsEnum.FETCH_PROJECTS).pipe(
-  //     switchMap(value => {
-  //       return this.projectService.all().pipe(
-  //         map(this.projectActions.fetched)
-  //       );
-  //     })
-  //   );
-  // }
-
-  // private create(action$) {
-  //   return action$.ofType(StoreActionsEnum.CREATE_PROJECT).pipe(
-  //     switchMap((project: Project) => {
-  //       return this.projectService.create(project).pipe(
-  //         map(postResponse => this.projectActions.created(postResponse.entity))
-  //       );
-  //     })
-  //   );
-  // }
-
-  // private update(action$) {
-  //   return action$.ofType(StoreActionsEnum.UPDATE_PROJECT).pipe(
-  //     switchMap((project: Project) => {
-  //       return this.projectService.update(project).pipe(
-  //         map(postResponse => this.projectActions.created(postResponse.entity))
-  //       );
-  //     })
-  //   );
-  // }
-
-  // private delete(action$) {
-  //   return action$.ofType(StoreActionsEnum.DELETE_PROJECT).pipe(
-  //     switchMap((project: Project) => {
-  //       return this.projectService.delete(project).pipe(
-  //         map(postResponse => this.projectActions.deleted(postResponse.entity))
-  //       );
-  //     })
-  //   );
-  // }
 
 }

@@ -9,7 +9,7 @@ import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { Asset } from '../models/asset.model';
 
 @Injectable()
-export class InterceptorEpic {
+export class InterceptorEpics {
 
   constructor(private router: Router,
               private route: ActivatedRoute) {
@@ -28,7 +28,7 @@ export class InterceptorEpic {
         .pipe(ignoreElements());
     });
 
-  private editAsset(action$) {
+  private editAsset(action$, store, dependencies) {
     return action$.ofType(StoreActionsEnum.EDIT_ASSET).pipe(
       switchMap((asset: Asset) => {
         let router = this.router;
@@ -44,8 +44,8 @@ export class InterceptorEpic {
 
   epics() {
     return [
-      (action$) => this.navigation(action$),
-      (action$) => this.editAsset(action$)
+      (action$, store, dependencies) => this.navigation(action$, store, dependencies),
+      (action$, store, dependencies) => this.editAsset(action$, store, dependencies)
     ];
   }
 

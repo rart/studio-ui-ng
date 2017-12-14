@@ -32,7 +32,7 @@ export const initialState: AppState = {
         }
       },
       selectedItems: {
-        '/': true
+        '/site/website/index.xml': true
       },
       expandedPanels: {
         'pending.panel.pages': true,

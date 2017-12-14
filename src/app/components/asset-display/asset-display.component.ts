@@ -19,7 +19,7 @@ import { PreviewTabsActions } from '../../actions/preview-tabs.actions';
 import { dispatch, NgRedux } from '@angular-redux/store';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { createPreviewTabCore } from '../../utils/state.utils';
-import { tap } from 'rxjs/operators';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'std-asset-display',
@@ -37,8 +37,9 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
     super(store);
   }
 
+  // asset$: Observable<Asset>;
+
   @Input() asset: Asset;
-  // @Input() assetId: Asset;
   @Input() disallowWrap = true;
   @Input() showCheck = false;
   @Input() showIcons = true;

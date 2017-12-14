@@ -1,4 +1,3 @@
-
 <header>
   <div class="flex-grow">
     <h2>{{title}}</h2>
@@ -44,7 +43,9 @@
 
   </div>
 </header>
+
 <section class="bd" [class.spinning]="!collection">
+
   <div class="ui top relatively fixed mini menu">
     <a class="item" [class.disabled]="areAllChecked" (click)="checkAll()">
       <i class="checkmark box icon"></i> All
@@ -60,27 +61,29 @@
       Refresh
     </a>
   </div>
+
   <ng-container
     *ngIf="uiFormat === UI_FORMAT_TABLE"
     [ngTemplateOutlet]="tableHeader">
   </ng-container>
+
   <ng-container [ngSwitch]="type">
     <ng-container *ngSwitchCase="TYPE_CATEGORIZED">
-      <mat-expansion-panel
-        #expPanel class="allow-overflow"
-        [expanded]="expandedStateRef[getPanelKey(entry)]"
-        [disabled]="!entry.children || !entry.children.length"
-        *ngFor="let entry of collection | async">
+      <mat-expansion-panel #expPanel class="allow-overflow"
+                           *ngFor="let assetGroup of collection | async"
+                           [expanded]="expandedStateRef[getPanelKey(assetGroup)]"
+                           [disabled]="assetGroup.ids.length < 1">
+
         <mat-expansion-panel-header
-          (click)="expandedStateChange(entry, expPanel.expanded)"
+          (click)="expandedStateChange(assetGroup, expPanel.expanded)"
           [collapsedHeight]="panelHeaderHeight"
           [expandedHeight]="panelHeaderHeight">
-          {{entry.label}} ({{(entry.children || []).length}})
+          {{assetGroup.label}} ({{(assetGroup.ids || []).length}})
         </mat-expansion-panel-header>
 
         <ng-container
           [ngTemplateOutlet]="(uiFormat === UI_FORMAT_MODERN) ? modernFormatTpl : tableFormatTpl"
-          [ngTemplateOutletContext]="{ $implicit: entry.children }">
+          [ngTemplateOutletContext]="{ $implicit: assetGroup.ids }">
         </ng-container>
 
       </mat-expansion-panel>
@@ -94,25 +97,31 @@
 
     </ng-container>
   </ng-container>
-  <div class="spinner" *ngIf="!collection">
-    <mat-spinner></mat-spinner>
-  </div>
+
+  <std-spinner *ngIf="itemsFetching" class="absolute position cover"></std-spinner>
+
 </section>
-<!--<footer></footer>-->
 
 <ng-template #modernFormatTpl let-items>
-  <div class="ui vertical segment" *ngFor="let item of items">
-      <div class="asset-display">
-        <std-asset-display [asset]="item" [showCheck]="true" [showMenu]="true"></std-asset-display>
-      </div>
-      <div class="stats text-muted" *ngIf="item.lastEditedOn || item.lastEditedBy">
-        Edited
-        <strong title="{{item.lastEditedOn | amDateFormat:'MM/DD/YY h:mm a'}}">
-          {{item.lastEditedOn | amTimeAgo}}
-        </strong>
-        <ng-container  *ngIf="item.lastEditedBy">by <strong>{{item.lastEditedBy.name}}</strong></ng-container>
-      </div>
-      <a class="url" (click)="requestPreview(item)" title="{{item.url}}">{{item.url}}</a>
+  <div class="ui vertical segment" *ngFor="let assetId of items">
+    <div class="asset-display">
+      <std-asset-display [asset]="assets[assetId]" [showCheck]="true" [showMenu]="true"></std-asset-display>
+    </div>
+    <div class="stats text-muted" *ngIf="assets[assetId].lastEditedOn || assets[assetId].lastEditedBy">
+      Edited
+      <strong title="{{assets[assetId].lastEditedOn | amDateFormat:'MM/DD/YY h:mm a'}}">
+        {{assets[assetId].lastEditedOn | amTimeAgo}}
+      </strong>
+      <ng-container *ngIf="assets[assetId].lastEditedBy">
+        by <strong>{{assets[assetId].lastEditedBy.name}}</strong>
+      </ng-container>
+    </div>
+    <std-asset-display
+      displayField="url"
+      [asset]="assets[assetId]"
+      [showIcons]="false"
+      [showCheck]="false"
+      [showMenu]="false"></std-asset-display>
   </div>
 </ng-template>
 
@@ -126,10 +135,18 @@
         <th class="label">
           <div>Name</div>
         </th>
-        <th class="url"><div>URL</div></th>
-        <th class="edit-by"><div>Edit By</div></th>
-        <th class="edit-on"><div>Edit On</div></th>
-        <th class="menu"><div>&nbsp;</div></th>
+        <th class="url">
+          <div>URL</div>
+        </th>
+        <th class="edit-by">
+          <div>Edit By</div>
+        </th>
+        <th class="edit-on">
+          <div>Edit On</div>
+        </th>
+        <th class="menu">
+          <div>&nbsp;</div>
+        </th>
       </tr>
       </thead>
     </table>

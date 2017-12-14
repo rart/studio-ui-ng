@@ -545,6 +545,7 @@ button {
     //filter: blur($blur);
   }
   &.cover,
+  &.take.over,
   &.take-over {
     margin: 0;
     width: 100%;

@@ -4,21 +4,22 @@ import {
 } from '@angular/core';
 import { Asset } from '../../../models/asset.model';
 import { Observable } from 'rxjs/Observable';
-import { WorkflowService } from '../../../services/workflow.service';
+import { WorkflowService, WorkflowServiceResponse } from '../../../services/workflow.service';
 import { Project } from '../../../models/project.model';
 import { Router } from '@angular/router';
-import { WindowMessageScopeEnum } from '../../../enums/window-message-scope.enum';
 import { CommunicationService } from '../../../services/communication.service';
 import { EmbeddedViewDialogComponent } from '../../embedded-view-dialog/embedded-view-dialog.component';
 import { openDialog } from '../../../utils/material.utils';
 import { MatDialog } from '@angular/material';
-import { AppState } from '../../../classes/app-state.interface';
+import { AppState, LookUpTable } from '../../../classes/app-state.interface';
 import { ExpandedPanelsActions } from '../../../actions/expanded-panels.actions';
-import { WindowMessageTopicEnum } from '../../../enums/window-message-topic.enum';
 import { WithNgRedux } from '../../../classes/with-ng-redux.class';
-import { dispatch, NgRedux } from '@angular-redux/store';
+import { dispatch, NgRedux, select } from '@angular-redux/store';
 import { SelectedItemsActions } from '../../../actions/selected-items.actions';
 import { ProjectActions } from '../../../actions/project.actions';
+import { PreviewTabsActions } from '../../../actions/preview-tabs.actions';
+import { createPreviewTabCore } from '../../../utils/state.utils';
+import { AssetActions } from '../../../actions/asset.actions';
 
 type Format = 'modern' | 'table';
 type ItemResponseFormat = 'categorized' | 'simple';
@@ -122,11 +123,11 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
   panelHeaderHeight = '2.5rem';
   type: ItemResponseFormat = 'categorized';
 
-  collection: Observable<Asset[]>;
+  collection: Observable<any[]>;
 
   cachedItemIds: string[] = []; // cache of all the asset ids this dashlet is handling
   cachedPanelKeys: string[] = []; // cache of all panel ids this dashlet is handling
-  contentItems: Asset[] = []; // the list of items TODO: get form state asset store
+  assets: LookUpTable<Asset>; // the list of items TODO: get form state asset store
 
   expandedStateRef = {};
   selectedItemsRef = {};
@@ -143,8 +144,13 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
     includeInProgress: true,
     filterType: 'all',
     username: null,
-    includeLive: true
+    includeLive: true,
+    projectCode: null,
+    status: null
   };
+
+  itemsFetching = true;
+
   dashletMenuMap = {
     'pending': [
       ...optionsMenuCommon,
@@ -173,6 +179,11 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
     ]
   };
 
+  deliveryTableSpace$;
+
+  @select(['entities', 'assets', 'byId'])
+  assets$: Observable<LookUpTable<Asset>>;
+
   private cachePreInitialized = false;
 
   constructor(store: NgRedux<AppState>,
@@ -180,17 +191,28 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
               public dialog: MatDialog,
               private communicationService: CommunicationService,
               private workflowService: WorkflowService,
-              private projectActions: ProjectActions) {
+              private projectActions: ProjectActions,
+              private assetActions: AssetActions,
+              private previewTabsActions: PreviewTabsActions) {
     super(store);
   }
 
   ngOnInit() {
 
     this.query.username = this.state.user.username;
+    this.query.projectCode = this.project.code;
+    this.query.status = this.fetchType;
 
     if (this.fetchType === 'activity') {
       this.type = 'simple';
     }
+
+    this.assets$
+      .pipe(...this.noNullsAndUnSubOps)
+      .subscribe(assets => {
+        this.assets = assets;
+        pretty('RED', 'Asset have been set.');
+      });
 
     // https://stackoverflow.com/questions/40530108/fetch-data-once-with-observables-in-angular-2
     if (!this.collection) {
@@ -203,9 +225,9 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
       .pipe(...this.noNullsAndUnSubOps)
       .subscribe(expandedPanels => this.updateLocalExpandedState(expandedPanels));
 
-    this.store.select(['workspaceRef', 'selectedItemsRef'])
+    this.store.select(['workspaceRef', 'selectedItems'])
       .pipe(...this.noNullsAndUnSubOps)
-      .subscribe(selectedItemsRef => this.updateLocalCheckedState(selectedItemsRef));
+      .subscribe(selectedItems => this.updateLocalCheckedState(selectedItems));
 
   }
 
@@ -220,20 +242,33 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
   }
 
   refresh() {
+    this.itemsFetching = true;
     this.collection = null;
     this.fetch()
-      .subscribe(items => {
-        this.collection = Observable.of(items);
-        this.afterItemsFetched(items);
+      .subscribe(data => {
+        let values;
+        let assets = data.assets;
+        if (this.type === this.TYPE_CATEGORIZED) {
+          values = data.groups;
+        } else {
+          values = assets.map(asset => asset.id);
+        }
+        this.dispatch(this.assetActions.fetchedSome(assets));
+        this.collection = Observable.of(values);
+        this.afterItemsFetched(values);
+        this.itemsFetching = false;
       });
   }
 
+  @dispatch()
   requestPreview(item) {
-    this.router.navigate([`/preview`])
-      .then((value) => {
-        setTimeout(() => this.communicationService.publish(
-          WindowMessageTopicEnum.NAV_REQUEST, item, WindowMessageScopeEnum.Local));
-      });
+    return this.previewTabsActions.nav(
+      createPreviewTabCore({
+        url: item.url,
+        assetId: item.id,
+        title: item.label,
+        projectCode: item.projectCode
+      }));
   }
 
   allExpanded() {
@@ -272,8 +307,8 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
   }
 
   @dispatch()
-  expandedStateChange(entry, expanded) {
-    let key = this.getPanelKey(entry);
+  expandedStateChange(group, expanded) {
+    let key = this.getPanelKey(group);
     return expanded
       ? ExpandedPanelsActions.expand(key, this.project.code)
       : ExpandedPanelsActions.collapse(key, this.project.code);
@@ -325,12 +360,10 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
   }
 
   shareCache(collection: Observable<Asset[]>,
-             contentItems: Asset[],
              cachedPanelKeys: string[],
              cachedItemIds: string[]) {
 
     this.collection = collection;
-    this.contentItems = contentItems;
     this.cachedPanelKeys = cachedPanelKeys;
     this.cachedItemIds = cachedItemIds;
 
@@ -362,7 +395,6 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
 
           instance.shareCache(
             this.collection,
-            this.contentItems,
             this.cachedPanelKeys,
             this.cachedItemIds);
 
@@ -375,36 +407,15 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
     this.finished.next();
   }
 
-  getPanelKey(item?) {
-    return `${this.fetchType}.panel.${item ? item.label.toLowerCase() : ''}`;
+  getPanelKey(group) {
+    let key = typeof group !== 'string'
+      ? (<any>group).label.toLowerCase()
+      : group;
+    return `${this.fetchType}.panel.${key}`;
   }
 
-  private fetch(): Observable<Asset[]> {
-    let fn = null;
-    const service = this.workflowService;
-    switch (this.fetchType) {
-      case 'pending': {
-        fn = 'fetchPendingApproval';
-        break;
-      }
-      case 'scheduled': {
-        fn = 'fetchScheduled';
-        break;
-      }
-      case 'activity': {
-        fn = 'fetchUserActivities';
-        break;
-      }
-      case 'published': {
-        fn = 'fetchDeploymentHistory';
-        break;
-      }
-      default: {
-        throw new Error('Unrecognized FetchType specified for ItemListDashletComponent');
-      }
-    }
-    return service[fn](Object.assign({ projectCode: this.project.code }, this.query))
-      .map((data) => data.entries);
+  private fetch() {
+    return this.workflowService.fetch(this.query);
   }
 
   private updateLocalExpandedState(expandedPanels) {
@@ -427,25 +438,26 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
 
   }
 
-  private afterItemsFetched(items) {
+  // values is
+  // - { label, ids }[] when type === categorized
+  // - ids[] when type !== categorized
+  private afterItemsFetched(values) {
 
     this.cachedItemIds = [];
     this.cachedPanelKeys = [];
-    this.contentItems = (this.type === 'categorized')
-      ? items.reduce((nextItems, item) => item.hasChildren
-        ? nextItems.concat(item.children)
-        : nextItems, [])
-      : items;
 
     if (this.type === 'categorized') {
-      // Excludes panels that have no children.
-      items.forEach(item => (item.hasChildren) &&
-        this.cachedPanelKeys.push(this.getPanelKey(item)));
-    }
 
-    this.contentItems.forEach(item => {
-      this.cachedItemIds.push(item.id);
-    });
+      // Excludes panels that have no children so they don't affect
+      // the calculations of whether they are all/none checked
+      values.forEach(group => (group.ids.length > 0) &&
+        this.cachedPanelKeys.push(this.getPanelKey(group)));
+
+      this.cachedItemIds = values.reduce((allIds, group) => allIds.concat(group.ids), []);
+
+    } else {
+      this.cachedItemIds.push(values);
+    }
 
     this.runUIStateChecks();
 

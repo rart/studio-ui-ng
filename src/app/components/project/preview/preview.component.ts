@@ -168,11 +168,19 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
 
   ngOnInit() {
 
+    this.addTearDown(() => clearTimeout(this.guestLoadControlTimeout));
+
     this.projects$ = this.select(['entities', 'projects', 'byId'])
       .pipe(
         map(lookupTable => Object.values(lookupTable)),
         ...this.noNullsAndUnSubOps
       ) as Observable<Project[]>;
+
+    this.select<LookUpTable<Asset>>(['entities', 'assets', 'byId'])
+      .pipe(...this.noNullsAndUnSubOps)
+      .subscribe((lookupTable: LookUpTable<Asset>) => {
+        this.assets = lookupTable;
+      });
 
     let {
       projects$,
@@ -230,12 +238,6 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
           // to the next call stack queue.
           setTimeout(() => this.iFrameComponent.navigate(url));
         }
-      });
-
-    this.select<LookUpTable<Asset>>(['entities', 'assets', 'byId'])
-      .pipe(...this.noNullsAndUnSubOps)
-      .subscribe((lookupTable: LookUpTable<Asset>) => {
-        this.assets = lookupTable;
       });
 
   }
@@ -468,27 +470,35 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
     if (url === '') {
       url = '/';
     }
-    return this.previewTabActions.nav(
-      createPreviewTabCore({
-        url,
-        projectCode: this.activeTab.projectCode
-      }));
+    let tab = this.activeTab;
+    if (tab.url === url) {
+      this.reload();
+      return { type: 'NOOP' };
+    } else {
+      return this.previewTabActions.nav(
+        createPreviewTabCore({ url, projectCode: tab.projectCode }));
+    }
   }
 
   @dispatch()
   changeProject(project) {
-    return this.previewTabActions.nav(createPreviewTabCore({
-      url: PROJECT_HOME_PAGE,
-      projectCode: project.code
-    }));
+    if (project.code === this.project.code) {
+      return { type: 'NOOP' };
+    } else {
+      return this.previewTabActions.nav(createPreviewTabCore({
+        url: PROJECT_HOME_PAGE,
+        projectCode: project.code
+      }));
+    }
   }
 
   @dispatch()
   selectTab(tab) {
-    return this.previewTabActions.select(tab.id);
-    // if (tab !== this.activeTab) {
-    //   this.dispatch(this.previewTabActions.select(tab.id));
-    // }
+    if (tab.id !== this.activeTab.id) {
+      this.dispatch(this.previewTabActions.select(tab.id));
+    } else {
+      return { type: 'NOOP' };
+    }
   }
 
   @dispatch()

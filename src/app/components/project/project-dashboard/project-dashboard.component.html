@@ -2,7 +2,7 @@
   <std-view-title-bar
     i18n-title [title]="!project ? 'Project Dashboard' : project.name + ' Dashboard'"
     icon="fa fa-tachometer">
-    <div class="ui flat basic extremely compact buttons"
+    <div *ngIf="actions.length > 0" class="ui extremely compact flat basic buttons"
          [class.tiny]="actions.length > 3 && actions.length <= 5"
          [class.mini]="actions.length > 5">
       <button class="ui button" *ngFor="let action of actions" (click)="actionSelected(action.action)">{{action.label | i18n}}</button>

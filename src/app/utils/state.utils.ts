@@ -16,11 +16,11 @@ const DEFAULT_TAB_TITLE = '...';
 
 export const createEntityState =
   <T>({
-     order = undefined as any[],
-     error = null as any,
-     loading = false,
-     byId = null as EntityLookupTable<any>
-   }): StateEntity<T> => {
+        order = undefined as any[],
+        error = null as any,
+        loading = false,
+        byId = null as EntityLookupTable<any>
+      }): StateEntity<T> => {
     let obj: StateEntity<any> = {
       error,
       loading,
@@ -35,7 +35,10 @@ export const createEntityState =
 export function createLookupTable<T>(items: T[], idProp = 'id'): EntityLookupTable<T> {
   return items
     .reduce((lookupTable: Object, item: T) =>
-      Object.assign(lookupTable, { [item[idProp]]: item }), {});
+        // in the case of assets, some virtual assets are created by the API (e.g. for the dashlets) to
+        // group assets. If it doesn't have an ID it won't be tracked in the lookup table
+        Object.assign(lookupTable, item[idProp] ? { [item[idProp]]: item } : {}),
+      {});
 }
 
 export const createPreviewTabHistory =

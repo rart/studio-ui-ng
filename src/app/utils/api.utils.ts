@@ -13,6 +13,9 @@ export function parseEntity(classType: StudioModelType,
 }
 
 export class APIParserHelper {
+
+  private static instance = null;
+
   static parserFactory(apiVersion: StudioAPIVersion = environment.apiVersion): APIParser {
     switch (apiVersion) {
       case 'v3':
@@ -22,7 +25,7 @@ export class APIParserHelper {
 
   static parse(classType: StudioModelType,
                JSONObject: any): StudioModel {
-    let parser = parserFactory();
+    let parser = this.instance || (this.instance = parserFactory());
     return parser.parseEntity(classType, JSONObject);
   }
 }

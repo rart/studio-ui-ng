@@ -62,6 +62,10 @@ import { studioRoutes } from './app.routes';
 import { SafeUrlPipe } from './safe-url.pipe';
 import { ComponentHostDirective } from './components/component-host.directive';
 
+// This is just for pretty to be available globally, really.
+import { pretty } from './utils/logging.utils';
+pretty('GREEN', 'Studio Initializing...');
+
 // Studio Components
 import { AppComponent } from './app.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
@@ -95,7 +99,7 @@ import { AppState } from './classes/app-state.interface';
 import { initialState } from './utils/initial-state.utils';
 import { createEpicMiddleware } from 'redux-observable';
 import { RootEpic } from './epics/root.epic';
-import { ProjectEpics } from './epics/project.epic';
+import { ProjectEpics } from './epics/project.epics';
 import { ProjectActions } from './actions/project.actions';
 import { AuthGuard } from './auth.guard';
 import { ProjectsResolver } from './services/projects.resolver';
@@ -103,13 +107,11 @@ import { StoreActionsEnum } from './enums/actions.enum';
 import { rootReducer } from './reducers/root.reducer';
 import { AssetActions } from './actions/asset.actions';
 import { PreviewTabsActions } from './actions/preview-tabs.actions';
-import { InterceptorEpic } from './epics/interceptor.epic';
+import { InterceptorEpics } from './epics/interceptor.epics';
 import { TabBarComponent } from './components/tab-bar/tab-bar.component';
 import { SyntaxHighlighterComponent } from './components/syntax-highlighter/syntax-highlighter.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
-
-import { pretty } from './utils/logging.utils';
-pretty('GREEN', 'Studio Initializing...'); // This is just for pretty to be available globally, really.
+import { AssetEpics } from './epics/asset.epics';
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
@@ -156,6 +158,7 @@ requirejs({
     TabBarComponent,
     SyntaxHighlighterComponent,
     SpinnerComponent
+
   ],
   imports: [
     studioRoutes,
@@ -206,7 +209,8 @@ requirejs({
 
     RootEpic,
     ProjectEpics,
-    InterceptorEpic,
+    InterceptorEpics,
+    AssetEpics,
 
     ProjectActions,
     AssetActions,

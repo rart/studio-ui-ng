@@ -11,6 +11,7 @@ export interface AppState {
   activeProjectCode: string; // The active project's code
   workspaces: Workspaces;
   entities?: Entities; // do not persist
+  deliveryTable?: { [uuid: string]: any }; // This feels like a terrible practice. Need to figure out something...
 }
 
 export interface Workspaces {

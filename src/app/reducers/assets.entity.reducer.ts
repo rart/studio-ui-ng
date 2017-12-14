@@ -4,6 +4,7 @@ import { StoreActionsEnum } from '../enums/actions.enum';
 import { StateEntity } from '../classes/app-state.interface';
 import { createEntityState, createLookupTable } from '../utils/state.utils';
 import { Asset } from '../models/asset.model';
+import { isArray } from 'util';
 
 export const assets: Reducer<StateEntity<Asset>> =
   (state = createEntityState<Asset>({}), action: AnyAction): StateEntity<Asset> => {
@@ -17,15 +18,14 @@ export const assets: Reducer<StateEntity<Asset>> =
 
       case StoreActionsEnum.ASSETS_FETCHED:
         return createEntityState({
-          byId: createLookupTable<Asset>(action.assets)
+          byId: createLookupTable<Asset>(action.payload)
         });
 
       case StoreActionsEnum.SOME_ASSETS_FETCHED:
-        let newIds = action.assets.map(_asset => _asset.id);
         return createEntityState({
           byId: {
             ...state.byId || {},
-            ...createLookupTable(action.assets)
+            ...createLookupTable(action.payload)
           }
         });
 
@@ -36,7 +36,7 @@ export const assets: Reducer<StateEntity<Asset>> =
         return createEntityState({
           byId: {
             ...state.byId,
-            [action.asset.id]: action.asset
+            [action.payload.id]: action.payload
           }
         });
 

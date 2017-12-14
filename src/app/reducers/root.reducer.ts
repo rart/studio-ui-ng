@@ -5,6 +5,8 @@ import { user } from './user.reducer';
 import { entities } from './entities.reducer';
 import { workspaces } from './projects-state.reducer';
 import { activeProjectCode } from './active-project-code.reducer';
+import { isNullOrUndefined } from 'util';
+import { deliveryTable } from './delivery-table.reducer';
 
 const foo = (state = null) => state;
 
@@ -14,6 +16,8 @@ export const reducerMap = {
   entities,
   workspaces,
   activeProjectCode,
+
+  deliveryTable,
 
   // "virtual" props handled by root reducer need
   // a foo reducer for redux core not to complain

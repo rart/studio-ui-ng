@@ -51,9 +51,10 @@ export class ProjectDashboardComponent extends WithNgRedux implements OnInit {
   }
 
   private updateAvailableActions(selectedItems) {
-    this.actions = this.workflowService.getAvailableWorkflowOptions(
-      this.state.user,
-      []);
+    this.actions = this.workflowService
+      .getAvailableWorkflowOptions(
+        this.state.user,
+        selectedItems);
   }
 
 }

@@ -135,22 +135,19 @@ export class API3Parser extends APIParser {
         // case MimeTypeEnum.FOLDER:
         //   asset.type = AssetTypeEnum.FOLDER;
         //   break;
-        case MimeTypeEnum.FOLDER && json.asset:
-          asset.type = AssetTypeEnum.FOLDER;
-          break;
         default:
-          if (json.asset) {
-            asset.type = AssetTypeEnum.ASSET;
+          if (json.folder) {
+            asset.type = AssetTypeEnum.FOLDER;
           } else if (json.page) {
             asset.type = AssetTypeEnum.PAGE;
-          } else if (json.folder) {
-            asset.type = AssetTypeEnum.FOLDER;
           } else if (json.component) {
             asset.type = AssetTypeEnum.COMPONENT;
           } else if (json.document) {
             asset.type = AssetTypeEnum.DOCUMENT;
           } else if (json.levelDescriptor) {
             asset.type = AssetTypeEnum.LEVEL_DESCRIPTOR;
+          } else if (json.asset) {
+            asset.type = AssetTypeEnum.ASSET;
           }
       }
     }

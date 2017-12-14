@@ -8,6 +8,7 @@ import {Component, Input, OnInit} from '@angular/core';
       <div class="actions">
         <ng-content></ng-content>
       </div>
+      <!--<div class="toolbar"></div>-->
     </div>`,
   styleUrls: ['./view-title-bar.component.scss']
 })

@@ -6,6 +6,7 @@ import { Asset } from '../models/asset.model';
 import { PostResponse } from '../classes/post-response.interface';
 import { ResponseCodesEnum } from '../enums/response-codes.enum';
 import { parseEntity } from '../utils/api.utils';
+import { isArray } from 'util';
 
 const workflow = `${environment.apiUrl}/workflow`;
 const deployment = `${environment.apiUrl}/deployment`;
@@ -15,12 +16,37 @@ const content = `${environment.apiUrl}/content`;
 const noCache = ((d) => d.toString())(new Date());
 // const noCache = (() => (new Date()).toString());
 
-const mappingFn = (data) => ({
-  total: data.total,
-  sortedBy: data.sortedBy,
-  ascending: (data.ascending === 'true'),
-  entries: (data.documents || []).map((entry) => <Asset>parseEntity(Asset, entry))
-});
+const mappingFn = (data, categorized = true): WorkflowServiceResponse => {
+  let assets, groups;
+  if (categorized) {
+    assets = [];
+    groups = (data.documents || []).map(group => ({
+      label: group.internalName,
+      ids: group.children.map(entry => {
+        let asset = <Asset>parseEntity(Asset, entry);
+        assets.push(asset);
+        return asset.id;
+      })
+    }));
+  } else {
+    assets = (data.documents || []).map((entry) => <Asset>parseEntity(Asset, entry));
+  }
+  return {
+    total: data.total,
+    sortedBy: data.sortedBy,
+    ascending: (data.ascending === 'true'),
+    assets: assets,
+    groups: groups
+  };
+};
+
+export interface WorkflowServiceResponse {
+  total: number;
+  sortedBy: string;
+  ascending: boolean;
+  assets: Asset[];
+  groups: { label: string; ids: string[] }[];
+}
 
 const sortByFieldMap = {
   url: 'browserUri',
@@ -62,6 +88,34 @@ export class WorkflowService {
   constructor(private http: StudioHttpService) {
   }
 
+  fetch(query?) {
+    let fn;
+    switch (query.status) {
+      case 'pending': {
+        fn = 'fetchPendingApproval';
+        break;
+      }
+      case 'scheduled': {
+        fn = 'fetchScheduled';
+        break;
+      }
+      case 'activity': {
+        fn = 'fetchUserActivities';
+        break;
+      }
+      case 'published': {
+        fn = 'fetchDeploymentHistory';
+        break;
+      }
+      default: {
+        throw new Error(`Unrecognized virtual status '${query.status}' specified for WorkflowService`);
+      }
+    }
+    let cleanQuery = { ...query };
+    delete cleanQuery.status;
+    return this[fn](cleanQuery);
+  }
+
   fetchPendingApproval(query: {
     projectCode,
     sortBy?,
@@ -71,7 +125,7 @@ export class WorkflowService {
     return this.http.get(
       `${workflow}/get-go-live-items.json`, mix(query, {
         includeInProgress: !!query.includeInProgress
-      })).map(mappingFn);
+      })).map(value => mappingFn(value));
   }
 
   fetchScheduled(query: {
@@ -83,7 +137,7 @@ export class WorkflowService {
     return this.http
       .get(`${deployment}/get-scheduled-items.json`, mix(query, {
         filterType: query.filterType || 'all'
-      })).map(mappingFn);
+      })).map(value => mappingFn(value));
   }
 
   fetchDeploymentHistory(query: {
@@ -99,9 +153,10 @@ export class WorkflowService {
         num: query.num || 20,
         days: query.days || 30,
         filterType: query.filterType || 'all'
-      })).map(mappingFn);
+      })).map(value => mappingFn(value));
   }
 
+  // Not categorized
   fetchUserActivities(query: {
     projectCode,
     username?: string,
@@ -117,11 +172,14 @@ export class WorkflowService {
         num: query.num || 20,
         filterType: query.filterType || 'all',
         excludeLive: (query.includeLive !== undefined) ? !query.includeLive : false
-      })).map(mappingFn);
+      })).map(value => mappingFn(value, false));
   }
 
-  getAvailableWorkflowOptions(user, items): AssetMenuOption[] {
-    return items.length ? [
+  getAvailableWorkflowOptions(user, assets): AssetMenuOption[] {
+    if (!isArray(assets)) {
+      assets = Object.values(assets);
+    }
+    return assets.length ? [
       { label: 'Edit', action: '' },
       { label: 'Delete', action: '' },
       { label: 'Schedule', action: '' },

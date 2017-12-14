@@ -13,73 +13,80 @@ export class AssetActions {
     };
   }
 
+  fetchSome(query): AnyAction {
+    return {
+      type: StoreActionsEnum.FETCH_SOME_ASSETS,
+      payload: query
+    };
+  }
+
   fetched(assets): AnyAction {
     return {
       type: StoreActionsEnum.ASSETS_FETCHED,
-      assets
+      payload: assets
     };
   }
 
   fetchedSome(assets: Asset[]): AnyAction {
     return {
       type: StoreActionsEnum.SOME_ASSETS_FETCHED,
-      assets
+      payload: assets
     };
   }
 
   get(uniqueId): AnyAction {
     return {
       type: StoreActionsEnum.ASSET_FETCHED,
-      uniqueId
+      payload: uniqueId
     };
   }
 
   gotten(asset: Asset): AnyAction {
     return {
       type: StoreActionsEnum.ASSET_FETCHED,
-      asset
+      payload: asset
     };
   }
 
   create(asset: Asset): AnyAction {
     return {
       type: StoreActionsEnum.CREATE_ASSET,
-      asset
+      payload: asset
     };
   }
 
   created(asset: Asset): AnyAction {
     return {
       type: StoreActionsEnum.ASSET_CREATED,
-      asset
+      payload: asset
     };
   }
 
   update(asset: Asset): AnyAction {
     return {
       type: StoreActionsEnum.UPDATE_ASSET,
-      asset
+      payload: asset
     };
   }
 
   updated(asset: Asset): AnyAction {
     return {
       type: StoreActionsEnum.ASSET_UPDATED,
-      asset
+      payload: asset
     };
   }
 
   delete(asset: Asset): AnyAction {
     return {
       type: StoreActionsEnum.DELETE_ASSET,
-      asset
+      payload: asset
     };
   }
 
   deleted(asset: Asset): AnyAction {
     return {
       type: StoreActionsEnum.ASSET_DELETED,
-      asset
+      payload: asset
     };
   }
 
