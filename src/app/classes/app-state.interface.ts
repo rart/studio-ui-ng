@@ -11,6 +11,7 @@ export interface AppState {
   activeProjectCode: string; // The active project's code
   workspaces: Workspaces;
   entities?: Entities; // do not persist
+  settings: Settings;
   deliveryTable?: { [uuid: string]: any }; // This feels like a terrible practice. Need to figure out something...
 }
 
@@ -33,6 +34,7 @@ export interface Workspace {
 }
 
 export interface Settings {
+  'meta.click.open.tab.in.background': boolean;
   [props: string]: any;
 }
 

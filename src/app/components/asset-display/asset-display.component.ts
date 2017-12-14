@@ -8,7 +8,7 @@ import {
   Output
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppState, Workspace } from '../../classes/app-state.interface';
+import { AppState, Settings, Workspace } from '../../classes/app-state.interface';
 import { Asset } from '../../models/asset.model';
 import { StringUtils } from '../../utils/string.utils';
 import { AssetTypeEnum } from '../../enums/asset-type.enum';
@@ -16,10 +16,12 @@ import { CommunicationService } from '../../services/communication.service';
 import { AssetActionEnum, AssetMenuOption, WorkflowService } from '../../services/workflow.service';
 import { SelectedItemsActions } from '../../actions/selected-items.actions';
 import { PreviewTabsActions } from '../../actions/preview-tabs.actions';
-import { dispatch, NgRedux } from '@angular-redux/store';
+import { dispatch, NgRedux, select } from '@angular-redux/store';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { createPreviewTabCore } from '../../utils/state.utils';
 import { Observable } from 'rxjs/Observable';
+import { StoreActionsEnum } from '../../enums/actions.enum';
+import { SettingsEnum } from '../../enums/Settings.enum';
 
 @Component({
   selector: 'std-asset-display',
@@ -38,6 +40,8 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
   }
 
   // asset$: Observable<Asset>;
+
+  settings: Settings;
 
   @Input() asset: Asset;
   @Input() disallowWrap = true;
@@ -150,7 +154,9 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
   shouldShowMenu = this.showMenu;
 
   ngOnInit() {
-
+    this.select('settings')
+      .pipe(this.takeUntil)
+      .subscribe((x: Settings) => this.settings = x);
   }
 
   ngOnChanges() {
@@ -204,9 +210,10 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
     }
   }
 
+  @dispatch()
   navigate($event) {
     let
-      asset = this.asset,
+      { asset, settings } = this,
       tab = createPreviewTabCore({
         url: asset.url,
         projectCode: asset.projectCode,
@@ -214,9 +221,11 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
         assetId: asset.id
       });
     if ($event.metaKey) {
-      this.dispatch(this.previewTabsActions.openInBackground(tab));
+      return settings[SettingsEnum.CLICK_WITH_META_OPENS_TAB_IN_BACKGROUND]
+        ? this.previewTabsActions.openInBackground(tab)
+        : this.previewTabsActions.open(tab);
     } else {
-      this.dispatch(this.previewTabsActions.nav(tab));
+      return this.previewTabsActions.nav(tab);
     }
   }
 

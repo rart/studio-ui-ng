@@ -4,6 +4,8 @@ export enum StoreActionsEnum {
   REDUX_INIT = '@@INIT',
   STUDIO_INIT = '@@studio/INIT',
 
+  UPDATE_GLOBAL_SETTINGS = 'UPDATE_GLOBAL_SETTINGS',
+
   // selectedItems
   SELECT_ITEM = 'SELECT_ITEM',
   DESELECT_ITEM = 'DESELECT_ITEM',
