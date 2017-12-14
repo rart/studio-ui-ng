@@ -19,10 +19,6 @@ import {
  * Update root reducer workspaceRef & projectRef when ever action affects the workspace
  * */
 
-// TODO REMOVE
-const actions = [];
-window['actions'] = actions;
-
 export const previewTabs: Reducer<PreviewTabStateContainer> =
   (state: PreviewTabStateContainer = createPreviewTabStateContainer({}), action) => {
 
@@ -34,9 +30,6 @@ export const previewTabs: Reducer<PreviewTabStateContainer> =
       active = state.byId[activeId],
       core: PreviewTabCore = action.tab,
       history: PreviewTabHistory = active && active.history;
-
-    // TODO REMOVE
-    actions.push([state, action]);
 
     switch (action.type) {
 
@@ -74,6 +67,10 @@ export const previewTabs: Reducer<PreviewTabStateContainer> =
 
       case StoreActionsEnum.NAVIGATE_ON_ACTIVE:
         nextState = trackHistoryEntry(state, active, core);
+        if (nextState === state) {
+          // same URL as it is current was request; no action taken.
+          return state;
+        }
         active = nextState.byId[nextState.activeId];
         tab = { ...active, pending: true, ...core };
         return replaceWithNewVersion(

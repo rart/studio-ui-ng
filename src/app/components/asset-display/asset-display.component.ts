@@ -204,7 +204,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
     }
   }
 
-  navigate() {
+  navigate($event) {
     let
       asset = this.asset,
       tab = createPreviewTabCore({
@@ -213,7 +213,11 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
         title: asset.label,
         assetId: asset.id
       });
-    this.dispatch(this.previewTabsActions.nav(tab));
+    if ($event.metaKey) {
+      this.dispatch(this.previewTabsActions.openInBackground(tab));
+    } else {
+      this.dispatch(this.previewTabsActions.nav(tab));
+    }
   }
 
   @dispatch()

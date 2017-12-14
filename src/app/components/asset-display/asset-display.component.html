@@ -14,7 +14,7 @@
 
   <ng-container *ngIf="showLabel" [ngSwitch]="navigable">
     <div *ngSwitchCase="false" class="label" title="{{ label }}">{{ label }}</div>
-    <a *ngSwitchCase="true" class="label" title="{{ label }}" (click)="navigate()">{{ label }}</a>
+    <a *ngSwitchCase="true" class="label" title="{{ label }}" (click)="navigate($event)">{{ label }}</a>
   </ng-container>
 
   <ng-container *ngIf="shouldShowMenu">

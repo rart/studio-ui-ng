@@ -270,7 +270,10 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
       ? 'iFrameComponent'
       : FileAssociations[asset.type] || 'SyntaxHighlighterComponent';
 
-    this.previewTabsObserver$.next(tab.url);
+    if ((!prevTab) || (prevTab !== tab)) {
+      // e.g. tab opened in background
+      this.previewTabsObserver$.next(tab.url);
+    }
 
     if (isNullOrUndefined(this.project) || (this.project.code !== tab.projectCode)) {
       if (tab.projectCode) {
@@ -495,7 +498,7 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
   @dispatch()
   selectTab(tab) {
     if (tab.id !== this.activeTab.id) {
-      this.dispatch(this.previewTabActions.select(tab.id));
+      return this.previewTabActions.select(tab.id);
     } else {
       return { type: 'NOOP' };
     }

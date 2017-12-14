@@ -17,7 +17,10 @@ export class InterceptorEpics {
   }
 
   private navigation = RootEpic.createEpic(
-    StoreActionsEnum.NAVIGATE_ON_ACTIVE,
+    [
+      StoreActionsEnum.NAVIGATE_ON_ACTIVE,
+      StoreActionsEnum.OPEN_TAB_BACKGROUND
+    ],
     (tab: PreviewTabCore) => {
       let router = this.router;
       if (!router.url.includes('/preview')) {
@@ -28,19 +31,17 @@ export class InterceptorEpics {
         .pipe(ignoreElements());
     });
 
-  private editAsset(action$, store, dependencies) {
-    return action$.ofType(StoreActionsEnum.EDIT_ASSET).pipe(
-      switchMap((asset: Asset) => {
-        let router = this.router;
-        if (!router.url.includes('/editor')) {
-          router.navigate([`/editor`]);
-        }
-        return EmptyObservable
-          .create()
-          .pipe(ignoreElements());
-      })
-    );
-  }
+  private editAsset = RootEpic.createEpic(
+    StoreActionsEnum.EDIT_ASSET,
+    () => {
+      let router = this.router;
+      if (!router.url.includes('/editor')) {
+        router.navigate([`/editor`]);
+      }
+      return EmptyObservable
+        .create()
+        .pipe(ignoreElements());
+    });
 
   epics() {
     return [
