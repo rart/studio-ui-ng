@@ -78,10 +78,10 @@ import { ViewTitleBarComponent } from './components/view-title-bar/view-title-ba
 import { UserGroupManagerComponent } from './components/user-management/user-group-manager/user-group-manager.component';
 import { UserProfileComponent } from './components/user-management/user-profile/user-profile.component';
 import { ProjectComponent } from './components/project/project.component';
-import { PreviewComponent } from './components/project/preview/preview.component';
+import { PreviewComponent } from './components/preview/preview.component';
 import { ProjectManagementComponent } from './components/project-management/project-management.component';
 import { PasswordFieldComponent } from './components/user-management/password-field/password-field.component';
-import { ContentTreeComponent } from './components/project/content-tree/content-tree.component';
+import { ContentTreeComponent } from './components/content-tree/content-tree.component';
 import { UserCrUDComponent } from './components/user-management/user-crud/user-crud.component';
 import { ProjectCrUDComponent } from './components/project-management/project-crud/project-crud.component';
 import { ItemListDashletComponent } from './components/project/project-dashboard/item-list-dashlet.component';
@@ -112,6 +112,7 @@ import { TabBarComponent } from './components/tab-bar/tab-bar.component';
 import { SyntaxHighlighterComponent } from './components/syntax-highlighter/syntax-highlighter.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { AssetEpics } from './epics/asset.epics';
+import { EditorComponent } from './components/editor/editor.component';
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
@@ -157,7 +158,8 @@ requirejs({
     FontVisualizerComponent,
     TabBarComponent,
     SyntaxHighlighterComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    EditorComponent
 
   ],
   imports: [

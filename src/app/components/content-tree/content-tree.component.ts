@@ -1,13 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ITreeOptions, TREE_ACTIONS, TreeNode, ITreeState } from 'angular-tree-component';
-import { ContentService } from '../../../services/content.service';
-import { Asset } from '../../../models/asset.model';
-import { WorkflowService } from '../../../services/workflow.service';
-import { AppState, Workspace } from '../../../classes/app-state.interface';
-import { ExpandedPathsActions } from '../../../actions/expanded-paths.actions';
-import { WithNgRedux } from '../../../classes/with-ng-redux.class';
 import { NgRedux } from '@angular-redux/store';
-import { AssetActions } from '../../../actions/asset.actions';
+
+import { ContentService } from '../../services/content.service';
+import { Asset } from '../../models/asset.model';
+import { WorkflowService } from '../../services/workflow.service';
+import { AppState, Workspace } from '../../classes/app-state.interface';
+import { ExpandedPathsActions } from '../../actions/expanded-paths.actions';
+import { WithNgRedux } from '../../classes/with-ng-redux.class';
+import { AssetActions } from '../../actions/asset.actions';
 
 @Component({
   selector: 'std-content-tree',

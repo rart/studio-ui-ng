@@ -26,7 +26,7 @@ export interface PreviewTabStateContainer {
 }
 
 export interface Workspace {
-  settings?: Settings;
+  settings?: ProjectSettings;
   previewTabs: PreviewTabStateContainer;
   selectedItems: { [assetId: string]: boolean };
   expandedPanels: { [panelKey: string]: boolean };
@@ -35,6 +35,10 @@ export interface Workspace {
 
 export interface Settings {
   'meta.click.open.tab.in.background': boolean;
+  [props: string]: any;
+}
+
+export interface ProjectSettings {
   [props: string]: any;
 }
 

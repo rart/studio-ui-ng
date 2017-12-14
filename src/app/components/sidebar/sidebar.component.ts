@@ -13,7 +13,7 @@ import { AppState, StateEntity, Workspace } from '../../classes/app-state.interf
 import { ExpandedPanelsActions } from '../../actions/expanded-panels.actions';
 import { User } from '../../models/user.model';
 import { ComponentHostDirective } from '../component-host.directive';
-import { ContentTreeComponent } from '../project/content-tree/content-tree.component';
+import { ContentTreeComponent } from '../content-tree/content-tree.component';
 import { Project } from '../../models/project.model';
 import { Observable } from 'rxjs/Observable';
 import { ComponentWithState } from '../../classes/component-with-state.class';

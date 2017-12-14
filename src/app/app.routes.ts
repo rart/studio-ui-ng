@@ -11,7 +11,7 @@ import { NotImplementedComponent } from './components/not-implemented/not-implem
 import { UserProfileComponent } from './components/user-management/user-profile/user-profile.component';
 import { ProjectComponent } from './components/project/project.component';
 import { ProjectManagementComponent } from './components/project-management/project-management.component';
-import { PreviewComponent } from './components/project/preview/preview.component';
+import { PreviewComponent } from './components/preview/preview.component';
 import { UserCrUDComponent } from './components/user-management/user-crud/user-crud.component';
 import { WorkflowStatesComponent } from './components/workflow-states/workflow-states.component';
 
