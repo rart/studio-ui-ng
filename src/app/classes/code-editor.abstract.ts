@@ -40,24 +40,10 @@ export abstract class CodeEditor {
   protected changes = new Subject<CodeEditorChange>();
   protected loaded = new ReplaySubject(1);
   protected rendered = new ReplaySubject(1);
-  protected $ready = this.loaded.pipe(combineLatest(this.rendered, (loaded, rendered) => true));
-  // protected state = Observable
-  //   .merge(this.loaded, this.rendered)
-  //   .pipe(
-  //     scan(
-  //       (state, loadedOrRendered: STARTUP_EVENT) => ({
-  //         loaded: state.loaded || loadedOrRendered === 'load',
-  //         rendered: state.rendered || loadedOrRendered === 'render'
-  //       }),
-  //       { loaded: false, rendered: false }
-  //     ),
-  //     multicast(new ReplaySubject<{ rendered: boolean, loaded: boolean }>(1))
-  //   );
+  protected ready$ = this.loaded.pipe(combineLatest(this.rendered, (loaded, rendered) => true));
 
   constructor() {
-    // this.$ready.subscribe({
-    //   complete: () => null
-    // });
+
   }
 
   abstract value(nextValue?: string): Promise<string>;
@@ -108,8 +94,8 @@ export abstract class CodeEditor {
   options(value?: any) {
     if (value !== undefined) {
       let { cfg } = this;
-      Object.assign(cfg, value);
       return this.ready(() => {
+        Object.assign(cfg, value);
         Object.keys(cfg).forEach((opt) => this.setOption(opt, cfg[opt]));
         delete cfg['value'];
       });
@@ -119,7 +105,7 @@ export abstract class CodeEditor {
   }
 
   ready(logic: (x?) => void): Promise<any> {
-    return this.$ready
+    return this.ready$
       .toPromise()
       .then(x => (logic && logic(x)) || (this));
   }

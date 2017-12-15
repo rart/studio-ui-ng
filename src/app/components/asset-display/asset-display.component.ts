@@ -22,6 +22,7 @@ import { createPreviewTabCore } from '../../utils/state.utils';
 import { Observable } from 'rxjs/Observable';
 import { StoreActionsEnum } from '../../enums/actions.enum';
 import { SettingsEnum } from '../../enums/Settings.enum';
+import { AssetActions } from '../../actions/asset.actions';
 
 @Component({
   selector: 'std-asset-display',
@@ -34,6 +35,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
               private workflowService: WorkflowService,
               private communicationService: CommunicationService,
               private router: Router,
+              private assetActions: AssetActions,
               private previewTabsActions: PreviewTabsActions) {
     // Init Store
     super(store);
@@ -253,11 +255,10 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
     switch (action) {
       case AssetActionEnum.EDIT: {
         let asset = this.asset;
-        // this.dispatch(PreviewTabsActions.edit({
-        //   url: asset.url,
-        //   projectCode: asset.projectCode,
-        //   asset
-        // }));
+        this.dispatch(
+          this.assetActions.edit(
+            asset.projectCode,
+            asset.id));
         break;
       }
       default:

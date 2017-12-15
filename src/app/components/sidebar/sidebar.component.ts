@@ -38,25 +38,9 @@ const COMPONENT_MAP = {
 
 const APP_NAV_KEY = 'sidebar.appnav.panel';
 
-// const activeProjectSelector = (state: AppState) => {
-//   let
-//     id = state.activeProjectCode,
-//     projectEntityState = state.entities.projects;
-//   if (!isNullOrUndefined(id) && !isNullOrUndefined(projectEntityState.list)) {
-//     return projectEntityState.byId[id];
-//   }
-//   return null;
-// };
-
-// const expandedPanelStateSelector = (state: AppState) => {
-//   let
-//     id = state.activeProjectCode,
-//     projectEntityState = state.workspaces;
-//   if (!isNullOrUndefined(id) && !isNullOrUndefined(projectEntityState.list)) {
-//     return projectEntityState[id].expandedPanels;
-//   }
-//   return null;
-// };
+function selectEditSessionsLength(state: AppState) {
+  return state.editSessions.order.length;
+}
 
 @Component({
   selector: 'std-sidebar',
@@ -82,6 +66,9 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
 
   @select(['entities', 'projects'])
   projects$: Observable<StateEntity<Project>>;
+
+  @select(['editSessions', 'order'])
+  editSessions$;
 
   expandedPanels: { [key: string]: boolean } = {};
 

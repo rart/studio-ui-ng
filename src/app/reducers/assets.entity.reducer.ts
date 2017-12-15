@@ -34,6 +34,7 @@ export const assets: Reducer<StateEntity<Asset>> =
 
       case StoreActionsEnum.ASSET_FETCHED:
         return createEntityState({
+          ...state,
           byId: {
             ...state.byId,
             [action.payload.id]: action.payload

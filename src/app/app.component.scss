@@ -39,6 +39,8 @@ std-user-profile,
 std-user-management,
 std-user-group-manager,
 std-content-tree,
+std-edit,
+std-editor,
 std-code-editor,
 std-dashboard,
 std-embedded-view-dialog,
@@ -119,45 +121,76 @@ std-app {
   text-align: right !important;
 }
 
-.text-white {
+.white.text {
   color: #fff;
+  &.insure {
+    color: #fff !important;
+  }
 }
 
-.text-red {
+.red.text {
   color: $color-red;
+  &.insure {
+    color: $color-red !important;
+  }
 }
 
-.text-orange {
+.orange.text {
   color: $color-orange;
+  &.insure {
+    color: $color-orange !important;
+  }
 }
 
-.text-yellow {
+.yellow.text {
   color: $color-yellow;
+  &.insure {
+    color: $color-yellow !important;
+  }
 }
 
-.text-green {
+.green.text {
   color: $color-green;
+  &.insure {
+    color: $color-green !important;
+  }
 }
 
-.text-teal {
+.teal.text {
   color: $color-teal;
+  &.insure {
+    color: $color-teal !important;
+  }
 }
 
-.text-blue {
+.blue.text {
   color: $color-blue;
+  &.insure {
+    color: $color-teal !important;
+  }
 }
 
-.text-pink {
+.pink.text {
   color: $color-pink;
+  &.insure {
+    color: $color-pink !important;
+  }
 }
 
-.text-purple {
+.purple.text {
   color: $color-purple;
+  &.insure {
+    color: $color-purple !important;
+  }
 }
 
-.text-gray,
-.text-muted {
+.grey.text,
+.gray.text,
+.muted.text {
   color: $color-gray;
+  &.insure {
+    color: $color-yellow !important;
+  }
 }
 
 .background-white {
@@ -350,6 +383,7 @@ std-app {
   flex-direction: column;
   position: relative;
   > .title-bar,
+  > .title.bar,
   std-view-title-bar {
     background-color: #FFFFFF;
     border-bottom: 1px solid rgba(34, 36, 38, 0.15);
@@ -560,6 +594,75 @@ button {
   }
   .info {
 
+  }
+}
+
+.ui.controls {
+  display: flex;
+  padding: 9px 5px;
+  flex-wrap: nowrap;
+  .control {
+    position: relative;
+    border-radius: 5px;
+    i {
+      position: absolute;
+      top:2px;
+      bottom:0;
+      right:0;
+      left:0;
+      font-size: 25px;
+      &::before {
+        top: 2px;
+        position: relative;
+      }
+    }
+  }
+}
+
+.ui.tab.bar {
+  display: none;
+  flex-wrap: nowrap;
+  .tabbed & {
+    display: flex;
+  }
+  .tab {
+    color: #666;
+    height: 30px;
+    flex-grow: 1;
+    display: flex;
+    overflow: hidden;
+    line-height: 30px;
+    text-align: center;
+    position: relative;
+    border-top: 1px solid $grey-header;
+    border-right: 1px solid $grey-header;
+    &.active {
+      cursor: default;
+      background-color: #ffffff;
+    }
+    &:last-child {
+      border-right: none;
+    }
+    .main {
+      padding: 0;
+      flex-grow: 1;
+      cursor: pointer;
+      overflow: hidden;
+      text-align: center;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: calc(100% - 30px);
+    }
+    .close {
+      width: 30px;
+    }
+    /*button {
+      top: 0px;
+      right: 0px;
+      height: 30px;
+      line-height: 26px;
+      position: absolute;
+    }*/
   }
 }
 

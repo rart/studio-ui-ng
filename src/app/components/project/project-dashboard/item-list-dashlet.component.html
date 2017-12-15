@@ -107,7 +107,7 @@
     <div class="asset-display">
       <std-asset-display [asset]="assets[assetId]" [showCheck]="true" [showMenu]="true"></std-asset-display>
     </div>
-    <div class="stats text-muted" *ngIf="assets[assetId].lastEditedOn || assets[assetId].lastEditedBy">
+    <div class="stats muted text" *ngIf="assets[assetId].lastEditedOn || assets[assetId].lastEditedBy">
       Edited
       <strong title="{{assets[assetId].lastEditedOn | amDateFormat:'MM/DD/YY h:mm a'}}">
         {{assets[assetId].lastEditedOn | amTimeAgo}}

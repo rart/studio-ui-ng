@@ -1,4 +1,5 @@
 import { CodeEditor, CodeEditorChoiceEnum } from './code-editor.abstract';
+import { isNullOrUndefined } from 'util';
 
 let Monaco;
 
@@ -76,6 +77,9 @@ export class MonacoEditor extends CodeEditor {
   }
 
   value(nextValue?: string): Promise<string> {
+    // if (!isNullOrUndefined(nextValue) && isNullOrUndefined(this.instance)) {
+    //   return this.instance.getValue();
+    // }
     return this.tap(() => {
       if (nextValue !== undefined) {
         this.instance.setValue(nextValue);
@@ -90,8 +94,15 @@ export class MonacoEditor extends CodeEditor {
     return this.tap(() => {
       let { rendered } = this;
       let editor = Monaco.editor.create(elem, {
-        scrollBeyondLastLine: false
+        scrollBeyondLastLine: false,
+        value: options.value || ''
       });
+      if (options) {
+        if (options.value) {
+          delete options.value;
+        }
+        this.options(options);
+      }
       editor.getModel().onDidChangeContent((e) => {
         this.changes.next({
           value: this.instance.getValue(),
@@ -101,9 +112,6 @@ export class MonacoEditor extends CodeEditor {
       this.instance = editor;
       rendered.next(true);
       rendered.complete();
-      if (options) {
-        this.options(options);
-      }
     });
   }
 

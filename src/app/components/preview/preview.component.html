@@ -1,7 +1,7 @@
 <div class="view-container transparent" *ngIf="activeTab" [class.tabbed]="tabs.length > 1">
   <div class="title-bar transparent">
-    <div class="ui address-bar">
-      <section class="controls">
+    <div class="address-bar">
+      <section class="ui controls">
         <button [disabled]="!activeTab.history.hasBack" (click)="back()" class="ui mini icon button"><i class="icon chevron left"></i></button>
         <button [disabled]="!activeTab.history.hasForward" (click)="forward()" class="ui mini icon button"><i class="icon chevron right"></i></button>
         <button [disabled]="activeTab.pending" (click)="reload()" class="ui mini icon button"><i class="icon refresh"></i></button>
@@ -40,7 +40,7 @@
         </div>
         <button (click)="addTab()" class="ui mini basic green icon button"><i class="icon plus" title="New Tab"></i></button>
       </section>
-      <nav class="tab bar">
+      <nav class="ui tab bar">
         <div class="tab" *ngFor="let tab of tabs" [class.active]="tab === activeTab">
           <button (click)="selectTab(tab)" class="main" [title]="tab.title">
             <std-asset-display
@@ -63,11 +63,6 @@
     <std-syntax-highlighter
       *ngSwitchCase="'SyntaxHighlighterComponent'"
       [asset]="activeTabAsset"></std-syntax-highlighter>
-
-    <std-code-editor
-      *ngSwitchCase="'CodeEditorComponent'"
-      [asset]="activeTabAsset"
-      [editable]="false"></std-code-editor>
 
     <std-image-viewer
       *ngSwitchCase="'ImageViewerComponent'"

@@ -16,6 +16,19 @@
          *ngFor="let item of appNavItems">
         <i class="{{item.iconClass}}">{{item.iconText}}</i> <span class="label">{{item.label}}</span>
       </a>
+      <a class="sidebar-item"
+         routerLink="/preview"
+         routerLinkActive="active">
+        <i class="fa fa-binoculars"></i>
+        <span class="label">Preview</span>
+      </a>
+      <a class="sidebar-item"
+         *ngIf="(editSessions$ | async).length"
+         routerLink="/edit"
+         routerLinkActive="active">
+        <i class="fa fa-pencil insure pink text"></i>
+        <span class="label">Edit Sessions ({{(editSessions$ | async).length}})</span>
+      </a>
     </div>
   </mat-expansion-panel>
 

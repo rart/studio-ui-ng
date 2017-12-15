@@ -13,6 +13,7 @@ export interface AppState {
   entities?: Entities; // do not persist
   settings?: Settings;
   deliveryTable?: { [uuid: string]: any }; // This feels like a terrible practice. Need to figure out something...
+  editSessions?: EditSessions;
 }
 
 export interface Workspaces {
@@ -35,6 +36,7 @@ export interface Workspace {
 
 export interface Settings {
   'meta.click.open.tab.in.background': boolean;
+
   [props: string]: any;
 }
 
@@ -87,13 +89,40 @@ export interface LookUpTable<T> {
   [id: string]: T;
 }
 
-export interface EditorContainer {
-  tab: {
-    session: any;
-    original: any;
-    synced: boolean; // false = has unsaved changes
-    assetId: string;
-    saving: boolean;
-    loading: boolean;
+//////////////////
+///// PAGES /////
+////////////////
+// Form view
+// Code view
+// Preview
+//////////////////
+///// TEXT //////
+////////////////
+// Code view
+//////////////////
+///// IMAGES ////
+////////////////
+// Crop, yada yada | Could be the same view
+// Preview         |
+export interface EditSessions {
+  activeId: string;
+  order: string[];
+  byId: {
+    [uuid: string]: EditSession;
   };
 }
+
+export interface EditSession {
+  id: string;
+  data: any; // container for components to put what ever they need
+  assetId: string;
+  projectCode: string;
+  fetchPayload: any;
+  // synced: boolean; // false = has unsaved changes
+  // saving: boolean;
+  // fetched: boolean;
+  // loading: boolean;
+  status: 'void' | 'fetching' | 'fetched' | 'dirty' | 'saving' | 'closing';
+}
+
+// export type EditSessionStatus = 'void' | 'fetching' | 'fetched' | 'dirty' | 'saving';

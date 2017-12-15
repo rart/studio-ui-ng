@@ -5,9 +5,9 @@ import { user } from './user.reducer';
 import { entities } from './entities.reducer';
 import { workspaces } from './projects-state.reducer';
 import { activeProjectCode } from './active-project-code.reducer';
-import { isNullOrUndefined } from 'util';
 import { deliveryTable } from './delivery-table.reducer';
 import { settings } from './settings.reducer';
+import { editSessions } from './edit-sessions.reducer';
 
 const foo = (state = null) => state;
 
@@ -17,6 +17,7 @@ export const reducerMap = {
   entities,
   workspaces,
   activeProjectCode,
+  editSessions,
   settings,
 
   deliveryTable,

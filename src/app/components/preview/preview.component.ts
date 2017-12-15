@@ -77,14 +77,6 @@ const isExternalURL = (url) => {
 
 const FileAssociations = {
 
-  // [AssetTypeEnum.CSS]: 'CodeEditorComponent',
-  // [AssetTypeEnum.HTML]: 'CodeEditorComponent',
-  // [AssetTypeEnum.SCSS]: 'CodeEditorComponent',
-  // [AssetTypeEnum.SASS]: 'CodeEditorComponent',
-  // [AssetTypeEnum.LESS]: 'CodeEditorComponent',
-  // [AssetTypeEnum.GROOVY]: 'CodeEditorComponent',
-  // [AssetTypeEnum.JAVASCRIPT]: 'CodeEditorComponent',
-  // [AssetTypeEnum.FREEMARKER]: 'CodeEditorComponent',
   [AssetTypeEnum.CSS]: 'SyntaxHighlighterComponent',
   [AssetTypeEnum.HTML]: 'SyntaxHighlighterComponent',
   [AssetTypeEnum.SCSS]: 'SyntaxHighlighterComponent',

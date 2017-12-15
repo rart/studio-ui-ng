@@ -74,3 +74,5 @@ if (!environment.production) {
     window['log'] = log;
   }
 }
+
+export const foo = () => null;

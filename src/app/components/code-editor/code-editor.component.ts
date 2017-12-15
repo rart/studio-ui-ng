@@ -12,11 +12,17 @@ import {
 import { environment } from '../../../environments/environment';
 import { Asset } from '../../models/asset.model';
 import { ContentService } from '../../services/content.service';
-import { CodeEditor } from '../../classes/code-editor.abstract';
+import { CodeEditor, CodeEditorChange, CodeEditorChoiceEnum } from '../../classes/code-editor.abstract';
 import { CodeEditorFactory } from '../../classes/code-editor-factory.class';
 import { Subject } from 'rxjs/Subject';
-import { combineLatest, map, takeUntil } from 'rxjs/operators';
+import { combineLatest, map, switchMap, take, takeUntil, takeWhile } from 'rxjs/operators';
 import { CommunicationService } from '../../services/communication.service';
+import { WithNgRedux } from '../../classes/with-ng-redux.class';
+import { AppState, EditSession, EditSessions, LookUpTable } from '../../classes/app-state.interface';
+import { NgRedux, select } from '@angular-redux/store';
+import { Observable } from 'rxjs/Observable';
+import { isNullOrUndefined } from 'util';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 // TODO: how to avoid navigation when code has been entered and not saved? — also, is auto save viable?
 
@@ -25,117 +31,98 @@ import { CommunicationService } from '../../services/communication.service';
   templateUrl: 'code-editor.component.html',
   styleUrls: ['code-editor.component.scss']
 })
-export class CodeEditorComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
+export class CodeEditorComponent extends WithNgRedux implements OnInit, OnChanges, OnDestroy, AfterViewInit {
 
-  @ViewChild('editor') editorRef: ElementRef;
+  @Input() vendor = CodeEditorChoiceEnum.MONACO;
+  @Input() @HostBinding('class.editable') editable = false;
+  @Input() lang;
 
-  @Input() asset: Asset;
-  @HostBinding('class.editable')
-  @Input() editable = false;
-  @Input() value = 'Loading Content...';
+  @Output() changes$ = new Subject<CodeEditorChange>();
+  @Output() value$ = new Subject<string>();
+  @Output() initialized$ = new BehaviorSubject(false);
 
-  @Output() valueChanged = new EventEmitter();
-  @Output() editCancelled = new EventEmitter();
+  @ViewChild('editor') private elementRef: ElementRef;
 
-  libsFetchComplete = false;
+  data = {};
 
-  private lastFileFetched = null;
-  private contentFetchSub = null;
-  private $editorInitialized = new Subject<any>();
-
-  // vendor: 'ace' | 'monaco' = 'ace';
-
+  private _value = '';
   private editor: CodeEditor;
-  private unSubscriber = new Subject();
+
+  private ngOnChanges$ = new Subject();
 
   get elem() {
-    return this.editorRef ? this.editorRef.nativeElement : null;
+    return this.elementRef ? this.elementRef.nativeElement : null;
   }
 
-  constructor(private contentService: ContentService,
+  constructor(store: NgRedux<AppState>,
               private communicationService: CommunicationService) {
-
+    super(store);
   }
 
   ngOnInit() {
-    this.communicationService.resize((e) => {
-      if (this.editor && this.editor.vendor === 'monaco') {
-        this.editor.resize();
+    this.addTearDown(() => {
+      this.editor.dispose();
+      this.changes$.complete();
+      this.value$.complete();
+      this.initialized$.complete();
+      this.ngOnChanges$.complete();
+    });
+    let { unSubscriber$, ngOnChanges$, communicationService } = this;
+    ngOnChanges$
+      .subscribe(() => this.onChanges());
+    communicationService.resize((e) => {
+      let editor = this.editor;
+      if (editor && editor.vendor === 'monaco') {
+        editor.resize();
       }
-    }, takeUntil(this.unSubscriber));
+    }, takeUntil(unSubscriber$));
   }
 
   ngAfterViewInit() {
-    this.createEditor();
+    this.ngOnChanges$.next();
   }
 
   ngOnChanges() {
-    let { asset } = this;
-    // if (!asset) {
-    //   this.value = '';
-    //   this.editable = true;
-    //   return;
-    // }
-    if (this.editor) {
-      this.editor.option('editable', this.editable);
-      // setTimeout(() => this.editor.resize());
-      setTimeout(() => this.editable && this.editor.focus());
-    }
-    if (this.lastFileFetched !== `${asset.projectCode}:${asset.id}`) {
-      this.lastFileFetched = `${asset.projectCode}:${asset.id}`;
-      if (this.contentFetchSub) {
-        this.contentFetchSub.unsubscribe();
-      }
-      let shouldReplaceEditor =
-        (this.editor) &&
-        (this.editor.vendor !== null) &&
-        (this.editor.vendor !== CodeEditorFactory.choice(this.asset));
-      if (shouldReplaceEditor) {
-        this.createEditor();
-      } else if (this.editor) {
-        this.editor.value('Loading...');
-        this.editor.option('editable', false);
-      }
-      let contentRequest$ = this.contentService
-        .content(asset.projectCode, asset.id);
-      this.contentFetchSub = ((this.editor && !shouldReplaceEditor)
-        ? contentRequest$.pipe(
-          map(data => data.content)
-        )
-        : contentRequest$.pipe(
-          combineLatest(this.$editorInitialized, (data, editor) => data.content)
-        )).subscribe(content => {
-        this.value = content;
-        this.editor.value(content);
-        this.editor.option('editable', this.editable);
-        if (this.contentFetchSub) {
-          this.contentFetchSub.unsubscribe();
-        }
-      });
-    }
+    this.ngOnChanges$.next();
   }
 
-  ngOnDestroy() {
-    this.editor.dispose();
-    this.unSubscriber.next();
-    this.unSubscriber.complete();
-    this.$editorInitialized.complete();
+  onChanges() {
+
+    let {
+      editor,
+      vendor,
+      editable
+    } = this;
+
+    if (!editor || vendor !== editor.vendor) {
+      this.createEditor();
+    } else if (editor) {
+      editor.ready(() => {
+        this.configure();
+        // setTimeout(() => editor.resize());
+        // setTimeout(() => editable && editor.focus());
+      });
+    }
+
   }
 
   createEditor() {
     if (this.editor) {
       this.editor.dispose();
-      this.libsFetchComplete = false;
+      this.initialized$.next(false);
     }
-    let editor = CodeEditorFactory.create(this.asset);
+    let editor = CodeEditorFactory.create(this.vendor);
     editor
       .render(this.elem, this.getOptions())
       .then(() => {
-        this.libsFetchComplete = true;
-        this.$editorInitialized.next(editor);
+        this.initialized$.next(true);
         this.editable && this.editor.focus();
       });
-    editor.subscribe((e) => this.valueChanged.next(e));
+    editor.subscribe((e: CodeEditorChange) => {
+      this._value = e.value;
+      this.value$.next(e.value);
+      this.changes$.next(e);
+    });
     this.editor = editor;
     return editor;
   }
@@ -148,24 +135,45 @@ export class CodeEditorComponent implements OnInit, OnChanges, OnDestroy, AfterV
   }
 
   getOptions() {
-    let { value, asset, editable } = this;
+    let { value, editable, lang } = this;
     return {
+      lang: lang,
       emmet: true,
-      editable: editable,
-      lang: asset.type,
-      value: value
+      value: value,
+      editable: editable
     };
   }
 
-  cancel() {
-    this.editor.value()
-      .then((value) => this.editCancelled.next({
-        value: value
-      }));
+  @Input()
+  set value(value: string) {
+    // TODO: review EditorComponent initialization call stack
+    // console.log(`set value called with ${value}`);
+    value = isNullOrUndefined(value) ? '' : value;
+    this._value = value;
+    this.initialized$
+      .pipe(
+        switchMap((initialized) => {
+          if (initialized) {
+            return Observable.of(true);
+          } else {
+            return Observable.never();
+          }
+        }),
+        take(1)
+      )
+      .subscribe((initialized) => {
+        if (initialized) {
+          this.editor.value(value);
+        }
+      });
   }
 
-  save() {
+  get value() {
+    return this._value;
+  }
 
+  focus() {
+    this.editor.focus();
   }
 
 }

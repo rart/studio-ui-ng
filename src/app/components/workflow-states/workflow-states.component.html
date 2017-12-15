@@ -29,8 +29,8 @@
             <div title="{{i.id}}">{{i.id}}</div>
           </td>
           <td>
-            <div class="text-red" *ngIf="!i.done">Processing...</div>
-            <div class="text-green" *ngIf="i.done">Done</div>
+            <div class="red text" *ngIf="!i.done">Processing...</div>
+            <div class="green text" *ngIf="i.done">Done</div>
           </td>
         </tr>
       </tbody>

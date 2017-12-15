@@ -1,0 +1,45 @@
+<div class="transparent tabbed view container">
+  <div class="transparent title bar">
+    <div class="address-bar">
+
+      <section class="ui controls">
+        <button class="ui mini icon button"><i class="icon chevron left"></i></button>
+        <button class="ui mini icon button"><i class="icon chevron right"></i></button>
+        <button class="ui mini icon button"><i class="icon refresh"></i></button>
+        <button class="ui mini basic green icon button"><i class="icon plus" title="New Tab"></i></button>
+      </section>
+
+      <nav class="ui tab bar" *ngIf="requirementsMet$ | async">
+        <div class="tab" *ngFor="let tab of sessions" [class.active]="(active) && (tab === active)">
+          <button (click)="selectTab(tab)" class="main">
+            <std-asset-display
+              *ngIf="assets[tab.assetId]"
+              [asset]="assets[tab.assetId]"
+              [disallowWrap]="false"
+              [showLink]="false"
+              [showLabel]="true"
+              [showStatusIcons]="true"
+              [showMenu]="false"></std-asset-display>
+          </button>
+          <button *ngIf="tab.status !== 'closing'" (click)="closeTab(tab)" class="close" title="Close" i18n>&times;</button>
+          <mat-spinner *ngIf="tab.status === 'closing' && tab !== active" [diameter]="25" [strokeWidth]="5"></mat-spinner>
+        </div>
+      </nav>
+
+      <nav class="ui tab bar" *ngIf="!requirementsMet$|async">
+        <div class="tab" *ngFor="let tab of sessions">
+          <button class="main">
+            <span>...</span>
+          </button>
+        </div>
+      </nav>
+
+    </div>
+  </div>
+  <div class="edit content">
+    <ng-container [ngSwitch]="renderer">
+      <std-editor (data$)="updateSession($event)" *ngSwitchCase="'CodeEditorComponent'"></std-editor>
+      <div *ngSwitchDefault>Nothing to see...yet!</div>
+    </ng-container>
+  </div>
+</div>

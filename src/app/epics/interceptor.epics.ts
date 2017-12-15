@@ -35,8 +35,8 @@ export class InterceptorEpics {
     StoreActionsEnum.EDIT_ASSET,
     () => {
       let router = this.router;
-      if (!router.url.includes('/editor')) {
-        router.navigate([`/editor`]);
+      if (!router.url.includes('/edit')) {
+        router.navigate([`/edit`]);
       }
       return EmptyObservable
         .create()

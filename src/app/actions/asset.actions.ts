@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AnyAction } from 'redux';
+import { AnyAction, Store } from 'redux';
 import { StoreActionsEnum } from '../enums/actions.enum';
 import { Asset } from '../models/asset.model';
+import { EditSession } from '../classes/app-state.interface';
 
 @Injectable()
 export class AssetActions {
@@ -34,10 +35,73 @@ export class AssetActions {
     };
   }
 
-  get(uniqueId): AnyAction {
+  edit(projectCode: string, assetId: string): AnyAction {
     return {
-      type: StoreActionsEnum.ASSET_FETCHED,
-      payload: uniqueId
+      type: StoreActionsEnum.EDIT_ASSET,
+      payload: { projectCode, assetId }
+    };
+  }
+
+  closeEditSession(session, asset): AnyAction {
+    return {
+      type: StoreActionsEnum.CLOSE_EDIT_SESSION,
+      payload: { session, asset }
+    };
+  }
+
+  editSessionClosed(session) {
+    return {
+      type: StoreActionsEnum.EDIT_SESSION_CLOSED,
+      payload: { session }
+    };
+  }
+
+  setActiveSession(next) {
+    return {
+      type: StoreActionsEnum.CHANGE_ACTIVE_EDIT_SESSION,
+      payload: { next }
+    };
+  }
+
+  persistSessionChanges(asset: Asset, session: EditSession, content: string) {
+    return {
+      type: StoreActionsEnum.PERSIST_SESSION_CHANGES,
+      payload: { asset, session, content }
+    };
+  }
+
+  sessionChangesPersisted(session: EditSession) {
+    return {
+      type: StoreActionsEnum.SESSION_CHANGES_PERSISTED,
+      payload: { session }
+    };
+  }
+
+  updateEditSession(sessionId: string, data: any) {
+    return {
+      type: StoreActionsEnum.UPDATE_EDIT_SESSION,
+      payload: { id: sessionId, data }
+    };
+  }
+
+  fetchForEdit(sessionUUID: string, projectCode: string, assetId: string): AnyAction {
+    return {
+      type: StoreActionsEnum.FETCH_ASSET_FOR_EDIT,
+      payload: { sessionUUID, projectCode, assetId }
+    };
+  }
+
+  fetchedForEdit(sessionUUID: string, data: any): AnyAction {
+    return {
+      type: StoreActionsEnum.ASSET_FETCHED_FOR_EDIT,
+      payload: { sessionUUID, data }
+    };
+  }
+
+  get(assetId): AnyAction {
+    return {
+      type: StoreActionsEnum.FETCH_ASSET,
+      payload: assetId
     };
   }
 

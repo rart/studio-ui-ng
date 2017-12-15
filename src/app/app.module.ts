@@ -62,10 +62,6 @@ import { studioRoutes } from './app.routes';
 import { SafeUrlPipe } from './safe-url.pipe';
 import { ComponentHostDirective } from './components/component-host.directive';
 
-// This is just for pretty to be available globally, really.
-import { pretty } from './utils/logging.utils';
-pretty('GREEN', 'Studio Initializing...');
-
 // Studio Components
 import { AppComponent } from './app.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
@@ -86,6 +82,8 @@ import { UserCrUDComponent } from './components/user-management/user-crud/user-c
 import { ProjectCrUDComponent } from './components/project-management/project-crud/project-crud.component';
 import { ItemListDashletComponent } from './components/project/project-dashboard/item-list-dashlet.component';
 import { I18nPipe } from './i18n.pipe';
+import { EditComponent } from './components/edit/edit.component';
+import { EditorComponent } from './components/editor/editor.component';
 import { CodeEditorComponent } from './components/code-editor/code-editor.component';
 import { AssetDisplayComponent } from './components/asset-display/asset-display.component';
 import { WorkflowStatesComponent } from './components/workflow-states/workflow-states.component';
@@ -112,7 +110,6 @@ import { TabBarComponent } from './components/tab-bar/tab-bar.component';
 import { SyntaxHighlighterComponent } from './components/syntax-highlighter/syntax-highlighter.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { AssetEpics } from './epics/asset.epics';
-import { EditorComponent } from './components/editor/editor.component';
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
@@ -121,6 +118,9 @@ requirejs({
     'ace': `${environment.assetsUrl}/js/vendor/ace`
   }
 });
+
+// This is just for "pretty" to be available globally, really.
+require('./utils/logging.utils').foo();
 
 @NgModule({
   declarations: [
@@ -148,7 +148,6 @@ requirejs({
     UserCrUDComponent,
     ProjectCrUDComponent,
     ItemListDashletComponent,
-    CodeEditorComponent,
     AssetDisplayComponent,
     WorkflowStatesComponent,
     IFrameComponent,
@@ -159,7 +158,9 @@ requirejs({
     TabBarComponent,
     SyntaxHighlighterComponent,
     SpinnerComponent,
-    EditorComponent
+    EditComponent,
+    EditorComponent,
+    CodeEditorComponent,
 
   ],
   imports: [
