@@ -26,6 +26,10 @@ h1, h2 {
   @include open-sans-light;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 router-outlet {
   display: none;
 }

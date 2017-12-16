@@ -1,14 +1,12 @@
 import {
   OnInit,
   AfterViewInit,
-  Inject,
   Component,
   ViewChildren,
   ComponentFactoryResolver, ComponentFactory, QueryList, ChangeDetectorRef, HostBinding
 } from '@angular/core';
 import { StudioService } from '../../services/studio.service';
 import { environment } from '../../../environments/environment';
-import { AppStore } from '../../state.provider';
 import { AppState, StateEntity, Workspace } from '../../classes/app-state.interface';
 import { ExpandedPanelsActions } from '../../actions/expanded-panels.actions';
 import { User } from '../../models/user.model';
@@ -16,12 +14,7 @@ import { ComponentHostDirective } from '../component-host.directive';
 import { ContentTreeComponent } from '../content-tree/content-tree.component';
 import { Project } from '../../models/project.model';
 import { Observable } from 'rxjs/Observable';
-import { ComponentWithState } from '../../classes/component-with-state.class';
-import { SubjectStore } from '../../classes/subject-store.class';
 import { dispatch, NgRedux, select } from '@angular-redux/store';
-import { isNullOrUndefined } from 'util';
-import { combineLatest, filter, takeUntil } from 'rxjs/operators';
-import { ProjectActions } from '../../actions/project.actions';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 
 const NavItemTypesEnum = {
@@ -37,10 +30,6 @@ const COMPONENT_MAP = {
 };
 
 const APP_NAV_KEY = 'sidebar.appnav.panel';
-
-function selectEditSessionsLength(state: AppState) {
-  return state.editSessions.order.length;
-}
 
 @Component({
   selector: 'std-sidebar',

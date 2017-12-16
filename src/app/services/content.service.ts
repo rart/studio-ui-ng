@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { StudioHttpService } from './http.service';
 import { Asset } from '../models/asset.model';
 import { Observable } from 'rxjs/Observable';
@@ -71,7 +71,10 @@ export class ContentService {
       .get(`${baseUrl}/unlock-content.json`, {
         site: asset.projectCode,
         path: asset.id
-      });
+      })
+      .pipe(
+        switchMap(() => this.byId(asset.projectCode, asset.id))
+      );
   }
 
 }

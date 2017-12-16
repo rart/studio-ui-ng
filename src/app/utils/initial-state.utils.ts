@@ -50,8 +50,8 @@ export const initialState: AppState = {
     }
   },
   editSessions: {
-    activeId: 'TEST_SESSION_ID_4',
-    order: ['TEST_SESSION_ID_2', 'TEST_SESSION_ID_4', /*'TEST_SESSION_ID_1', */'TEST_SESSION_ID_3'],
+    activeId: 'TEST_SESSION_ID_3',
+    order: ['TEST_SESSION_ID_2', /*'TEST_SESSION_ID_4', 'TEST_SESSION_ID_1', */'TEST_SESSION_ID_3'],
     byId: {
       // 'TEST_SESSION_ID_1': {
       //   id: 'TEST_SESSION_ID_1',
@@ -77,14 +77,14 @@ export const initialState: AppState = {
         projectCode: 'launcher',
         fetchPayload: null
       },
-      'TEST_SESSION_ID_4': {
-        id: 'TEST_SESSION_ID_4',
-        status: 'void',
-        data: null,
-        assetId: '/static-assets/js/foo.js',
-        projectCode: 'launcher',
-        fetchPayload: null
-      }
+      // 'TEST_SESSION_ID_4': {
+      //   id: 'TEST_SESSION_ID_4',
+      //   status: 'void',
+      //   data: null,
+      //   assetId: '/static-assets/js/foo.js',
+      //   projectCode: 'launcher',
+      //   fetchPayload: null
+      // }
     }
   }
 };

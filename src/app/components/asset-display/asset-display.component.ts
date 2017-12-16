@@ -21,6 +21,8 @@ import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { createPreviewTabCore } from '../../utils/state.utils';
 import { SettingsEnum } from '../../enums/Settings.enum';
 import { AssetActions } from '../../actions/asset.actions';
+import { notNullOrUndefined } from '../../app.utils';
+import { skip, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'std-asset-display',
@@ -43,6 +45,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
 
   settings: Settings;
 
+  @Input() assetID: string;
   @Input() asset: Asset;
   @Input() disallowWrap = true;
   @Input() showCheck = false;
@@ -54,6 +57,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
   @Input() showLink = true; // Asset renders as a link when 'previewable'
   @Input() displayField: keyof Asset = 'label';
   @Input() actionHandler: (actionDef: any, $actionNext: () => void) => boolean;
+  // @Input() handleUpdates = false;
 
   @Output() action = new EventEmitter();
 
@@ -61,6 +65,9 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
   // https://stackoverflow.com/questions/46065535/expressionchangedafterithasbeencheckederror-in-two-way-angular-binding
   // https://angular.io/guide/template-syntax
   // @Output() showIconsChange = new EventEmitter();
+
+  assetSub;
+  selectedAssetsSub;
 
   @HostBinding('class.no-wrap')
   get wrapDisallowed() {
@@ -148,6 +155,8 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
   // Keeps track of the value of showCheck to determine
   // whether to update stuff related to state.selectedItems
   private priorShowCheckValue;
+  //
+  private priorAssetID;
 
   // internal compiled value of the @input showmenu
   // updated every ngOnChanges
@@ -176,18 +185,27 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
       this.shouldShowMenu = this.showMenu;
     }
 
-    // if (!this.showTypeIcon && !this.showStatusIcons) {
-    //   this.showIcons = false;
-    //   this.showIconsChange.emit(false);
-    // }
+    // if (this.handleUpdates) {}
+    if (this.priorAssetID !== this.asset.id) {
+      this.priorAssetID = this.asset.id;
+      if (notNullOrUndefined(this.assetSub)) {
+        this.assetSub.unsubscribe();
+      }
+      this.assetSub = this.select(['entities', 'assets', 'byId', this.asset.id])
+      // right now, skipping the first since the asset will
+      // always be pre-loaded by the host component. Probably
+      // should change in the future
+        .pipe(this.endWhenDestroyed)
+        .subscribe((a: Asset) => this.asset = a);
+    }
 
     if (this.priorShowCheckValue !== this.showCheck) {
       // Only good as far as there's a single subscription...
       if (this.priorShowCheckValue === true) {
-        this.unSubscriber$.next();
+        this.selectedAssetsSub.unsubscribe();
       }
       if (this.showCheck) {
-        this.store.select(['workspaceRef', 'selectedItems'])
+        this.selectedAssetsSub = this.store.select(['workspaceRef', 'selectedItems'])
           .pipe(this.endWhenDestroyed)
           .subscribe(selectedItems => this.selectedItemsStateChanged(selectedItems));
       }
@@ -195,6 +213,17 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
     }
 
   }
+
+  // onChanges() {
+  //
+  //   let assetID = this.assetID;
+  //   if (this.assetID) {
+  //     asset
+  //   }
+  //
+  //   this.asset$ = this.select(['entities', 'assets', ]);
+  //
+  // }
 
   isNavigable() {
     if (!this.showLink) {

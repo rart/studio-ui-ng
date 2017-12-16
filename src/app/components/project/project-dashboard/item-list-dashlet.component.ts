@@ -211,7 +211,6 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
       .pipe(...this.noNullsAndUnSubOps)
       .subscribe(assets => {
         this.assets = assets;
-        pretty('RED', 'Asset have been set.');
       });
 
     // https://stackoverflow.com/questions/40530108/fetch-data-once-with-observables-in-angular-2

@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { delay, ignoreElements, map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { StoreActionsEnum } from '../enums/actions.enum';
 import { WorkflowService } from '../services/workflow.service';
 import { AssetActions } from '../actions/asset.actions';
 import { RootEpic } from './root.epic';
 import { ContentService } from '../services/content.service';
 import { Observable } from 'rxjs/Observable';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import 'rxjs/add/observable/forkJoin';
 import { Asset } from '../models/asset.model';
 import { isArray } from 'util';
@@ -26,13 +25,13 @@ export class AssetEpics {
       let { projectCode, assetId, sessionUUID } = payload;
       return Observable
         .forkJoin([
-          this.content.byId(projectCode, assetId),
-          this.content.read(projectCode, assetId, true)
+          this.content.read(projectCode, assetId, true),
+          this.content.byId(projectCode, assetId)
         ])
         .pipe(
-          switchMap(responses => {
-            let asset = <Asset>responses[0];
-            let { content } = <any>responses[1];
+          switchMap((responses: any[]) => {
+            let asset: Asset = responses[1];
+            let { content } = responses[0];
             return [
               this.actions.gotten(asset),
               this.actions.fetchedForEdit(sessionUUID, content)
@@ -51,7 +50,10 @@ export class AssetEpics {
       } else {
         return this.content
           .unlock(payload.asset)
-          .pipe(delay(500), map(_ => this.actions.editSessionClosed(payload.session)));
+          .pipe(switchMap(asset => [
+            this.actions.editSessionClosed(payload.session),
+            this.actions.gotten(asset)
+          ]));
       }
     });
 
@@ -88,7 +90,7 @@ export class AssetEpics {
   epics() {
     return this.manifest.map(epic => {
       return ((name) =>
-        (action$, store, dependencies) => this[name](action$, store, dependencies)
+          (action$, store, dependencies) => this[name](action$, store, dependencies)
       )(epic);
     });
     // return [

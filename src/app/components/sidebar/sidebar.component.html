@@ -23,7 +23,7 @@
         <span class="label">Preview</span>
       </a>
       <a class="sidebar-item"
-         *ngIf="(editSessions$ | async).length"
+         [hidden]="(editSessions$ | async).length === 0"
          routerLink="/edit"
          routerLinkActive="active">
         <i class="fa fa-pencil insure pink text"></i>
