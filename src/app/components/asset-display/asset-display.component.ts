@@ -157,7 +157,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
 
   ngOnInit() {
     this.select('settings')
-      .pipe(this.takeUntil)
+      .pipe(this.endWhenDestroyed)
       .subscribe((x: Settings) => this.settings = x);
   }
 
@@ -190,7 +190,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
       }
       if (this.showCheck) {
         this.store.select(['workspaceRef', 'selectedItems'])
-          .pipe(this.takeUntil)
+          .pipe(this.endWhenDestroyed)
           .subscribe(selectedItems => this.selectedItemsStateChanged(selectedItems));
       }
       this.priorShowCheckValue = this.showCheck;

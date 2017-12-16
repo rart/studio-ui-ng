@@ -35,13 +35,14 @@ import { FontVisualizerComponent } from '../font-visualizer/font-visualizer.comp
 import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
 import { isNullOrUndefined } from 'util';
 import { showSnackBar } from '../../utils/material.utils';
+import { environment } from '../../../environments/environment';
 
 // import { trigger, style, transition, animate, keyframes, query, stagger } from '@angular/animations';
 // https://angular.io/guide/animations
 
 const clearTimeout = window.clearTimeout;
 
-const COOKIE = 'crafterSite';
+const COOKIE = environment.preview.cookie;
 const LANDING_PAGE_TITLE = '** Crafter Studio Preview **';
 const ERROR_PAGE_TITLE = '** Crafter Studio Preview ERROR **';
 const IFRAME_LANDING_URL = '/app/assets/guest.landing.html';
@@ -199,7 +200,7 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
 
     communicator.subscribe(
       message => this.processMessage(message),
-      this.takeUntil);
+      this.endWhenDestroyed);
 
     // this.route.queryParams
     //   .subscribe(params => {

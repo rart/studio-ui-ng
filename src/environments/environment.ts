@@ -22,7 +22,7 @@ export const environment: Environment = {
 
   apiVersion: 'v3',
 
-  project: {
+  preview: {
     cookie: 'crafterSite'
   },
 

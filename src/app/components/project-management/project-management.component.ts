@@ -118,7 +118,7 @@ export class ProjectManagementComponent extends WithNgRedux implements OnInit {
       source$: this.projects$
         .filter(projects => !isNullOrUndefined(projects)),
       pager$: this.pager$,
-      takeUntilOp: this.takeUntil,
+      takeUntilOp: this.endWhenDestroyed,
       filterFn: (item, query) => query.trim() === '' || item.name.includes(query),
       filter$: this.filterQuery.valueChanges
         .pipe(

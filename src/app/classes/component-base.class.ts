@@ -4,11 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 export class ComponentBase {
 
   protected unSubscriber$: Subject<any> = new Subject();
-  private until$ = takeUntil(this.unSubscriber$);
-
-  get takeUntil() {
-    return this.until$;
-  }
+  protected endWhenDestroyed = takeUntil(this.unSubscriber$);
 
   // noinspection TsLint
   ngOnDestroy() {

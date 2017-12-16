@@ -8,7 +8,7 @@ export class WithNgRedux extends ComponentBase {
 
   protected noNullsAndUnSubOps = [
     filter(x => !isNullOrUndefined(x)),
-    this.takeUntil
+    this.endWhenDestroyed
   ];
 
   get state() {

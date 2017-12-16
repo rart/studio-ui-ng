@@ -192,4 +192,7 @@ export class CodeEditorComponent extends WithNgRedux implements OnInit, OnChange
     this.editor.focus();
   }
 
+  resize() {
+    this.editor.resize();
+  }
 }

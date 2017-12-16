@@ -14,6 +14,7 @@ import {
 } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { CommunicationService } from '../../services/communication.service';
+import { isNull } from 'util';
 
 @Component({
   selector: 'std-iframe',
@@ -24,18 +25,30 @@ export class IFrameComponent implements OnInit, OnDestroy, AfterViewInit, AfterC
 
   @ViewChild('frame') iFrameRef: ElementRef;
 
-  private communications = false;
+  @Output() load = new Subject();
+  @Output() beforeNav = new Subject();
 
-  get element() {
-    return this.iFrameRef ? this.iFrameRef.nativeElement : null;
-  }
+  @Input() changeTrigger: any; // A(ny) secondary property to cause angular to call ngOnChanges
+
+  private _communicates = false;
+  private _src = 'about:blank';
 
   @Input() src = 'about:blank';
-  @Input() changeTrigger: any; // A(ny) secondary property to cause angular to call ngOnChanges
+  // @Input()
+  // set src(src) {
+  //   this._src = src;
+  //   if (!isNull(this.element)) {
+  //     this.navigate(src);
+  //   }
+  // }
+  //
+  // get src() {
+  //   return this._src;
+  // }
 
   @Input()
   set communicates(communicates: boolean) {
-    this.communications = communicates;
+    this._communicates = communicates;
     if (communicates) {
       this.setUpCommunications();
     } else {
@@ -43,8 +56,9 @@ export class IFrameComponent implements OnInit, OnDestroy, AfterViewInit, AfterC
     }
   }
 
-  @Output() load = new Subject();
-  @Output() beforeNav = new Subject();
+  get element() {
+    return this.iFrameRef ? this.iFrameRef.nativeElement : null;
+  }
 
   constructor(private communicator: CommunicationService) {
   }
@@ -58,7 +72,7 @@ export class IFrameComponent implements OnInit, OnDestroy, AfterViewInit, AfterC
   }
 
   ngAfterViewInit() {
-    this.communicates = this.communications;
+    this.communicates = this._communicates;
   }
 
   ngAfterContentInit() {
@@ -66,7 +80,7 @@ export class IFrameComponent implements OnInit, OnDestroy, AfterViewInit, AfterC
   }
 
   ngOnChanges() {
-    // pretty('yellow', 'Changes have occurred', this.src);
+    pretty('yellow', 'Changes have occurred', this.src);
     if (this.element) {
       this.reload();
     }

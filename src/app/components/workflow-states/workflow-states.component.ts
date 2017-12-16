@@ -65,7 +65,7 @@ export class WorkflowStatesComponent extends ComponentBase implements OnInit, On
     return this.items = createLocalPagination$({
 
       pager$: this.pager$,
-      takeUntilOp: this.takeUntil,
+      takeUntilOp: this.endWhenDestroyed,
       filterFn: (item, query) => item.asset.id.includes(query),
 
       source$: this.workflowService

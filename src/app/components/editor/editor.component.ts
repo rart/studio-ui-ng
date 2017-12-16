@@ -34,6 +34,12 @@ import { AssetActions } from '../../actions/asset.actions';
 import { CodeEditorComponent } from '../code-editor/code-editor.component';
 import { Subject } from 'rxjs/Subject';
 import { IFrameComponent } from '../iframe/iframe.component';
+import { environment } from '../../../environments/environment';
+import { CookieService } from 'ngx-cookie-service';
+import { CommunicationService } from '../../services/communication.service';
+import { WindowMessageTopicEnum } from '../../enums/window-message-topic.enum';
+
+const COOKIE = environment.preview.cookie;
 
 // TODO: how to avoid navigation when code has been entered and not saved? — also, is auto save viable?
 
@@ -45,10 +51,11 @@ import { IFrameComponent } from '../iframe/iframe.component';
 export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(IFrameComponent) iFrame: IFrameComponent;
+  @ViewChildren(IFrameComponent) iFrameQL: QueryList<IFrameComponent>;
   @ViewChild(CodeEditorComponent) codeEditor: CodeEditorComponent;
   @ViewChildren(CodeEditorComponent) codeEditorQL: QueryList<CodeEditorComponent>;
   // The code editor has been attached to the document and angular has picked it up
-  private codeEditorReady$ = new BehaviorSubject<boolean>(false);
+  private codeEditorComponentReady$ = new BehaviorSubject<boolean>(false);
 
   @select(['editSessions'])
   private sessions$: Observable<EditSessions>;
@@ -101,6 +108,7 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
   );
 
   data = {
+    url: '/',
     split: 'no', // 'no' | 'vertical' | 'horizontal'
     content: '',
     hasChanged: false
@@ -113,7 +121,8 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
   constructor(store: NgRedux<AppState>,
               private actions: AssetActions,
               private elementRef: ElementRef,
-              private changeDetector: ChangeDetectorRef) {
+              private cookieService: CookieService,
+              private communicator: CommunicationService) {
     super(store);
   }
 
@@ -126,7 +135,7 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
       this.sessionChanged$.complete();
     });
 
-    let { sessions$, sessionId$, unSubscriber$, value$, codeEditorQL } = this;
+    let { sessions$, sessionId$, unSubscriber$, value$ } = this;
 
     sessionId$
       .pipe(
@@ -152,6 +161,20 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
       )
       .subscribe(value => this.contentChanged(value));
 
+    this.communicator.subscribeTo(
+      WindowMessageTopicEnum.GUEST_CHECK_IN,
+      (message) => {
+        if (this.data.url !== message.data.url) {
+          this.data.url = message.data.url;
+          this.onDataChange();
+        }
+      }, /* any scope */undefined,
+      this.endWhenDestroyed);
+
+    this.communicator.resize(() => {
+      this.split(true);
+    }, this.endWhenDestroyed);
+
   }
 
   ngAfterViewInit() {
@@ -159,7 +182,7 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
       .changes
       .pipe(take(1))
       .subscribe(() => {
-        this.codeEditorReady$.next(true);
+        this.codeEditorComponentReady$.next(true);
       });
   }
 
@@ -283,15 +306,38 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
 
   }
 
-  split() {
-    let { data } = this, view = data.split;
-    if (view !== 'no') {
+  split(recalc = false) {
+    let
+      { data } = this,
+      view = data.split;
+    if (view === 'no' && recalc) {
+      return;
+    }
+    if (view !== 'no' && !recalc) {
       data.split = 'no';
     } else {
+      if (view === 'no') {
+        this.iFrameQL
+          .changes
+          .pipe(take(1))
+          .subscribe((ql) => {
+            this.iFrame.navigate(this.data.url);
+          });
+      }
       let $elem = $(this.elementRef.nativeElement);
       data.split = $elem.width() > $elem.height() ? 'vertical' : 'horizontal';
     }
     this.onDataChange();
+    // Give angular's change detector a chance to
+    // update before resizing the editor.
+    setTimeout(() => this.codeEditor.resize());
+  }
+
+  beforeIFrameNav() {
+    let asset = this.asset;
+    if (asset.projectCode) {
+      this.cookieService.set(COOKIE, asset.projectCode, null, '/');
+    }
   }
 
   onDataChange() {

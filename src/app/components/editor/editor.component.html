@@ -22,8 +22,9 @@
       [editable]="true"></std-code-editor>
     <std-iframe
       *ngIf="data.split !== 'no'"
-      [src]="'/'"
-      [communicates]="false"></std-iframe>
+      (beforeNav)="beforeIFrameNav($event)"
+
+      [communicates]="true"></std-iframe>
   </div>
 </div>
 <std-spinner

@@ -60,7 +60,7 @@ export abstract class Communicator {
   }
 
   subscribeTo<T, R>(topic: WindowMessageTopicEnum,
-                    subscriber: (value) => void,
+                    subscriber: (value: WindowMessage) => void,
                     scope?: WindowMessageScopeEnum,
                     ...operations): Subscription {
     let ops = [];
