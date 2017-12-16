@@ -216,6 +216,8 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
     // https://stackoverflow.com/questions/40530108/fetch-data-once-with-observables-in-angular-2
     if (!this.collection) {
       this.refresh();
+    } else {
+      this.itemsFetching = false;
     }
 
     (!this.isDialog) && (this.finished = null);

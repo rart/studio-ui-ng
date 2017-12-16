@@ -156,27 +156,27 @@
 <ng-template #tableFormatTpl let-items>
   <table class="ui selectable flat extremely compact basic table">
     <tbody>
-    <tr *ngFor="let item of items">
+    <tr *ngFor="let assetId of items">
       <td class="label">
         <div>
-          <std-asset-display [asset]="item" [disallowWrap]="true" [showCheck]="true"></std-asset-display>
+          <std-asset-display [asset]="assets[assetId]" [disallowWrap]="true" [showCheck]="true"></std-asset-display>
         </div>
       </td>
       <td class="url">
-        <a (click)="requestPreview(item)" title="{{item.url}}">{{item.url}}</a>
+        <a (click)="requestPreview(assets[assetId])" title="{{assets[assetId].url}}">{{assets[assetId].url}}</a>
       </td>
       <td class="edit-by">
-        <div>{{item.lastEditedBy.name}}</div>
+        <div>{{assets[assetId].lastEditedBy.name}}</div>
       </td>
       <td class="edit-on">
-        <div title="{{item.lastEditedOn | amDateFormat:'MM/DD/YY h:mm a'}}">
-          {{item.lastEditedOn | amTimeAgo}}
+        <div title="{{assets[assetId].lastEditedOn | amDateFormat:'MM/DD/YY h:mm a'}}">
+          {{assets[assetId].lastEditedOn | amTimeAgo}}
         </div>
       </td>
       <td class="menu">
         <div>
           <std-asset-display
-            [asset]="item"
+            [asset]="assets[assetId]"
             [showMenu]="true"
             [showLabel]="false"
             [showCheck]="false"
