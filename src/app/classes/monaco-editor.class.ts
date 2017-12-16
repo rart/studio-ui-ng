@@ -63,9 +63,6 @@ export class MonacoEditor extends CodeEditor {
           Monaco.editor.setTheme('vs');
           break;
       }
-    },
-    value: (value) => {
-      this.instance.setValue(value);
     }
   };
 
@@ -76,23 +73,13 @@ export class MonacoEditor extends CodeEditor {
     });
   }
 
-  value(nextValue?: string): Promise<string> {
-    // if (!isNullOrUndefined(nextValue) && isNullOrUndefined(this.instance)) {
-    //   return this.instance.getValue();
-    // }
-    return this.tap(() => {
-      if (nextValue !== undefined) {
-        this.instance.setValue(nextValue);
-        return nextValue;
-      } else {
-        return this.instance.getValue();
-      }
-    });
+  protected vendorSetValue(value: string): void {
+    this.instance.setValue(value);
   }
 
   render(elem: any, options: any): Promise<CodeEditor> {
     return this.tap(() => {
-      let { rendered } = this;
+      let { rendered$ } = this;
       let editor = Monaco.editor.create(elem, {
         scrollBeyondLastLine: false,
         value: options.value || ''
@@ -103,15 +90,15 @@ export class MonacoEditor extends CodeEditor {
         }
         this.options(options);
       }
+      this.instance = editor;
+      rendered$.next(true);
+      rendered$.complete();
       editor.getModel().onDidChangeContent((e) => {
-        this.changes.next({
+        this.changes$.next({
           value: this.instance.getValue(),
           originalEvent: e
         });
       });
-      this.instance = editor;
-      rendered.next(true);
-      rendered.complete();
     });
   }
 
@@ -121,6 +108,12 @@ export class MonacoEditor extends CodeEditor {
 
   focus() {
     this.ready(() => this.instance.focus());
+  }
+
+  format(): void {
+    this.ready(() => {
+      this.instance.getAction('editor.action.formatDocument').run();
+    });
   }
 
   dispose(): void {

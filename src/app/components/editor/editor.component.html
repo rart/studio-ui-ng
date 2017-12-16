@@ -1,18 +1,15 @@
 <div class="view container">
-  <div class="edit-controls">
-    <section class="ui controls">
-      <button class="ui mini icon button" (click)="save()"><i class="icon save"></i></button>
-      <button class="ui mini icon button"><i class="icon search"></i></button>
-      <button class="ui mini icon button"><i class="icon cogs"></i></button>
-      <button class="ui mini icon button"><i class="icon options"></i></button>
-      <button class="ui mini icon button"><i class="icon history"></i></button>
-      <button class="ui mini icon button" (click)="split()"><i class="icon columns"></i></button>
-      <button class="ui mini icon button" (click)="revert()"><i class="icon reply"></i></button>
-      <mat-spinner *ngIf="session.status === 'saving'" [diameter]="30" [strokeWidth]="5"></mat-spinner>
-    </section>
-  </div>
+  <section class="ui controls">
+    <button [disabled]="!data.hasChanges" class="ui mini button with larger icon" (click)="save()"><i class="icon save"></i></button>
+    <button class="ui mini button with larger icon"><i class="icon search"></i></button>
+    <button class="ui mini button with larger icon"><i class="icon cogs"></i></button>
+    <button class="ui mini button with larger icon" (click)="format()"><i class="icon options"></i></button>
+    <button class="ui mini button with larger icon"><i class="icon history"></i></button>
+    <button class="ui mini button with larger icon" (click)="split()"><i class="icon columns"></i></button>
+    <button [disabled]="!data.hasChanges" class="ui mini button with larger icon" (click)="revert()"><i class="icon reply"></i></button>
+    <mat-spinner *ngIf="session.status === 'saving'" [diameter]="30" [strokeWidth]="5"></mat-spinner>
+  </section>
   <div [class]="classes" *ngIf="asset">
-    <!--<div class="code-editor-wrapper"></div>-->
     <std-code-editor
       [vendor]="vendor"
       [value]="content"
@@ -23,7 +20,6 @@
     <std-iframe
       *ngIf="data.split !== 'no'"
       (beforeNav)="beforeIFrameNav($event)"
-
       [communicates]="true"></std-iframe>
   </div>
 </div>

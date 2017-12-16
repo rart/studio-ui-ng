@@ -2,27 +2,24 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  EventEmitter, HostBinding,
   Input,
   OnChanges, OnDestroy,
   OnInit,
   Output,
   ViewChild
 } from '@angular/core';
-import { environment } from '../../../environments/environment';
-import { Asset } from '../../models/asset.model';
-import { ContentService } from '../../services/content.service';
 import { CodeEditor, CodeEditorChange, CodeEditorChoiceEnum } from '../../classes/code-editor.abstract';
 import { CodeEditorFactory } from '../../classes/code-editor-factory.class';
 import { Subject } from 'rxjs/Subject';
-import { combineLatest, map, switchMap, take, takeUntil, takeWhile } from 'rxjs/operators';
+import { switchMap, take, takeUntil } from 'rxjs/operators';
 import { CommunicationService } from '../../services/communication.service';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
-import { AppState, EditSession, EditSessions, LookUpTable } from '../../classes/app-state.interface';
-import { NgRedux, select } from '@angular-redux/store';
+import { AppState } from '../../classes/app-state.interface';
+import { NgRedux } from '@angular-redux/store';
 import { Observable } from 'rxjs/Observable';
 import { isNullOrUndefined } from 'util';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { notNullOrUndefined } from '../../app.utils';
 
 // TODO: how to avoid navigation when code has been entered and not saved? — also, is auto save viable?
 
@@ -43,8 +40,10 @@ export class CodeEditorComponent extends WithNgRedux implements OnInit, OnChange
   @ViewChild('editor') private elementRef: ElementRef;
 
   private _editable = true; // for editable (get/set)
-  private _value = ''; // for value (get/set)
+  private _value; // for value (get/set)
   private editor: CodeEditor;
+
+  private valueSettingSub;
 
   private ngOnChanges$ = new Subject();
 
@@ -134,21 +133,22 @@ export class CodeEditorComponent extends WithNgRedux implements OnInit, OnChange
 
   getOptions() {
     let { value, editable, lang } = this;
-    return {
+    let options = {
       lang: lang,
       emmet: true,
-      value: value,
       editable: editable
     };
+    if (notNullOrUndefined(value)) {
+      options['value'] = value;
+    }
+    return options;
   }
 
   @Input()
   set editable(editable) {
     this._editable = editable;
-    this.performWhenEditorReady((initialized) => {
-      if (initialized) {
-        this.editor.option('editable', this._editable);
-      }
+    this.performWhenEditorReady(() => {
+      this.editor.option('editable', this._editable);
     });
   }
 
@@ -158,14 +158,18 @@ export class CodeEditorComponent extends WithNgRedux implements OnInit, OnChange
 
   @Input()
   set value(value: string) {
+    if (isNullOrUndefined(value)) {
+      return;
+    }
     // TODO: review EditorComponent initialization call stack
     // console.log(`set value called with ${value}`);
     value = isNullOrUndefined(value) ? '' : value;
     this._value = value;
-    this.performWhenEditorReady((initialized) => {
-      if (initialized) {
-        this.editor.value(this._value);
-      }
+    if (notNullOrUndefined(this.valueSettingSub)) {
+      this.valueSettingSub.unsubscribe();
+    }
+    this.valueSettingSub = this.performWhenEditorReady(() => {
+      this.editor.value(this._value);
     });
   }
 
@@ -174,7 +178,7 @@ export class CodeEditorComponent extends WithNgRedux implements OnInit, OnChange
   }
 
   performWhenEditorReady(logic) {
-    this.initialized$
+    return this.initialized$
       .pipe(
         switchMap((initialized) => {
           if (initialized) {
@@ -195,4 +199,9 @@ export class CodeEditorComponent extends WithNgRedux implements OnInit, OnChange
   resize() {
     this.editor.resize();
   }
+
+  format() {
+    this.editor.format();
+  }
+
 }

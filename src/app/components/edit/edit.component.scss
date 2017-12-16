@@ -1,3 +1,5 @@
+@import "../../styles/settings";
+
 :host {
 
 }
@@ -8,4 +10,13 @@
 
 .edit.content {
   height: calc(100% - 80px);
+}
+
+
+.ui.tab.bar .tab {
+  &.edited {
+    /deep/ std-asset-display .label {
+      color: $color-blue;
+    }
+  }
 }

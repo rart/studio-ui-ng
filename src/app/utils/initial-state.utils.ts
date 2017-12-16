@@ -50,7 +50,7 @@ export const initialState: AppState = {
     }
   },
   editSessions: {
-    activeId: 'TEST_SESSION_ID_2',
+    activeId: 'TEST_SESSION_ID_4',
     order: ['TEST_SESSION_ID_2', 'TEST_SESSION_ID_4', /*'TEST_SESSION_ID_1', */'TEST_SESSION_ID_3'],
     byId: {
       // 'TEST_SESSION_ID_1': {

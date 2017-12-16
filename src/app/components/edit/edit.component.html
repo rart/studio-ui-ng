@@ -10,7 +10,10 @@
       </section>
 
       <nav class="ui tab bar" *ngIf="requirementsMet$ | async">
-        <div class="tab" *ngFor="let tab of sessions" [class.active]="(active) && (tab === active)">
+        <div class="tab"
+             *ngFor="let tab of sessions"
+             [class.edited]="(tab.status === 'dirty')"
+             [class.active]="(active) && (tab === active)">
           <button (click)="selectTab(tab)" class="main">
             <std-asset-display
               *ngIf="assets[tab.assetId]"
@@ -21,7 +24,10 @@
               [showStatusIcons]="true"
               [showMenu]="false"></std-asset-display>
           </button>
-          <button *ngIf="tab.status !== 'closing'" (click)="closeTab(tab)" class="close" title="Close" i18n>&times;</button>
+          <button class="close" title="Close"
+                  *ngIf="(tab.status !== 'closing')"
+                  (click)="closeTab(tab)"
+                  i18n>&times;</button>
           <mat-spinner *ngIf="tab.status === 'closing'" [diameter]="25" [strokeWidth]="5"></mat-spinner>
         </div>
       </nav>

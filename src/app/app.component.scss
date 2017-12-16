@@ -530,6 +530,13 @@ button {
   }
 }
 
+.ui.button.with.larger.icon {
+  padding: 0.2em 0.5em 0;
+  i {
+    font-size: 1.4em;
+  }
+}
+
 .inline-flex {
   display: inline-flex;
 }

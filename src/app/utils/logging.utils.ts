@@ -18,7 +18,10 @@ const LogStyle = {
   ORANGE: `background: ${ColorsEnum.ORANGE}; color: #FFF`,
   GREEN: `background: ${ColorsEnum.GREEN}; color: #007300`,
   PINK: `background: ${ColorsEnum.PINK}; color: #FFF`,
-  RED: `background: ${ColorsEnum.RED}; color: #FFF`
+  RED: `background: ${ColorsEnum.RED}; color: #FFF`,
+  BLUE: `background: ${ColorsEnum.BLUE}; color: #FFF`,
+  PURPLE: `background: ${ColorsEnum.PURPLE}; color: #FFF`,
+  BLACK: `background: ${ColorsEnum.BLACK}; color: #FFF`,
 };
 type LogStyle = (typeof LogStyle)[keyof typeof LogStyle];
 const CLEAR_CONSOLE = '$c';

@@ -1,5 +1,6 @@
 import { CodeEditor, CodeEditorChoiceEnum } from './code-editor.abstract';
 import { AssetTypeEnum } from '../enums/asset-type.enum';
+import { isNullOrUndefined } from 'util';
 
 export class AceEditor extends CodeEditor {
 
@@ -87,9 +88,6 @@ export class AceEditor extends CodeEditor {
           this.instance.setTheme('ace/theme/chrome');
           break;
       }
-    },
-    value: (value) => {
-      this.value(value);
     }
   };
 
@@ -104,40 +102,42 @@ export class AceEditor extends CodeEditor {
     });
   }
 
-  value(nextContent?: string): Promise<string> {
-    return this.tap(() => {
-      if (nextContent !== undefined) {
-        this.instance.setValue(nextContent); // or session.setValue
-        this.instance.clearSelection();
-        this.instance.moveCursorToPosition({ row: 0, column: 0 });
-        return nextContent;
-      } else {
-        return this.instance.getValue(); // or session.getValue
-      }
-    });
+  protected vendorSetValue(nextValue: string): void {
+    this.instance.setValue(nextValue); // or session.setValue
+    // this.instance.clearSelection();
+    // this.instance.moveCursorToPosition({ row: 0, column: 0 });
+  }
+
+  format(): void {
+    // TODO...
   }
 
   render(elem: HTMLElement, options?): Promise<AceEditor> {
     return this.tap(() => {
       let
         editor,
+        initialValue = options.value,
         newElem = document.createElement('div'),
-        { ace, rendered } = this;
+        { ace, rendered$ } = this;
       elem.appendChild(newElem);
       editor = ace.edit(newElem);
+      if (!isNullOrUndefined(initialValue)) {
+        this.value(initialValue);
+      }
+      this.elem = newElem;
+      this.instance = editor;
+      rendered$.next(true);
+      rendered$.complete();
+      if (options) {
+        delete options.value;
+        this.options(options);
+      }
       editor.getSession().on('change', (e) => {
-        this.changes.next({
+        this.changes$.next({
           value: this.instance.getValue(),
           originalEvent: e
         });
       });
-      this.elem = newElem;
-      this.instance = editor;
-      rendered.next(true);
-      rendered.complete();
-      if (options) {
-        this.options(options);
-      }
     });
   }
 

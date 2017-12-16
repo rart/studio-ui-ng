@@ -2,6 +2,7 @@ import { Reducer } from 'redux';
 import { v4 } from 'uuid';
 import { StoreActionsEnum } from '../enums/actions.enum';
 import { EditSessions } from '../classes/app-state.interface';
+import { isNullOrUndefined } from 'util';
 
 export const editSessions: Reducer<EditSessions> = (state = {
   activeId: null,
@@ -31,6 +32,7 @@ export const editSessions: Reducer<EditSessions> = (state = {
           byId: {
             ...state.byId,
             [sessionUUID]: {
+              id: sessionUUID,
               data: null,
               fetchPayload: null,
               status: 'void',
@@ -44,6 +46,9 @@ export const editSessions: Reducer<EditSessions> = (state = {
 
     case StoreActionsEnum.FETCH_ASSET_FOR_EDIT: {
       let sessionUUID = action.payload.sessionUUID;
+      if (isNullOrUndefined(sessionUUID)) {
+        return state;
+      }
       return {
         ...state,
         byId: {
@@ -73,7 +78,11 @@ export const editSessions: Reducer<EditSessions> = (state = {
 
     case StoreActionsEnum.UPDATE_EDIT_SESSION: {
       let session = state.byId[action.payload.id];
-      return updateOne(state, { ...session, data: { ...action.payload.data } });
+      return updateOne(state, {
+        ...session,
+        status: (action.payload.hasChanges ? 'dirty' : 'fetched'),
+        data: { ...action.payload.data }
+      });
     }
 
     case StoreActionsEnum.PERSIST_SESSION_CHANGES: {

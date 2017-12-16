@@ -82,7 +82,7 @@ import { UserCrUDComponent } from './components/user-management/user-crud/user-c
 import { ProjectCrUDComponent } from './components/project-management/project-crud/project-crud.component';
 import { ItemListDashletComponent } from './components/project/project-dashboard/item-list-dashlet.component';
 import { I18nPipe } from './i18n.pipe';
-import { EditComponent } from './components/edit/edit.component';
+import { ChangeLossDecisionViewComponent, EditComponent } from './components/edit/edit.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { CodeEditorComponent } from './components/code-editor/code-editor.component';
 import { AssetDisplayComponent } from './components/asset-display/asset-display.component';
@@ -161,6 +161,7 @@ require('./utils/logging.utils').foo();
     EditComponent,
     EditorComponent,
     CodeEditorComponent,
+    ChangeLossDecisionViewComponent
 
   ],
   imports: [
@@ -196,7 +197,8 @@ require('./utils/logging.utils').foo();
     EmbeddedViewDialogComponent,
     ProjectCrUDComponent,
     ItemListDashletComponent,
-    ContentTreeComponent
+    ContentTreeComponent,
+    ChangeLossDecisionViewComponent
   ],
   providers: [
 

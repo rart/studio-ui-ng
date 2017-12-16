@@ -1,5 +1,5 @@
 import {
-  AfterViewInit, ChangeDetectorRef,
+  AfterViewInit,
   Component,
   ElementRef,
   OnChanges,
@@ -38,6 +38,7 @@ import { environment } from '../../../environments/environment';
 import { CookieService } from 'ngx-cookie-service';
 import { CommunicationService } from '../../services/communication.service';
 import { WindowMessageTopicEnum } from '../../enums/window-message-topic.enum';
+import { notNullOrUndefined } from '../../app.utils';
 
 const COOKIE = environment.preview.cookie;
 
@@ -67,7 +68,7 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
   value$ = new Subject();
 
   asset: Asset;
-  content = '';
+  content;
   // Active edit session
   session: EditSession;
   // The current vendor in use (ace or monaco)
@@ -111,7 +112,7 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
     url: '/',
     split: 'no', // 'no' | 'vertical' | 'horizontal'
     content: '',
-    hasChanged: false
+    hasChanges: false
   };
 
   get classes() {
@@ -161,15 +162,15 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
       )
       .subscribe(value => this.contentChanged(value));
 
-    this.communicator.subscribeTo(
-      WindowMessageTopicEnum.GUEST_CHECK_IN,
-      (message) => {
-        if (this.data.url !== message.data.url) {
-          this.data.url = message.data.url;
-          this.onDataChange();
-        }
-      }, /* any scope */undefined,
-      this.endWhenDestroyed);
+    // this.communicator.subscribeTo(
+    //   WindowMessageTopicEnum.GUEST_CHECK_IN,
+    //   (message) => {
+    //     if (this.data.url !== message.data.url) {
+    //       this.data.url = message.data.url;
+    //       this.onDataChange();
+    //     }
+    //   }, /* any scope */undefined,
+    //   this.endWhenDestroyed);
 
     this.communicator.resize(() => {
       this.split(true);
@@ -189,6 +190,7 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
   contentChanged(value) {
     let { data } = this;
     data.content = value;
+    data.hasChanges = true;
     this.onDataChange();
   }
 
@@ -261,11 +263,20 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
       // ace in to monaco, this caused an error due to value
       // trying to be set when the Editor class subjects had
       // already been disposed.
+      // noinspection TsLint
       if (isNullOrUndefined(next.data)) {
-        this.content = next.fetchPayload || '';
+        // noinspection TsLint
+        if (notNullOrUndefined(next.fetchPayload)) {
+          this.content = next.fetchPayload;
+        }
       } else {
         this.content = next.data.content;
       }
+      // if (isNullOrUndefined(next.data)) {
+      //   this.content = next.fetchPayload || '';
+      // } else {
+      //   this.content = next.data.content;
+      // }
     });
 
     if (next.status === 'void') {
@@ -274,7 +285,7 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
     }
 
     // On first session setting, codeEditor may be undefined
-    if (!isNullOrUndefined(this.codeEditor)) {
+    if (notNullOrUndefined(this.codeEditor)) {
       // When closing a tab editable is set to false.
       // After close and session change, reset to editable = true
       this.codeEditor.editable = true;
@@ -344,17 +355,21 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
     this.data$.next({
       id: this.session.id,
       data: this.data,
-      hasChanged: this.data.hasChanged
+      hasChanges: this.data.hasChanges
     });
   }
 
   revert() {
-    let { codeEditor, session } = this;
+    let { codeEditor, session, data } = this;
     codeEditor.focus();
     codeEditor.value = session.fetchPayload;
-    this.data.hasChanged = false;
-    this.data.content = '';
+    data.hasChanges = false;
+    data.content = '';
     this.onDataChange();
+  }
+
+  format() {
+    this.codeEditor.format();
   }
 
   @dispatch()

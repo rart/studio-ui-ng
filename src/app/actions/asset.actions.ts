@@ -77,10 +77,10 @@ export class AssetActions {
     };
   }
 
-  updateEditSession(sessionId: string, data: any) {
+  updateEditSession(sessionId: string, data: any, hasChanges: boolean) {
     return {
       type: StoreActionsEnum.UPDATE_EDIT_SESSION,
-      payload: { id: sessionId, data }
+      payload: { id: sessionId, data, hasChanges }
     };
   }
 

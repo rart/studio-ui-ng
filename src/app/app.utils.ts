@@ -4,6 +4,11 @@ import { Observable } from 'rxjs/Observable';
 import { combineLatest, takeUntil } from 'rxjs/operators';
 import { PagedResponse } from './classes/paged-response.interface';
 import { PagerConfig } from './classes/pager-config.interface';
+import { isNullOrUndefined } from 'util';
+
+export function notNullOrUndefined(value) {
+  return !isNullOrUndefined(value);
+}
 
 export function createLocalPagination$<T>
 ({
