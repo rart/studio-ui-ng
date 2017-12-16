@@ -56,7 +56,6 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
   vendor: CodeEditorChoiceEnum = CodeEditorChoiceEnum.MONACO;
 
   sessionChanged$ = new Subject();
-  // sessionChanged$ = new BehaviorSubject(null);
 
   // session
   sessionLoaded$ = new BehaviorSubject(false);
@@ -242,6 +241,13 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
     if (next.status === 'void') {
       this.contentLoaded$.next(false);
       this.fetchAsset();
+    }
+
+    // On first session setting, codeEditor may be undefined
+    if (!isNullOrUndefined(this.codeEditor)) {
+      // When closing a tab editable is set to false.
+      // After close and session change, reset to editable = true
+      this.codeEditor.editable = true;
     }
 
   }

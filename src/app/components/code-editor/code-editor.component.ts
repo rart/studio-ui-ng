@@ -34,7 +34,6 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 export class CodeEditorComponent extends WithNgRedux implements OnInit, OnChanges, OnDestroy, AfterViewInit {
 
   @Input() vendor = CodeEditorChoiceEnum.MONACO;
-  @Input() @HostBinding('class.editable') editable = false;
   @Input() lang;
 
   @Output() changes$ = new Subject<CodeEditorChange>();
@@ -43,9 +42,8 @@ export class CodeEditorComponent extends WithNgRedux implements OnInit, OnChange
 
   @ViewChild('editor') private elementRef: ElementRef;
 
-  data = {};
-
-  private _value = '';
+  private _editable = true; // for editable (get/set)
+  private _value = ''; // for value (get/set)
   private editor: CodeEditor;
 
   private ngOnChanges$ = new Subject();
@@ -145,11 +143,37 @@ export class CodeEditorComponent extends WithNgRedux implements OnInit, OnChange
   }
 
   @Input()
+  set editable(editable) {
+    this._editable = editable;
+    this.performWhenEditorReady((initialized) => {
+      if (initialized) {
+        this.editor.option('editable', this._editable);
+      }
+    });
+  }
+
+  get editable() {
+    return this._editable;
+  }
+
+  @Input()
   set value(value: string) {
     // TODO: review EditorComponent initialization call stack
     // console.log(`set value called with ${value}`);
     value = isNullOrUndefined(value) ? '' : value;
     this._value = value;
+    this.performWhenEditorReady((initialized) => {
+      if (initialized) {
+        this.editor.value(this._value);
+      }
+    });
+  }
+
+  get value() {
+    return this._value;
+  }
+
+  performWhenEditorReady(logic) {
     this.initialized$
       .pipe(
         switchMap((initialized) => {
@@ -161,15 +185,7 @@ export class CodeEditorComponent extends WithNgRedux implements OnInit, OnChange
         }),
         take(1)
       )
-      .subscribe((initialized) => {
-        if (initialized) {
-          this.editor.value(value);
-        }
-      });
-  }
-
-  get value() {
-    return this._value;
+      .subscribe(logic);
   }
 
   focus() {
