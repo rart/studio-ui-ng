@@ -26,7 +26,7 @@ export class MonacoEditor extends CodeEditor {
 
   protected setters = {
     tabSize: (value) => {
-      // this.instance.updateOptions({});
+      this.instance.getModel().updateOptions({ tabSize: value });
     },
     emmet: (enable) => {
       return false;
