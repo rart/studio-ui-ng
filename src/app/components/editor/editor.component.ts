@@ -1,23 +1,34 @@
 import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component, ElementRef, HostBinding, Input,
+  AfterViewInit, ChangeDetectorRef,
+  Component,
+  ElementRef,
   OnChanges,
   OnDestroy,
-  OnInit, Output, QueryList, ViewChild, ViewChildren
+  OnInit,
+  Output,
+  QueryList,
+  ViewChild,
+  ViewChildren
 } from '@angular/core';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  take,
+  takeUntil,
+  withLatestFrom
+} from 'rxjs/operators';
+import 'rxjs/add/observable/combineLatest';
+import { dispatch, NgRedux, select } from '@angular-redux/store';
+
 import { Asset } from '../../models/asset.model';
 import { CodeEditorChoiceEnum } from '../../classes/code-editor.abstract';
 import { CodeEditorFactory } from '../../classes/code-editor-factory.class';
-import {
-  combineLatest, debounceTime, distinctUntilChanged, filter, skip, take, takeUntil, tap,
-  withLatestFrom
-} from 'rxjs/operators';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
-import { AppState, EditSession, EditSessions, LookUpTable } from '../../classes/app-state.interface';
-import { dispatch, NgRedux, select } from '@angular-redux/store';
+import { AppState, EditSession, EditSessions } from '../../classes/app-state.interface';
+
 import { Observable } from 'rxjs/Observable';
-import { isNull, isNullOrUndefined } from 'util';
+import { isNullOrUndefined } from 'util';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { AssetActions } from '../../actions/asset.actions';
 import { CodeEditorComponent } from '../code-editor/code-editor.component';
@@ -66,33 +77,28 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
   // The code editor libs (monaco/ace) have finished loading successfully.
   editorLibsLoaded$ = new BehaviorSubject(false);
   // compile
-  loading$ = this.sessionLoaded$
-    .pipe(
-      combineLatest(
-        this.sessionLoaded$.pipe(tap(v => pretty('RED', `sessionLoaded$ ${v}`))),
-        this.contentLoaded$.pipe(tap(v => pretty('RED', `contentLoaded$ ${v}`))),
-        this.assetLoaded$.pipe(tap(v => pretty('RED', `assetLoaded$ ${v}`))),
-        this.editorLibsLoaded$.pipe(tap(v => pretty('RED', `editorLibsLoaded$ ${v}`))),
-        (sessionLoaded$,
-         contentLoaded$,
-         assetLoaded$,
-         editorLibsLoaded$) => {
-          // TODO: SO WEIRD! It seems...
-          // that when arriving, assetLoaded$ is coming along with the value of
-          // what really is contentLoaded$'s value
-          // pretty('TEAL', `sessionLoaded$ ${sessionLoaded$}`);
-          // pretty('GREEN', `contentLoaded$ ${contentLoaded$}`);
-          // pretty('ORANGE', `assetLoaded$ ${assetLoaded$}`);
-          // pretty('YELLOW', `editorLibsLoaded$ ${editorLibsLoaded$}`);
-          return !(
-            sessionLoaded$ &&
-            contentLoaded$ &&
-            assetLoaded$ &&
-            editorLibsLoaded$
-          );
-        }
-      )
-    );
+  loading$ = Observable.combineLatest(
+    this.sessionLoaded$,
+    this.contentLoaded$,
+    this.assetLoaded$,
+    this.editorLibsLoaded$,
+    (sessionLoaded$,
+     contentLoaded$,
+     assetLoaded$,
+     editorLibsLoaded$) => {
+      return !(
+        sessionLoaded$ &&
+        contentLoaded$ &&
+        assetLoaded$ &&
+        editorLibsLoaded$
+      );
+    }
+  ).pipe(
+    // debouncing seems to help angular's change detector to be in sync
+    // and not get lost when loading fires too may times too close
+    // ("ExpressionChangedAfterItHasBeenCheckedError")
+    debounceTime(300)
+  );
 
   data = {
     split: 'no', // 'no' | 'vertical' | 'horizontal'
@@ -106,7 +112,8 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
 
   constructor(store: NgRedux<AppState>,
               private actions: AssetActions,
-              private elementRef: ElementRef) {
+              private elementRef: ElementRef,
+              private changeDetector: ChangeDetectorRef) {
     super(store);
   }
 
