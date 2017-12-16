@@ -73,7 +73,7 @@ export class AssetEpics {
         .pipe(
           switchMap((asset) => [
             this.actions.gotten(asset),
-            this.actions.sessionChangesPersisted(payload.session)
+            this.actions.sessionChangesPersisted({ ...payload.session, fetchPayload: payload.content })
           ])
         );
     });
