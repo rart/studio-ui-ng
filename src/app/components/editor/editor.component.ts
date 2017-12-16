@@ -1,7 +1,7 @@
 import {
   AfterViewInit,
   ChangeDetectorRef,
-  Component,
+  Component, ElementRef, HostBinding, Input,
   OnChanges,
   OnDestroy,
   OnInit, Output, QueryList, ViewChild, ViewChildren
@@ -22,6 +22,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { AssetActions } from '../../actions/asset.actions';
 import { CodeEditorComponent } from '../code-editor/code-editor.component';
 import { Subject } from 'rxjs/Subject';
+import { IFrameComponent } from '../iframe/iframe.component';
 
 // TODO: how to avoid navigation when code has been entered and not saved? — also, is auto save viable?
 
@@ -32,6 +33,7 @@ import { Subject } from 'rxjs/Subject';
 })
 export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, AfterViewInit, OnDestroy {
 
+  @ViewChild(IFrameComponent) iFrame: IFrameComponent;
   @ViewChild(CodeEditorComponent) codeEditor: CodeEditorComponent;
   @ViewChildren(CodeEditorComponent) codeEditorQL: QueryList<CodeEditorComponent>;
   // The code editor has been attached to the document and angular has picked it up
@@ -68,14 +70,21 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
   loading$ = this.sessionLoaded$
     .pipe(
       combineLatest(
-        this.sessionLoaded$,
-        this.contentLoaded$,
-        this.assetLoaded$,
-        this.editorLibsLoaded$,
+        this.sessionLoaded$.pipe(tap(v => pretty('RED', `sessionLoaded$ ${v}`))),
+        this.contentLoaded$.pipe(tap(v => pretty('RED', `contentLoaded$ ${v}`))),
+        this.assetLoaded$.pipe(tap(v => pretty('RED', `assetLoaded$ ${v}`))),
+        this.editorLibsLoaded$.pipe(tap(v => pretty('RED', `editorLibsLoaded$ ${v}`))),
         (sessionLoaded$,
          contentLoaded$,
          assetLoaded$,
          editorLibsLoaded$) => {
+          // TODO: SO WEIRD! It seems...
+          // that when arriving, assetLoaded$ is coming along with the value of
+          // what really is contentLoaded$'s value
+          // pretty('TEAL', `sessionLoaded$ ${sessionLoaded$}`);
+          // pretty('GREEN', `contentLoaded$ ${contentLoaded$}`);
+          // pretty('ORANGE', `assetLoaded$ ${assetLoaded$}`);
+          // pretty('YELLOW', `editorLibsLoaded$ ${editorLibsLoaded$}`);
           return !(
             sessionLoaded$ &&
             contentLoaded$ &&
@@ -86,10 +95,19 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
       )
     );
 
-  data = { content: '' };
+  data = {
+    split: 'no', // 'no' | 'vertical' | 'horizontal'
+    content: '',
+    hasChanged: false
+  };
+
+  get classes() {
+    return `${this.data.split} split container`;
+  }
 
   constructor(store: NgRedux<AppState>,
-              private actions: AssetActions) {
+              private actions: AssetActions,
+              private elementRef: ElementRef) {
     super(store);
   }
 
@@ -142,7 +160,7 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
   contentChanged(value) {
     let { data } = this;
     data.content = value;
-    this.data$.next({ id: this.session.id, data });
+    this.onDataChange();
   }
 
   ngOnChanges() {
@@ -161,6 +179,8 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
         this.assetChanged(asset);
         this.assetLoaded$.next(true);
       });
+    // If the asset was loaded, the select above would call
+    // the subscriber synchronously
     if (!assetReady) {
       this.assetLoaded$.next(false);
     }
@@ -233,23 +253,49 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
     this.session = {
       ...this.session,
       status: updated.status,
-      fetchPayload: updated.fetchPayload
+      fetchPayload: updated.fetchPayload,
+      data: { ...updated.data }
     };
 
     if (prev.status === 'fetching' && updated.status === 'fetched') {
       this.contentLoaded$.next(true);
       this.content = <string>updated.fetchPayload;
+    } else if (prev.status === 'saving' && updated.status === 'fetched') {
+      if (this.iFrame) {
+        this.iFrame.reload();
+      }
     } else if (updated.status === 'closing') {
-      this.contentLoaded$.next(false);
+      this.codeEditor.editable = false;
     }
 
   }
 
+  split() {
+    let { data } = this, view = data.split;
+    if (view !== 'no') {
+      data.split = 'no';
+    } else {
+      let $elem = $(this.elementRef.nativeElement);
+      data.split = $elem.width() > $elem.height() ? 'vertical' : 'horizontal';
+    }
+    this.onDataChange();
+  }
+
+  onDataChange() {
+    this.data$.next({
+      id: this.session.id,
+      data: this.data,
+      hasChanged: this.data.hasChanged
+    });
+  }
+
   revert() {
-    let { codeEditor, session, data$ } = this;
+    let { codeEditor, session } = this;
     codeEditor.focus();
     codeEditor.value = session.fetchPayload;
-    data$.next({ id: session.id, data: session.fetchPayload });
+    this.data.hasChanged = false;
+    this.data.content = '';
+    this.onDataChange();
   }
 
   @dispatch()

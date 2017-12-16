@@ -8,8 +8,34 @@
   flex-direction: column;
 }
 
-.view.container {
+.container {
+  &.view {
 
+  }
+  &.split {
+    display: flex;
+    overflow: hidden;
+    height: calc(100% - 50px);
+    &.no {
+      std-code-editor {
+
+      }
+    }
+    &.horizontal {
+      flex-direction: column;
+      std-iframe,
+      std-code-editor {
+        height: 50%;
+      }
+    }
+    &.vertical {
+      flex-direction: row;
+      std-iframe,
+      std-code-editor {
+        width: 50%;
+      }
+    }
+  }
 }
 
 .edit-controls {
@@ -20,6 +46,7 @@
   border-top: 1px solid $sidebar-border-color;
 }
 
-.code-editor-wrapper {
-  height: calc(100% - 50px);
-}
+//std-code-editor,
+//.code-editor-wrapper {
+//  height: calc(100% - 50px);
+//}

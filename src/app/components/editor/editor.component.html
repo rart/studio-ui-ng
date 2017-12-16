@@ -6,11 +6,13 @@
       <button class="ui mini icon button"><i class="icon cogs"></i></button>
       <button class="ui mini icon button"><i class="icon options"></i></button>
       <button class="ui mini icon button"><i class="icon history"></i></button>
+      <button class="ui mini icon button" (click)="split()"><i class="icon columns"></i></button>
       <button class="ui mini icon button" (click)="revert()"><i class="icon reply"></i></button>
       <mat-spinner *ngIf="session.status === 'saving'" [diameter]="30" [strokeWidth]="5"></mat-spinner>
     </section>
   </div>
-  <div class="code-editor-wrapper" *ngIf="asset">
+  <div [class]="classes" *ngIf="asset">
+    <!--<div class="code-editor-wrapper"></div>-->
     <std-code-editor
       [vendor]="vendor"
       [value]="content"
@@ -18,6 +20,10 @@
       [lang]="asset.type"
       (initialized$)="editorLibsLoaded$.next($event)"
       [editable]="true"></std-code-editor>
+    <std-iframe
+      *ngIf="data.split !== 'no'"
+      [src]="'/'"
+      [communicates]="false"></std-iframe>
   </div>
 </div>
 <std-spinner

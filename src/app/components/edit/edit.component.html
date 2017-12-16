@@ -22,7 +22,7 @@
               [showMenu]="false"></std-asset-display>
           </button>
           <button *ngIf="tab.status !== 'closing'" (click)="closeTab(tab)" class="close" title="Close" i18n>&times;</button>
-          <mat-spinner *ngIf="tab.status === 'closing' && tab !== active" [diameter]="25" [strokeWidth]="5"></mat-spinner>
+          <mat-spinner *ngIf="tab.status === 'closing'" [diameter]="25" [strokeWidth]="5"></mat-spinner>
         </div>
       </nav>
 
