@@ -94,6 +94,11 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
      contentLoaded$,
      assetLoaded$,
      editorLibsLoaded$) => {
+      // pretty('TEAL',
+      //   `sessionLoaded$ ${sessionLoaded$}`,
+      //   `contentLoaded$ ${contentLoaded$}`,
+      //   `assetLoaded$ ${assetLoaded$}`,
+      //   `editorLibsLoaded$ ${editorLibsLoaded$}`);
       return !(
         sessionLoaded$ &&
         contentLoaded$ &&
@@ -268,9 +273,11 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
         // noinspection TsLint
         if (notNullOrUndefined(next.fetchPayload)) {
           this.content = next.fetchPayload;
+          this.contentLoaded$.next(true);
         }
       } else {
         this.content = next.data.content;
+        this.contentLoaded$.next(true);
       }
       // if (isNullOrUndefined(next.data)) {
       //   this.content = next.fetchPayload || '';
@@ -282,6 +289,8 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
     if (next.status === 'void') {
       this.contentLoaded$.next(false);
       this.fetchAsset();
+    } else if (next.status === 'dirty') {
+      this.data.hasChanges = true;
     }
 
     // On first session setting, codeEditor may be undefined

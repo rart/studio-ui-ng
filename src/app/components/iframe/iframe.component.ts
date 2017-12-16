@@ -80,7 +80,7 @@ export class IFrameComponent implements OnInit, OnDestroy, AfterViewInit, AfterC
   }
 
   ngOnChanges() {
-    pretty('yellow', 'Changes have occurred', this.src);
+    // pretty('yellow', 'Changes have occurred', this.src);
     if (this.element) {
       this.reload();
     }

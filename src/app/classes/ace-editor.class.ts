@@ -103,9 +103,11 @@ export class AceEditor extends CodeEditor {
   }
 
   protected vendorSetValue(nextValue: string): void {
-    this.instance.setValue(nextValue); // or session.setValue
-    // this.instance.clearSelection();
-    // this.instance.moveCursorToPosition({ row: 0, column: 0 });
+    let { instance } = this;
+    let cursorPosition = instance.getCursorPosition();
+    instance.setValue(nextValue); // or session.setValue
+    instance.clearSelection();
+    instance.moveCursorToPosition(cursorPosition);
   }
 
   format(): void {
@@ -138,6 +140,7 @@ export class AceEditor extends CodeEditor {
           originalEvent: e
         });
       });
+      window['instance'] = this.instance;
     });
   }
 
