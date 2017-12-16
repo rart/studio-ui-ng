@@ -8,7 +8,7 @@ import {
   Output
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppState, Settings, Workspace } from '../../classes/app-state.interface';
+import { AppState, Settings } from '../../classes/app-state.interface';
 import { Asset } from '../../models/asset.model';
 import { StringUtils } from '../../utils/string.utils';
 import { AssetTypeEnum } from '../../enums/asset-type.enum';
@@ -16,11 +16,9 @@ import { CommunicationService } from '../../services/communication.service';
 import { AssetActionEnum, AssetMenuOption, WorkflowService } from '../../services/workflow.service';
 import { SelectedItemsActions } from '../../actions/selected-items.actions';
 import { PreviewTabsActions } from '../../actions/preview-tabs.actions';
-import { dispatch, NgRedux, select } from '@angular-redux/store';
+import { dispatch, NgRedux } from '@angular-redux/store';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { createPreviewTabCore } from '../../utils/state.utils';
-import { Observable } from 'rxjs/Observable';
-import { StoreActionsEnum } from '../../enums/actions.enum';
 import { SettingsEnum } from '../../enums/Settings.enum';
 import { AssetActions } from '../../actions/asset.actions';
 

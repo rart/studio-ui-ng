@@ -87,6 +87,9 @@ export class API3Parser extends APIParser {
       asset.type = AssetTypeEnum.LESS;
     } else {
       switch (json.mimeType) {
+        case MimeTypeEnum.JSON:
+          asset.type = AssetTypeEnum.JSON;
+          break;
         case MimeTypeEnum.HTML:
           asset.type = AssetTypeEnum.HTML;
           break;

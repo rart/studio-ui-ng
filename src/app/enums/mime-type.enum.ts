@@ -22,6 +22,7 @@ export enum MimeTypeEnum {
   GROOVY = 'text/x-groovy',
   JAVASCRIPT = 'application/javascript',
   FREEMARKER = 'text/x-freemarker',
+  JSON = 'application/json',
   // Fonts
   EOT = 'application/vnd.ms-fontobject',
   OTF = 'application/x-font-otf',
