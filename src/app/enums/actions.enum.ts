@@ -1,8 +1,7 @@
 
 export enum StoreActionsEnum {
 
-  REDUX_INIT = '@@INIT',
-  STUDIO_INIT = '@@studio/INIT',
+  STUDIO_INIT = 'STUDIO_INIT',
 
   UPDATE_GLOBAL_SETTINGS = 'UPDATE_GLOBAL_SETTINGS',
 

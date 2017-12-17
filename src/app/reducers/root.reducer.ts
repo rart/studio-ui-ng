@@ -39,9 +39,6 @@ export function rootReducer(state = {} as AppState, action) {
 
   switch (action.type) {
 
-    case StoreActionsEnum.REDUX_INIT:
-      return nextState;
-
     case StoreActionsEnum.STUDIO_INIT:
     case StoreActionsEnum.GUEST_CHECK_IN:
     case StoreActionsEnum.OPEN_TAB:
