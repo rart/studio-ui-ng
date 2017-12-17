@@ -34,6 +34,10 @@ router-outlet {
   display: none;
 }
 
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
 std-app,
 std-not-implemented,
 std-sidebar,

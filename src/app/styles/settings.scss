@@ -29,6 +29,11 @@ $color-gray-mid: #C7C7CC;
 $color-gray: #8E8E93;
 $color-black: #000;
 
+$color-green-darkend: darken($color-green, 15%);
+$color-teal-darkend: darken($color-teal, 15%);
+$color-purple-darkend: darken($color-purple, 15%);
+$color-yellow-darkend: darken($color-yellow, 15%);
+
 // 2.5 Colors
 //$action-light: #AFCEED;
 //$action-medium: #7E9DBB;
