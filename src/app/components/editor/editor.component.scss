@@ -14,7 +14,7 @@
   }
   &.split {
     display: flex;
-    overflow: hidden;
+    //overflow: hidden;
     height: calc(100% - 50px);
     &.no {
       std-code-editor {

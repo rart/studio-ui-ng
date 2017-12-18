@@ -3,15 +3,20 @@
 :host {
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  //overflow: hidden;
   position: relative;
 }
 
 .code-editor {
   &,
-  /deep/ .ace_editor,
-  /deep/ .monaco-editor {
+  /deep/ .ace_editor/*,
+  /deep/ .monaco-editor*/ {
     width: 100%;
     height: 100%;
+  }
+  /deep/ .monaco-editor {
+    .overflowingContentWidgets {
+      margin-top: -100px;
+    }
   }
 }
