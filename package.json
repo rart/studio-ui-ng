@@ -9,12 +9,13 @@
   },
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start:ng": "ng serve",
+    "start": "ng serve --host 0.0.0.0 --deploy-url /app/ --base-href /app --public-host http://localhost:4200/sockjs-node --aot",
+    "begin": "npm run start",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "begin": "ng serve --host 0.0.0.0 --deploy-url /app/ --base-href /app --public-host http://localhost:4200/sockjs-node --aot"
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
