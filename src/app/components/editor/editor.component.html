@@ -5,7 +5,8 @@
     <button class="ui mini button with larger icon"><i class="icon cogs"></i></button>
     <button class="ui mini button with larger icon" (click)="format()"><i class="icon options"></i></button>
     <button class="ui mini button with larger icon"><i class="icon history"></i></button>
-    <button class="ui mini button with larger icon" (click)="split()"><i class="icon columns"></i></button>
+    <button class="ui mini button with larger icon" (click)="toggleSplit()"><i class="icon columns"></i></button>
+    <button [disabled]="!data.hasChanges" class="ui mini button with larger icon" (click)="toggleDiff()"><i class="icon columns"></i></button>
     <button [disabled]="!data.hasChanges" class="ui mini button with larger icon" (click)="revert()"><i class="icon reply"></i></button>
     <mat-spinner *ngIf="session.status === 'saving'" [diameter]="30" [strokeWidth]="5"></mat-spinner>
   </section>
@@ -13,11 +14,14 @@
     <std-code-editor
       [vendor]="vendor"
       [value]="content"
+      [original]="diffOriginal"
+      [modified]="diffModified"
       (value$)="value$.next($event)"
       [lang]="asset.type"
       (initialized$)="editorLibsLoaded$.next($event)"
       [editable]="true"></std-code-editor>
     <std-iframe
+      [hidden]="data.diff"
       *ngIf="data.split !== 'no'"
       (beforeNav)="beforeIFrameNav($event)"
       [communicates]="true"></std-iframe>
@@ -26,3 +30,5 @@
 <std-spinner
   *ngIf="loading$ | async"
   class="absolute position take over opaque"></std-spinner>
+
+

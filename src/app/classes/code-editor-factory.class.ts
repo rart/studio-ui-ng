@@ -3,11 +3,14 @@ import { AssetTypeEnum } from '../enums/asset-type.enum';
 import { CodeEditor, CodeEditorChoiceEnum } from './code-editor.abstract';
 import { MonacoEditor } from './monaco-editor.class';
 import { AceEditor } from './ace-editor.class';
+import { MonacoDiffEditor } from './monaco-diff-editor.class';
 
 export class CodeEditorFactory {
   static create(assetOrType: Asset | string): CodeEditor {
     let choice = CodeEditorFactory.choice(assetOrType);
     switch (choice) {
+      case CodeEditorChoiceEnum.MONACO_DIFF:
+        return new MonacoDiffEditor();
       case CodeEditorChoiceEnum.MONACO:
         return new MonacoEditor();
       case CodeEditorChoiceEnum.ACE:
@@ -21,6 +24,9 @@ export class CodeEditorFactory {
       ? <string>assetOrType
       : (<Asset>assetOrType).type;
     switch (type) {
+
+      case CodeEditorChoiceEnum.MONACO_DIFF:
+        return CodeEditorChoiceEnum.MONACO_DIFF;
 
       // Currently (December 2017) monaco provides OOTB rich IntelliSense for:
       // TypeScript, JavaScript, CSS, LESS, SCSS, JSON, HTML

@@ -31,6 +31,8 @@ import { notNullOrUndefined } from '../../app.utils';
 export class CodeEditorComponent extends WithNgRedux implements OnInit, OnChanges, OnDestroy, AfterViewInit {
 
   @Input() vendor = CodeEditorChoiceEnum.MONACO;
+  @Input() original;
+  @Input() modified;
   @Input() lang;
 
   @Output() changes$ = new Subject<CodeEditorChange>();
@@ -121,7 +123,6 @@ export class CodeEditorComponent extends WithNgRedux implements OnInit, OnChange
       this.changes$.next(e);
     });
     this.editor = editor;
-    return editor;
   }
 
   configure() {
@@ -134,9 +135,11 @@ export class CodeEditorComponent extends WithNgRedux implements OnInit, OnChange
   getOptions() {
     let { value, editable, lang } = this;
     let options = {
-      lang: lang,
+      lang,
+      editable,
       emmet: true,
-      editable: editable
+      original: this.original,
+      modified: this.modified
     };
     if (notNullOrUndefined(value)) {
       options['value'] = value;

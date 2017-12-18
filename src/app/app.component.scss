@@ -1,4 +1,3 @@
-
 @import "styles/settings";
 @import "~semantic-ui-sass/semantic-ui.scss";
 
@@ -18,7 +17,7 @@ textarea.mat-input-element {
   resize: none !important;
 }
 
-h1,h2,h3,h4,h5,h6 {
+h1, h2, h3, h4, h5, h6 {
   @include open-sans-bold;
 }
 
@@ -86,7 +85,7 @@ std-app {
       width: $sidebar-width-collapsed;
       .label,
       .sidebar-actions,
-      .sidebar-sub-heading{
+      .sidebar-sub-heading {
         /* TODO what do to with actions? add icon */
         display: none;
       }
@@ -117,144 +116,149 @@ std-app {
 
 }
 
-.text-center {
-  text-align: center !important;
-}
+.text {
+  &.center,
+  &.centered {
+    text-align: center !important;
+  }
 
-.text-left {
-  text-align: left !important;
-}
+  &.left {
+    text-align: left !important;
+  }
 
-.text-right {
-  text-align: right !important;
-}
+  &.right {
+    text-align: right !important;
+  }
 
-.white.text {
-  color: #fff;
-  &.insure {
-    color: #fff !important;
+  &.white {
+    color: #fff;
+    &.insure {
+      color: #fff !important;
+    }
+  }
+
+  &.red {
+    color: $color-red;
+    &.insure {
+      color: $color-red !important;
+    }
+  }
+
+  &.orange {
+    color: $color-orange;
+    &.insure {
+      color: $color-orange !important;
+    }
+  }
+
+  &.yellow {
+    color: $color-yellow;
+    &.insure {
+      color: $color-yellow !important;
+    }
+  }
+
+  &.green {
+    color: $color-green;
+    &.insure {
+      color: $color-green !important;
+    }
+  }
+
+  &.teal {
+    color: $color-teal;
+    &.insure {
+      color: $color-teal !important;
+    }
+  }
+
+  &.blue {
+    color: $color-blue;
+    &.insure {
+      color: $color-teal !important;
+    }
+  }
+
+  &.pink {
+    color: $color-pink;
+    &.insure {
+      color: $color-pink !important;
+    }
+  }
+
+  &.purple {
+    color: $color-purple;
+    &.insure {
+      color: $color-purple !important;
+    }
+  }
+
+  &.grey,
+  &.gray,
+  &.muted {
+    color: $color-gray;
+    &.insure {
+      color: $color-yellow !important;
+    }
+  }
+
+  &.uppercase {
+    text-transform: uppercase;
   }
 }
 
-.red.text {
-  color: $color-red;
-  &.insure {
-    color: $color-red !important;
+.background {
+  &.white {
+    background-color: #fff;
   }
-}
 
-.orange.text {
-  color: $color-orange;
-  &.insure {
-    color: $color-orange !important;
+  &.red {
+    background-color: $color-red;
   }
-}
 
-.yellow.text {
-  color: $color-yellow;
-  &.insure {
-    color: $color-yellow !important;
+  &.orange {
+    background-color: $color-orange;
   }
-}
 
-.green.text {
-  color: $color-green;
-  &.insure {
-    color: $color-green !important;
+  &.yellow {
+    background-color: $color-yellow;
   }
-}
 
-.teal.text {
-  color: $color-teal;
-  &.insure {
-    color: $color-teal !important;
+  &.green {
+    background-color: $color-green;
   }
-}
 
-.blue.text {
-  color: $color-blue;
-  &.insure {
-    color: $color-teal !important;
+  &.teal {
+    background-color: $color-teal;
   }
-}
 
-.pink.text {
-  color: $color-pink;
-  &.insure {
-    color: $color-pink !important;
+  &.blue {
+    background-color: $color-blue;
   }
-}
 
-.purple.text {
-  color: $color-purple;
-  &.insure {
-    color: $color-purple !important;
+  &.pink {
+    background-color: $color-pink;
   }
-}
 
-.grey.text,
-.gray.text,
-.muted.text {
-  color: $color-gray;
-  &.insure {
-    color: $color-yellow !important;
+  &.purple {
+    background-color: $color-purple;
   }
-}
 
-.background-white {
-  background-color: #fff;
-}
-
-.background-red {
-  background-color: $color-red;
-}
-
-.background-orange {
-  background-color: $color-orange;
-}
-
-.background-yellow {
-  background-color: $color-yellow;
-}
-
-.background-green {
-  background-color: $color-green;
-}
-
-.background-teal {
-  background-color: $color-teal;
-}
-
-.background-blue {
-  background-color: $color-blue;
-}
-
-.background-pink {
-  background-color: $color-pink;
-}
-
-.background-purple {
-  background-color: $color-purple;
-}
-
-.background-gray {
-  background-color: $color-gray;
-}
-
-.background-gray-mid {
-  background-color: $color-gray-mid;
-}
-
-.background-gray-light {
-  background-color: $color-gray-light;
-}
-
-.background-gray-lighter {
-  background-color: $color-gray-lighter;
-}
-
-.background-gray-lightest {
-  background-color: $color-gray-lightest;
+  &.gray {
+    background-color: $color-gray;
+    &.mid {
+      background-color: $color-gray-mid;
+    }
+    &.light {
+      background-color: $color-gray-light;
+    }
+    &.lighter {
+      background-color: $color-gray-lighter;
+    }
+    &.lightest {
+      background-color: $color-gray-lightest;
+    }
+  }
 }
 
 .is-interactive {
@@ -279,6 +283,24 @@ std-app {
 
 .clearfix {
   @include clearfix();
+}
+
+.display {
+  &.flex {
+    display: flex;
+    &.column {
+      flex-direction: column
+    }
+  }
+  &.block {
+    display: block;
+  }
+  &.inline {
+    display: inline;
+  }
+  &.inline.block {
+    display: inline-block;
+  }
 }
 
 .flex {
@@ -504,12 +526,6 @@ std-app {
 
 }
 
-.uppercase {
-  &.text {
-    text-transform: uppercase;
-  }
-}
-
 thead.uppercase {
   th {
     font-size: .8rem;
@@ -621,10 +637,10 @@ button {
     border-radius: 5px;
     i {
       position: absolute;
-      top:2px;
-      bottom:0;
-      right:0;
-      left:0;
+      top: 2px;
+      bottom: 0;
+      right: 0;
+      left: 0;
       font-size: 25px;
       &::before {
         top: 2px;

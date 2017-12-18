@@ -17,7 +17,8 @@ export interface CodeEditorChange {
 
 export enum CodeEditorChoiceEnum {
   ACE = 'ace',
-  MONACO = 'monaco'
+  MONACO = 'monaco',
+  MONACO_DIFF = 'monaco[diff]'
 }
 
 const DEFAULT_OPTIONS = {

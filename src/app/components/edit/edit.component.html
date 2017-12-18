@@ -9,7 +9,7 @@
         <button class="ui mini basic green icon button"><i class="icon plus" title="New Tab"></i></button>
       </section>
 
-      <nav class="ui tab bar" *ngIf="requirementsMet$ | async">
+      <nav class="ui tab bar" *ngIf="sessionAssetsHaveLoaded$ | async">
         <div class="tab"
              *ngFor="let tab of sessions"
              [class.edited]="(tab.status === 'dirty')"
@@ -32,7 +32,7 @@
         </div>
       </nav>
 
-      <nav class="ui tab bar" *ngIf="!requirementsMet$|async">
+      <nav class="ui tab bar" *ngIf="!sessionAssetsHaveLoaded$ | async">
         <div class="tab" *ngFor="let tab of sessions">
           <button class="main">
             <span>...</span>
@@ -45,7 +45,9 @@
   <div class="edit content">
     <ng-container [ngSwitch]="renderer">
       <std-editor (data$)="updateSession($event)" *ngSwitchCase="'CodeEditorComponent'"></std-editor>
-      <div *ngSwitchDefault>Nothing to see...yet!</div>
+      <div *ngSwitchDefault>
+        <div class="center muted text pad lg" i18n>Nothing is selected for editing right now.</div>
+      </div>
     </ng-container>
   </div>
 </div>

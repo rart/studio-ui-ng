@@ -5,14 +5,14 @@ import { AppState, EditSession, EditSessions, LookUpTable } from '../../classes/
 import { dispatch, NgRedux, select } from '@angular-redux/store';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { Asset } from '../../models/asset.model';
-import { filter, skip, switchMap, take, takeUntil, takeWhile, tap } from 'rxjs/operators';
+import { filter, skip, switchMap, take, takeUntil } from 'rxjs/operators';
 import { AssetActions } from '../../actions/asset.actions';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { notNullOrUndefined } from '../../app.utils';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { openDialog } from '../../utils/material.utils';
-import { ComponentHostDirective } from '../component-host.directive';
 import { EditorComponent } from '../editor/editor.component';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'std-edit',
@@ -29,15 +29,14 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
   @select(['entities', 'assets', 'byId'])
   assets$: Observable<EditSessions>;
 
-  requirementsMet$ = new BehaviorSubject(false);
-  requirementsMet = false;
+  sessionAssetsHaveLoaded$ = new BehaviorSubject(false);
 
   assets: LookUpTable<Asset>;
   active: EditSession;
   sessions: EditSession[] = [];
 
   renderer: string;
-  renderedComponent: { save: () => void };
+  renderedComponent: { save: () => void, diff: () => void };
 
   waitingSaveToClose$ = new BehaviorSubject(false);
 
@@ -57,51 +56,75 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
 
     waitingSaveToClose$
       .pipe(
+        // Only pass when NOT waiting on save before closing
         filter(x => !x),
+        // waitingSaveToClose$ triggers the subscription into editSessions$
+        // which updates whenever sessions are updated
         switchMap(() =>
           editSessions$.pipe(
             takeUntil(
+              // Since it's a behaviour subject, it will emit immediately
+              // causing editSessions$ to stop emitting, so we skip the first
               waitingSaveToClose$.pipe(skip(1))
-            ))
-        )
+            ))),
+        takeUntil(unSubscriber$)
       )
       .subscribe((sessions: EditSessions) => {
         this.sessionsChanged(sessions);
       });
 
+    // Make sure all the assets are loaded
     editSessions$
       .pipe(...this.noNullsAndUnSubOps, take(1))
       .subscribe((sessions: EditSessions) => {
 
         let query = [];
         let observables = [];
+        let terminator = new Subject();
 
         Object.values(sessions.byId)
-          .forEach(y => {
-            query.push({ projectCode: y.projectCode, assetId: y.assetId });
+          .forEach(session => {
+            query.push({ projectCode: session.projectCode, assetId: session.assetId });
             observables.push(
-              this.select(['entities', 'assets', 'byId', y.assetId])
+              this.select(['entities', 'assets', 'byId', session.assetId])
                 .pipe(
-                  filter(r => notNullOrUndefined(r)),
-                  take(1)
-                )
+                  filter(a => notNullOrUndefined(a)),
+                  take(1))
             );
           });
 
+        // Find if any of these are already loaded and get them
+        // out of the list assets to merge
         Observable
-          .forkJoin(observables)
-          .subscribe(assets => {
-            this.assets = assets.reduce((oMap: any, asset: Asset) => {
-              oMap[asset.id] = asset;
-              return oMap;
-            }, {});
-            this.requirementsMet$.next(true);
+          .merge(...observables)
+          .pipe(takeUntil(terminator))
+          .subscribe((asset: Asset) => {
+            query = query.filter(dataMap =>
+              asset.id !== dataMap.assetId ||
+              asset.projectCode !== dataMap.projectCode);
           });
+
+        if (query.length) {
+          // Only fetch the items that aren't already loaded
+          terminator.next();
+          terminator.complete();
+          Observable
+            .forkJoin(observables)
+            .subscribe(assets => {
+              this.assets = assets.reduce((oMap: any, asset: Asset) => {
+                oMap[asset.id] = asset;
+                return oMap;
+              }, {});
+              this.sessionAssetsHaveLoaded$.next(true);
+            });
+        } else {
+          this.sessionAssetsHaveLoaded$.next(true);
+        }
 
         // First time load, reqs might not have been met but navigating away and back
         // they would be met. The above fork of observables would determine that by firing
-        // requirementsMet$ synchronously instead of async.
-        this.requirementsMet$
+        // sessionAssetsHaveLoaded$ synchronously instead of async.
+        this.sessionAssetsHaveLoaded$
           .pipe(take(1))
           .subscribe((met) => {
             if (!met) {
@@ -109,11 +132,10 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
             }
           });
 
-
       });
 
     this.addTearDown(() => {
-      this.requirementsMet$.complete();
+      this.sessionAssetsHaveLoaded$.complete();
     });
 
   }
@@ -201,6 +223,9 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
                   }
                 });
               break;
+            case 'REVIEW':
+              this.renderedComponent.diff();
+              break;
             case 'DISCARD_CLOSE':
               this.dispatch(
                 this.assetActions.closeEditSession(
@@ -224,6 +249,7 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
       closing?</p>
     <button class="ui button primary" (click)="aye()">Yes</button>
     <button class="ui red button" (click)="nay()">No</button>
+    <button class="ui button" (click)="review()">Review</button>
     <button class="ui basic button" (click)="close(null)">Cancel</button>
   `,
   styles: [``]
@@ -246,6 +272,10 @@ export class ChangeLossDecisionViewComponent implements OnInit {
 
   aye(): void {
     this.close('SAVE_CLOSE');
+  }
+
+  review(): void {
+    this.close('REVIEW');
   }
 
   close(decision) {

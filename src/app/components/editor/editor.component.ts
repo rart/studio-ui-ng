@@ -14,6 +14,7 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  map,
   take,
   takeUntil,
   withLatestFrom
@@ -37,12 +38,19 @@ import { IFrameComponent } from '../iframe/iframe.component';
 import { environment } from '../../../environments/environment';
 import { CookieService } from 'ngx-cookie-service';
 import { CommunicationService } from '../../services/communication.service';
-import { WindowMessageTopicEnum } from '../../enums/window-message-topic.enum';
 import { notNullOrUndefined } from '../../app.utils';
 
 const COOKIE = environment.preview.cookie;
 
 // TODO: how to avoid navigation when code has been entered and not saved? — also, is auto save viable?
+
+const DEFAULT_DATA = {
+  url: '/',
+  split: 'no', // 'no' | 'vertical' | 'horizontal'
+  diff: false,
+  content: null,
+  hasChanges: false
+};
 
 @Component({
   selector: 'std-editor',
@@ -74,7 +82,12 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
   // The current vendor in use (ace or monaco)
   vendor: CodeEditorChoiceEnum = CodeEditorChoiceEnum.MONACO;
 
+  diffOriginal;
+  diffModified;
+
   sessionChanged$ = new Subject();
+
+  hasIFrame$ = new BehaviorSubject(false);
 
   // session
   sessionLoaded$ = new BehaviorSubject(false);
@@ -113,15 +126,11 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
     debounceTime(300)
   );
 
-  data = {
-    url: '/',
-    split: 'no', // 'no' | 'vertical' | 'horizontal'
-    content: '',
-    hasChanges: false
-  };
+  data = { ...DEFAULT_DATA };
 
   get classes() {
-    return `${this.data.split} split container`;
+    let split = this.data.diff ? 'no' : this.data.split;
+    return `${split} split container`;
   }
 
   constructor(store: NgRedux<AppState>,
@@ -139,6 +148,7 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
       this.value$.complete();
       this.editorLibsLoaded$.complete();
       this.sessionChanged$.complete();
+      this.hasIFrame$.complete();
     });
 
     let { sessions$, sessionId$, unSubscriber$, value$ } = this;
@@ -172,38 +182,54 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
     //   (message) => {
     //     if (this.data.url !== message.data.url) {
     //       this.data.url = message.data.url;
-    //       this.onDataChange();
+    //       this.emitData();
     //     }
     //   }, /* any scope */undefined,
     //   this.endWhenDestroyed);
 
     this.communicator.resize(() => {
-      this.split(true);
+      this.recalculateSplit();
     }, this.endWhenDestroyed);
 
   }
 
   ngAfterViewInit() {
+
     this.codeEditorQL
       .changes
       .pipe(take(1))
       .subscribe(() => {
         this.codeEditorComponentReady$.next(true);
       });
+
+    this.iFrameQL
+      .changes
+      .pipe(
+        // The QL changes internally but it is always a reference to the same object
+        map(ql => ({ length: ql.length })),
+        // If not mapped above this comparison would ALWAYS return true
+        // despite it having changed internally — in this case the length
+        distinctUntilChanged((prevQL, nextQL) => prevQL.length === nextQL.length),
+        takeUntil(this.unSubscriber$)
+      )
+      .subscribe(ql => {
+        this.hasIFrame$.next(ql.length > 0);
+      });
+
   }
 
-  contentChanged(value) {
+  private contentChanged(value) {
     let { data } = this;
     data.content = value;
     data.hasChanges = true;
-    this.onDataChange();
+    this.emitData();
   }
 
   ngOnChanges() {
     pretty('GREEN', 'EditorComponent.ngOnChanges()');
   }
 
-  subscribeToAsset(assetId) {
+  private subscribeToAsset(assetId) {
     let assetReady = false;
     this.select(['entities', 'assets', 'byId', assetId])
       .pipe(
@@ -222,7 +248,7 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
     }
   }
 
-  subscribeToSession(activeId) {
+  private subscribeToSession(activeId) {
     this.select(['editSessions', 'byId', activeId])
       .pipe(
         // When a session is closed, this active ID will
@@ -240,7 +266,7 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
       });
   }
 
-  fetchAsset() {
+  private fetchAsset() {
     let { actions, session } = this;
     this.dispatch(
       actions.fetchForEdit(
@@ -249,16 +275,35 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
         session.assetId));
   }
 
-  assetChanged(asset: Asset) {
+  private assetChanged(asset: Asset) {
     this.asset = asset;
     this.vendor = CodeEditorFactory.choice(asset);
   }
 
-  sessionChanged(next: EditSession) {
+  private sessionChanged(next: EditSession) {
+
+    let prev = this.session;
+    let prevData = this.data;
+    let nextData = notNullOrUndefined(next.data)
+      ? { ...DEFAULT_DATA, ...next.data }
+      : { ...DEFAULT_DATA };
 
     this.session = { ...next };
-    if (next.data) {
-      this.session.data = { ...next.data };
+    this.data = nextData;
+
+    if (prevData.split !== nextData.split) {
+      this.split(
+        (nextData.split !== 'no')
+          ? this.calcBestSplitFit()
+          : 'no');
+    }
+
+    if (
+      (isNullOrUndefined(prev) && nextData.split !== 'no') ||
+      (prevData.url !== nextData.url) ||
+      (prevData.split === 'no' && nextData.split !== 'no')
+    ) {
+      this.navigatePreview();
     }
 
     setTimeout(_ => {
@@ -269,7 +314,7 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
       // trying to be set when the Editor class subjects had
       // already been disposed.
       // noinspection TsLint
-      if (isNullOrUndefined(next.data)) {
+      if (isNullOrUndefined(next.data) || isNullOrUndefined(next.data.content)) {
         // noinspection TsLint
         if (notNullOrUndefined(next.fetchPayload)) {
           this.content = next.fetchPayload;
@@ -279,11 +324,6 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
         this.content = next.data.content;
         this.contentLoaded$.next(true);
       }
-      // if (isNullOrUndefined(next.data)) {
-      //   this.content = next.fetchPayload || '';
-      // } else {
-      //   this.content = next.data.content;
-      // }
     });
 
     if (next.status === 'void') {
@@ -302,7 +342,7 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
 
   }
 
-  sessionUpdated(updated: EditSession) {
+  private sessionUpdated(updated: EditSession) {
 
     let prev = this.session;
 
@@ -317,6 +357,8 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
       this.contentLoaded$.next(true);
       this.content = <string>updated.fetchPayload;
     } else if (prev.status === 'saving' && updated.status === 'fetched') {
+      this.data.hasChanges = false;
+      this.data.content = null;
       if (this.iFrame) {
         this.iFrame.reload();
       }
@@ -326,31 +368,91 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
 
   }
 
-  split(recalc = false) {
+  private calcBestSplitFit() {
+    let $elem = $(this.elementRef.nativeElement);
+    return $elem.width() > $elem.height() ? 'vertical' : 'horizontal';
+  }
+
+  private recalculateSplit() {
+    let current = this.data.split;
+    if (current !== 'no') {
+      let next = this.calcBestSplitFit();
+      if (current !== next) {
+        this.split(next);
+      }
+    }
+  }
+
+  toggleSplit() {
+    let { data } = this, view = data.split;
+    if (view !== 'no') {
+      this.split('no');
+    } else {
+      this.split(this.calcBestSplitFit());
+    }
+  }
+
+  private split(kind) {
     let
       { data } = this,
-      view = data.split;
-    if (view === 'no' && recalc) {
-      return;
-    }
-    if (view !== 'no' && !recalc) {
+      split = data.split;
+    if (kind === 'no') {
       data.split = 'no';
     } else {
-      if (view === 'no') {
-        this.iFrameQL
-          .changes
-          .pipe(take(1))
-          .subscribe((ql) => {
-            this.iFrame.navigate(this.data.url);
-          });
+      if (split === 'no') {
+        this.navigatePreview();
       }
-      let $elem = $(this.elementRef.nativeElement);
-      data.split = $elem.width() > $elem.height() ? 'vertical' : 'horizontal';
+      data.split = kind;
     }
-    this.onDataChange();
-    // Give angular's change detector a chance to
-    // update before resizing the editor.
-    setTimeout(() => this.codeEditor.resize());
+    if (split !== kind) {
+      this.emitData();
+      // Give angular's change detector a chance to
+      // update before resizing the editor.
+      setTimeout(() => this.codeEditor && this.codeEditor.resize());
+    }
+  }
+
+  diff() {
+    let { session, data } = this;
+    this.diffOriginal = session.fetchPayload;
+    this.diffModified = data ? data.content || '' : '';
+    this.vendor = CodeEditorChoiceEnum.MONACO_DIFF;
+    if (data.split !== 'no') {
+      setTimeout(() => this.codeEditor.resize());
+    }
+  }
+
+  unDiff() {
+    this.diffOriginal = null;
+    this.diffModified = null;
+    this.vendor = CodeEditorFactory.choice(this.asset);
+    if (this.data.split !== 'no') {
+      setTimeout(() => this.codeEditor.resize());
+    }
+  }
+
+  toggleDiff() {
+    let { data } = this;
+    if (data.hasChanges) {
+      (data.diff = !data.diff)
+        ? this.diff()
+        : this.unDiff();
+    }
+  }
+
+  private navigatePreview() {
+    this.whenIFrameReady(() => {
+      this.iFrame.navigate(this.data.url);
+    });
+  }
+
+  private whenIFrameReady(logic) {
+    this.hasIFrame$
+      .pipe(
+        filter(hasIFrame => hasIFrame),
+        take(1)
+      )
+      .subscribe(logic);
   }
 
   beforeIFrameNav() {
@@ -360,7 +462,7 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
     }
   }
 
-  onDataChange() {
+  private emitData() {
     this.data$.next({
       id: this.session.id,
       data: this.data,
@@ -373,8 +475,11 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
     codeEditor.focus();
     codeEditor.value = session.fetchPayload;
     data.hasChanges = false;
-    data.content = '';
-    this.onDataChange();
+    data.content = null;
+    if (data.diff) {
+      this.unDiff();
+    }
+    this.emitData();
   }
 
   format() {

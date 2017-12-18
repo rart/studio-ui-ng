@@ -23,14 +23,18 @@ const LogStyle = {
   PURPLE: `background: ${ColorsEnum.PURPLE}; color: #FFF`,
   BLACK: `background: ${ColorsEnum.BLACK}; color: #FFF`,
 };
+
 type LogStyle = (typeof LogStyle)[keyof typeof LogStyle];
+
 const CLEAR_CONSOLE = '$c';
+
 const clearIfRequested = (anything) => {
   if (anything[anything.length - 1] === CLEAR_CONSOLE) {
     console.clear();
     anything.pop();
   }
 };
+
 const logReturn = () => {
   return `(${moment().format('[Logged @] HH:MM:SS')})`;
 };
@@ -41,7 +45,7 @@ function log(...anything: any[]) {
   return logReturn();
 }
 
-function pretty(style: LogStyle | any, ...anything) {
+function pretty(style: LogStyle | string, ...anything) {
   // if ((typeof style !== 'string') || !(style.toUpperCase() in LogStyle)) {
   //   anything.unshift(style);
   // } else {
@@ -65,17 +69,15 @@ function pretty(style: LogStyle | any, ...anything) {
   return logReturn();
 }
 
-log['CLEAR'] = CLEAR_CONSOLE;
-pretty['CLEAR'] = CLEAR_CONSOLE;
-Object.keys(LogStyle).forEach(style => pretty[style] = LogStyle[style]);
-
 export { LogStyle, log, pretty };
 
-if (!environment.production) {
-  if (window.console) {
-    window['pretty'] = pretty;
-    window['log'] = log;
-  }
-}
-
-export const foo = () => null;
+export const global = () => {
+	log['CLEAR'] = CLEAR_CONSOLE;
+	pretty['CLEAR'] = CLEAR_CONSOLE;
+	pretty['PPO'] = '$o';
+	Object.keys(LogStyle).forEach(style => pretty[style] = LogStyle[style]);
+	if (window.console) {
+    	window['pretty'] = pretty;
+    	window['log'] = log;
+  	}
+};

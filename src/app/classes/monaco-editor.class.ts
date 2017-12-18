@@ -120,7 +120,6 @@ export class MonacoEditor extends CodeEditor {
     this.disposeSubjects();
     if (this.instance) {
       this.instance.dispose();
-      this.instance.destroy();
     }
   }
 

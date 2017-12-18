@@ -120,7 +120,7 @@ requirejs({
 });
 
 // This is just for "pretty" to be available globally, really.
-require('./utils/logging.utils').foo();
+require('./utils/logging.utils').global();
 
 @NgModule({
   declarations: [

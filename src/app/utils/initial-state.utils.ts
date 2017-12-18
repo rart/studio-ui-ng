@@ -50,8 +50,8 @@ export const initialState: AppState = {
     }
   },
   editSessions: {
-    activeId: 'TEST_SESSION_ID_2',
-    order: ['TEST_SESSION_ID_2', /*'TEST_SESSION_ID_4', 'TEST_SESSION_ID_1', 'TEST_SESSION_ID_3'*/],
+    activeId: 'TEST_SESSION_ID_5',
+    order: [/*'TEST_SESSION_ID_2', 'TEST_SESSION_ID_4', 'TEST_SESSION_ID_1', 'TEST_SESSION_ID_3',*/ 'TEST_SESSION_ID_5'],
     byId: {
       // 'TEST_SESSION_ID_1': {
       //   id: 'TEST_SESSION_ID_1',
@@ -61,14 +61,16 @@ export const initialState: AppState = {
       //   projectCode: 'launcher',
       //   fetchPayload: null
       // },
-      'TEST_SESSION_ID_2': {
-        id: 'TEST_SESSION_ID_2',
-        status: 'void',
-        data: null,
-        assetId: '/templates/web/index.ftl',
-        projectCode: 'launcher',
-        fetchPayload: null
-      },
+      // 'TEST_SESSION_ID_2': {
+      //   id: 'TEST_SESSION_ID_2',
+      //   status: 'void',
+      //   data: {
+      //     split: 'horizontal'
+      //   },
+      //   assetId: '/templates/web/index.ftl',
+      //   projectCode: 'launcher',
+      //   fetchPayload: null
+      // },
       // 'TEST_SESSION_ID_3': {
       //   id: 'TEST_SESSION_ID_3',
       //   status: 'void',
@@ -84,7 +86,15 @@ export const initialState: AppState = {
       //   assetId: '/static-assets/js/foo.js',
       //   projectCode: 'launcher',
       //   fetchPayload: null
-      // }
+      // },
+      'TEST_SESSION_ID_5': {
+        id: 'TEST_SESSION_ID_5',
+        status: 'void',
+        data: null,
+        assetId: '/static-assets/js/main.js',
+        projectCode: 'launcher',
+        fetchPayload: null
+      }
     }
   }
 };
