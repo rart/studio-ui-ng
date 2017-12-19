@@ -13,7 +13,7 @@
         <div class="tab"
              *ngFor="let tab of sessions"
              [class.edited]="(tab.status === 'dirty')"
-             [class.active]="(active) && (tab === active)">
+             [class.active]="(active) && (tab.id === active.id)">
           <button (click)="selectTab(tab)" class="main">
             <std-asset-display
               *ngIf="assets[tab.assetId]"
