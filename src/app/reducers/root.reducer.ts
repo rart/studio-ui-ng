@@ -8,6 +8,7 @@ import { activeProjectCode } from './active-project-code.reducer';
 import { deliveryTable } from './delivery-table.reducer';
 import { settings } from './settings.reducer';
 import { editSessions } from './edit-sessions.reducer';
+import { sidebar } from './sidebar.reducer';
 
 const foo = (state = null) => state;
 
@@ -19,6 +20,7 @@ export const reducerMap = {
   activeProjectCode,
   editSessions,
   settings,
+  sidebar,
 
   deliveryTable,
 

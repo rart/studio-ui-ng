@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Asset } from '../../models/asset.model';
 import { ContentService } from '../../services/content.service';
 import { AssetDisplayComponent } from '../asset-display/asset-display.component';
+import { dispatch } from '@angular-redux/store';
 
 @Component({
   selector: 'std-not-implemented',
@@ -24,7 +25,7 @@ export class NotImplementedComponent implements OnInit {
   disallowWrap = false;
   showCheck = false;
 
-  path = '/site/website/workflow-status';
+  path = '/site/website';
 
   constructor(private contentService: ContentService) { }
 
@@ -51,4 +52,8 @@ export class NotImplementedComponent implements OnInit {
       });
   }
 
+  @dispatch()
+  toggleSidebar() {
+    return { type: 'TOGGLE_SIDEBAR' };
+  }
 }

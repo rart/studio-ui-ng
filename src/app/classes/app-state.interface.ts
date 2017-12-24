@@ -6,6 +6,7 @@ import { StudioModel } from '../utils/type.utils';
 
 export interface AppState {
   user: any;
+  sidebar: SidebarState;
   projectRef?: any; // "Virtual" prop, a ref to entities.projects[projectCode]
   workspaceRef?: Workspace; // "Virtual" prop, a ref to workspaces[projectCode]
   activeProjectCode: string; // The active project's code
@@ -24,6 +25,10 @@ export interface PreviewTabStateContainer {
   order: string[];
   activeId: string;
   byId: { [uuid: string]: PreviewTab };
+}
+
+export interface SidebarState {
+  visible: boolean;
 }
 
 export interface Workspace {

@@ -21,10 +21,15 @@ export class AppComponent implements OnInit {
   @select(['entities', 'projects'])
   projectsEntity$: Observable<StateEntity<Project>>;
 
+  @select(['sidebar', 'visible'])
+  sidebarVisibility$;
+
   preRequisitesPassed = false;
   preRequisitesPassed$ = new Subject();
 
   ngOnInit() {
+    this.sidebarVisibility$
+      .subscribe((visible: boolean) => this.sidebarCollapsed = !visible);
     this.projectsEntity$
       .pipe(takeUntil(this.preRequisitesPassed$))
       .subscribe(data => {

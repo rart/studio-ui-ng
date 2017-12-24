@@ -64,7 +64,8 @@ std-video-player,
 std-audio-player,
 std-font-visualizer,
 std-spinner,
-std-syntax-highlighter {
+std-syntax-highlighter,
+std-plugin-host {
   display: block;
   position: relative;
 }
@@ -75,29 +76,31 @@ std-asset-display {
 
 std-app {
   height: 100%;
+  transition: padding-left 250ms;
   padding-left: $sidebar-width-sm;
   @media (min-width: $sidebar-breakpoint-sm) {
     padding-left: $sidebar-width;
   }
   &.sidebar-collapsed {
-    padding-left: $sidebar-width-collapsed;
-    .studio-sidebar {
-      width: $sidebar-width-collapsed;
-      .label,
-      .sidebar-actions,
-      .sidebar-sub-heading {
-        /* TODO what do to with actions? add icon */
-        display: none;
-      }
-      .sidebar-item,
-      .sidebar-item-heading {
-        &:hover {
-          .label {
-            display: initial;
-          }
-        }
-      }
-    }
+    padding-left: 0;
+    //padding-left: $sidebar-width-collapsed;
+    //std-sidebar {
+    //  width: $sidebar-width-collapsed;
+    //  .label,
+    //  .sidebar-actions,
+    //  .sidebar-sub-heading {
+    //    /* TODO what do to with actions? add icon */
+    //    display: none;
+    //  }
+    //  .sidebar-item,
+    //  .sidebar-item-heading {
+    //    &:hover {
+    //      .label {
+    //        display: initial;
+    //      }
+    //    }
+    //  }
+    //}
   }
   > router-outlet + * {
     height: 100%;
@@ -117,146 +120,38 @@ std-app {
 }
 
 .text {
-  &.center,
-  &.centered {
-    text-align: center !important;
-  }
 
-  &.left {
-    text-align: left !important;
-  }
-
-  &.right {
-    text-align: right !important;
-  }
-
-  &.white {
-    color: #fff;
-    &.insure {
-      color: #fff !important;
+  @each $alignment in left, right, center {
+    &.#{$alignment} {
+      text-align: $alignment;
+      &.insure {
+        text-align: $alignment !important;
+      }
     }
   }
 
-  &.red {
-    color: $color-red;
-    &.insure {
-      color: $color-red !important;
-    }
-  }
-
-  &.orange {
-    color: $color-orange;
-    &.insure {
-      color: $color-orange !important;
-    }
-  }
-
-  &.yellow {
-    color: $color-yellow;
-    &.insure {
-      color: $color-yellow !important;
-    }
-  }
-
-  &.green {
-    color: $color-green;
-    &.insure {
-      color: $color-green !important;
-    }
-  }
-
-  &.teal {
-    color: $color-teal;
-    &.insure {
-      color: $color-teal !important;
-    }
-  }
-
-  &.blue {
-    color: $color-blue;
-    &.insure {
-      color: $color-teal !important;
-    }
-  }
-
-  &.pink {
-    color: $color-pink;
-    &.insure {
-      color: $color-pink !important;
-    }
-  }
-
-  &.purple {
-    color: $color-purple;
-    &.insure {
-      color: $color-purple !important;
-    }
-  }
-
-  &.grey,
-  &.gray,
-  &.muted {
-    color: $color-gray;
-    &.insure {
-      color: $color-yellow !important;
+  @each $color, $hex-code in $colors {
+    &.#{$color} {
+      color: $hex-code;
+      &.insure {
+        color: $hex-code !important;
+      }
     }
   }
 
   &.uppercase {
     text-transform: uppercase;
   }
+
 }
 
 .background {
-  &.white {
-    background-color: #fff;
-  }
-
-  &.red {
-    background-color: $color-red;
-  }
-
-  &.orange {
-    background-color: $color-orange;
-  }
-
-  &.yellow {
-    background-color: $color-yellow;
-  }
-
-  &.green {
-    background-color: $color-green;
-  }
-
-  &.teal {
-    background-color: $color-teal;
-  }
-
-  &.blue {
-    background-color: $color-blue;
-  }
-
-  &.pink {
-    background-color: $color-pink;
-  }
-
-  &.purple {
-    background-color: $color-purple;
-  }
-
-  &.gray {
-    background-color: $color-gray;
-    &.mid {
-      background-color: $color-gray-mid;
-    }
-    &.light {
-      background-color: $color-gray-light;
-    }
-    &.lighter {
-      background-color: $color-gray-lighter;
-    }
-    &.lightest {
-      background-color: $color-gray-lightest;
+  @each $color, $hex-code in $colors {
+    &.#{$color} {
+      background-color: $hex-code;
+      &.insure {
+        background-color: $hex-code !important;
+      }
     }
   }
 }
@@ -273,12 +168,13 @@ std-app {
   }
 }
 
-.float-right {
-  float: right
-}
-
-.float-left {
-  float: left
+.float {
+  &.right {
+    float: right
+  }
+  &.left {
+    float: left
+  }
 }
 
 .clearfix {

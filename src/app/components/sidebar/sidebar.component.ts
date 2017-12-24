@@ -2,8 +2,12 @@ import {
   OnInit,
   AfterViewInit,
   Component,
+  HostBinding,
   ViewChildren,
-  ComponentFactoryResolver, ComponentFactory, QueryList, ChangeDetectorRef, HostBinding
+  ComponentFactoryResolver,
+  ComponentFactory,
+  QueryList,
+  ChangeDetectorRef
 } from '@angular/core';
 import { StudioService } from '../../services/studio.service';
 import { environment } from '../../../environments/environment';
@@ -14,8 +18,19 @@ import { ComponentHostDirective } from '../component-host.directive';
 import { ContentTreeComponent } from '../content-tree/content-tree.component';
 import { Project } from '../../models/project.model';
 import { Observable } from 'rxjs/Observable';
-import { dispatch, NgRedux, select } from '@angular-redux/store';
+import { NgRedux, dispatch, select } from '@angular-redux/store';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
+import {
+  /* https://angular.io/guide/animations */
+  trigger,
+  style,
+  transition,
+  animate,
+  keyframes,
+  query,
+  stagger,
+  state
+} from '@angular/animations';
 
 const NavItemTypesEnum = {
   Link: 'link',
@@ -34,13 +49,27 @@ const APP_NAV_KEY = 'sidebar.appnav.panel';
 @Component({
   selector: 'std-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss']
+  styleUrls: ['./sidebar.component.scss'],
+  animations: [
+    trigger('visibility', [
+      state('expanded', style({
+        transform: 'translate3d(0, 0, 0)'
+      })),
+      state('collapsed', style({
+        transform: 'translate3d(-100%, 0, 0)',
+        opacity: 0
+      })),
+      transition('* => *', animate(250))
+    ])
+  ]
 })
 export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewInit {
 
   APP_NAV_KEY = APP_NAV_KEY;
 
+  @HostBinding('@visibility') visibility = 'expanded';
   @HostBinding('class.independent-scroll') independentScroll = true;
+
   @ViewChildren(ComponentHostDirective) cmpHosts: QueryList<ComponentHostDirective>;
 
   itemTypes = NavItemTypesEnum;
@@ -70,13 +99,17 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
 
   ngOnInit() {
 
-    this.store.select(['workspaceRef'])
+    this.select(['sidebar', 'visible'])
+      .pipe(...this.noNullsAndUnSubOps)
+      .subscribe((visible: boolean) => this.visibility = visible ? 'expanded' : 'collapsed');
+
+    this.select('workspaceRef')
       .pipe(...this.noNullsAndUnSubOps)
       .subscribe((workspace: Workspace) => {
         this.expandedPanels = workspace.expandedPanels;
       });
 
-    this.store.select(['projectRef'])
+    this.select('projectRef')
       .pipe(...this.noNullsAndUnSubOps)
       .subscribe((project: Project) => {
         this.project = project;
