@@ -2,12 +2,12 @@
   <div class="transparent title bar">
     <div class="address-bar">
 
-      <section class="ui controls">
+      <!--<section class="ui controls">
         <button class="ui mini icon button"><i class="icon chevron left"></i></button>
         <button class="ui mini icon button"><i class="icon chevron right"></i></button>
         <button class="ui mini icon button"><i class="icon refresh"></i></button>
-        <button class="ui mini basic green icon button"><i class="icon plus" title="New Tab"></i></button>
-      </section>
+        <button class="ui mini basic green icon button" (click)="foo()"><i class="icon plus" title="New Tab"></i></button>
+      </section>-->
 
       <nav class="ui tab bar" *ngIf="sessionAssetsHaveLoaded$ | async">
         <div class="tab"
@@ -45,7 +45,9 @@
   <div class="edit content">
     <ng-container [ngSwitch]="renderer">
       <std-editor (data$)="updateSession($event)" *ngSwitchCase="'CodeEditorComponent'"></std-editor>
-      <div *ngSwitchDefault>
+      <std-plugin-host *ngSwitchCase="'PluginHostComponent'"></std-plugin-host>
+      <std-spinner class="take over" *ngSwitchCase="'determining'"></std-spinner>
+      <div *ngSwitchCase="'none'">
         <div class="center muted text pad lg" i18n>Nothing is selected for editing right now.</div>
       </div>
     </ng-container>

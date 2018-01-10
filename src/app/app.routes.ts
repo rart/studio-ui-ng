@@ -15,6 +15,7 @@ import { PreviewComponent } from './components/preview/preview.component';
 import { UserCrUDComponent } from './components/user-management/user-crud/user-crud.component';
 import { WorkflowStatesComponent } from './components/workflow-states/workflow-states.component';
 import { EditComponent } from './components/edit/edit.component';
+import { EntryComponent } from './components/entry/entry.component';
 
 // Not having as a route requires for it to be added as entry component on AppModule
 // import {ProjectCrUDComponent} from './components/project-management/project-crud/project-crud.component';
@@ -29,6 +30,10 @@ const routes: Routes = [
       {
         path: '',
         component: DashboardComponent
+      },
+      {
+        path: 'login',
+        component: EntryComponent
       },
       {
         path: 'users',

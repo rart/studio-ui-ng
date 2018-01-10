@@ -10,7 +10,7 @@ export const settings: Reducer<Settings> = (state = {
       return {
         ...state,
         [action.payload.key]: action.payload.value
-      }
+      };
     default:
       return state;
   }

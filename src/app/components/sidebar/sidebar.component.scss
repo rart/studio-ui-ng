@@ -138,6 +138,49 @@
 
 }
 
+.workspace {
+  &.heading {
+    display: flex;
+    height: 3.5rem;
+    overflow: hidden;
+    background: $color-gray-lighter;
+  }
+  &.title {
+    margin: 0;
+    flex-grow: 1;
+    padding: 0 15px;
+    overflow: hidden;
+    font-size: 1.5rem;
+    line-height: 3.5rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  &.options {
+    width: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    button {
+      margin: 0;
+      padding: 0;
+      height: 50%;
+      i {
+        margin: 0;
+        padding: 0;
+      }
+      &.close {
+        &:hover {
+          color: $color-red;
+        }
+      }
+      &.change {
+        &:hover {
+          color: $color-purple;
+        }
+      }
+    }
+  }
+}
+
 /* Theme */
 
 $font-color: #222222;
@@ -201,4 +244,7 @@ $highlight-color: #dcdcdc;
   border-radius: 0;
   background-color: #EBEBEB;
   border-color: $sidebar-border-color;
+  .content {
+    overflow: hidden;
+  }
 }

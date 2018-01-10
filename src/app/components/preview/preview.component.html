@@ -2,13 +2,14 @@
   <div class="title-bar transparent">
     <div class="address-bar">
       <section class="ui controls">
+        <std-sidebar-toggler class="ui icon mini basic button"></std-sidebar-toggler>
         <button [disabled]="!activeTab.history.hasBack" (click)="back()" class="ui mini icon button"><i class="icon chevron left"></i></button>
         <button [disabled]="!activeTab.history.hasForward" (click)="forward()" class="ui mini icon button"><i class="icon chevron right"></i></button>
         <button [disabled]="activeTab.pending" (click)="reload()" class="ui mini icon button"><i class="icon refresh"></i></button>
         <div class="input-skin">
           <div class="project-display" *ngIf="project && projects">
             <button class="text simple" [title]="project.name" [matMenuTriggerFor]="projectSelectorMenu">
-              Project: {{project.code}} <i class="dropdown icon"></i>
+              {{project.code}} <i class="dropdown icon"></i>
             </button>
             <mat-menu #projectSelectorMenu="matMenu" class="mat-menu-compact">
               <button

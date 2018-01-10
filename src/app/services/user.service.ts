@@ -8,13 +8,14 @@ import {
 } from './http.service';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs/Observable';
-import { combineLatest, map } from 'rxjs/operators';
+import { catchError, combineLatest, map, tap } from 'rxjs/operators';
 import { EntityService } from '../classes/entity-service.interface';
 import { PagedResponse } from '../classes/paged-response.interface';
 import { PostResponse } from '../classes/post-response.interface';
 import { parseEntity } from '../utils/api.utils';
 
 const baseUrl = `${environment.apiUrl}/user`;
+const security = `${environment.apiUrl}/security`;
 
 @Injectable()
 export class UserService implements EntityService<User> {
@@ -25,13 +26,23 @@ export class UserService implements EntityService<User> {
   all(query?): Observable<User[]> {
     return this.http
       .get(`${baseUrl}/get-all.json`, query)
-      .map(data => data.users.map(pojo => <User>parseEntity(User, pojo)));
+      .pipe(
+        map(data => data.users.map(pojo => <User>parseEntity(User, pojo)))
+      );
   }
 
   page(options?): Observable<PagedResponse<User>> {
     return this.http
       .get(`${baseUrl}/get-all.json`, options)
-      .map(StudioHttpService.mapToPagedResponse('users', User));
+      .pipe(
+        catchError(e => {
+          if (e.status === 401) {
+
+          }
+          return Observable.of({ total: 0, users: [] });
+        }),
+        map(StudioHttpService.mapToPagedResponse('users', User))
+      );
   }
 
   by(entityProperty: string, value): Observable<User> {
@@ -90,6 +101,29 @@ export class UserService implements EntityService<User> {
         'new': user.password
       })
       .map(StudioHttpService.mapToPostResponse(user));
+  }
+
+  login(user: User) {
+    return this.http.post(`${security}/login.json`, user)
+      .pipe(
+        map(response => <User>parseEntity(User, response))
+      );
+  }
+
+  logout() {
+    return this.http.post(`${security}/logout.json`);
+  }
+
+  recover(user: User) {
+    return this.http.get(`${security}/forgot-password.json`, {
+      username: user.username
+    });
+  }
+
+  retrieve() {
+    // TODO: must mock this up for the time being...
+    // This should return the initial state (with the user) if there's a session
+    return this.http.get(`${security}/validate-session.json`);
   }
 
 }

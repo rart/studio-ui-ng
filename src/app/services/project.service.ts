@@ -68,7 +68,7 @@ export class ProjectService implements EntityService<Project> {
 
   delete(project: Project): Observable<PostResponse<Project>> {
     return this.http
-      .post(`${baseUrl}/delete-site.json`, { projectId: project.code })
+      .post(`${baseUrl}/delete-site.json`, { siteId: project.code })
       .map(StudioHttpService.mapToPostResponse(project));
   }
 

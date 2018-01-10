@@ -5,12 +5,14 @@
 }
 
 .title.bar {
-  height: 80px;
+  //height: 80px;
+  height: 30px;
 }
 
 .edit.content {
   overflow: visible;
-  height: calc(100% - 80px);
+  //height: calc(100% - 80px);
+  height: calc(100% - 30px);
 }
 
 

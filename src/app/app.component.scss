@@ -12,6 +12,20 @@ body, html {
   }
 }
 
+.bg-video {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  object-fit: cover;
+  &::-webkit-media-controls {
+    display: none !important;
+  }
+}
+
 textarea,
 textarea.mat-input-element {
   resize: none !important;
@@ -71,6 +85,10 @@ std-plugin-host {
 }
 
 std-asset-display {
+
+}
+
+std-sidebar-toggler {
 
 }
 
@@ -359,6 +377,27 @@ std-app {
   }
 }
 
+.login.view {
+
+  mat-dialog-container {
+    color: #ffffff;
+    background: rgba(0, 0, 0, .5);
+
+    //.mat-form-field-can-float .mat-form-field-autofill-control:-webkit-autofill + .mat-form-field-placeholder-wrapper .mat-form-field-placeholder {}
+    //mat-input-placeholder mat-form-field-placeholder ng-tns-c5-1 {}
+
+    .mat-form-field-placeholder {
+      color: #ffffff;
+    }
+
+    .mat-checkbox-frame {
+      border-color: #ffffff;
+    }
+
+  }
+
+}
+
 .set-max {
   margin: 0 auto;
   &.readability {
@@ -450,10 +489,15 @@ button {
   }
 }
 
-.ui.button.with.larger.icon {
-  padding: 0.2em 0.5em 0;
-  i {
-    font-size: 1.4em;
+.ui.button {
+  &.flat {
+    box-shadow: none;
+  }
+  &.with.larger.icon {
+    padding: 0.2em 0.5em 0;
+    i {
+      font-size: 1.4em;
+    }
   }
 }
 

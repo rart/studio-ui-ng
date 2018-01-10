@@ -2,8 +2,6 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  OnChanges,
-  OnDestroy,
   OnInit,
   Output,
   QueryList,
@@ -39,10 +37,12 @@ import { environment } from '../../../environments/environment';
 import { CookieService } from 'ngx-cookie-service';
 import { CommunicationService } from '../../services/communication.service';
 import { notNullOrUndefined } from '../../app.utils';
+import { WindowMessageTopicEnum } from '../../enums/window-message-topic.enum';
 
 const COOKIE = environment.preview.cookie;
 
 // TODO: how to avoid navigation when code has been entered and not saved? — also, is auto save viable?
+// https://angular.io/guide/lifecycle-hooks
 
 const DEFAULT_DATA = {
   url: '/',
@@ -57,7 +57,7 @@ const DEFAULT_DATA = {
   templateUrl: 'editor.component.html',
   styleUrls: ['editor.component.scss']
 })
-export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, AfterViewInit, OnDestroy {
+export class EditorComponent extends WithNgRedux implements OnInit, AfterViewInit {
 
   @ViewChild(IFrameComponent) iFrame: IFrameComponent;
   @ViewChildren(IFrameComponent) iFrameQL: QueryList<IFrameComponent>;
@@ -177,15 +177,15 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
       )
       .subscribe(value => this.contentChanged(value));
 
-    // this.communicator.subscribeTo(
-    //   WindowMessageTopicEnum.GUEST_CHECK_IN,
-    //   (message) => {
-    //     if (this.data.url !== message.data.url) {
-    //       this.data.url = message.data.url;
-    //       this.emitData();
-    //     }
-    //   }, /* any scope */undefined,
-    //   this.endWhenDestroyed);
+    this.communicator.subscribeTo(
+      WindowMessageTopicEnum.GUEST_CHECK_IN,
+      (message) => {
+        if (this.data.url !== message.data.url) {
+          this.data.url = message.data.url;
+          this.emitData();
+        }
+      }, /* any scope */undefined,
+      this.endWhenDestroyed);
 
     this.communicator.resize(() => {
       this.recalculateSplit();
@@ -216,6 +216,19 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
         this.hasIFrame$.next(ql.length > 0);
       });
 
+    if (this.iFrame) {
+      // Angular QL.changes behaves somehow different on first run
+      // than subsequent initializations and hence the above doesn't
+      // work as intended. This is a fallback for it.
+      // When the component is first instanced and the state dictates
+      // that there's an iFrame, the .changes triggers. On subsequent
+      // initializations the .changes doesn't trigger despite the iFrame
+      // being present.
+      this.hasIFrame$
+        .pipe(take(1))
+        .subscribe(has => !has && (this.hasIFrame$.next(true)));
+    }
+
   }
 
   private contentChanged(value) {
@@ -223,10 +236,6 @@ export class EditorComponent extends WithNgRedux implements OnChanges, OnInit, A
     data.content = value;
     data.hasChanges = true;
     this.emitData();
-  }
-
-  ngOnChanges() {
-    pretty('GREEN', 'EditorComponent.ngOnChanges()');
   }
 
   private subscribeToAsset(assetId) {

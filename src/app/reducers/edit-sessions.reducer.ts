@@ -14,7 +14,10 @@ export const editSessions: Reducer<EditSessions> = (state = {
     case StoreActionsEnum.EDIT_ASSET: {
       let assetId = action.payload.assetId;
       let projectCode = action.payload.projectCode;
-      let existing = Object.values(state.byId).find(session => session.assetId === assetId);
+      let existing = Object.values(state.byId).find(session => (
+        session.assetId === assetId &&
+        session.projectCode === projectCode
+      ));
       if (existing) {
         if (state.activeId === existing.id) {
           return state;

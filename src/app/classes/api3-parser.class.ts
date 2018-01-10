@@ -48,7 +48,9 @@ export class API3Parser extends APIParser {
         .map(itemJSON => this.asset(itemJSON))
       : null;
 
-    asset.id = json.uri || json.path;
+    asset.id = `${json.site}:${json.uri || json.path}`;
+    asset.path = json.path;
+    asset.fileName = json.name;
     asset.lastEditedOn = json.lastEditDate || json.eventDate;
     asset.url = (json.browserUri === '') ? '/' : json.browserUri;
     asset.projectCode = json.site;

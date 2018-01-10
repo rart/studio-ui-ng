@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, PageEvent } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProjectService } from '../../services/project.service';
-import { createLocalPagination$} from '../../app.utils';
+import { createLocalPagination$ } from '../../app.utils';
 import { EmbeddedViewDialogComponent } from '../embedded-view-dialog/embedded-view-dialog.component';
 import { ProjectCrUDComponent } from './project-crud/project-crud.component';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { debounceTime, distinctUntilChanged, startWith } from 'rxjs/operators';
-import { ComponentBase } from '../../classes/component-base.class';
 import { FormControl } from '@angular/forms';
 import { PagedResponse } from '../../classes/paged-response.interface';
 import { Project } from '../../models/project.model';
@@ -21,6 +19,8 @@ import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { isNullOrUndefined } from 'util';
 import { openDialog } from '../../utils/material.utils';
 import { StringUtils } from '../../utils/string.utils';
+import { createPreviewTabCore } from '../../utils/state.utils';
+import { PreviewTabsActions } from '../../actions/preview-tabs.actions';
 
 const anonym = (state: AppState) => {
   return Object.values(state.entities.projects.byId);
@@ -50,7 +50,8 @@ export class ProjectManagementComponent extends WithNgRedux implements OnInit {
               public router: Router,
               public dialog: MatDialog,
               private projectActions: ProjectActions,
-              private activeRoute: ActivatedRoute) {
+              private activeRoute: ActivatedRoute,
+              private previewTabsActions: PreviewTabsActions) {
     super(store);
   }
 
@@ -109,7 +110,8 @@ export class ProjectManagementComponent extends WithNgRedux implements OnInit {
 
   }
 
-  @dispatch() load() {
+  @dispatch()
+  load() {
     return this.projectActions.fetch();
   }
 
@@ -156,6 +158,15 @@ export class ProjectManagementComponent extends WithNgRedux implements OnInit {
   pageChanged($event: PageEvent) {
     this.pager$.next(
       Object.assign(this.pagerConfig, $event));
+  }
+
+  @dispatch()
+  browse(code) {
+    let tab = createPreviewTabCore({
+      url: '/',
+      projectCode: code
+    });
+    return this.previewTabsActions.nav(tab);
   }
 
 }

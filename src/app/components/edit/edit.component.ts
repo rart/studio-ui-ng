@@ -5,7 +5,7 @@ import { AppState, EditSession, EditSessions, LookUpTable } from '../../classes/
 import { dispatch, NgRedux, select } from '@angular-redux/store';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { Asset } from '../../models/asset.model';
-import { filter, skip, switchMap, take, takeUntil } from 'rxjs/operators';
+import { filter, skip, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { AssetActions } from '../../actions/asset.actions';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { notNullOrUndefined } from '../../app.utils';
@@ -13,6 +13,9 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { openDialog } from '../../utils/material.utils';
 import { EditorComponent } from '../editor/editor.component';
 import { Subject } from 'rxjs/Subject';
+import { AssetTypeEnum } from '../../enums/asset-type.enum';
+import { PluginHostComponent } from '../plugin-host/plugin-host.component';
+import { isNullOrUndefined } from 'util';
 
 @Component({
   selector: 'std-edit',
@@ -149,19 +152,38 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
       });
   }
 
+  assetChanged(assetId) {
+    if (isNullOrUndefined(assetId)) {
+      this.renderer = 'none';
+    } else {
+      this.renderer = 'determining';
+      this.select<Asset>(['entities', 'assets', 'byId', assetId])
+        .pipe(
+          filter(x => notNullOrUndefined(x)),
+          take(1))
+        .subscribe((asset) => {
+          switch (asset.type) {
+            case AssetTypeEnum.PAGE:
+              this.renderer = 'PluginHostComponent';
+              break;
+            default:
+              this.renderer = 'CodeEditorComponent';
+          }
+        });
+    }
+  }
+
   sessionsChanged(sessions: EditSessions) {
     this.sessions = sessions.order.map(sid => sessions.byId[sid]);
     if (notNullOrUndefined(sessions.activeId)) {
-      let
-        nextActive = sessions.byId[sessions.activeId],
-        prevActive = this.active;
-      this.active = nextActive;
-      if (nextActive) {
-        this.renderer = 'CodeEditorComponent';
+      let nextActive = sessions.byId[sessions.activeId];
+      let prevActive = this.active || {} as any;
+      if (prevActive.assetId !== nextActive.assetId) {
+        this.assetChanged(nextActive.assetId);
       }
+      this.active = nextActive;
     } else {
       this.active = null;
-      this.renderer = 'none';
     }
   }
 
@@ -237,6 +259,11 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
     } else {
       return this.assetActions.closeEditSession(session, this.assets[session.assetId]);
     }
+  }
+
+  @dispatch()
+  foo() {
+    return { type: 'NOOP' };
   }
 
 }

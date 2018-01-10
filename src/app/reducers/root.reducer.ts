@@ -3,20 +3,24 @@ import { StoreActionsEnum } from '../enums/actions.enum';
 import { combineReducers } from 'redux';
 import { user } from './user.reducer';
 import { entities } from './entities.reducer';
-import { workspaces } from './projects-state.reducer';
+import { workspaces } from './workspaces.reducer';
 import { activeProjectCode } from './active-project-code.reducer';
 import { deliveryTable } from './delivery-table.reducer';
 import { settings } from './settings.reducer';
 import { editSessions } from './edit-sessions.reducer';
 import { sidebar } from './sidebar.reducer';
+import { auth } from './auth.reducer';
+import { previewTabs } from './preview-tabs.reducer';
 
 const foo = (state = null) => state;
 
 export const reducerMap = {
 
   user,
+  auth,
   entities,
   workspaces,
+  previewTabs,
   activeProjectCode,
   editSessions,
   settings,
@@ -102,11 +106,10 @@ export function rootReducer(state = {} as AppState, action) {
     }
 
     case StoreActionsEnum.DESELECT_PROJECT: {
-      spreadRoot(nextState, {
+      return spreadRoot(nextState, {
         projectRef: null,
         workspaceRef: null
       });
-      break;
     }
 
     default:

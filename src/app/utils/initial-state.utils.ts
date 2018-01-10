@@ -3,10 +3,14 @@ import { AVATARS } from '../app.utils';
 
 export const initialState: AppState = {
   activeProjectCode: 'launcher',
+  sidebar: {
+    visible: true
+  },
+  auth: 'validated',
   user: {
     avatarUrl: AVATARS[9],
     username: 'admin',
-    email: 'royart@me.com',
+    email: 'roy.art@craftersoftware.com',
     firstName: 'Roy',
     lastName: 'Art',
     managedExternally: false,
@@ -14,6 +18,7 @@ export const initialState: AppState = {
     projects: null,
     groups: []
   },
+  previewTabs: undefined,
   workspaces: {
     'launcher': {
       previewTabs: {
@@ -47,51 +52,65 @@ export const initialState: AppState = {
         // '/site/website/index.xml': true,
         // '/static-assets/js': true
       }
+    },
+    'business-casual': {
+      previewTabs: undefined,
+      selectedItems: undefined,
+      expandedPanels: {
+        'pending.panel.pages': true,
+        'sidebar.projectnav.assets': true,
+        'sidebar.appnav.panel': true
+      },
+      expandedPaths: undefined
+    },
+    'clean-blog': {
+      previewTabs: undefined,
+      selectedItems: undefined,
+      expandedPanels: {
+        'pending.panel.pages': true,
+        'sidebar.projectnav.assets': true,
+        'sidebar.appnav.panel': true
+      },
+      expandedPaths: undefined
+    },
+    'grayscale': {
+      previewTabs: undefined,
+      selectedItems: undefined,
+      expandedPanels: {
+        'pending.panel.pages': true,
+        'sidebar.projectnav.assets': true,
+        'sidebar.appnav.panel': true
+      },
+      expandedPaths: undefined
+    },
+    'admin': {
+      previewTabs: undefined,
+      selectedItems: undefined,
+      expandedPanels: {
+        'pending.panel.pages': true,
+        'sidebar.projectnav.assets': true,
+        'sidebar.appnav.panel': true
+      },
+      expandedPaths: undefined
     }
   },
   editSessions: {
-    activeId: 'TEST_SESSION_ID_5',
-    order: [/*'TEST_SESSION_ID_2', 'TEST_SESSION_ID_4', 'TEST_SESSION_ID_1', 'TEST_SESSION_ID_3',*/ 'TEST_SESSION_ID_5'],
+    activeId: 'TEST_SESSION_ID_3',
+    order: ['TEST_SESSION_ID_3', 'TEST_SESSION_ID_5'],
     byId: {
-      // 'TEST_SESSION_ID_1': {
-      //   id: 'TEST_SESSION_ID_1',
-      //   status: 'void',
-      //   data: null,
-      //   assetId: '/static-assets/js/jquery.js',
-      //   projectCode: 'launcher',
-      //   fetchPayload: null
-      // },
-      // 'TEST_SESSION_ID_2': {
-      //   id: 'TEST_SESSION_ID_2',
-      //   status: 'void',
-      //   data: {
-      //     split: 'horizontal'
-      //   },
-      //   assetId: '/templates/web/index.ftl',
-      //   projectCode: 'launcher',
-      //   fetchPayload: null
-      // },
-      // 'TEST_SESSION_ID_3': {
-      //   id: 'TEST_SESSION_ID_3',
-      //   status: 'void',
-      //   data: null,
-      //   assetId: '/static-assets/js/crafter-support-1-0-0.js',
-      //   projectCode: 'launcher',
-      //   fetchPayload: null
-      // },
-      // 'TEST_SESSION_ID_4': {
-      //   id: 'TEST_SESSION_ID_4',
-      //   status: 'void',
-      //   data: null,
-      //   assetId: '/static-assets/js/foo.js',
-      //   projectCode: 'launcher',
-      //   fetchPayload: null
-      // },
+      'TEST_SESSION_ID_3': {
+        id: 'TEST_SESSION_ID_3',
+        status: 'void',
+        data: null,
+        assetId: 'launcher:/site/website/index.xml',
+        projectCode: 'launcher',
+        fetchPayload: null
+      },
       'TEST_SESSION_ID_5': {
         id: 'TEST_SESSION_ID_5',
         status: 'void',
-        data: null,
-        assetId: '/static-assets/js/main.js',
+        data: { split: 'vertical' },
+        assetId: 'launcher:/static-assets/js/main.js',
         projectCode: 'launcher',
         fetchPayload: null
       }

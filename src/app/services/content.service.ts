@@ -8,56 +8,61 @@ import { parseEntity } from '../utils/api.utils';
 
 const baseUrl = `${environment.apiUrl}/content`;
 
+const extract = (uid: string) => {
+  let
+    pieces = uid.split(':'),
+    projectCode = pieces[0],
+    path = pieces[1];
+  return {
+    site: projectCode,
+    path: path
+  };
+};
+
 @Injectable()
 export class ContentService {
 
   constructor(private http: StudioHttpService) {
+
   }
 
-  byId(projectCode: string, uniqueKey: string): Observable<Asset> {
+  byId(uid: string): Observable<Asset> {
     return this.http
-      .get(`${baseUrl}/get-item.json`, {
-        site: projectCode,
-        path: uniqueKey
-      }).pipe(
+      .get(`${baseUrl}/get-item.json`, extract(uid)).pipe(
         map(data => <Asset>parseEntity(Asset, data.item))
       );
   }
 
-  tree(projectCode, assetId, depth = 1) {
+  tree(uid: string, depth = 1) {
     return this.http
       .get(
         `${baseUrl}/get-items-tree.json`,
-        { site: projectCode, path: assetId, depth })
+        { ...extract(uid), depth })
       .pipe(
         map(response => <Asset>parseEntity(Asset, response.item))
       );
   }
 
-  read(projectCode, assetId, edit = false): Observable<{ id, content }> {
+  read(uid: string, edit = false): Observable<{ id, content }> {
     return this.http
       .get(
         `${baseUrl}/get-content.json`,
-        { site: projectCode, path: assetId, edit })
+        { ...extract(uid), edit })
       .pipe(
-        map((resp: any) => ({ id: assetId, content: resp.content }))
+        map((resp: any) => ({ id: uid, content: resp.content }))
       );
   }
 
+  // TODO: reevaluate when assets have a Unique ID and/or API changes (see params construction)
   write(asset: Asset, newContent: string, unlock: boolean = false): Observable<Asset> {
-    let
-      path = asset.id,
-      index = path.lastIndexOf('/'),
-      directory = path.substr(0, index),
-      fileName = path.substr(index + 1);
     return this.http
       .post(`${baseUrl}/write-content.json`, newContent, {
         params: {
           user: 'admin',
           phase: 'onSave',
           site: asset.projectCode,
-          path: directory,
-          fileName: fileName,
+          path: asset.path,
+          fileName: asset.fileName,
           nocache: `${Date.now()}`,
           unlock: `${unlock}`
         }
@@ -70,10 +75,10 @@ export class ContentService {
     return this.http
       .get(`${baseUrl}/unlock-content.json`, {
         site: asset.projectCode,
-        path: asset.id
+        path: `${asset.path}/${asset.fileName}`
       })
       .pipe(
-        switchMap(() => this.byId(asset.projectCode, asset.id))
+        switchMap(() => this.byId(asset.id))
       );
   }
 

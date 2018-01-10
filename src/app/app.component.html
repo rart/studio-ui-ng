@@ -1,7 +1,8 @@
 <ng-container *ngIf="preRequisitesPassed">
   <router-outlet></router-outlet>
-  <std-sidebar></std-sidebar>
+  <std-sidebar *ngIf="(auth$ | async) !== 'void'"></std-sidebar>
 </ng-container>
+
 <ng-container *ngIf="!preRequisitesPassed">
   <std-spinner class="absolute position full with height cover">
     Loading Crafter Studio&hellip;

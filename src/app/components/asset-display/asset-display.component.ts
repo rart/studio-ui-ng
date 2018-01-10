@@ -5,7 +5,8 @@ import {
   OnChanges,
   OnDestroy,
   OnInit,
-  Output
+  Output,
+  SimpleChanges
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppState, Settings } from '../../classes/app-state.interface';
@@ -168,7 +169,9 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
       .subscribe((x: Settings) => this.settings = x);
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
+
+    // pretty('RED', 'Changes!', changes);
 
     this.navigable = this.isNavigable();
     this.menu = this.workflowService
@@ -186,7 +189,9 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
     }
 
     // if (this.handleUpdates) {}
+    // TODO: implement with changes.asset.currentValue/changes.asset.previousValue
     if (this.priorAssetID !== this.asset.id) {
+
       this.priorAssetID = this.asset.id;
       if (notNullOrUndefined(this.assetSub)) {
         this.assetSub.unsubscribe();
@@ -199,6 +204,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
         .subscribe((a: Asset) => this.asset = a);
     }
 
+    // TODO: implement with changes.showCheck.currentValue/changes.showCheck.previousValue
     if (this.priorShowCheckValue !== this.showCheck) {
       // Only good as far as there's a single subscription...
       if (this.priorShowCheckValue === true) {

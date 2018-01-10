@@ -110,6 +110,12 @@ import { TabBarComponent } from './components/tab-bar/tab-bar.component';
 import { SyntaxHighlighterComponent } from './components/syntax-highlighter/syntax-highlighter.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { AssetEpics } from './epics/asset.epics';
+import { PluginHostComponent } from './components/plugin-host/plugin-host.component';
+import { SidebarTogglerComponent } from './components/sidebar-toggler/sidebar-toggler.component';
+import { AuthInterceptor } from './auth.interceptor';
+import { LoginComponent } from './components/login/login.component';
+import { UserEpics } from './epics/user.epics';
+import { EntryComponent } from './components/entry/entry.component';
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
@@ -161,7 +167,11 @@ require('./utils/logging.utils').global();
     EditComponent,
     EditorComponent,
     CodeEditorComponent,
-    ChangeLossDecisionViewComponent
+    ChangeLossDecisionViewComponent,
+    PluginHostComponent,
+    SidebarTogglerComponent,
+    LoginComponent,
+    EntryComponent
 
   ],
   imports: [
@@ -198,7 +208,9 @@ require('./utils/logging.utils').global();
     ProjectCrUDComponent,
     ItemListDashletComponent,
     ContentTreeComponent,
-    ChangeLossDecisionViewComponent
+    ChangeLossDecisionViewComponent,
+    PluginHostComponent,
+    LoginComponent
   ],
   providers: [
 
@@ -216,6 +228,7 @@ require('./utils/logging.utils').global();
     ProjectEpics,
     InterceptorEpics,
     AssetEpics,
+    UserEpics,
 
     ProjectActions,
     AssetActions,
@@ -223,7 +236,8 @@ require('./utils/logging.utils').global();
 
     AuthGuard,
     ProjectResolver,
-    ProjectsResolver
+    ProjectsResolver,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
 
   ],
   bootstrap: [AppComponent]

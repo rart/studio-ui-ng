@@ -7,17 +7,16 @@ import {
   ComponentFactoryResolver,
   ComponentFactory,
   QueryList,
-  ChangeDetectorRef
+  ChangeDetectorRef,
 } from '@angular/core';
 import { StudioService } from '../../services/studio.service';
 import { environment } from '../../../environments/environment';
-import { AppState, StateEntity, Workspace } from '../../classes/app-state.interface';
+import { AppState, LookUpTable, Workspace } from '../../classes/app-state.interface';
 import { ExpandedPanelsActions } from '../../actions/expanded-panels.actions';
 import { User } from '../../models/user.model';
 import { ComponentHostDirective } from '../component-host.directive';
 import { ContentTreeComponent } from '../content-tree/content-tree.component';
 import { Project } from '../../models/project.model';
-import { Observable } from 'rxjs/Observable';
 import { NgRedux, dispatch, select } from '@angular-redux/store';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import {
@@ -31,6 +30,10 @@ import {
   stagger,
   state
 } from '@angular/animations';
+import { ComponentRef } from '@angular/core/src/linker/component_factory';
+import { filter, takeUntil } from 'rxjs/operators';
+import { ProjectActions } from '../../actions/project.actions';
+import { notNullOrUndefined } from '../../app.utils';
 
 const NavItemTypesEnum = {
   Link: 'link',
@@ -82,22 +85,34 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
   project: Project;
   projects: Project[];
 
-  @select(['entities', 'projects'])
-  projects$: Observable<StateEntity<Project>>;
-
   @select(['editSessions', 'order'])
   editSessions$;
 
+  onProjectChanged$;
+
+  componentRefs: ComponentRef<any>[] = [];
+
   expandedPanels: { [key: string]: boolean } = {};
 
-  constructor(protected store: NgRedux<AppState>,
+  constructor(store: NgRedux<AppState>,
               private studioService: StudioService,
               private componentFactoryResolver: ComponentFactoryResolver,
-              private cdr: ChangeDetectorRef) {
+              private cdr: ChangeDetectorRef,
+              private projectActions: ProjectActions) {
     super(store);
   }
 
   ngOnInit() {
+
+    this.onProjectChanged$ =
+      this.select('projectRef')
+        .pipe(takeUntil(this.unSubscriber$));
+
+    this.select(['entities', 'projects', 'byId'])
+      .pipe(...this.noNullsAndUnSubOps)
+      .subscribe((lookupTable: LookUpTable<Project>) => {
+        this.projects = Object.values(lookupTable);
+      });
 
     this.select(['sidebar', 'visible'])
       .pipe(...this.noNullsAndUnSubOps)
@@ -109,8 +124,7 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
         this.expandedPanels = workspace.expandedPanels;
       });
 
-    this.select('projectRef')
-      .pipe(...this.noNullsAndUnSubOps)
+    this.onProjectChanged$
       .subscribe((project: Project) => {
         this.project = project;
       });
@@ -128,13 +142,30 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
   }
 
   ngAfterViewInit() {
+
     this.cmpHosts.changes
       .subscribe(() => {
-        this.initializeContainers();
+        this.onProjectChanged$
+          .pipe(
+            filter(p => notNullOrUndefined(p)),
+            takeUntil(this.cmpHosts.changes)
+          )
+          // TODO: revise
+          // When project is changed, the [data] binding on the stdComponentHost
+          // Isn't updated quite yet by angular hence the tree components are initialized
+          // with the old project
+          .subscribe(() => setTimeout(() => this.initializeContainers()));
       });
+
   }
 
   initializeContainers() {
+
+    let { componentRefs } = this;
+
+    if (componentRefs.length > 0) {
+      componentRefs.forEach(componentRef => componentRef.destroy());
+    }
 
     // https://github.com/angular/angular/issues/10762
     // https://github.com/angular/angular/issues/6005
@@ -144,7 +175,7 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
       .forEach((componentHost) => {
 
         let
-          componentRef,
+          componentRef: ComponentRef<any>,
           viewContainerRef,
           { project, cfg } = componentHost.data,
           { component, config } = cfg,
@@ -165,6 +196,8 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
           component.rootPath = config.path;
           component.showRoot = config.showRoot;
         }
+
+        componentRefs.push(componentRef);
 
       });
 
@@ -199,6 +232,16 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
     return expanded
       ? ExpandedPanelsActions.expand(key, this.project.code)
       : ExpandedPanelsActions.collapse(key, this.project.code);
+  }
+
+  @dispatch()
+  selectProject(code: string) {
+    return this.projectActions.select(code);
+  }
+
+  @dispatch()
+  closeWorkspace() {
+    return this.projectActions.deselect(this.project.code);
   }
 
 }

@@ -9,24 +9,32 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
 import { Asset } from '../models/asset.model';
 import { isArray } from 'util';
+import { BaseEpic } from './base-epic';
 
 @Injectable()
-export class AssetEpics {
+export class AssetEpics extends BaseEpic {
+
+  protected manifest = [
+    'some',
+    'recallForEdit',
+    'closeEditSession',
+    'persistSessionChanges'
+  ];
 
   constructor(private workflow: WorkflowService,
               private content: ContentService,
               private actions: AssetActions) {
-
+    super();
   }
 
   private recallForEdit = RootEpic.createEpic(
     StoreActionsEnum.FETCH_ASSET_FOR_EDIT,
     ({ payload }) => {
-      let { projectCode, assetId, sessionUUID } = payload;
+      let { assetId, sessionUUID } = payload;
       return Observable
         .forkJoin([
-          this.content.read(projectCode, assetId, true),
-          this.content.byId(projectCode, assetId)
+          this.content.read(assetId, true),
+          this.content.byId(assetId)
         ])
         .pipe(
           switchMap((responses: any[]) => {
@@ -62,7 +70,7 @@ export class AssetEpics {
     ({ payload }) => {
       if (isArray(payload)) {
         return Observable
-          .forkJoin(payload.map(obj => this.content.byId(obj.projectCode, obj.assetId)))
+          .forkJoin(payload.map(obj => this.content.byId(obj.assetId)))
           .pipe(map((results: Asset[]) => this.actions.fetchedSome(<Asset[]>results)));
       }
     });
@@ -79,25 +87,5 @@ export class AssetEpics {
           ])
         );
     });
-
-  private manifest = [
-    'some',
-    'recallForEdit',
-    'closeEditSession',
-    'persistSessionChanges'
-  ];
-
-  epics() {
-    return this.manifest.map(epic => {
-      return ((name) =>
-          (action$, store, dependencies) => this[name](action$, store, dependencies)
-      )(epic);
-    });
-    // return [
-    //   (action$, store, dependencies) => this.recallForEdit(action$, store, dependencies),
-    //   (action$, store, dependencies) => this.closeEditSession(action$, store, dependencies),
-    //   (action$, store, dependencies) => this.some(action$, store, dependencies)
-    // ];
-  }
 
 }

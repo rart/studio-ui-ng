@@ -186,7 +186,7 @@ tree-root {
                 > .toggle-children-wrapper {
                   &.toggle-children-wrapper-expanded .toggle-children {
                     &::before {
-                      content: "\f147";
+                      content: "\f107";
                     }
                   }
                   &.toggle-children-wrapper-collapsed .toggle-children {
@@ -213,7 +213,7 @@ tree-root {
                     backface-visibility: hidden;
                     &::before {
                       background: none !important;
-                      content: "\f196";
+                      content: "\f105";
                     }
                   }
                 }

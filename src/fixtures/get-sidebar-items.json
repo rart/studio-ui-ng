@@ -21,7 +21,7 @@
       "iconText": "",
       "label": "Help",
       "config": {
-        "href": "/project/launcher/preview"
+        "href": "/help"
       }
     }
   ],
@@ -86,7 +86,7 @@
         "component": "wcm-root-folder",
         "config": {
           "showRoot": false,
-          "path": "/project/components"
+          "path": "/site/components"
         }
       },
       {

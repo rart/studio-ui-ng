@@ -1,7 +1,7 @@
 <div class="view-container">
   <std-view-title-bar
     i18n-title
-    title="Project Management"
+    title="Projects"
     icon="fa fa-laptop">
     <button class="ui basic green button" [routerLink]="['/projects/create']">Create Project</button>
     <button class="ui icon button" (click)="load()"><i class="icon refresh"></i></button>
@@ -15,7 +15,8 @@
     </div>
 
     <div class="content" *ngSwitchCase="false">
-      <table class="ui selectable flat basic table">
+
+      <!--<table class="ui selectable flat basic table">
         <thead class="uppercase">
         <tr>
           <th>Handle</th>
@@ -42,13 +43,46 @@
           <td>{{project.groups || 0}}</td>
         </tr>
         </tbody>
-      </table>
+      </table>-->
+
+      <div class="ui cards">
+        <div class="ui card"
+             *ngFor="let project of projects">
+          <div class="image">
+            <img src="http://placehold.it/800?text={{project.name}}">
+          </div>
+          <div class="content">
+            <a class="header">{{project.name}}</a>
+            <div class="meta">
+              <span class="date">Created on 2013</span>
+            </div>
+            <div class="description">
+              {{project.description}}
+            </div>
+          </div>
+          <div class="extra content">
+            <button class="ui button"
+                    [routerLink]="['/project', project.code, 'dashboard']">
+              <i class="fa fa-tachometer"></i>
+            </button>
+            <button class="ui button" (click)="browse(project.code)">
+              <i class="fa fa-binoculars"></i>
+            </button>
+            <button class="ui button"
+                    [routerLink]="['/projects', project.code]">
+              <i class="fa fa-pencil"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
       <mat-paginator (page)="pageChanged($event)"
                      [length]="totalNumOfProjects"
                      [pageIndex]="(pager$ | async).pageIndex"
                      [pageSize]="(pager$ | async).pageSize"
                      [pageSizeOptions]="pageSizeOptions">
       </mat-paginator>
+
     </div>
 
   </ng-container>

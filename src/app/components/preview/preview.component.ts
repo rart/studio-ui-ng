@@ -11,7 +11,7 @@ import {
 import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { filter, map, skip, switchMap, take, takeUntil } from 'rxjs/operators';
 import { dispatch, NgRedux, select } from '@angular-redux/store';
 import { CookieService } from 'ngx-cookie-service';
 
@@ -36,6 +36,7 @@ import { ImageViewerComponent } from '../image-viewer/image-viewer.component';
 import { isNullOrUndefined } from 'util';
 import { showSnackBar } from '../../utils/material.utils';
 import { environment } from '../../../environments/environment';
+import { notNullOrUndefined } from '../../app.utils';
 
 // import { trigger, style, transition, animate, keyframes, query, stagger } from '@angular/animations';
 // https://angular.io/guide/animations
@@ -118,6 +119,8 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
 
   projects$: Observable<Project[]>;
 
+  previewTabs$: Observable<PreviewTabStateContainer>;
+
   project: Project;
   projects: Array<Project>;
   assets: LookUpTable<Asset> = {};
@@ -129,9 +132,6 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
 
   iFrameLandingUrl = IFRAME_LANDING_URL;
   guestLoadControlTimeout = null;
-
-  @select(['workspaceRef', 'previewTabs'])
-  previewTabs$;
 
   previewTabsObserver$ = new Subject<string>();
 
@@ -180,9 +180,14 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
       route,
       communicator,
       checkIn$,
-      previewTabsObserver$,
-      previewTabs$
+      previewTabsObserver$
     } = this;
+
+    // this.select('activeProjectCode')
+    //   .pipe(skip(1), ...this.noNullsAndUnSubOps)
+    //   .subscribe(code => {
+    //     this.setProject(code);
+    //   });
 
     projects$
       .subscribe(entries => this.projects = entries);
@@ -210,7 +215,11 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
     //     }
     //   });
 
-    previewTabs$ = this.previewTabs$
+    // TODO: handle closing project workspace and swiching to global preview mode
+    let previewTabs$ = this.select<PreviewTabStateContainer>(
+      notNullOrUndefined(this.state.activeProjectCode)
+        ? ['workspaceRef', 'previewTabs']
+        : 'previewTabs')
       .pipe(...this.noNullsAndUnSubOps);
 
     previewTabs$
@@ -232,6 +241,8 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
           setTimeout(() => this.iFrameComponent.navigate(url));
         }
       });
+
+    this.previewTabs$ = previewTabs$;
 
   }
 

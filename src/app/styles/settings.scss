@@ -1,4 +1,3 @@
-
 /* // Semantic UI \\ */
 $import-google-fonts: true !default;
 $font-url: 'https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i' !default;
@@ -27,7 +26,27 @@ $color-gray-lighter: #E5E5EA;
 $color-gray-light: #D1D1D6;
 $color-gray-mid: #C7C7CC;
 $color-gray: #8E8E93;
+$color-white: #FFFFFF;
 $color-black: #000;
+
+$colors: (
+  red: $color-red,
+  orange: $color-orange,
+  yellow: $color-yellow,
+  green: $color-green,
+  teal: $color-teal,
+  blue: $color-blue,
+  purple: $color-purple,
+  pink: $color-pink,
+  gray-lightest: $color-gray-lightest,
+  gray-lighter: $color-gray-lighter,
+  gray-light: $color-gray-light,
+  gray-mid: $color-gray-mid,
+  gray: $color-gray,
+  black: $color-black,
+  white: $color-white,
+  muted: $color-gray
+);
 
 $color-green-darkend: darken($color-green, 15%);
 $color-teal-darkend: darken($color-teal, 15%);

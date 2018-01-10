@@ -2,13 +2,10 @@
 
 .preview-container {
 
-  position: fixed;
-  top: 52px;
+  position: absolute;
+  left: 0;
   right: 0;
-  left: $sidebar-width-sm;
-  @media (min-width: $sidebar-breakpoint-sm) {
-    left: $sidebar-width;
-  }
+  top: 52px;
   bottom: 0;
 
   .tabbed & {

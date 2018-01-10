@@ -32,17 +32,36 @@
     </div>
   </mat-expansion-panel>
 
-  <mat-expansion-panel #projectNavPanel
-                       [expanded]="true"
-                       class="studio-project-nav allow-overflow"
-                       *ngIf="project">
-    <mat-expansion-panel-header
-      class="sidebar-heading"
-      [collapsedHeight]="'60px'"
-      [expandedHeight]="'60px'">
-      <mat-panel-title>{{project.name}}</mat-panel-title>
-    </mat-expansion-panel-header>
-    <div class="sidebar-items" *ngIf="projectNavPanel.expanded">
+  <ng-container *ngIf="!project">
+    <h2>My Projects</h2>
+    <button mat-menu-item
+            *ngFor="let project of projects"
+            (click)="selectProject(project.code)">
+      {{project.name}}
+    </button>
+  </ng-container>
+  <ng-container *ngIf="project">
+    <section class="workspace heading">
+      <h2 class="workspace title">{{project.name}}</h2>
+      <div class="workspace options">
+        <button class="close" title="Close Workspace" i18n-title
+                (click)="closeWorkspace()">
+          <i class="close icon"></i>
+        </button>
+        <button class="change" title="Change Project" i18n-title
+                [matMenuTriggerFor]="projectsMenu">
+          <i class="exchange icon"></i>
+        </button>
+      </div>
+      <mat-menu class="mat-menu-compact" #projectsMenu="matMenu">
+        <ng-container *ngFor="let project of projects">
+          <button mat-menu-item (click)="selectProject(project.code)">
+            {{project.name}}
+          </button>
+        </ng-container>
+      </mat-menu>
+    </section>
+    <div class="sidebar-items">
 
       <!-- TODO: make this into individual components? -->
       <div *ngFor="let item of projectNavItems"
@@ -72,7 +91,6 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
 
-          <!-- *ngIf="expandedPanelMap[getProjectNavPanelKey(item)]" -->
           <ng-template stdComponentHost [data]="{ project: project, cfg: item }"></ng-template>
 
         </mat-expansion-panel>
@@ -86,7 +104,7 @@
       </div>
 
     </div>
-  </mat-expansion-panel>
+  </ng-container>
 
 </div>
 

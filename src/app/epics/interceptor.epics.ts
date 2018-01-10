@@ -7,13 +7,19 @@ import { PreviewTabCore } from '../classes/app-state.interface';
 import { PromiseObservable } from 'rxjs/observable/PromiseObservable';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { Asset } from '../models/asset.model';
+import { BaseEpic } from './base-epic';
 
 @Injectable()
-export class InterceptorEpics {
+export class InterceptorEpics extends BaseEpic {
+
+  protected manifest: string[] = [
+    'navigation',
+    'editAsset'
+  ];
 
   constructor(private router: Router,
               private route: ActivatedRoute) {
-
+    super();
   }
 
   private navigation = RootEpic.createEpic(
@@ -42,13 +48,6 @@ export class InterceptorEpics {
         .create()
         .pipe(ignoreElements());
     });
-
-  epics() {
-    return [
-      (action$, store, dependencies) => this.navigation(action$, store, dependencies),
-      (action$, store, dependencies) => this.editAsset(action$, store, dependencies)
-    ];
-  }
 
 }
 

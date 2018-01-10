@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ITreeOptions, TREE_ACTIONS, TreeNode, ITreeState } from 'angular-tree-component';
 import { NgRedux } from '@angular-redux/store';
 
@@ -9,13 +9,16 @@ import { AppState, Workspace } from '../../classes/app-state.interface';
 import { ExpandedPathsActions } from '../../actions/expanded-paths.actions';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { AssetActions } from '../../actions/asset.actions';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'std-content-tree',
   templateUrl: './content-tree.component.html',
   styleUrls: ['./content-tree.component.scss']
 })
-export class ContentTreeComponent extends WithNgRedux implements OnInit {
+export class ContentTreeComponent
+  extends WithNgRedux
+  implements OnInit, OnChanges {
 
   @Input() rootPath: string;
   @Input() showRoot = true;
@@ -31,6 +34,8 @@ export class ContentTreeComponent extends WithNgRedux implements OnInit {
     focusedNodeId: null
   };
 
+  ngOnChanges$ = new Subject();
+
   constructor(store: NgRedux<AppState>,
               private contentService: ContentService,
               private workflowService: WorkflowService,
@@ -38,7 +43,15 @@ export class ContentTreeComponent extends WithNgRedux implements OnInit {
     super(store);
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    this.ngOnChanges$.next();
+  }
+
   ngOnInit() {
+
+    this.addTearDown(() => {
+      this.ngOnChanges$.complete();
+    });
 
     this.store.select(['workspaceRef'])
       .pipe(...this.noNullsAndUnSubOps)
@@ -46,12 +59,14 @@ export class ContentTreeComponent extends WithNgRedux implements OnInit {
         this.treeState.expandedNodeIds = workspace.expandedPaths;
       });
 
-    this.fetch(this.project.code, this.rootPath)
-      .then(item => {
-        this.rootPathLoaded(item);
-      });
+    this.ngOnChanges$.subscribe(() => {
+      this.fetch(`${this.project.code}:${this.rootPath}`)
+        .then(item => this.rootPathLoaded(item));
+    });
 
     this.setTreeOptionDefaults();
+
+    this.ngOnChanges$.next();
 
   }
 
@@ -86,9 +101,9 @@ export class ContentTreeComponent extends WithNgRedux implements OnInit {
     }
   }
 
-  private fetch(projectCode, path) {
+  private fetch(uid: string) {
     return this.contentService
-      .tree(projectCode, path)
+      .tree(uid)
       .toPromise()
       .then(item => {
         this.dispatch(
@@ -113,7 +128,7 @@ export class ContentTreeComponent extends WithNgRedux implements OnInit {
       useVirtualScroll: false,
       getChildren: (node: TreeNode) => {
         return this
-          .fetch(this.project.code, (<Asset>node.data).id)
+          .fetch((<Asset>node.data).id)
           .then(item => item.children);
       },
       actionMapping: {

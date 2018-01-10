@@ -1,0 +1,48 @@
+<a *ngIf="showRecoverView"
+   (click)="showRecoverView = false">
+  &laquo; Back
+</a>
+<img class="studio logo" [src]="studioLogoUrl" i18n-alt alt="Crafter Studio">
+
+<div class="timeout message" *ngIf="(auth$ | async) === 'timeout'">
+  Your session has expired. Please log back in.
+</div>
+
+<mat-form-field>
+  <input matInput i18n-placeholder placeholder="Username"
+         [(ngModel)]="model.username"
+         [formControl]="userNameFormControl">
+  <mat-error i18n *ngIf="userNameFormControl.hasError('required')">
+    Email address is <strong>required</strong>
+  </mat-error>
+</mat-form-field>
+<ng-container *ngIf="!showRecoverView">
+
+  <std-password-field [model]="model"
+                      [revealed]="false"
+                      [allowGeneration]="false"
+                      [formControlRef]="passwordFormControl"
+                      [autoGenerate]="false"></std-password-field>
+
+  <mat-checkbox [ngModel]="remember">
+    Remember me
+  </mat-checkbox>
+
+  <button class="ui primary button" (click)="login()">
+    Log in
+  </button>
+
+  <button class="ui button" (click)="logout()">
+    Log Out
+  </button>
+
+  <a class="forgot password" (click)="showRecoverView = true">Forgot Your Password</a>
+
+</ng-container>
+<ng-container *ngIf="showRecoverView">
+  <button class="ui primary button">
+    Recover
+  </button>
+</ng-container>
+
+<std-spinner *ngIf="(auth$ | async) === 'fetching'" class="absolute position opaque cover"></std-spinner>

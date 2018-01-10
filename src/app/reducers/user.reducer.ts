@@ -11,6 +11,13 @@ export const user: Reducer<User> = (state = null, action) => {
           ? User.deserialize(state)
           : state;
     }
+    case StoreActionsEnum.LOGGED_IN:
+      return action.payload.user;
+    case StoreActionsEnum.LOGGED_OUT:
+      return null;
+    // case StoreActionsEnum.LOGIN:
+    // case StoreActionsEnum.LOGOUT:
+    // case StoreActionsEnum.SESSION_TIMEOUT:
     default:
       return state;
   }

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { dispatch } from '@angular-redux/store';
 import { AnyAction } from 'redux';
 import { StoreActionsEnum } from '../enums/actions.enum';
 import { Project } from '../models/project.model';

@@ -8,12 +8,14 @@ import { expandedPanels } from './expanded-panels.reducer';
 import { expandedPaths } from './expanded-paths.reducer';
 import { isNullOrUndefined } from 'util';
 import { createProjectState } from '../utils/state.utils';
+import { notNullOrUndefined } from '../app.utils';
 
 const reducer = combineReducers<Workspace>({
   previewTabs,
   selectedItems,
   expandedPanels,
-  expandedPaths
+  expandedPaths,
+  settings: (state, action) => ({})
 });
 
 export const workspaces: Reducer<Workspaces> =
@@ -23,10 +25,10 @@ export const workspaces: Reducer<Workspaces> =
       case StoreActionsEnum.SELECT_PROJECT:
         return createProjectStateIfUndefined(state, action.code);
 
-      default: {
+      case StoreActionsEnum.STUDIO_INIT:
         let
           hasChanged = false,
-          next = (action.projectCode ? [action.projectCode] : Object.keys(state))
+          next = Object.keys(state)
             .reduce((nextState: Workspaces, projectCode: string) => {
               let prevStateForProject = state[projectCode];
               let nextStateForProject = reducer(prevStateForProject, action);
@@ -39,7 +41,24 @@ export const workspaces: Reducer<Workspaces> =
               return nextState;
             }, {});
         return hasChanged ? next : state;
-      }
+
+      // TODO: Double check here...
+      // Safer to specify all possible actions of the inner reducers
+      // or make the property more specific?
+      default:
+        if (notNullOrUndefined(action.projectCode)) {
+          let prevStateForProject = state[action.projectCode];
+          let nextStateForProject = reducer(prevStateForProject, action);
+          if (typeof nextStateForProject === 'undefined') {
+            throw new Error(
+              getUndefinedStateErrorMessage(action.projectCode, action));
+          }
+          return (nextStateForProject !== prevStateForProject)
+            ? { ...state, [action.projectCode]: nextStateForProject }
+            : state;
+        } else {
+          return state;
+        }
 
     }
   };

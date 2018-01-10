@@ -25,7 +25,7 @@ export class NotImplementedComponent implements OnInit {
   disallowWrap = false;
   showCheck = false;
 
-  path = '/site/website';
+  path = 'launcher:/site/website';
 
   constructor(private contentService: ContentService) { }
 
@@ -38,7 +38,7 @@ export class NotImplementedComponent implements OnInit {
   }
 
   fetch() {
-    this.contentService.tree('launcher', this.path)
+    this.contentService.tree(this.path)
       .subscribe((item) => {
 
         this.asset = item;

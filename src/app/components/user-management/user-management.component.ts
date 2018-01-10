@@ -122,6 +122,10 @@ export class UserManagementComponent implements OnInit {
     subscription = dialogRef.afterClosed()
       .subscribe(() => {
         this.editFinished();
+      }, () => {
+        console.log('2');
+      }, () => {
+        console.log('3');
       });
   }
 

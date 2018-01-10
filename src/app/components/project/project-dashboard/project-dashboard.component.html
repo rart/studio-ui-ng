@@ -1,6 +1,6 @@
 <div class="view-container">
   <std-view-title-bar
-    i18n-title [title]="!project ? 'Project Dashboard' : project.name + ' Dashboard'"
+    i18n-title [title]="!project ? 'Project Dashboard' : project.name"
     icon="fa fa-tachometer">
     <div *ngIf="actions.length > 0" class="ui extremely compact flat basic buttons"
          [class.tiny]="actions.length > 3 && actions.length <= 5"

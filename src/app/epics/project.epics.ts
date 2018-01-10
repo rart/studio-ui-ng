@@ -5,13 +5,22 @@ import { ProjectActions } from '../actions/project.actions';
 import { StoreActionsEnum } from '../enums/actions.enum';
 import { Project } from '../models/project.model';
 import { RootEpic } from './root.epic';
+import { BaseEpic } from './base-epic';
 
 @Injectable()
-export class ProjectEpics {
+export class ProjectEpics extends BaseEpic {
+
+  protected manifest: string[] = [
+    'all',
+    'edit',
+    'create',
+    'update',
+    'delete'
+  ];
 
   constructor(private projectService: ProjectService,
               private projectActions: ProjectActions) {
-
+    super();
   }
 
   private edit = RootEpic.createEpic(
@@ -61,14 +70,5 @@ export class ProjectEpics {
           map(postResponse => this.projectActions.deleted(postResponse.entity))
         );
     });
-
-  epics() {
-    return [
-      (action$, store, dependencies) => this.all(action$, store, dependencies),
-      (action$, store, dependencies) => this.create(action$, store, dependencies),
-      (action$, store, dependencies) => this.update(action$, store, dependencies),
-      (action$, store, dependencies) => this.delete(action$, store, dependencies)
-    ];
-  }
 
 }

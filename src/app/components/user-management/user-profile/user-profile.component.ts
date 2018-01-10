@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { dispatch } from '@angular-redux/store';
+import { UserActions } from '../../../actions/user.actions';
 
 @Component({
   selector: 'std-user-profile',
@@ -10,6 +12,12 @@ export class UserProfileComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+
+  }
+
+  @dispatch()
+  logout() {
+    return UserActions.loggedOut();
   }
 
 }
