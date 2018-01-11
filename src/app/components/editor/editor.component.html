@@ -21,6 +21,7 @@
       (initialized$)="editorLibsLoaded$.next($event)"
       [editable]="true"></std-code-editor>
     <std-iframe
+      [spinner]="true"
       [hidden]="data.diff"
       *ngIf="data.split !== 'no'"
       (beforeNav)="beforeIFrameNav($event)"

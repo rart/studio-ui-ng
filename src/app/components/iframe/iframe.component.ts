@@ -14,37 +14,29 @@ import {
 } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { CommunicationService } from '../../services/communication.service';
-import { isNull } from 'util';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { ComponentBase } from '../../classes/component-base.class';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'std-iframe',
   templateUrl: './iframe.component.html',
   styleUrls: ['./iframe.component.scss']
 })
-export class IFrameComponent implements OnInit, OnDestroy, AfterViewInit, AfterContentInit, OnChanges {
+export class IFrameComponent extends ComponentBase implements OnInit, OnDestroy, AfterViewInit, AfterContentInit, OnChanges {
 
   @ViewChild('frame') iFrameRef: ElementRef;
 
   @Output() load = new Subject();
+  @Output() loading$ = new BehaviorSubject(false);
   @Output() beforeNav = new Subject();
 
   @Input() changeTrigger: any; // A(ny) secondary property to cause angular to call ngOnChanges
+  @Input() spinner = false;
 
   private _communicates = false;
-  private _src = 'about:blank';
 
   @Input() src = 'about:blank';
-  // @Input()
-  // set src(src) {
-  //   this._src = src;
-  //   if (!isNull(this.element)) {
-  //     this.navigate(src);
-  //   }
-  // }
-  //
-  // get src() {
-  //   return this._src;
-  // }
 
   @Input()
   set communicates(communicates: boolean) {
@@ -61,10 +53,13 @@ export class IFrameComponent implements OnInit, OnDestroy, AfterViewInit, AfterC
   }
 
   constructor(private communicator: CommunicationService) {
+    super();
   }
 
   ngOnInit() {
-
+    this.load
+      .pipe(takeUntil(this.unSubscriber$))
+      .subscribe(x => this.loading$.next(false));
   }
 
   ngOnDestroy() {
@@ -80,13 +75,13 @@ export class IFrameComponent implements OnInit, OnDestroy, AfterViewInit, AfterC
   }
 
   ngOnChanges() {
-    // pretty('yellow', 'Changes have occurred', this.src);
     if (this.element) {
       this.reload();
     }
   }
 
   navigate(url: string) {
+    this.loading$.next(true);
     this.beforeNav.next();
     this.src = url;
     this.element.src = url;

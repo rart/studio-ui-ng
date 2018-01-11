@@ -451,6 +451,7 @@ export class EditorComponent extends WithNgRedux implements OnInit, AfterViewIni
 
   private navigatePreview() {
     this.whenIFrameReady(() => {
+
       this.iFrame.navigate(this.data.url);
     });
   }

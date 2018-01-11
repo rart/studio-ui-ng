@@ -1,5 +1,8 @@
 <iframe frameborder="0" #frame
         (load)="load.next($event)"></iframe>
+<std-spinner
+  *ngIf="spinner && (loading$ | async)"
+  class="absolute position take over opaque"></std-spinner>
 <!--<iframe frameborder="0" #frame
         (load)="load.next($event)"
         [src]="src | safeUrl"></iframe>-->
