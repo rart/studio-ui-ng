@@ -41,7 +41,7 @@ import {
 // Config
 import { environment } from '../environments/environment';
 
-// Thid party
+// Third party
 import { MomentModule } from 'angular2-moment';
 import { CookieService } from 'ngx-cookie-service';
 import { TreeModule } from 'angular-tree-component';
