@@ -106,7 +106,6 @@ import { rootReducer } from './reducers/root.reducer';
 import { AssetActions } from './actions/asset.actions';
 import { PreviewTabsActions } from './actions/preview-tabs.actions';
 import { InterceptorEpics } from './epics/interceptor.epics';
-import { TabBarComponent } from './components/tab-bar/tab-bar.component';
 import { SyntaxHighlighterComponent } from './components/syntax-highlighter/syntax-highlighter.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { AssetEpics } from './epics/asset.epics';
@@ -117,6 +116,9 @@ import { LoginComponent } from './components/login/login.component';
 import { UserEpics } from './epics/user.epics';
 import { EntryComponent } from './components/entry/entry.component';
 
+// This is just for "pretty" to be available globally, really.
+import { global } from './utils/logging.utils'; global();
+
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
   paths: {
@@ -124,9 +126,6 @@ requirejs({
     'ace': `${environment.assetsUrl}/js/vendor/ace`
   }
 });
-
-// This is just for "pretty" to be available globally, really.
-require('./utils/logging.utils').global();
 
 @NgModule({
   declarations: [
@@ -161,7 +160,6 @@ require('./utils/logging.utils').global();
     VideoPlayerComponent,
     AudioPlayerComponent,
     FontVisualizerComponent,
-    TabBarComponent,
     SyntaxHighlighterComponent,
     SpinnerComponent,
     EditComponent,
