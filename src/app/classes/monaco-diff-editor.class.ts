@@ -1,5 +1,4 @@
 import { CodeEditor, CodeEditorChoiceEnum } from './code-editor.abstract';
-import { isNullOrUndefined } from 'util';
 import { MonacoEditor } from './monaco-editor.class';
 
 export class MonacoDiffEditor extends MonacoEditor {

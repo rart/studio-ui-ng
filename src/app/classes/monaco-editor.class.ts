@@ -1,5 +1,4 @@
 import { CodeEditor, CodeEditorChoiceEnum } from './code-editor.abstract';
-import { isNullOrUndefined } from 'util';
 
 let Monaco;
 

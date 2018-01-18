@@ -1,11 +1,11 @@
-import {Project} from './project.model';
-import { parseEntity } from '../utils/api.utils';
+import { Project } from './project.model';
 
 export class Group {
   id;
   // projectCode;
   name;
   project: Project;
+
   // roles
 
   static toJSON() {

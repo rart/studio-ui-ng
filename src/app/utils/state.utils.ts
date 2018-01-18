@@ -8,9 +8,6 @@ import {
   PreviewTabStateContainer, StateEntity,
   Workspace
 } from '../classes/app-state.interface';
-import { Asset } from '../models/asset.model';
-import { StudioModel } from './type.utils';
-import { by } from 'protractor';
 
 const DEFAULT_TAB_TITLE = '...';
 

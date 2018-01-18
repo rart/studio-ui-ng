@@ -1,6 +1,5 @@
 import { Project } from './project.model';
 import { Group } from './group.model';
-import { AVATARS } from '../app.utils';
 
 export interface UserProps {
   avatarUrl?: string;
