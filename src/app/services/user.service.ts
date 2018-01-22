@@ -64,34 +64,36 @@ export class UserService implements EntityService<User> {
   create(user: User): Observable<PostResponse<User>> {
     return this.http
       .post(`${baseUrl}/create.json`, user.export())
-      .map(StudioHttpService.mapToPostResponse(user));
+      .pipe(map(StudioHttpService.mapToPostResponse(user)));
   }
 
   update(user: User): Observable<PostResponse<User>> {
     return this.http
       .post(`${baseUrl}/update.json`, user.export())
-      .map(StudioHttpService.mapToPostResponse(user));
+      .pipe(map(StudioHttpService.mapToPostResponse(user)));
   }
 
   delete(user: User): Observable<PostResponse<User>> {
     return this.http.post(`${baseUrl}/delete.json`, user.export())
-      .map(StudioHttpService.mapToPostResponse(user));
+      .pipe(map(StudioHttpService.mapToPostResponse(user)));
   }
 
   isEnabled(username): Observable<boolean> {
-    return this.http.get(`${baseUrl}/status.json`, { username: username })
-      .map((json) => json.enabled);
+    return this.http
+      .get(`${baseUrl}/status.json`, { username: username })
+      .pipe(map((json) => json.enabled));
   }
 
   enable(user: User): Observable<PostResponse<User>> {
-    return this.http.post(`${baseUrl}/enable.json`, { username: user.username })
-      .map(StudioHttpService.mapToPostResponse(user));
+    return this.http
+      .post(`${baseUrl}/enable.json`, { username: user.username })
+      .pipe(map(StudioHttpService.mapToPostResponse(user)));
   }
 
   disable(user: User): Observable<PostResponse<User>> {
     return this.http
       .post(`${baseUrl}/disable.json`, { username: user.username })
-      .map(StudioHttpService.mapToPostResponse(user));
+      .pipe(map(StudioHttpService.mapToPostResponse(user)));
   }
 
   resetPassword(user: User) {
@@ -100,14 +102,13 @@ export class UserService implements EntityService<User> {
         'username': user.username,
         'new': user.password
       })
-      .map(StudioHttpService.mapToPostResponse(user));
+      .pipe(map(StudioHttpService.mapToPostResponse(user)));
   }
 
   login(user: User) {
-    return this.http.post(`${security}/login.json`, user)
-      .pipe(
-        map(response => <User>parseEntity(User, response))
-      );
+    return this.http
+      .post(`${security}/login.json`, user)
+      .pipe(map(response => <User>parseEntity(User, response)));
   }
 
   logout() {

@@ -1,3 +1,4 @@
+import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 
@@ -20,17 +21,17 @@ export class ProjectService implements EntityService<Project> {
 
   all(query?): Observable<Project[]> {
     return this.http.get(`${baseUrl}/get-per-user.json`, Object.assign({ username: 'admin' }, query || {}))
-      .map((data) => {
+      .pipe(map((data) => {
         return data.sites.map((item) => parseEntity(Project, item));
-      });
+      }));
   }
 
   page(query?): Observable<PagedResponse<Project>> {
     return this.http.get(`${baseUrl}/get-per-user.json`, Object.assign({ username: 'admin' }, query || {}))
-      .map((data) => ({
+      .pipe(map((data) => ({
         total: data.total,
         entries: data.sites.map((item) => parseEntity(Project, item))
-      }));
+      })));
   }
 
   allBlueprints() {
@@ -39,7 +40,7 @@ export class ProjectService implements EntityService<Project> {
 
   byId(sideCode): Observable<Project> {
     return this.http.get(`${baseUrl}/get.json`, { site_id: sideCode })
-      .map((data) => <Project>parseEntity(Project, data));
+      .pipe(map((data) => <Project>parseEntity(Project, data)));
   }
 
   by(entityProperty: string, value): Observable<Project> {
@@ -53,7 +54,7 @@ export class ProjectService implements EntityService<Project> {
         description: project.description,
         blueprint: project.blueprint.id
       })
-      .map(StudioHttpService.mapToPostResponse(project));
+      .pipe(map(StudioHttpService.mapToPostResponse(project)));
   }
 
   update(project: Project): Observable<PostResponse<Project>> {
@@ -63,13 +64,13 @@ export class ProjectService implements EntityService<Project> {
         description: project.description,
         blueprint: project.blueprint.id
       })
-      .map(StudioHttpService.mapToPostResponse(project));
+      .pipe(map(StudioHttpService.mapToPostResponse(project)));
   }
 
   delete(project: Project): Observable<PostResponse<Project>> {
     return this.http
       .post(`${baseUrl}/delete-site.json`, { siteId: project.code })
-      .map(StudioHttpService.mapToPostResponse(project));
+      .pipe(map(StudioHttpService.mapToPostResponse(project)));
   }
 
 }

@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import { Project } from '../models/project.model';
 import { StudioHttpService } from './http.service';
 import { parseEntity } from '../utils/api.utils';
+import { map } from 'rxjs/operators';
 
 const baseUrl = `${environment.apiUrl}/group`;
 
@@ -15,12 +16,12 @@ export class GroupService {
 
   byProject(query?) {
     return this.http.get(`${baseUrl}/get-all.json`, query)
-      .map((data) => ({
+      .pipe(map((data) => ({
         total: '(not provided by API)',
         projects: data.sites.map((dataItem) => {
           return parseEntity(Project, dataItem);
         })
-      }));
+      })));
   }
 
   addUser(data) {

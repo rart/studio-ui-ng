@@ -125,7 +125,7 @@ export class WorkflowService {
     return this.http.get(
       `${workflow}/get-go-live-items.json`, mix(query, {
         includeInProgress: !!query.includeInProgress
-      })).map(value => mappingFn(value));
+      })).pipe(map(value => mappingFn(value)));
   }
 
   fetchScheduled(query: {
@@ -137,7 +137,7 @@ export class WorkflowService {
     return this.http
       .get(`${deployment}/get-scheduled-items.json`, mix(query, {
         filterType: query.filterType || 'all'
-      })).map(value => mappingFn(value));
+      })).pipe(map(value => mappingFn(value)));
   }
 
   fetchDeploymentHistory(query: {
@@ -153,7 +153,7 @@ export class WorkflowService {
         num: query.num || 20,
         days: query.days || 30,
         filterType: query.filterType || 'all'
-      })).map(value => mappingFn(value));
+      })).pipe(map(value => mappingFn(value)));
   }
 
   // Not categorized
@@ -172,7 +172,7 @@ export class WorkflowService {
         num: query.num || 20,
         filterType: query.filterType || 'all',
         excludeLive: (query.includeLive !== undefined) ? !query.includeLive : false
-      })).map(value => mappingFn(value, false));
+      })).pipe(map(value => mappingFn(value, false)));
   }
 
   getAvailableWorkflowOptions(user, assets): AssetMenuOption[] {
