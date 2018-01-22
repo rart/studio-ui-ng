@@ -5,7 +5,7 @@ import { createLocalPagination$ } from '../../app.utils';
 import { EmbeddedViewDialogComponent } from '../embedded-view-dialog/embedded-view-dialog.component';
 import { ProjectCrUDComponent } from './project-crud/project-crud.component';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { debounceTime, distinctUntilChanged, startWith } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, startWith } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { PagedResponse } from '../../classes/paged-response.interface';
 import { Project } from '../../models/project.model';
@@ -118,7 +118,7 @@ export class ProjectManagementComponent extends WithNgRedux implements OnInit {
   initPaginator() {
     createLocalPagination$({
       source$: this.projects$
-        .filter(projects => !isNullOrUndefined(projects)),
+        .pipe(filter(projects => !isNullOrUndefined(projects))),
       pager$: this.pager$,
       takeUntilOp: this.endWhenDestroyed,
       filterFn: (item, query) => query.trim() === '' || item.name.includes(query),
