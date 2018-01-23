@@ -1,0 +1,31 @@
+{
+  "STUDIO_NAV": {
+    "Users": "Users",
+    "Projects": "Projects",
+    "Help": "Help"
+  },
+  "SITE_NAV": {
+    "Dashboard": "Dashboard",
+    "Server Log": "Server Log",
+    "Pages": "Pages",
+    "Taxonomy": "Taxonomy",
+    "Assets": "Assets",
+    "Components": "Components",
+    "Content Models": "Content Models",
+    "Code": "Code",
+    "Templates": "Templates",
+    "Scripts": "Scripts",
+    "Configuration": "Configuration",
+    "Configuration Files": "Configuration Files",
+    "User Groups": "User Groups",
+    "Workflow States": "Workflow States",
+    "Bulk Publishing": "Bulk Publishing",
+    "Audit": "Audit",
+    "Logging Levels": "Logging Levels",
+    "Preview Sync": "Preview Sync",
+    "Sync From Repo": "Sync From Repo"
+  },
+  "": {
+
+  }
+}

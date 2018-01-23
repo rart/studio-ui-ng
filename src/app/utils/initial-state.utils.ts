@@ -15,7 +15,7 @@ export const initialState: AppState = {
     projects: null,
     groups: []
   },
-  // previewTabs: undefined,
+  previewTabs: undefined,
   workspaces: {
     'launcher': {
       previewTabs: {
@@ -60,7 +60,7 @@ export const initialState: AppState = {
       },
       expandedPaths: undefined
     },
-    'clean-blog': {
+    'craftersoftwarecom': {
       previewTabs: undefined,
       selectedItems: undefined,
       expandedPanels: {
@@ -70,7 +70,7 @@ export const initialState: AppState = {
       },
       expandedPaths: undefined
     },
-    'grayscale': {
+    'iot': {
       previewTabs: undefined,
       selectedItems: undefined,
       expandedPanels: {
@@ -80,7 +80,7 @@ export const initialState: AppState = {
       },
       expandedPaths: undefined
     },
-    'admin': {
+    'sumer': {
       previewTabs: undefined,
       selectedItems: undefined,
       expandedPanels: {

@@ -13,7 +13,7 @@
        routerLinkActive="active"
        [routerLinkActiveOptions]="{ exact: true }"
        *ngFor="let item of appNavItems">
-      <i class="{{item.iconClass}}">{{item.iconText}}</i> <span class="label">{{item.label}}</span>
+      <i class="{{item.iconClass}}">{{item.iconText}}</i> <span class="label">{{'STUDIO_NAV.' + item.label | translate}}</span>
     </a>
     <a class="sidebar-item"
        routerLink="/preview"
@@ -44,7 +44,7 @@
   <section class="workspace heading">
     <h2 class="workspace title">{{project.name}}</h2>
     <div class="workspace options">
-      <button class="close" title="Close Workspace" i18n-title
+      <button class="close" [title]="'Close Workspace' | translate: { name: project.name }"
               (click)="closeWorkspace()">
         <mat-icon>close</mat-icon>
       </button>
@@ -71,10 +71,10 @@
          routerLink="/project/{{project.code}}/{{item.config.href}}"
          routerLinkActive="active"
          *ngSwitchCase="itemTypes.Link">
-        <i class="{{item.iconClass}}"></i> <span class="label">{{item.label}}</span>
+        <i class="{{item.iconClass}}"></i> <span class="label">{{'SITE_NAV.' + item.label | translate}}</span>
       </a>
 
-      <h3 class="sidebar-sub-heading mat-caption" *ngSwitchCase="itemTypes.Heading">{{item.label}}</h3>
+      <h3 class="sidebar-sub-heading mat-caption" *ngSwitchCase="itemTypes.Heading">{{'SITE_NAV.' + item.label | translate}}</h3>
 
       <mat-expansion-panel
         #expPanel class="sidebar-item-container"
@@ -87,7 +87,7 @@
           [expandedHeight]="'auto'">
           <mat-panel-title class="sidebar-item-heading">
             <i class="{{item.iconClass}}"></i>
-            <span class="label">{{item.label | i18n}}</span>
+            <span class="label">{{'SITE_NAV.' + item.label | translate}}</span>
           </mat-panel-title>
         </mat-expansion-panel-header>
 
@@ -99,7 +99,7 @@
 
     <div class="sidebar-actions">
       <button class="ui button fluid" *ngFor="let item of projectCommands" (click)="runCommand(item.command)">
-        {{item.label}}
+        {{'SITE_NAV.' + item.label | translate}}
       </button>
     </div>
 

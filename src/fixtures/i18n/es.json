@@ -1,0 +1,32 @@
+{
+  "STUDIO_NAV": {
+    "Users": "Usuarios",
+    "Projects": "Proyectos",
+    "Help": "Ayuda"
+  },
+  "SITE_NAV": {
+    "Dashboard": "Tacómetro",
+    "Server Log": "Bitácora del Servidor",
+    "Pages": "Páginas",
+    "Taxonomy": "Taxonomía",
+    "Assets": "Activos Digitales",
+    "Components": "Componentes",
+    "Content Models": "Modelos de Contenido",
+    "Code": "Código",
+    "Templates": "Plantillas",
+    "Scripts": "Scripts",
+    "Configuration": "Configuración",
+    "Configuration Files": "Archivos de Configuración",
+    "User Groups": "Groups de Usuarios",
+    "Workflow States": "Estados de Flujos de Trabajo",
+    "Bulk Publishing": "Publicación Múltiple",
+    "Audit": "Auditoría",
+    "Logging Levels": "Niveles de Bitácoras",
+    "Preview Sync": "Sincronizar Preview",
+    "Sync From Repo": "Sincronizar Repositorio"
+  },
+  "": {
+
+  },
+  "Close Workspace": "Cerrar '{{name}}'"
+}

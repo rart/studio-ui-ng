@@ -7,7 +7,7 @@ import { StudioModel } from '../utils/type.utils';
 export interface AppState {
   user: any;
   auth: 'void' | 'fetching' | 'validated' | 'timeout';
-  previewTabs?: PreviewTabStateContainer;
+  previewTabs: PreviewTabStateContainer;
   projectRef?: any; // "Virtual" prop, a ref to entities.projects[projectCode]
   workspaceRef?: Workspace; // "Virtual" prop, a ref to workspaces[projectCode]
   activeProjectCode: string; // The active project's code

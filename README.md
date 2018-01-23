@@ -65,8 +65,5 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ## TODOs
 - Make a main repo and move the UI app into a sub package. Same for other sub packages (e.g. studio/core, studio/models, studio/services, etc)
 - PoC a plugin and plugin system
-- Figure i18n in TypeScript files & test the i18n attributes on templates
 - Styles & theming R&D
-- Finish validations prior to submitting user editing requests
 - API/HTTP error handling
-- Auth

@@ -30,7 +30,11 @@ export const reducerMap = {
   // a foo reducer for redux core not to complain
   // since the combined reducer runs first
   projectRef: foo,
-  workspaceRef: foo
+  workspaceRef: foo,
+
+  // `previewTabs` is also handled by root as it is conditional
+  // to whether there is a active project or not
+  previewTabs: foo
 
 };
 
@@ -44,7 +48,10 @@ export function rootReducer(state = {} as AppState, action) {
 
   // Only activate global preview tabs reducer when there's no active project
   projectCodeActive = nextState.activeProjectCode;
-  if (isNullOrUndefined(projectCodeActive)) {
+  if (
+    isNullOrUndefined(projectCodeActive) ||
+    isNullOrUndefined(nextState.previewTabs) ||
+    action.type === StoreActionsEnum.STUDIO_INIT) {
     let originalPreviewTabs = nextState.previewTabs;
     let nextPreviewTabs = previewTabs(state.previewTabs, action);
     if (originalPreviewTabs !== nextPreviewTabs) {

@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { HTTP_INTERCEPTORS, HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { CdkTableModule } from '@angular/cdk/table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -48,6 +48,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { TreeModule } from 'angular-tree-component';
 import { DevToolsExtension, NgRedux, NgReduxModule } from '@angular-redux/store';
 import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 // Studio Services
 import { UserService } from './services/user.service';
@@ -135,6 +137,11 @@ requirejs({
   }
 });
 
+// AoT requires an exported function for factories
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, `${environment.url.app}/fixtures/i18n/`);
+}
+
 @NgModule({
   declarations: [
 
@@ -219,7 +226,14 @@ requirejs({
       headerName: environment.auth.header
     }),
     PerfectScrollbarModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
   entryComponents: [
     EmbeddedViewDialogComponent,
