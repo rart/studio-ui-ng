@@ -1,0 +1,20 @@
+<header>
+
+  <div class="logo wrapper">
+    <img class="logo" [src]="logoImage">
+    <span class="text">Crafter Studio</span>
+  </div>
+
+  <button mat-button class="toggle minimise mat-icon-button" (click)="toggleMinimised()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+
+</header>
+
+<perfect-scrollbar class="content" [disabled]="!viewInitialized || isMobile || settings.nativeScrollbars">
+  <std-sidebar></std-sidebar>
+</perfect-scrollbar>
+
+<footer>
+  <std-user-menu></std-user-menu>
+</footer>

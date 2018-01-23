@@ -1,64 +1,75 @@
-<div class="view-container transparent" *ngIf="activeTab" [class.tabbed]="tabs.length > 1">
-  <div class="title-bar transparent">
-    <div class="address-bar">
-      <section class="ui controls">
-        <std-sidebar-toggler class="ui icon mini basic button"></std-sidebar-toggler>
-        <button [disabled]="!activeTab.history.hasBack" (click)="back()" class="ui mini icon button"><i class="icon chevron left"></i></button>
-        <button [disabled]="!activeTab.history.hasForward" (click)="forward()" class="ui mini icon button"><i class="icon chevron right"></i></button>
-        <button [disabled]="activeTab.pending" (click)="reload()" class="ui mini icon button"><i class="icon refresh"></i></button>
-        <div class="input-skin">
-          <div class="project-display" *ngIf="project && projects">
-            <button class="text simple" [title]="project.name" [matMenuTriggerFor]="projectSelectorMenu">
-              {{project.code}} <i class="dropdown icon"></i>
-            </button>
-            <mat-menu #projectSelectorMenu="matMenu" class="mat-menu-compact">
-              <button
-                mat-menu-item
-                *ngFor="let projectItem of projects$ | async"
-                (click)="changeProject(projectItem)">
-                {{projectItem.name}}
-              </button>
-            </mat-menu>
-          </div>
-          <std-asset-display
-            *ngIf="activeTabAsset"
-            [asset]="activeTabAsset"
-            [disallowWrap]="false"
-            [showLabel]="false"
-            [showMenu]="false"></std-asset-display>
-          <input #urlBox type="text" placeholder=""
-                 class="address-input ui search prompt"
-                 [value]="activeTab.url !== iFrameLandingUrl ? activeTab.url : ''"
-                 (keyup.enter)="requestUrl(urlBox.value)" />
-          <std-asset-display
-            *ngIf="activeTabAsset"
-            [asset]="activeTabAsset"
-            [disallowWrap]="false"
-            [showLink]="false"
-            [showLabel]="false"
-            [showIcons]="false"
-            [showMenu]="true"></std-asset-display>
-        </div>
-        <button (click)="addTab()" class="ui mini basic green icon button"><i class="icon plus" title="New Tab"></i></button>
-      </section>
-      <nav class="ui tab bar">
-        <div class="tab" *ngFor="let tab of tabs" [class.active]="tab === activeTab">
-          <button (click)="selectTab(tab)" class="main" [title]="tab.title">
-            <std-asset-display
-              *ngIf="assets[tab.assetId]"
-              [asset]="assets[tab.assetId]"
-              [disallowWrap]="false"
-              [showLink]="false"
-              [showLabel]="false"
-              [showStatusIcons]="false"
-              [showMenu]="false"></std-asset-display>
-            {{tab.assetId && assets[tab.assetId] ? assets[tab.assetId].label : tab.title}}
+<ng-container *ngIf="activeTab">
+  <mat-toolbar class="address-bar">
+    <section fxFlex fxFill fxLayout="row" fxLayoutAlign="start center">
+      <std-sidebar-toggler></std-sidebar-toggler>
+      <button class="mat-icon-button"
+              aria-label="Search"
+              [disabled]="!activeTab.history.hasBack"
+              mat-button (click)="back()" matTooltip="Search">
+        <mat-icon>keyboard_arrow_left</mat-icon>
+      </button>
+      <button class="mat-icon-button"
+              [disabled]="!activeTab.history.hasForward"
+              mat-button (click)="forward()">
+        <mat-icon>keyboard_arrow_right</mat-icon>
+      </button>
+      <button [disabled]="activeTab.pending" (click)="reload()" class="mat-icon-button" mat-button>
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <div class="input-skin">
+        <div class="project-display" *ngIf="project && projects">
+          <button class="text simple" [title]="project.name" [matMenuTriggerFor]="projectSelectorMenu">
+            {{project.code}} <mat-icon>keyboard_arrow_down</mat-icon>
           </button>
-          <button (click)="closeTab(tab)" class="close" title="Close" i18n>&times;</button>
+          <mat-menu #projectSelectorMenu="matMenu" class="mat-menu-compact">
+            <button
+              mat-menu-item
+              *ngFor="let projectItem of projects$ | async"
+              (click)="changeProject(projectItem)">
+              {{projectItem.name}}
+            </button>
+          </mat-menu>
         </div>
-      </nav>
+        <std-asset-display
+          *ngIf="activeTabAsset"
+          [asset]="activeTabAsset"
+          [disallowWrap]="false"
+          [showLabel]="false"
+          [showMenu]="false"></std-asset-display>
+        <input #urlBox type="text" placeholder=""
+               class="address-input ui search prompt"
+               [value]="activeTab.url !== iFrameLandingUrl ? activeTab.url : ''"
+               (keyup.enter)="requestUrl(urlBox.value)" />
+        <std-asset-display
+          *ngIf="activeTabAsset"
+          [asset]="activeTabAsset"
+          [disallowWrap]="false"
+          [showLink]="false"
+          [showLabel]="false"
+          [showIcons]="false"
+          [showMenu]="true"></std-asset-display>
+      </div>
+      <button mat-button (click)="addTab()" class="mat-icon-button">
+        <mat-icon>add</mat-icon>
+      </button>
+    </section>
+  </mat-toolbar>
+  <nav class="ui tab bar">
+    <div class="tab" *ngFor="let tab of tabs" [class.active]="tab === activeTab">
+      <button (click)="selectTab(tab)" class="main" [title]="tab.title">
+        <std-asset-display
+          *ngIf="assets[tab.assetId]"
+          [asset]="assets[tab.assetId]"
+          [disallowWrap]="false"
+          [showLink]="false"
+          [showLabel]="false"
+          [showStatusIcons]="false"
+          [showMenu]="false"></std-asset-display>
+        {{tab.assetId && assets[tab.assetId] ? assets[tab.assetId].label : tab.title}}
+      </button>
+      <button (click)="closeTab(tab)" class="close" title="Close" i18n>&times;</button>
     </div>
-  </div>
+  </nav>
   <div class="preview-container" [ngSwitch]="activeTabType">
 
     <std-syntax-highlighter
@@ -91,4 +102,4 @@
       [communicates]="true"></std-iframe>
 
   </div>
-</div>
+</ng-container>

@@ -57,35 +57,33 @@
   </mat-tab>
 </mat-tab-group>
 
-<div class="clearfix">
-  <div class="float right">
-    <button class="ui basic button" (click)="done()" tabindex="2">Done</button>
+<div fxLayout="row" fxLayoutAlign="space-between center">
+  <div>
     <!--<button class="ui blue button" i18n
             (click)="update()"
             [disabled]="!formGroup.valid"
             *ngIf="editMode">Update</button>-->
-    <button class="ui green button" i18n
+    <button mat-raised-button class="green background"
             (click)="create()"
             [disabled]="!formGroup.valid"
-            *ngIf="!editMode">Create
+            *ngIf="!editMode">
+      <span i18n class="white text">Create</span>
     </button>
+    <button mat-button (click)="done()">Done</button>
   </div>
-  <div class="float left" *ngIf="editMode">
-
-    <button class="ui basic button labeled red icon" [matMenuTriggerFor]="deleteConfirm">
-      <i class="trash icon"></i>
-      <ng-container i18n>Delete Project</ng-container>
+  <ng-container *ngIf="editMode">
+    <button mat-fab color="warn" [matMenuTriggerFor]="deleteConfirm" [attr.aria-label]="'Delete Project' | i18n">
+      <mat-icon class="white text">delete</mat-icon>
     </button>
-    <mat-menu #deleteConfirm="matMenu">
-      <button mat-menu-item>Cancel</button>
-      <button mat-menu-item [matMenuTriggerFor]="deleteOptions"><i class="warning icon"></i> Confirm Deletion?</button>
-    </mat-menu>
-    <mat-menu #deleteOptions="matMenu">
-      <button mat-menu-item (click)="delete()">Yes, permanently delete project.</button>
-    </mat-menu>
-
-  </div>
+  </ng-container>
 </div>
+<mat-menu #deleteConfirm="matMenu">
+  <button mat-menu-item>Cancel</button>
+  <button mat-menu-item [matMenuTriggerFor]="deleteOptions"><i class="warning icon"></i> Confirm Deletion?</button>
+</mat-menu>
+<mat-menu #deleteOptions="matMenu">
+  <button mat-menu-item (click)="delete()">Yes, permanently delete project.</button>
+</mat-menu>
 
 <div class="ui dimmer modals page transition visible active" *ngIf="creationRequestPending && !runCreationInBackground">
   <div class="ui small basic test modal transition visible active"
@@ -95,7 +93,7 @@
       Creating project, please hold&hellip;
     </div>
     <div class="actions center text">
-      <div class="pad-bottom">
+      <div class="pad bottom">
         <button class="ui inverted button" (click)="runProjectCreationInBackground()">
           <i class="checkmark icon"></i>
           <ng-container i18n>Run In Background</ng-container>

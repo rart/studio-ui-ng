@@ -7,7 +7,7 @@
   <mat-tab i18n-label label="Basic Information">
 
     <!-- Read only user view -->
-    <div class="tab-content pad-x" *ngIf="model.managedExternally">
+    <div class="tab-content pad x" *ngIf="model.managedExternally">
 
       <div class="ui icon message">
         <i class="info icon"></i>
@@ -45,7 +45,7 @@
     </div>
 
     <!-- User edit form -->
-    <div class="tab-content pad-x"  *ngIf="!model.managedExternally">
+    <div class="tab-content pad x"  *ngIf="!model.managedExternally">
 
       <div class="mat-form-fields">
 
@@ -129,26 +129,20 @@
 
   </mat-tab>
   <mat-tab i18n-label label="Password Management" [disabled]="!editMode" *ngIf="!model.managedExternally">
-    <div class="tab-content pad-x" *ngIf="editMode">
+    <div class="tab-content pad x" *ngIf="editMode">
 
       <div class="mat-form-fields">
         <std-password-field [model]="model" [formControlRef]="resetPasswordFormControl"></std-password-field>
       </div>
 
-      <div class="pad-y">
+      <div class="pad y">
         <mat-checkbox i18n [(ngModel)]="notifyPasswordReset">Send email notification</mat-checkbox>
-      </div>
-
-      <div class="pad-y">
-        <button class="ui button primary" (click)="resetPassword()" [disabled]="!resetPasswordFormControl.valid">
-          Reset Password
-        </button>
       </div>
 
     </div>
   </mat-tab>
   <mat-tab i18n-label label="Projects & Groups" [disabled]="!editMode">
-    <div class="tab-content pad-x" *ngIf="editMode">
+    <div class="tab-content pad x" *ngIf="editMode">
 
       <std-user-group-manager
         *ngIf="selectedTabIndex === 2"
@@ -160,34 +154,45 @@
   </mat-tab>
 </mat-tab-group>
 
-<div class="clearfix">
-  <div class="float right">
-    <button class="ui basic button" (click)="done()" tabindex="2">Done</button>
-    <!--<button class="ui blue button" (click)="updateGroups()" *ngIf="userGroupsHasChanges">Update</button>-->
-    <button class="ui blue button" i18n
-            (click)="update()"
-            [disabled]="!updateBasicInfoFormGroup.valid"
-            *ngIf="editMode && !model.managedExternally && (selectedTabIndex == 0)">Update</button>
-    <button class="ui green button" i18n
+<div fxLayout="row" fxLayoutAlign="space-between center">
+  <div>
+    <ng-container *ngIf="!model.managedExternally">
+      <button mat-raised-button
+              color="warn"
+              *ngIf="selectedTabIndex === 1"
+              (click)="resetPassword()"
+              [disabled]="!resetPasswordFormControl.valid">
+        <span class="white text">Reset Password</span>
+      </button>
+      <button mat-raised-button
+              class="blue background"
+              (click)="update()"
+              [disabled]="!updateBasicInfoFormGroup.valid"
+              *ngIf="editMode && !model.managedExternally && (selectedTabIndex === 0)">
+        <span i18n class="white text">Update</span>
+      </button>
+    </ng-container>
+    <button mat-raised-button class="green background"
             (click)="create()"
             [disabled]="!updateBasicInfoFormGroup.valid || !passwordFormControl.valid"
-            *ngIf="!editMode">Create</button>
-  </div>
-  <div class="float left" *ngIf="editMode">
-
-    <button class="ui basic button labeled red icon" [matMenuTriggerFor]="deleteConfirm">
-      <i class="trash icon"></i> <ng-container i18n>Delete User</ng-container>
+            *ngIf="!editMode">
+      <span i18n class="white text">Create</span>
     </button>
-    <mat-menu #deleteConfirm="matMenu">
-      <button mat-menu-item>Cancel</button>
-      <button mat-menu-item [matMenuTriggerFor]="deleteOptions"><i class="warning icon"></i> Confirm Deletion?</button>
-    </mat-menu>
-    <mat-menu #deleteOptions="matMenu">
-      <button mat-menu-item (click)="eliminate()">Yes, permanently delete user.</button>
-    </mat-menu>
-
+    <button mat-button (click)="done()" tabindex="2">Done</button>
   </div>
+  <ng-container *ngIf="editMode">
+    <button mat-fab color="warn" [matMenuTriggerFor]="deleteConfirm" [attr.aria-label]="'Delete User' | i18n">
+      <mat-icon class="white text">delete</mat-icon>
+    </button>
+  </ng-container>
 </div>
+<mat-menu #deleteConfirm="matMenu">
+  <button mat-menu-item>Cancel</button>
+  <button mat-menu-item [matMenuTriggerFor]="deleteOptions"><i class="warning icon"></i> Confirm Deletion?</button>
+</mat-menu>
+<mat-menu #deleteOptions="matMenu">
+  <button mat-menu-item (click)="eliminate()">Yes, permanently delete user.</button>
+</mat-menu>
 
 <!--
         <form class="ui form">

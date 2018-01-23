@@ -24,19 +24,19 @@
                       [formControlRef]="passwordFormControl"
                       [autoGenerate]="false"></std-password-field>
 
-  <mat-checkbox [ngModel]="remember">
-    Remember me
-  </mat-checkbox>
+  <mat-checkbox [ngModel]="remember">Remember me</mat-checkbox>
 
-  <button class="ui primary button" (click)="login()">
-    Log in
-  </button>
-
-  <button class="ui button" (click)="logout()">
-    Log Out
-  </button>
-
-  <a class="forgot password" (click)="showRecoverView = true">Forgot Your Password</a>
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <div>
+      <button mat-button (click)="login()">
+        Log in
+      </button>
+      <button mat-button (click)="logout()">
+        Log Out
+      </button>
+    </div>
+    <a class="forgot password" (click)="showRecoverView = true">Forgot Password?</a>
+  </div>
 
 </ng-container>
 <ng-container *ngIf="showRecoverView">

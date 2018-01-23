@@ -1,119 +1,107 @@
-<div class="sidebar-scroll">
 
-  <mat-expansion-panel #appNavPanel class="studio-app-nav allow-overflow"
-                       [expanded]="expandedPanels[APP_NAV_KEY]">
-    <mat-expansion-panel-header (click)="appNavPanelExpandedStateChange(appNavPanel.expanded)"
-                                [collapsedHeight]="'75px'" [expandedHeight]="'75px'">
-      <mat-panel-title>
-        <img class="sidebar-logo" [src]="studioLogoUrl" i18n-alt alt="Crafter Studio">
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <div class="sidebar-items">
+<!--<mat-expansion-panel #appNavPanel class="studio-app-nav allow-overflow"
+                     [expanded]="expandedPanels[APP_NAV_KEY]">
+  <mat-expansion-panel-header (click)="appNavPanelExpandedStateChange(appNavPanel.expanded)"
+                              [collapsedHeight]="'75px'" [expandedHeight]="'75px'">
+    <mat-panel-title>
+      Global
+    </mat-panel-title>
+  </mat-expansion-panel-header>-->
+  <div class="sidebar-items">
+    <a class="sidebar-item"
+       routerLink="{{item.config.href}}"
+       routerLinkActive="active"
+       [routerLinkActiveOptions]="{ exact: true }"
+       *ngFor="let item of appNavItems">
+      <i class="{{item.iconClass}}">{{item.iconText}}</i> <span class="label">{{item.label}}</span>
+    </a>
+    <a class="sidebar-item"
+       routerLink="/preview"
+       routerLinkActive="active">
+      <i class="fa fa-binoculars"></i>
+      <span class="label">Browse</span>
+    </a>
+    <a class="sidebar-item"
+       [hidden]="(editSessions$ | async).length === 0"
+       routerLink="/edit"
+       routerLinkActive="active">
+      <i class="fa fa-pencil ensure pink text"></i>
+      <span class="label">Edit ({{(editSessions$ | async).length}})</span>
+    </a>
+  </div>
+<!--</mat-expansion-panel>-->
+
+<ng-container *ngIf="!project && projects.length">
+  <h2 class="pad x">Projects</h2>
+  <button mat-menu-item
+          *ngFor="let project of projects"
+          (click)="selectProject(project.code)">
+    {{project.name}}
+  </button>
+</ng-container>
+
+<ng-container *ngIf="project">
+  <section class="workspace heading">
+    <h2 class="workspace title">{{project.name}}</h2>
+    <div class="workspace options">
+      <button class="close" title="Close Workspace" i18n-title
+              (click)="closeWorkspace()">
+        <mat-icon>close</mat-icon>
+      </button>
+      <button class="change" title="Change Project" i18n-title
+              [matMenuTriggerFor]="projectsMenu">
+        <mat-icon>compare_arrows</mat-icon>
+      </button>
+    </div>
+    <mat-menu class="mat-menu-compact" #projectsMenu="matMenu">
+      <ng-container *ngFor="let project of projects">
+        <button mat-menu-item (click)="selectProject(project.code)">
+          {{project.name}}
+        </button>
+      </ng-container>
+    </mat-menu>
+  </section>
+  <div class="sidebar-items">
+
+    <!-- TODO: make this into individual components? -->
+    <div *ngFor="let item of projectNavItems"
+         [ngSwitch]="item.type">
+
       <a class="sidebar-item"
-         routerLink="{{item.config.href}}"
+         routerLink="/project/{{project.code}}/{{item.config.href}}"
          routerLinkActive="active"
-         [routerLinkActiveOptions]="{ exact: true }"
-         *ngFor="let item of appNavItems">
-        <i class="{{item.iconClass}}">{{item.iconText}}</i> <span class="label">{{item.label}}</span>
+         *ngSwitchCase="itemTypes.Link">
+        <i class="{{item.iconClass}}"></i> <span class="label">{{item.label}}</span>
       </a>
-      <a class="sidebar-item"
-         routerLink="/preview"
-         routerLinkActive="active">
-        <i class="fa fa-binoculars"></i>
-        <span class="label">Browse</span>
-      </a>
-      <a class="sidebar-item"
-         [hidden]="(editSessions$ | async).length === 0"
-         routerLink="/edit"
-         routerLinkActive="active">
-        <i class="fa fa-pencil insure pink text"></i>
-        <span class="label">Edit ({{(editSessions$ | async).length}})</span>
-      </a>
-    </div>
-  </mat-expansion-panel>
 
-  <ng-container *ngIf="!project">
-    <h2>My Projects</h2>
-    <button mat-menu-item
-            *ngFor="let project of projects"
-            (click)="selectProject(project.code)">
-      {{project.name}}
-    </button>
-  </ng-container>
-  <ng-container *ngIf="project">
-    <section class="workspace heading">
-      <h2 class="workspace title">{{project.name}}</h2>
-      <div class="workspace options">
-        <button class="close" title="Close Workspace" i18n-title
-                (click)="closeWorkspace()">
-          <i class="close icon"></i>
-        </button>
-        <button class="change" title="Change Project" i18n-title
-                [matMenuTriggerFor]="projectsMenu">
-          <i class="exchange icon"></i>
-        </button>
-      </div>
-      <mat-menu class="mat-menu-compact" #projectsMenu="matMenu">
-        <ng-container *ngFor="let project of projects">
-          <button mat-menu-item (click)="selectProject(project.code)">
-            {{project.name}}
-          </button>
-        </ng-container>
-      </mat-menu>
-    </section>
-    <div class="sidebar-items">
+      <h3 class="sidebar-sub-heading mat-caption" *ngSwitchCase="itemTypes.Heading">{{item.label}}</h3>
 
-      <!-- TODO: make this into individual components? -->
-      <div *ngFor="let item of projectNavItems"
-           [ngSwitch]="item.type">
+      <mat-expansion-panel
+        #expPanel class="sidebar-item-container"
+        [expanded]="expandedPanels[getProjectNavPanelKey(item)]"
+        *ngSwitchCase="itemTypes.Container">
+        <mat-expansion-panel-header
+          class="no-indicator"
+          (click)="projectNavPanelExpandedStateChange(item, expPanel.expanded)"
+          [collapsedHeight]="'auto'"
+          [expandedHeight]="'auto'">
+          <mat-panel-title class="sidebar-item-heading">
+            <i class="{{item.iconClass}}"></i>
+            <span class="label">{{item.label | i18n}}</span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
 
-        <a class="sidebar-item"
-           routerLink="/project/{{project.code}}/{{item.config.href}}"
-           routerLinkActive="active"
-           *ngSwitchCase="itemTypes.Link">
-          <i class="{{item.iconClass}}"></i> <span class="label">{{item.label}}</span>
-        </a>
+        <ng-template stdComponentHost [data]="{ project: project, cfg: item }"></ng-template>
 
-        <h3 class="sidebar-sub-heading" *ngSwitchCase="itemTypes.Heading">{{item.label}}</h3>
-
-        <mat-expansion-panel
-          #expPanel class="sidebar-item-container"
-          [expanded]="expandedPanels[getProjectNavPanelKey(item)]"
-          *ngSwitchCase="itemTypes.Container">
-          <mat-expansion-panel-header
-            class="no-indicator"
-            (click)="projectNavPanelExpandedStateChange(item, expPanel.expanded)"
-            [collapsedHeight]="'auto'"
-            [expandedHeight]="'auto'">
-            <mat-panel-title class="sidebar-item-heading">
-              <i class="{{item.iconClass}}"></i>
-              <span class="label">{{item.label | i18n}}</span>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-
-          <ng-template stdComponentHost [data]="{ project: project, cfg: item }"></ng-template>
-
-        </mat-expansion-panel>
-
-      </div>
-
-      <div class="sidebar-actions">
-        <button class="ui button fluid" *ngFor="let item of projectCommands" (click)="runCommand(item.command)">
-          {{item.label}}
-        </button>
-      </div>
+      </mat-expansion-panel>
 
     </div>
-  </ng-container>
 
-</div>
+    <div class="sidebar-actions">
+      <button class="ui button fluid" *ngFor="let item of projectCommands" (click)="runCommand(item.command)">
+        {{item.label}}
+      </button>
+    </div>
 
-<section class="ui icon small message is-interactive highlight-interaction user-account-control" routerLink="/profile">
-  <div class="ui mini image">
-    <img [src]="user.avatarUrl" alt="">
   </div>
-  <div class="content">
-    <div class="header">{{user.name || user.username}}</div>
-    <p>{{user.email}}</p>
-  </div>
-</section>
+</ng-container>

@@ -2,6 +2,10 @@
 
 .user-management {
 
+  .image img {
+    border-radius: 50%;
+  }
+
   > .content {
     display: flex;
   }

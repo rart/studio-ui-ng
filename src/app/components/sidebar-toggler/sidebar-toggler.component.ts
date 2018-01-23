@@ -1,5 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
+import { SettingsActions } from '../../actions/settings.actions';
 
 @Component({
   selector: 'std-sidebar-toggler',
@@ -7,6 +8,8 @@ import { dispatch } from '@angular-redux/store';
   styleUrls: ['./sidebar-toggler.component.scss']
 })
 export class SidebarTogglerComponent implements OnInit {
+
+  labelKey = 'Toggle Side Bar';
 
   constructor() { }
 
@@ -21,7 +24,7 @@ export class SidebarTogglerComponent implements OnInit {
 
   @dispatch()
   toggle() {
-    return { type: 'TOGGLE_SIDEBAR' };
+    return SettingsActions.toggleSideBar();
   }
 
 }

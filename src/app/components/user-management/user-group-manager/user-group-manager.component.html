@@ -14,30 +14,30 @@
         <div class="action">
 
           <div [ngSwitch]="hasProject(project.code)">
-            <div *ngSwitchCase="true">
-
-              <a class="ui label transition visible"
-                 (click)="removeFromGroup(project, userGroup)"
-                 *ngFor="let userGroup of getUserGroupsByProject(project)">
-                {{userGroup.name}} <i class="delete icon"></i>
-              </a>
+            <mat-chip-list *ngSwitchCase="true" fxLayoutAlign="left center">
+              <mat-chip
+                [removable]="true" [selectable]="false"
+                (remove)="removeFromGroup(project, userGroup)"
+                *ngFor="let userGroup of getUserGroupsByProject(project)">
+                <span>{{userGroup.name}}</span>
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
               <ng-container *ngIf="notAMemberGroupsByProject[project.code].length">
-                <button class="ui basic green mini icon button" [matMenuTriggerFor]="appMenu">
-                  <i class="icon add"></i>
-                </button>
-                <mat-menu #appMenu="matMenu">
+                <mat-chip class="green background" [matMenuTriggerFor]="addMenu">
+                  <mat-icon>add</mat-icon>
+                </mat-chip>
+                <mat-menu #addMenu="matMenu">
                   <button mat-menu-item
                           *ngFor="let group of notAMemberGroupsByProject[project.code]"
                           (click)="addToGroup(project, group)">{{group.name}}</button>
                 </mat-menu>
               </ng-container>
-
-            </div>
-            <div *ngSwitchCase="false" class="text-right">
+            </mat-chip-list>
+            <div *ngSwitchCase="false" class="text right">
 
               <ng-container i18n>Not a member.</ng-container>&nbsp;
-              <button class="ui basic green tiny icon labeled button" [matMenuTriggerFor]="appMenu">
-                <i class="icon add"></i> <ng-container i18n>Add to role</ng-container>
+              <button mat-raised-button color="green" [matMenuTriggerFor]="appMenu">
+                <mat-icon>add</mat-icon> {{ 'Add role' | i18n }}
               </button>
               <mat-menu #appMenu="matMenu">
                 <button mat-menu-item *ngFor="let group of project.groups" (click)="addToGroup(project, group)">{{group.name}}</button>

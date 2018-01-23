@@ -75,13 +75,17 @@ const Bundle: StudioPluginBundle = {
         let sessions = host.getState().editSessions.order.length;
         node.innerHTML = `
           <div class="pad lg center text">
-            <button class="ui mini icon button"><i class="content icon"></i></button>
+            <button class="mat-raised-button mat-icon-button mat-accent" color="accent" mat-raised-button mat-button>
+              <span class="mat-button-wrapper">
+                <i class="material-icons" role="img" aria-hidden="true">menu</i>
+              </span>
+            </button>
             <h2>Hello, plugin world!</h2>
             <div>You have currently ${sessions} active sessions</div>
             <div class="muted text">I've received ${updates} update(s).</div>
           </div>
         `;
-        $(node).find('.button').click(() => {
+        $(node).find('button').click(() => {
           host.dispatch({ type: 'TOGGLE_SIDEBAR' });
         });
       }

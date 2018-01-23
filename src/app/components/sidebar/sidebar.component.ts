@@ -2,7 +2,6 @@ import {
   OnInit,
   AfterViewInit,
   Component,
-  HostBinding,
   ViewChildren,
   ComponentFactoryResolver,
   ComponentFactory,
@@ -10,7 +9,6 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 import { StudioService } from '../../services/studio.service';
-import { environment } from '../../../environments/environment';
 import { AppState, LookUpTable, Workspace } from '../../classes/app-state.interface';
 import { ExpandedPanelsActions } from '../../actions/expanded-panels.actions';
 import { User } from '../../models/user.model';
@@ -19,17 +17,6 @@ import { ContentTreeComponent } from '../content-tree/content-tree.component';
 import { Project } from '../../models/project.model';
 import { NgRedux, dispatch, select } from '@angular-redux/store';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
-import {
-  /* https://angular.io/guide/animations */
-  trigger,
-  style,
-  transition,
-  animate,
-  keyframes,
-  query,
-  stagger,
-  state
-} from '@angular/animations';
 import { ComponentRef } from '@angular/core/src/linker/component_factory';
 import { filter, takeUntil } from 'rxjs/operators';
 import { ProjectActions } from '../../actions/project.actions';
@@ -52,26 +39,11 @@ const APP_NAV_KEY = 'sidebar.appnav.panel';
 @Component({
   selector: 'std-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss'],
-  animations: [
-    trigger('visibility', [
-      state('expanded', style({
-        transform: 'translate3d(0, 0, 0)'
-      })),
-      state('collapsed', style({
-        transform: 'translate3d(-100%, 0, 0)',
-        opacity: 0
-      })),
-      transition('* => *', animate(250))
-    ])
-  ]
+  styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewInit {
 
   APP_NAV_KEY = APP_NAV_KEY;
-
-  @HostBinding('@visibility') visibility = 'expanded';
-  @HostBinding('class.independent-scroll') independentScroll = true;
 
   @ViewChildren(ComponentHostDirective) cmpHosts: QueryList<ComponentHostDirective>;
 
@@ -79,7 +51,6 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
   appNavItems;
   projectNavItems;
   projectCommands;
-  studioLogoUrl = `${environment.assetsUrl}/img/crafter_studio_360.png`;
   user: User;
 
   project: Project;
@@ -113,10 +84,6 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
       .subscribe((lookupTable: LookUpTable<Project>) => {
         this.projects = Object.values(lookupTable);
       });
-
-    this.select(['sidebar', 'visible'])
-      .pipe(...this.noNullsAndUnSubOps)
-      .subscribe((visible: boolean) => this.visibility = visible ? 'expanded' : 'collapsed');
 
     this.select('workspaceRef')
       .pipe(...this.noNullsAndUnSubOps)

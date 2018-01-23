@@ -1,17 +1,24 @@
 @import "../../styles/settings";
 
-.preview-container {
-
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 52px;
-  bottom: 0;
-
-  .tabbed & {
-    top: 82px;
+:host {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  .preview-container {
+    height: calc(100% - 50px);
   }
+  &.tabbed {
+    .preview-container {
+      height: calc(100% - 80px);
+    }
+  }
+}
 
+.preview-container {
+  ::ng-deep iframe {
+    background-color: #fff;
+  }
   iframe,
   std-iframe,
   std-image-viewer,
@@ -22,31 +29,11 @@
     height: 100%;
     width: 100%;
   }
-
 }
 
 .address-bar {
-  //.controls {
-  //  display: flex;
-  //  padding: 9px 5px;
-  //  flex-wrap: nowrap;
-  //}
-  //.control {
-  //  position: relative;
-  //  border-radius: 5px;
-  //  i {
-  //    position: absolute;
-  //    top:2px;
-  //    bottom:0;
-  //    right:0;
-  //    left:0;
-  //    font-size: 25px;
-  //    &::before {
-  //      top: 2px;
-  //      position: relative;
-  //    }
-  //  }
-  //}
+  height: 50px;
+
   .control,
   .project-display,
   input.address-input {
@@ -111,50 +98,5 @@
       background: $gray-light;
     }
   }
-  //.tab.bar {
-  //  display: none;
-  //  flex-wrap: nowrap;
-  //  .tabbed & {
-  //    display: flex;
-  //  }
-  //  .tab {
-  //    color: #666;
-  //    height: 30px;
-  //    flex-grow: 1;
-  //    display: flex;
-  //    overflow: hidden;
-  //    line-height: 30px;
-  //    text-align: center;
-  //    position: relative;
-  //    border-top: 1px solid $grey-header;
-  //    border-right: 1px solid $grey-header;
-  //    &.active {
-  //      cursor: default;
-  //      background-color: #ffffff;
-  //    }
-  //    &:last-child {
-  //      border-right: none;
-  //    }
-  //    .main {
-  //      padding: 0;
-  //      flex-grow: 1;
-  //      cursor: pointer;
-  //      overflow: hidden;
-  //      text-align: center;
-  //      white-space: nowrap;
-  //      text-overflow: ellipsis;
-  //      max-width: calc(100% - 30px);
-  //    }
-  //    .close {
-  //      width: 30px;
-  //    }
-  //    /*button {
-  //      top: 0px;
-  //      right: 0px;
-  //      height: 30px;
-  //      line-height: 26px;
-  //      position: absolute;
-  //    }*/
-  //  }
-  //}
+
 }

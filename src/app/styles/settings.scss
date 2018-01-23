@@ -48,10 +48,17 @@ $colors: (
   muted: $color-gray
 );
 
+$color-blue-darkend: darken($color-blue, 15%);
 $color-green-darkend: darken($color-green, 15%);
 $color-teal-darkend: darken($color-teal, 15%);
 $color-purple-darkend: darken($color-purple, 15%);
 $color-yellow-darkend: darken($color-yellow, 15%);
+
+$color-blue-lightend: lighten($color-blue, 10%);
+$color-green-lightend: lighten($color-green, 10%);
+$color-teal-lightend: lighten($color-teal, 10%);
+$color-purple-lightend: lighten($color-purple, 10%);
+$color-yellow-lightend: lighten($color-yellow, 10%);
 
 // 2.5 Colors
 //$action-light: #AFCEED;
@@ -74,6 +81,14 @@ $spacing-conservative: 20px;
 $spacing-md: 30px;
 $spacing-lg: 40px;
 
+$spacings: (
+  sm: $spacing-sm,
+  md: $spacing-md,
+  lg: $spacing-lg
+);
+
+$box-model-zones: (top, right, bottom, left);
+
 $max-width-readability: 600px;
 $max-width-centric: 1000px;
 $max-width-comfort: 1200px;
@@ -90,9 +105,8 @@ $sidebar-breakpoint-sm: 1200px;
 
 $sidebar-width: 300px !default;
 $sidebar-width-sm: 220px !default;
-$sidebar-width-collapsed: 65px !default;
+$sidebar-width-minimised: 55px !default;
 $sidebar-background-color: $grey-main !default;
-//$sidebar-background: $grey-main !default;
 $sidebar-border-color: #C8C8C8 !default;
 
 @import "mixins";

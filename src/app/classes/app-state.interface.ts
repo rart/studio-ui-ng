@@ -7,8 +7,7 @@ import { StudioModel } from '../utils/type.utils';
 export interface AppState {
   user: any;
   auth: 'void' | 'fetching' | 'validated' | 'timeout';
-  sidebar: SidebarState;
-  previewTabs: PreviewTabStateContainer;
+  previewTabs?: PreviewTabStateContainer;
   projectRef?: any; // "Virtual" prop, a ref to entities.projects[projectCode]
   workspaceRef?: Workspace; // "Virtual" prop, a ref to workspaces[projectCode]
   activeProjectCode: string; // The active project's code
@@ -42,9 +41,36 @@ export interface Workspace {
 }
 
 export interface Settings {
+  layout: 'full' | 'contained';
+  containedLayoutMax: 1200 | 1300 | 1400 | 1500 | 1600;
+  nativeScrollbars: boolean;
+  viewAnimation: 'fadeIn' | 'slideUp' | 'slideDown' | 'slideRight' | 'slideLeft' | 'none';
+  topBarTheme: string;
+  topBarShown: boolean;
+  topBarPosition: 'top' | 'inline' | 'none';
+  navBarTheme: string;
+  navBarShown: boolean;
+  navBarPosition: 'top' | 'right' | 'left' | 'none';
+  navBarMinimised: boolean;
+  footerShown: boolean;
+  footerPosition: 'inline' | 'below' | 'none';
+  footerTheme: string;
   'meta.click.open.tab.in.background': boolean;
+}
 
-  [props: string]: any;
+export interface UISettings {
+  layout: 'full' | 'contained';
+  nativeScrollbars: boolean;
+  viewAnimation: 'fadeIn' | 'slideUp' | 'slideDown' | 'slideRight' | 'slideLeft' | 'none';
+  topBar: {
+    theme: string;
+    position: 'top' | 'inline' | 'none';
+  };
+  sidebar: {
+    theme: string;
+    position: 'top' | 'right' | 'left' | 'none';
+    folded: boolean;
+  };
 }
 
 export interface ProjectSettings {

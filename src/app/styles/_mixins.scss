@@ -29,6 +29,15 @@
   //@else if()
 }
 
+@mixin create-box {
+  padding: $spacing-sm;
+  margin: {
+    top: $spacing-conservative;
+    bottom: $spacing-conservative;
+  }
+  border-radius: 10px;
+}
+
 @mixin clearfix {
   &::after {
     display: block;

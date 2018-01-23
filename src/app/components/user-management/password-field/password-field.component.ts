@@ -24,13 +24,15 @@ const TYPE_PASSWORD = 'password';
       </mat-error>
     </mat-form-field>
     <div class="helpers">
-      <button class="ui basic icon mini button"
+      <button mat-button 
+              class="mat-icon-button"
               *ngIf="allowVisibilityControl"
               (click)="revealed = !revealed"
-              title="Show/Hide Password" i18n-title>
-        <i class="icon {{inputType === 'text' ? 'low vision' : 'eye'}}"></i>
+              [attr.aria-label]="'Show/Hide Password' | i18n"
+              title="'Show/Hide Password' | i18n">
+        <i aria-hidden="true" class="fa fa-{{inputType === 'text' ? 'eye-slash' : 'eye'}}"></i>
       </button>
-      <button i18n class="ui basic mini button" *ngIf="allowGeneration" (click)="generatePassword()">
+      <button i18n mat-button *ngIf="allowGeneration" (click)="generatePassword()">
         Generate
       </button>
     </div>`

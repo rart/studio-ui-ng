@@ -1,9 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { CdkTableModule } from '@angular/cdk/table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -46,6 +47,7 @@ import { MomentModule } from 'angular2-moment';
 import { CookieService } from 'ngx-cookie-service';
 import { TreeModule } from 'angular-tree-component';
 import { DevToolsExtension, NgRedux, NgReduxModule } from '@angular-redux/store';
+import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 
 // Studio Services
 import { UserService } from './services/user.service';
@@ -115,9 +117,15 @@ import { AuthInterceptor } from './auth.interceptor';
 import { LoginComponent } from './components/login/login.component';
 import { UserEpics } from './epics/user.epics';
 import { EntryComponent } from './components/entry/entry.component';
+import { MainComponent } from './components/main/main.component';
+import { TopBarComponent } from './components/topbar/topbar.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { VerticalNavBarComponent } from './components/vertical-navbar/vertical-navbar.component';
+import { HorizontalNavbarComponent } from './components/horizontal-navbar/horizontal-navbar.component';
+import { UserMenuComponent } from './components/user-menu/user-menu.component'; global();
 
 // This is just for "pretty" to be available globally, really.
-import { global } from './utils/logging.utils'; global();
+import { global } from './utils/logging.utils';
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
@@ -169,14 +177,19 @@ requirejs({
     PluginHostComponent,
     SidebarTogglerComponent,
     LoginComponent,
-    EntryComponent
+    EntryComponent,
+    MainComponent,
+    TopBarComponent,
+    FooterComponent,
+    VerticalNavBarComponent,
+    HorizontalNavbarComponent,
+    UserMenuComponent
 
   ],
   imports: [
     studioRoutes,
     HttpClientModule,
     BrowserModule,
-    // NoopAnimationsModule,
     BrowserAnimationsModule,
     FormsModule,
     CdkTableModule,
@@ -193,13 +206,20 @@ requirejs({
     MatSelectModule,
     MatProgressSpinnerModule,
     MatRadioModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatTooltipModule,
+    MatChipsModule,
     TreeModule,
     MomentModule,
     NgReduxModule,
     HttpClientXsrfModule.withOptions({
       cookieName: environment.auth.cookie,
       headerName: environment.auth.header
-    })
+    }),
+    PerfectScrollbarModule,
+    FlexLayoutModule
   ],
   entryComponents: [
     EmbeddedViewDialogComponent,
@@ -235,7 +255,8 @@ requirejs({
     AuthGuard,
     ProjectResolver,
     ProjectsResolver,
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: PERFECT_SCROLLBAR_CONFIG, useValue: {  } }
 
   ],
   bootstrap: [AppComponent]

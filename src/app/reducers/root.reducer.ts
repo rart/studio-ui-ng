@@ -8,9 +8,9 @@ import { activeProjectCode } from './active-project-code.reducer';
 import { deliveryTable } from './delivery-table.reducer';
 import { settings } from './settings.reducer';
 import { editSessions } from './edit-sessions.reducer';
-import { sidebar } from './sidebar.reducer';
 import { auth } from './auth.reducer';
 import { previewTabs } from './preview-tabs.reducer';
+import { isNullOrUndefined } from 'util';
 
 const foo = (state = null) => state;
 
@@ -20,11 +20,9 @@ export const reducerMap = {
   auth,
   entities,
   workspaces,
-  previewTabs,
   activeProjectCode,
   editSessions,
   settings,
-  sidebar,
 
   deliveryTable,
 
@@ -40,8 +38,22 @@ const appReducer = combineReducers<AppState>(reducerMap);
 
 export function rootReducer(state = {} as AppState, action) {
 
-  let nextState = appReducer(state, action);
-  let projectCodeActive = nextState.activeProjectCode;
+  let
+    nextState = state,
+    projectCodeActive;
+
+  // Only activate global preview tabs reducer when there's no active project
+  projectCodeActive = nextState.activeProjectCode;
+  if (isNullOrUndefined(projectCodeActive)) {
+    let originalPreviewTabs = nextState.previewTabs;
+    let nextPreviewTabs = previewTabs(state.previewTabs, action);
+    if (originalPreviewTabs !== nextPreviewTabs) {
+      nextState = { ...nextState, previewTabs: nextPreviewTabs };
+    }
+  }
+
+  nextState = appReducer(nextState, action);
+  projectCodeActive = nextState.activeProjectCode;
 
   switch (action.type) {
 

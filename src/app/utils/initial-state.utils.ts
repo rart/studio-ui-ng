@@ -3,9 +3,6 @@ import { AVATARS } from '../app.utils';
 
 export const initialState: AppState = {
   activeProjectCode: 'launcher',
-  sidebar: {
-    visible: true
-  },
   auth: 'validated',
   user: {
     avatarUrl: AVATARS[9],
@@ -18,7 +15,7 @@ export const initialState: AppState = {
     projects: null,
     groups: []
   },
-  previewTabs: undefined,
+  // previewTabs: undefined,
   workspaces: {
     'launcher': {
       previewTabs: {

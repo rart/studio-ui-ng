@@ -1,6 +1,20 @@
 @import "settings";
 @import '~@angular/material/theming';
 
+$mat-white: (
+  500: white,
+  contrast: (
+    500: $black-87-opacity
+  )
+);
+
+$mat-black: (
+  500: black,
+  contrast: (
+    500: white,
+  )
+);
+
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -8,20 +22,20 @@
 // Be sure that you only ever include this mixin once!
 @include mat-core(mat-typography-config(
   $font-family: '"Open Sans", sans-serif',
-  $display-4: mat-typography-level(112px, 112px, 300),
-  $display-3: mat-typography-level(56px, 56px, 400),
-  $display-2: mat-typography-level(45px, 48px, 400),
-  $display-1: mat-typography-level(34px, 40px, 400),
-  $headline: mat-typography-level(24px, 32px, 400),
-  $title: mat-typography-level(20px, 32px, 500),
-  $subheading-2: mat-typography-level(16px, 28px, 400),
-  $subheading-1: mat-typography-level(15px, 24px, 400),
-  $body-2: mat-typography-level(16px, 24px, 500),
-  $body-1: mat-typography-level(16px, 20px, 400),
-  $caption: mat-typography-level(12px, 20px, 400),
-  $button: mat-typography-level(16px, 16px, 500),
-    // Line-height must be unit-less fraction of the font-size.
-  $input: mat-typography-level(16px, 1.125, 400)
+  $display-4:     mat-typography-level(112px, 112px, 300),
+  $display-3:     mat-typography-level(56px, 56px, 400),
+  $display-2:     mat-typography-level(45px, 48px, 400),
+  $display-1:     mat-typography-level(34px, 40px, 400),
+  $headline:      mat-typography-level(24px, 32px, 400),
+  $title:         mat-typography-level(20px, 32px, 500),
+  $subheading-2:  mat-typography-level(16px, 28px, 400),
+  $subheading-1:  mat-typography-level(15px, 24px, 400),
+  $body-2:        mat-typography-level(16px, 24px, 500),
+  $body-1:        mat-typography-level(16px, 20px, 400),
+  $caption:       mat-typography-level(14px, 20px, 400),
+  $button:        mat-typography-level(16px, 16px, 500),
+  // Line-height must be unit-less fraction of the font-size.
+  $input:         mat-typography-level(16px, 1.125, 400)
 ));
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
@@ -41,368 +55,5 @@ $studio-app-theme: mat-light-theme($studio-app-primary, $studio-app-accent, $stu
 // that you are using.
 @include angular-material-theme($studio-app-theme);
 
-[class*="mat-"] {
-  font-size: 1rem;
-}
-
-.mat-expanded.allow-overflow {
-  > .mat-expansion-panel-content {
-    &, > .mat-expansion-panel-body {
-      overflow: visible;
-    }
-  }
-}
-
-.mat-expansion-panel {
-  transition: box-shadow 280ms cubic-bezier(.4, 0, .2, 1);
-  box-sizing: content-box;
-  display: block;
-  margin: 0;
-  transition: margin 225ms cubic-bezier(.4, 0, .2, 1)
-}
-
-.mat-expansion-panel:not([class*=mat-elevation-z]) {
-  //box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12)
-  box-shadow: none !important;
-}
-
-.mat-expansion-panel-content {
-  overflow: hidden
-}
-
-.mat-expansion-panel-body {
-  //margin: 0 24px 16px;
-  // padding: 0 24 16px;
-  padding: 0 !important;
-  margin: 0 !important;
-  overflow: auto;
-}
-
-.mat-expansion-panel-spacing {
-  //margin: 16px 0
-  margin: 0 !important
-}
-
-.mat-accordion .mat-expansion-panel-spacing:first-child {
-  margin-top: 0
-}
-
-.mat-accordion .mat-expansion-panel-spacing:last-child {
-  margin-bottom: 0
-}
-
-.mat-action-row {
-  border-top-style: solid;
-  border-top-width: 1px;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  padding: 16px 8px 16px 24px
-}
-
-.mat-action-row button.mat-button {
-  margin-left: 8px
-}
-
-[dir=rtl] .mat-action-row button.mat-button {
-  margin-left: 0;
-  margin-right: 8px
-}
-
-.mat-expansion-panel-header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  //padding: 0 24px
-  padding: 0 15px !important;
-}
-
-.mat-expansion-panel-header:focus,
-.mat-expansion-panel-header:hover {
-  outline: 0
-}
-
-.mat-expansion-panel-header.mat-expanded:focus,
-.mat-expansion-panel-header.mat-expanded:hover {
-  background: inherit
-}
-
-.mat-expansion-panel-header:not([aria-disabled=true]) {
-  cursor: pointer
-}
-
-.mat-content {
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  overflow: hidden
-}
-
-.mat-expansion-panel-header-description, .mat-expansion-panel-header-title {
-  display: flex;
-  flex-grow: 1;
-  margin-right: 16px
-}
-
-[dir=rtl] .mat-expansion-panel-header-description, [dir=rtl] .mat-expansion-panel-header-title {
-  margin-right: 0;
-  margin-left: 16px
-}
-
-.mat-expansion-panel-header-description {
-  flex-grow: 2
-}
-
-.mat-expansion-indicator::after {
-  border-style: solid;
-  border-width: 0 2px 2px 0;
-  content: '';
-  display: inline-block;
-  padding: 3px;
-  transform: rotate(45deg);
-  vertical-align: middle
-}
-
-.mat-expansion-panel-header.no-indicator .mat-expansion-indicator::after {
-  border: none !important;
-}
-
-/* MatDialog */
-
-.unpadded > .mat-dialog-container {
-  padding: 0 !important;
-}
-
-.mat-dialog-container {
-  @media only screen and (max-width: 1000px) {
-    max-width: 95vw;
-    margin: auto;
-  }
-}
-
-/* Mat Menu Item */
-
-.compact.mat-menu-item,
-.mat-menu-compact .mat-menu-item {
-  height: 30px;
-  line-height: 30px;
-}
-
-mat-menu-divider,
-.mat-menu-divider {
-  margin: 2px 0;
-  display: block;
-  border-top: 1px solid #f2f2f2;
-}
-
-.mat-menu-content {
-  padding-top: 5px !important;
-  padding-bottom: 5px !important;
-}
-
-/* Mat Form Fields */
-
-mat-form-field {
-  width: 100%;
-}
-
-.no-subscript {
-  .mat-form-field-wrapper {
-    padding-bottom: 0;
-  }
-  .mat-form-field-underline {
-    position: static;
-  }
-}
-
-.no-underline {
-  .mat-form-field-underline {
-    display: none;
-  }
-}
-
-.no-infix {
-  .mat-form-field-infix {
-    border-top: none;
-  }
-  // mat-form-field-should-float mat-focused
-  &.mat-form-field-should-float {
-    &, &.mat-form-field-can-float {
-      .mat-form-field-placeholder {
-        &, &.mat-form-field-empty {
-          display: none;
-        }
-      }
-    }
-  }
-}
-
-.with.icon {
-  .mat-form-field-placeholder {
-    width: auto;
-    left: 1.5rem;
-  }
-  .mat-input-infix {
-    padding-left: 1.5rem;
-    &::before {
-      left: 0;
-      top: .4em;
-      position: absolute;
-      color: $color-gray;
-      @include fa-base-styles;
-    }
-  }
-  &.search {
-    .mat-input-infix::before {
-      @include fa(search);
-    }
-  }
-}
-
-/*
-
-.mat-menu-panel {
-  min-width: 112px;
-  max-width: 280px;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  max-height: calc(100vh - 48px);
-  border-radius: 2px;
-  outline: 0
-}
-
-.mat-menu-panel:not([class*=mat-elevation-z]) {
-  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12)
-}
-
-.mat-menu-panel.mat-menu-after.mat-menu-below {
-  transform-origin: left top
-}
-
-.mat-menu-panel.mat-menu-after.mat-menu-above {
-  transform-origin: left bottom
-}
-
-.mat-menu-panel.mat-menu-before.mat-menu-below {
-  transform-origin: right top
-}
-
-.mat-menu-panel.mat-menu-before.mat-menu-above {
-  transform-origin: right bottom
-}
-
-[dir=rtl] .mat-menu-panel.mat-menu-after.mat-menu-below {
-  transform-origin: right top
-}
-
-[dir=rtl] .mat-menu-panel.mat-menu-after.mat-menu-above {
-  transform-origin: right bottom
-}
-
-[dir=rtl] .mat-menu-panel.mat-menu-before.mat-menu-below {
-  transform-origin: left top
-}
-
-[dir=rtl] .mat-menu-panel.mat-menu-before.mat-menu-above {
-  transform-origin: left bottom
-}
-
-.mat-menu-panel.ng-animating {
-  pointer-events: none
-}
-
-@media screen and (-ms-high-contrast: active) {
-  .mat-menu-panel {
-    outline: solid 1px
-  }
-}
-
-.mat-menu-content {
-  padding-top: 8px;
-  padding-bottom: 8px
-}
-
-.mat-menu-item {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  cursor: pointer;
-  outline: 0;
-  border: none;
-  -webkit-tap-highlight-color: transparent;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
-  line-height: 48px;
-  height: 48px;
-  padding: 0 16px;
-  text-align: left;
-  text-decoration: none;
-  position: relative
-}
-
-.mat-menu-item[disabled] {
-  cursor: default
-}
-
-[dir=rtl] .mat-menu-item {
-  text-align: right
-}
-
-.mat-menu-item .mat-icon {
-  margin-right: 16px
-}
-
-[dir=rtl] .mat-menu-item .mat-icon {
-  margin-left: 16px;
-  margin-right: 0
-}
-
-.mat-menu-item .mat-icon {
-  vertical-align: middle
-}
-
-.mat-menu-item-submenu-trigger {
-  padding-right: 32px
-}
-
-.mat-menu-item-submenu-trigger::after {
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 5px 0 5px 5px;
-  border-color: transparent transparent transparent currentColor;
-  content: '';
-  display: inline-block;
-  position: absolute;
-  top: 50%;
-  right: 16px;
-  transform: translateY(-50%)
-}
-
-[dir=rtl] .mat-menu-item-submenu-trigger {
-  padding-right: 8px;
-  padding-left: 32px
-}
-
-[dir=rtl] .mat-menu-item-submenu-trigger::after {
-  right: auto;
-  left: 16px;
-  transform: rotateY(180deg) translateY(-50%)
-}
-
-button.mat-menu-item {
-  width: 100%
-}
-
-.mat-menu-ripple {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute
-}
-
-*/
+$background: map-get($studio-app-theme, background);
+$foreground: map-get($studio-app-theme, foreground);

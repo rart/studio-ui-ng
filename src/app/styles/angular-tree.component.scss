@@ -186,7 +186,7 @@ tree-root {
                 > .toggle-children-wrapper {
                   &.toggle-children-wrapper-expanded .toggle-children {
                     &::before {
-                      content: "\f107";
+                      content: "keyboard_arrow_down";
                     }
                   }
                   &.toggle-children-wrapper-collapsed .toggle-children {
@@ -200,7 +200,7 @@ tree-root {
                     margin: 0;
                     width: 1.18em;
                     height: 1em;
-                    font-family: 'Icons';
+                    font-family: 'Material Icons';
                     font-style: normal;
                     font-weight: normal;
                     text-decoration: inherit;
@@ -213,7 +213,7 @@ tree-root {
                     backface-visibility: hidden;
                     &::before {
                       background: none !important;
-                      content: "\f105";
+                      content: "keyboard_arrow_right";
                     }
                   }
                 }

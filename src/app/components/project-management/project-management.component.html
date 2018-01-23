@@ -3,8 +3,15 @@
     i18n-title
     title="Projects"
     icon="fa fa-laptop">
-    <button class="ui basic green button" [routerLink]="['/projects/create']">Create Project</button>
-    <button class="ui icon button" (click)="load()"><i class="icon refresh"></i></button>
+    <button mat-icon-button (click)="load()"
+            [attr.aria-label]="'Refresh Projects' | i18n">
+      <mat-icon class="" aria-hidden="true">refresh</mat-icon>
+    </button>
+    <button class="green background"
+            mat-mini-fab [routerLink]="['/projects/create']"
+            [attr.aria-label]="'Create Project' | i18n">
+      <mat-icon class="white text" aria-hidden="true">add</mat-icon>
+    </button>
   </std-view-title-bar>
   <ng-container [ngSwitch]="loading$ | async">
 
@@ -14,38 +21,9 @@
       </std-spinner>
     </div>
 
-    <div class="content" *ngSwitchCase="false">
+    <div class="content pad" *ngSwitchCase="false">
 
-      <!--<table class="ui selectable flat basic table">
-        <thead class="uppercase">
-        <tr>
-          <th>Handle</th>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Groups</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td colspan="4">
-            <mat-form-field class="no-subscript no-infix no-underline with search icon">
-              <input placeholder="Search..." i18n-placeholder
-                     matInput type="text"
-                     [formControl]="filterQuery">
-            </mat-form-field>
-          </td>
-        </tr>
-        <tr class="is-interactive highlight-interaction bg"
-            *ngFor="let project of projects" [routerLink]="['/projects', project.code]">
-          <td>{{project.code}}</td>
-          <td>{{project.name}}</td>
-          <td>{{project.description}}</td>
-          <td>{{project.groups || 0}}</td>
-        </tr>
-        </tbody>
-      </table>-->
-
-      <div class="ui cards">
+      <div class="ui centered cards">
         <div class="ui card"
              *ngFor="let project of projects">
           <div class="image">
@@ -61,15 +39,13 @@
             </div>
           </div>
           <div class="extra content">
-            <button class="ui button"
-                    [routerLink]="['/project', project.code, 'dashboard']">
+            <button mat-icon-button [routerLink]="['/project', project.code, 'dashboard']">
               <i class="fa fa-tachometer"></i>
             </button>
-            <button class="ui button" (click)="browse(project.code)">
+            <button mat-icon-button (click)="browse(project.code)">
               <i class="fa fa-binoculars"></i>
             </button>
-            <button class="ui button"
-                    [routerLink]="['/projects', project.code]">
+            <button mat-icon-button [routerLink]="['/projects', project.code]">
               <i class="fa fa-pencil"></i>
             </button>
           </div>

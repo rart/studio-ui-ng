@@ -100,7 +100,7 @@ export const createPreviewTabStateContainer =
     if (isNullOrUndefined(order)) {
       order = Object.values(byId).map(value => value.id);
     }
-    // Insure each tab has a history
+    // Ensure each tab has a history
     order.forEach(tabId => {
 
     });

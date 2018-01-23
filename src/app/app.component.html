@@ -1,6 +1,6 @@
 <ng-container *ngIf="preRequisitesPassed">
-  <router-outlet></router-outlet>
-  <std-sidebar *ngIf="(auth$ | async) !== 'void'"></std-sidebar>
+  <router-outlet *ngIf="(auth$ | async) === 'void'"></router-outlet>
+  <std-main *ngIf="(auth$ | async) !== 'void'"></std-main>
 </ng-container>
 
 <ng-container *ngIf="!preRequisitesPassed">

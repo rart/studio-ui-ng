@@ -15,7 +15,7 @@ import { WithNgRedux } from './classes/with-ng-redux.class';
 
 @Component({
   selector: 'std-app',
-  encapsulation: ViewEncapsulation.None,
+  // encapsulation: ViewEncapsulation.None,
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })

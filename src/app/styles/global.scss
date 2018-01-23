@@ -1,0 +1,554 @@
+@import "settings";
+
+@import "~semantic-ui-sass/scss/globals/reset";
+
+@import "~semantic-ui-sass/scss/collections/grid";
+@import "~semantic-ui-sass/scss/collections/menu";
+@import "~semantic-ui-sass/scss/collections/message";
+@import "~semantic-ui-sass/scss/collections/table";
+
+@import "~semantic-ui-sass/scss/elements/container";
+@import "~semantic-ui-sass/scss/elements/divider";
+@import "~semantic-ui-sass/scss/elements/image";
+//@import "~semantic-ui-sass/scss/elements/label";
+@import "~semantic-ui-sass/scss/elements/segment";
+@import "~semantic-ui-sass/scss/elements/list";
+
+@import "~semantic-ui-sass/scss/modules/dimmer";
+
+@import "~semantic-ui-sass/scss/views/card";
+@import "~semantic-ui-sass/scss/views/item";
+
+@import 'angular-tree.component';
+
+* {
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  @include open-sans-regular;
+  font-size: $font-size-base;
+  background-color: $sidebar-background-color;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @include open-sans-bold;
+}
+
+h1, h2 {
+  @include open-sans-light;
+}
+
+a {
+  color: $color-blue-darkend;
+  text-decoration: none;
+  &:hover {
+    color: $color-blue;
+  }
+  &:focus,
+  &:active {
+    color: $color-blue-lightend;
+  }
+}
+
+a, button {
+  cursor: pointer;
+}
+
+button, input, optgroup, select, textarea {
+  font-size: 1rem;
+}
+
+button {
+  border: 0;
+  outline: 0;
+  border-radius: 0;
+  text-align: center;
+  background: transparent;
+  @include open-sans-regular;
+  &.simple {
+    padding: 0;
+    align-items: center;
+    display: inline-flex;
+    > i {
+      margin: auto;
+    }
+  }
+}
+
+textarea,
+textarea.mat-input-element {
+  resize: none !important;
+}
+
+router-outlet {
+  display: none !important;
+}
+
+/**
+ * Position Helpers
+ */
+
+$positions: (absolute, relative, fixed, static);
+.position {
+  @each $position in $positions {
+    &.#{$position} {
+      position: #{$position};
+      &.ensure {
+        position: #{$position} !important;
+      }
+    }
+  }
+}
+
+/**
+ * Display Helpers
+ */
+
+$displays: (inline, block, flex, inline-block, inline-flex);
+.display {
+  @each $display in $displays {
+    &.#{$display} {
+      display: #{$display};
+      &.ensure {
+        display: #{$display} !important;
+      }
+    }
+  }
+}
+
+/**
+ * Text Helpers
+ */
+
+.text {
+
+  @each $alignment in left, right, center {
+    &.#{$alignment} {
+      text-align: $alignment;
+      &.ensure {
+        text-align: $alignment !important;
+      }
+    }
+  }
+
+  @each $color, $hex-code in $colors {
+    &.#{$color} {
+      color: $hex-code;
+      &.ensure {
+        color: $hex-code !important;
+      }
+    }
+  }
+
+  &.uppercase {
+    text-transform: uppercase;
+  }
+
+}
+
+/**
+ * Background Helpers
+ */
+
+.background {
+  @each $color, $hex-code in $colors {
+    &.#{$color} {
+      background-color: $hex-code;
+      &.ensure {
+        background-color: $hex-code !important;
+      }
+    }
+  }
+}
+
+.transparent {
+  background-color: transparent;
+}
+
+/**
+ * Padding Helpers
+ */
+
+.pad {
+  &:not(.x):not(.y):not(.top):not(.right):not(.bottom):not(.left) {
+    padding: $spacing-conservative;
+    @each $type, $spacing in $spacings {
+      &.#{$type} {
+        padding: $spacing;
+      }
+    }
+  }
+
+  @each $zone in $box-model-zones {
+    &.#{$zone} {
+      padding-#{$zone}: $spacing-conservative;
+      @each $type, $spacing in $spacings {
+        &.#{$type} {
+          padding: $spacing;
+        }
+      }
+    }
+  }
+
+  &.x {
+    padding: {
+      right: $spacing-conservative;
+      left: $spacing-conservative;
+    }
+    @each $type, $spacing in $spacings {
+      &.#{$type} {
+        padding: {
+          right: $spacing;
+          left: $spacing;
+        }
+      }
+    }
+  }
+
+  &.y {
+    padding: {
+      top: $spacing-conservative;
+      bottom: $spacing-conservative;
+    }
+    @each $type, $spacing in $spacings {
+      &.#{$type} {
+        padding: {
+          right: $spacing;
+          left: $spacing;
+        }
+      }
+    }
+  }
+
+}
+
+/**
+ *
+ */
+
+[hidden] {
+  display: none !important;
+}
+
+.visibility-hidden {
+  visibility: hidden;
+}
+
+.bg-video {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  object-fit: cover;
+  &::-webkit-media-controls {
+    display: none !important;
+  }
+}
+
+.is-interactive {
+  cursor: pointer;
+}
+
+.highlight-interaction {
+  &.bg {
+    &:hover {
+      background-color: $action-light !important;
+    }
+  }
+}
+
+.float {
+  &.right {
+    float: right
+  }
+  &.left {
+    float: left
+  }
+}
+
+.clearfix {
+  @include clearfix();
+}
+
+.flex {
+  display: flex;
+  &.column {
+    flex-direction: column
+  }
+  &.grow {
+    flex-grow: 1;
+  }
+}
+
+.full {
+  &.width {
+    width: 100%;
+  }
+  &.height {
+    height: 100%;
+  }
+}
+
+.app-box {
+  @include create-box;
+}
+
+.view.container,
+.view-container {
+  height: 100%;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  > .title-bar,
+  > .title.bar,
+  std-view-title-bar {
+    background-color: #FFFFFF;
+    border-bottom: 1px solid rgba(34, 36, 38, 0.15);
+    &.transparent {
+      @extend .transparent;
+    }
+    &.shadow {
+      box-shadow: 0 2px 2px 0 rgba(34, 36, 38, 0.15);
+    }
+    .wrapper {
+      display: flex;
+      align-items: center;
+      padding: $spacing-conservative;
+    }
+    .view-title {
+      margin: 0;
+      color: #666;
+    }
+    .actions {
+      display: flex;
+      margin-left: auto;
+      align-items: center;
+    }
+  }
+  > .content {
+    width: 100%;
+    overflow: auto;
+    background-color: #FFFFFF;
+    &.transparent {
+      background-color: transparent;
+    }
+    &.responsive-box {
+      &.readability {
+        @media (min-width: $max-width-readability + $sidebar-width + $spacing-conservative) {
+          @include create-box;
+        }
+      }
+      &.comfort {
+        @media (min-width: $max-width-comfort + $sidebar-width + $spacing-conservative) {
+          @include create-box;
+        }
+      }
+      &.generous {
+        @media (min-width: $max-width-generous + $sidebar-width + $spacing-conservative) {
+          @include create-box;
+        }
+      }
+    }
+  }
+}
+
+.set-max {
+  margin: 0 auto;
+  &.readability {
+    max-width: $max-width-readability;
+  }
+  &.comfort {
+    max-width: $max-width-comfort;
+  }
+  &.generous {
+    max-width: $max-width-generous;
+  }
+}
+
+.table-hd-bg {
+  background-color: #EBEBEB;
+}
+
+.ui {
+
+  &.table.flat {
+    border: none;
+    border-radius: 0;
+    thead tr:first-child > th:first-child,
+    thead tr:first-child > th:last-child {
+      border-radius: 0;
+    }
+  }
+
+  &.extremely.compact.table {
+    td, th {
+      padding: 2px;
+    }
+  }
+
+  &.buttons {
+    &.flat {
+      border: none;
+    }
+    &.extremely.compact {
+      $pad: .6rem;
+      padding: {
+        left: $pad;
+        right: $pad;
+      }
+    }
+  }
+
+  &.grid {
+    &.unpadded {
+      > .column:not(.row),
+      > .row > .column {
+        padding: 0;
+      }
+    }
+    &.reset {
+      &, &.relaxed {
+        margin: 0;
+      }
+    }
+  }
+
+}
+
+thead.uppercase {
+  th {
+    font-size: .8rem;
+    text-transform: uppercase !important;
+  }
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.ui.message.plain {
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.mat-form {
+  &.full-width {
+    mat-form-field {
+      width: 100%
+    }
+  }
+}
+
+.ui.relatively.fixed.menu {
+  position: relative;
+  border-style: none;
+}
+
+/**
+ *
+ */
+
+.ui.controls {
+  display: flex;
+  padding: 9px 5px;
+  flex-wrap: nowrap;
+  .control {
+    position: relative;
+    border-radius: 5px;
+    i {
+      position: absolute;
+      top: 2px;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      font-size: 25px;
+      &::before {
+        top: 2px;
+        position: relative;
+      }
+    }
+  }
+}
+
+.ui.tab.bar {
+  display: none;
+  flex-wrap: nowrap;
+  background: $grey-main;
+  .tabbed & {
+    display: flex;
+  }
+  .tab {
+    color: #666;
+    height: 30px;
+    flex-grow: 1;
+    display: flex;
+    overflow: hidden;
+    line-height: 30px;
+    text-align: center;
+    position: relative;
+    border-top: 1px solid $grey-header;
+    border-right: 1px solid $grey-header;
+    &.active {
+      cursor: default;
+      background-color: #ffffff;
+    }
+    &:last-child {
+      border-right: none;
+    }
+    .main {
+      padding: 0;
+      flex-grow: 1;
+      cursor: pointer;
+      overflow: hidden;
+      text-align: center;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: calc(100% - 30px);
+    }
+    .close {
+      width: 30px;
+    }
+    /*button {
+      top: 0px;
+      right: 0px;
+      height: 30px;
+      line-height: 26px;
+      position: absolute;
+    }*/
+  }
+}
+
+/**
+ * Login View
+ */
+
+.login.view {
+
+  mat-dialog-container {
+    color: #ffffff;
+    background: rgba(0, 0, 0, .5);
+
+    //.mat-form-field-can-float .mat-form-field-autofill-control:-webkit-autofill + .mat-form-field-placeholder-wrapper .mat-form-field-placeholder {}
+    //mat-input-placeholder mat-form-field-placeholder ng-tns-c5-1 {}
+
+    .mat-form-field-placeholder {
+      color: #ffffff;
+    }
+
+    .mat-checkbox-frame {
+      border-color: #ffffff;
+    }
+
+  }
+
+}

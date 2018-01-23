@@ -1,7 +1,7 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
+  ElementRef, HostBinding,
   OnDestroy,
   OnInit,
   QueryList,
@@ -113,6 +113,11 @@ const FileAssociations = {
   styleUrls: ['./preview.component.scss']
 })
 export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewInit, OnDestroy {
+
+  @HostBinding('class.tabbed')
+  get hasTabs() {
+    return this.tabs ? (this.tabs.length > 1) : false;
+  }
 
   @ViewChildren('urlBox') input: QueryList<ElementRef>;
   @ViewChild(IFrameComponent) iFrameComponent: IFrameComponent;
@@ -480,7 +485,7 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
     let tab = this.activeTab;
     if (tab.url === url) {
       this.reload();
-      return { type: 'NOOP' };
+      return false;
     } else {
       return this.previewTabActions.nav(
         createPreviewTabCore({ url, projectCode: tab.projectCode }));
@@ -490,7 +495,7 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
   @dispatch()
   changeProject(project) {
     if (project.code === this.project.code) {
-      return { type: 'NOOP' };
+      return false;
     } else {
       return this.previewTabActions.nav(createPreviewTabCore({
         url: PROJECT_HOME_PAGE,
@@ -504,7 +509,7 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
     if (tab.id !== this.activeTab.id) {
       return this.previewTabActions.select(tab.id);
     } else {
-      return { type: 'NOOP' };
+      return false;
     }
   }
 

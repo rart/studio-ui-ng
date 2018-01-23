@@ -4,7 +4,11 @@
     title="Users"
     icon="fa fa-users"
     max="comfort">
-    <button class="ui basic green button" (click)="createUser()">Create User</button>
+    <button class="green background"
+            mat-fab (click)="createUser()"
+            [attr.aria-label]="'Create User' | i18n">
+      <mat-icon class="white text" aria-hidden="true">add</mat-icon>
+    </button>
   </std-view-title-bar>
   <div class="content set-max responsive-box comfort" [class.split]="hasChild">
 
@@ -35,51 +39,6 @@
         (deactivate)="componentRemoved($event)">
       </router-outlet>
     </div>
-
-    <!--<div class="ui link centered cards">
-      <div class="card" *ngFor="let user of users" [routerLink]="['/users']" [queryParams]="{ edit: user.username }">
-        <div class="image">
-          <img [src]="user.avatarUrl" alt="">
-        </div>
-        <div class="content">
-          <div class="header">{{user.firstName}} {{user.lastName}}</div>
-          <div class="meta">{{user.email}}</div>
-          <div class="description">{{user.username}}</div>
-        </div>
-      </div>
-    </div>-->
-
-    <!--<table class="ui striped selectable flat table">
-      <thead>
-      <tr>
-        <th></th>
-        <th>Username</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Projects</th>
-      </tr>
-      </thead>
-      <tbody>
-      &lt;!&ndash;
-      TODO: API doesn't support search.
-      <tr>
-        <td colspan="5">
-          <div class="ui transparent fluid left icon input">
-            <i class="icon search"></i>
-            <input type="text" placeholder="Search...">
-          </div>
-        </td>
-      </tr>
-      &ndash;&gt;
-      <tr class="is-interactive highlight-interaction bg" *ngFor="let user of users" [routerLink]="['/users']" [queryParams]="{ edit: user.username }">
-        <td></td>
-        <td>{{user.username}}</td>
-        <td>{{user.firstName}} {{user.lastName}}</td>
-        <td>{{user.email}}</td>
-        <td>{{user.projects.length}}</td>
-      </tr>
-      </tbody>
-    </table>-->
 
   </div>
 </div>

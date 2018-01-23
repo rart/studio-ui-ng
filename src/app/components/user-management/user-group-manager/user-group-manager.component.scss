@@ -9,3 +9,8 @@
     }
   }
 }
+
+
+::ng-deep .mat-chip-list-wrapper {
+  align-items: center !important;
+}
