@@ -58,21 +58,6 @@ export interface Settings {
   'meta.click.open.tab.in.background': boolean;
 }
 
-export interface UISettings {
-  layout: 'full' | 'contained';
-  nativeScrollbars: boolean;
-  viewAnimation: 'fadeIn' | 'slideUp' | 'slideDown' | 'slideRight' | 'slideLeft' | 'none';
-  topBar: {
-    theme: string;
-    position: 'top' | 'inline' | 'none';
-  };
-  sidebar: {
-    theme: string;
-    position: 'top' | 'right' | 'left' | 'none';
-    folded: boolean;
-  };
-}
-
 export interface ProjectSettings {
   [props: string]: any;
 }
