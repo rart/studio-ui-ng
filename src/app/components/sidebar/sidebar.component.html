@@ -31,7 +31,7 @@
   </div>
 <!--</mat-expansion-panel>-->
 
-<ng-container *ngIf="!project && projects.length">
+<ng-container *ngIf="!project && projects.length > 0">
   <h2 class="pad x">Projects</h2>
   <button mat-menu-item
           *ngFor="let project of projects"
