@@ -4,12 +4,12 @@
     title="Projects"
     icon="fa fa-laptop">
     <button mat-icon-button (click)="load()"
-            [attr.aria-label]="'Refresh Projects' | i18n">
+            [attr.aria-label]="'Refresh Projects' | translate">
       <mat-icon class="" aria-hidden="true">refresh</mat-icon>
     </button>
     <button class="green background"
             mat-mini-fab [routerLink]="['/projects/create']"
-            [attr.aria-label]="'Create Project' | i18n">
+            [attr.aria-label]="'Create Project' | translate">
       <mat-icon class="white text" aria-hidden="true">add</mat-icon>
     </button>
   </std-view-title-bar>

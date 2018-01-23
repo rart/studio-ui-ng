@@ -28,5 +28,7 @@
   "": {
 
   },
-  "Close Workspace": "Cerrar '{{name}}'"
+  "Update": "Actualizar",
+  "Close Workspace": "Cerrar '{{name}}'",
+  "Required field": "Campo obligatorio"
 }

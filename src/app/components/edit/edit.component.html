@@ -27,7 +27,7 @@
           <button class="close" title="Close"
                   *ngIf="(tab.status !== 'closing')"
                   (click)="closeTab(tab)"
-                  i18n>&times;</button>
+                  translate>&times;</button>
           <mat-spinner *ngIf="tab.status === 'closing'" [diameter]="25" [strokeWidth]="5"></mat-spinner>
         </div>
       </nav>
@@ -48,7 +48,7 @@
       <std-plugin-host *ngSwitchCase="'PluginHostComponent'"></std-plugin-host>
       <std-spinner class="take over" *ngSwitchCase="'determining'"></std-spinner>
       <div *ngSwitchCase="'none'">
-        <div class="center muted text pad lg" i18n>Nothing is selected for editing right now.</div>
+        <div class="center muted text pad lg" translate>Nothing is selected for editing right now.</div>
       </div>
     </ng-container>
   </div>

@@ -12,16 +12,16 @@
         <ng-container *ngFor="let menu of dashletMenuMap[fetchType]">
           <ng-container [ngSwitch]="menu.type">
             <button *ngSwitchDefault (click)="menuOptionClicked(menu.action)" mat-menu-item>
-              {{ menu.label | i18n }}
+              {{ menu.label | translate }}
             </button>
             <mat-form-field *ngSwitchCase="'menu'" class="menu-dropdown">
               <mat-select
                 #select="matSelect"
-                placeholder="{{ menu.label | i18n }}"
+                placeholder="{{ menu.label | translate }}"
                 [(ngModel)]="query[menu.action]"
                 (change)="menuOptionClicked(menu.action, select.value)">
                 <mat-option *ngFor="let opt of menu.options" [value]="opt.value">
-                  {{ opt.label || opt.value | i18n }}
+                  {{ opt.label || opt.value | translate }}
                 </mat-option>
               </mat-select>
             </mat-form-field>

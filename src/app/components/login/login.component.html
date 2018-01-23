@@ -12,7 +12,7 @@
   <input matInput i18n-placeholder placeholder="Username"
          [(ngModel)]="model.username"
          [formControl]="userNameFormControl">
-  <mat-error i18n *ngIf="userNameFormControl.hasError('required')">
+  <mat-error translate *ngIf="userNameFormControl.hasError('required')">
     Email address is <strong>required</strong>
   </mat-error>
 </mat-form-field>

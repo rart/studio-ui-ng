@@ -15,7 +15,7 @@
                    (blur)="autoProjectCode()"
                    [(ngModel)]="model.name"
                    [formControl]="nameFormControl">
-            <mat-error i18n *ngIf="nameFormControl.hasError('required')">
+            <mat-error translate *ngIf="nameFormControl.hasError('required')">
               Project name is <strong>required</strong>
             </mat-error>
           </mat-form-field>
@@ -24,7 +24,7 @@
                    [readonly]="editMode"
                    [(ngModel)]="model.code"
                    [formControl]="codeFormControl">
-            <mat-error i18n *ngIf="codeFormControl.hasError('required')">
+            <mat-error translate *ngIf="codeFormControl.hasError('required')">
               Project code is <strong>required</strong>
             </mat-error>
           </mat-form-field>
@@ -59,7 +59,7 @@
 
 <div fxLayout="row" fxLayoutAlign="space-between center">
   <div>
-    <!--<button class="ui blue button" i18n
+    <!--<button class="ui blue button" translate
             (click)="update()"
             [disabled]="!formGroup.valid"
             *ngIf="editMode">Update</button>-->
@@ -67,12 +67,12 @@
             (click)="create()"
             [disabled]="!formGroup.valid"
             *ngIf="!editMode">
-      <span i18n class="white text">Create</span>
+      <span translate class="white text">Create</span>
     </button>
     <button mat-button (click)="done()">Done</button>
   </div>
   <ng-container *ngIf="editMode">
-    <button mat-fab color="warn" [matMenuTriggerFor]="deleteConfirm" [attr.aria-label]="'Delete Project' | i18n">
+    <button mat-fab color="warn" [matMenuTriggerFor]="deleteConfirm" [attr.aria-label]="'Delete Project' | translate">
       <mat-icon class="white text">delete</mat-icon>
     </button>
   </ng-container>
@@ -96,7 +96,7 @@
       <div class="pad bottom">
         <button class="ui inverted button" (click)="runProjectCreationInBackground()">
           <i class="checkmark icon"></i>
-          <ng-container i18n>Run In Background</ng-container>
+          <ng-container translate>Run In Background</ng-container>
         </button>
       </div>
       <small>You'll get notified when done.</small>

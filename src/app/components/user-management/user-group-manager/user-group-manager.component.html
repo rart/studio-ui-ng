@@ -35,9 +35,9 @@
             </mat-chip-list>
             <div *ngSwitchCase="false" class="text right">
 
-              <ng-container i18n>Not a member.</ng-container>&nbsp;
+              <ng-container translate>Not a member.</ng-container>&nbsp;
               <button mat-raised-button color="green" [matMenuTriggerFor]="appMenu">
-                <mat-icon>add</mat-icon> {{ 'Add role' | i18n }}
+                <mat-icon>add</mat-icon> {{ 'Add role' | translate }}
               </button>
               <mat-menu #appMenu="matMenu">
                 <button mat-menu-item *ngFor="let group of project.groups" (click)="addToGroup(project, group)">{{group.name}}</button>
