@@ -8,7 +8,7 @@
   <div class="content transparent set-max comfort responsive-box">
     <div class="pad">
       <div class="ui stackable doubling grid">
-        <div class="four wide column">
+        <div class="four wide max column">
           <div class="ui card">
             <div class="image">
               <img src="https://semantic-ui.com/images/avatar2/large/kristy.png">
@@ -29,7 +29,7 @@
             </div>
           </div>
         </div>
-        <div class="twelve wide column">
+        <div class="twelve wide max column">
           <mat-card class="pad" style="margin-bottom: 20px">
             <mat-card-content>
 
@@ -72,6 +72,63 @@
                 <mat-radio-button class="display block" [value]="true" translate>Open new tab in background</mat-radio-button>
                 <mat-radio-button class="display block" [value]="false" translate>Open new tab as active</mat-radio-button>
               </mat-radio-group>
+
+              <h3>Sidebar position</h3>
+              <p>Where would you like your nav bar to sit?</p>
+              <mat-radio-group
+                (change)="settingsChanged()"
+                [(ngModel)]="settings.navBarPosition">
+                <mat-radio-button
+                  class="display block"
+                  [value]="pos.value"
+                  *ngFor="let pos of [
+                    { label: 'Left', value: 'left' },
+                    { label: 'Right', value: 'right' }
+                  ]">
+                  {{ pos.label|translate }}
+                </mat-radio-button>
+              </mat-radio-group>
+
+              <h3>Layout</h3>
+              <p>How do you like your layout?</p>
+              <mat-radio-group
+                (change)="settingsChanged()"
+                [(ngModel)]="settings.layout">
+                <mat-radio-button
+                  class="display block"
+                  [value]="option.value"
+                  *ngFor="let option of [
+                    { label: 'Expand to fill my full window (however massive it may be)', value: 'full' },
+                    { label: 'Set a maximum width to the app area', value: 'contained' }
+                  ]">
+                  {{ option.label|translate }}
+                </mat-radio-button>
+              </mat-radio-group>
+
+              <!-- TODO add animation target (add globally to animations.utils.ts) -->
+              <ng-container *ngIf="'contained' === settings.layout">
+                <h3>Layout's max width</h3>
+                <p>What should the max allowed width be?</p>
+                <mat-radio-group
+                  (change)="settingsChanged()"
+                  [(ngModel)]="settings.containedLayoutMax">
+                  <mat-radio-button
+                    class="display block"
+                    [value]="option.value"
+                    *ngFor="let option of [
+                    { value: 1200, label: '1200 pixels wide max' },
+                    { value: 1300, label: '1300 pixels wide max' },
+                    { value: 1400, label: '1400 pixels wide max' },
+                    { value: 1500, label: '1500 pixels wide max' },
+                    { value: 1600, label: '1600 pixels wide max' },
+                    { value: 1800, label: '1800 pixels wide max' },
+                    { value: 2000, label: '2000 pixels wide max' },
+                    { value: 2500, label: '2500 pixels wide max' }
+                  ]">
+                    {{ option.label|translate }}
+                  </mat-radio-button>
+                </mat-radio-group>
+              </ng-container>
 
             </mat-card-content>
           </mat-card>

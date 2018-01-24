@@ -24,8 +24,13 @@
     .content {
       @include mat-elevation(5);
     }
+    &.right {
+      .content {
+        transition: all 200ms ease;
+        transform: translateX(-($sidebar-width - $sidebar-width-minimised));
+      }
+    }
   }
-  //background-color: $sidebar-background-color;
   overflow-y: auto;
   overflow-x: hidden;
   z-index: 1;
@@ -41,6 +46,16 @@
     }
     .toggle.minimise mat-icon {
       transform: rotate(180deg);
+    }
+  }
+  &.right {
+    .toggle.minimise mat-icon {
+      transform: rotate(180deg);
+    }
+    &.minimised {
+      .toggle.minimise mat-icon {
+        transform: rotate(0deg);
+      }
     }
   }
   &:not(.minimised) {

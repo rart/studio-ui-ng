@@ -42,7 +42,7 @@ export interface Workspace {
 
 export interface Settings {
   layout: 'full' | 'contained';
-  containedLayoutMax: 1200 | 1300 | 1400 | 1500 | 1600;
+  containedLayoutMax: 1200 | 1300 | 1400 | 1500 | 1600 | 1800 | 2000 | 2500 | 3000;
   nativeScrollbars: boolean;
   viewAnimation: 'fadeIn' | 'slideUp' | 'slideDown' | 'slideRight' | 'slideLeft' | 'none';
   topBarTheme: string;

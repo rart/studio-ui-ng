@@ -21,17 +21,12 @@ const PATH_IMAGES = `${environment.url.assets}/img`;
 })
 export class VerticalNavBarComponent extends ComponentBase implements OnInit, AfterViewInit {
 
-  @HostBinding('@visibility') visibility = 'expanded';
-  @HostBinding('class.minimised') minimised = false;
-  @HostBinding('class.reveal') reveal = false;
-
-  @HostBinding('attr.theme') get theme() {
-    return this.settings && this.settings.navBarTheme ? this.settings.navBarTheme : null;
-  }
-
-  @HostBinding('attr.hue') get hue() {
-    return this.settings && this.settings.navBarThemeHue ? this.settings.navBarThemeHue : null;
-  }
+  @HostBinding('@visibility') private visibility = 'expanded';
+  @HostBinding('class.minimised') private minimised = false;
+  @HostBinding('class.reveal') private reveal = false;
+  @HostBinding('class.right') private right = false;
+  @HostBinding('attr.theme') private theme = null;
+  @HostBinding('attr.hue') private hue = null;
 
   @select('settings')
   settings$: Observable<Settings>;
@@ -55,6 +50,9 @@ export class VerticalNavBarComponent extends ComponentBase implements OnInit, Af
       .pipe(takeUntil(this.unSubscriber$))
       .subscribe((settings) => {
         this.settings = settings;
+        this.right = settings.navBarPosition === 'right';
+        this.theme = settings.navBarTheme ? settings.navBarTheme : null;
+        this.hue = settings.navBarThemeHue ? settings.navBarThemeHue : null;
         this.minimised = settings.navBarMinimised;
         this.visibility = settings.navBarShown ? 'expanded' : 'minimised';
         if (settings.navBarMinimised) {

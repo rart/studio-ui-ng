@@ -2,10 +2,11 @@ import { Reducer } from 'redux';
 import { Settings } from '../classes/app-state.interface';
 import { StoreActionsEnum } from '../enums/actions.enum';
 
+// TODO: Should this really be in the state?
 const DEFAULTS: Settings = {
   metaClickOpenTabInBackground: true,
-  layout: 'full',
-  containedLayoutMax: 1600,
+  layout: 'contained',
+  containedLayoutMax: 2000,
   nativeScrollbars: false,
   viewAnimation: 'fadeIn',
   topBarTheme: '',
