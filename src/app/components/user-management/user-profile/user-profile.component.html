@@ -65,12 +65,12 @@
               </mat-radio-group>
 
               <h3>Navigation / Meta + Click</h3>
-              <p>When you use <code>cmd/ctrl + click</code> to open a page</p>
+              <p>When you use cmd/ctrl + click to open a page</p>
               <mat-radio-group
                 (change)="settingsChanged()"
                 [(ngModel)]="settings.metaClickOpenTabInBackground">
-                <mat-radio-button class="display block" [value]="true">Open New Tab In Background</mat-radio-button>
-                <mat-radio-button class="display block" [value]="false">Open New Tab As Active</mat-radio-button>
+                <mat-radio-button class="display block" [value]="true" translate>Open new tab in background</mat-radio-button>
+                <mat-radio-button class="display block" [value]="false" translate>Open new tab as active</mat-radio-button>
               </mat-radio-group>
 
             </mat-card-content>
