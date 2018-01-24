@@ -6,7 +6,7 @@
 
     <ng-container *ngIf="dashletMenuMap[fetchType]">
       <button [matMenuTriggerFor]="optionsMenu">
-        <i class="options icon"></i>
+        <mat-icon>menu</mat-icon>
       </button>
       <mat-menu #optionsMenu="matMenu">
         <ng-container *ngFor="let menu of dashletMenuMap[fetchType]">
@@ -21,7 +21,7 @@
                 [(ngModel)]="query[menu.action]"
                 (change)="menuOptionClicked(menu.action, select.value)">
                 <mat-option *ngFor="let opt of menu.options" [value]="opt.value">
-                  {{ opt.label || opt.value | translate }}
+                  {{ opt.label || opt.value }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
@@ -34,11 +34,11 @@
     </ng-container>
 
     <button *ngIf="!isDialog && canExpand" (click)="popOut()">
-      <i class="expand icon"></i>
+      <mat-icon>open_in_new</mat-icon>
     </button>
 
     <button *ngIf="isDialog" (click)="done()">
-      <i class="close icon"></i>
+      <mat-icon>close</mat-icon>
     </button>
 
   </div>
