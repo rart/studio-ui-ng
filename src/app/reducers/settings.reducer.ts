@@ -4,7 +4,7 @@ import { StoreActionsEnum } from '../enums/actions.enum';
 
 const DEFAULTS: Settings = {
   'meta.click.open.tab.in.background': true,
-  layout: 'contained',
+  layout: 'full',
   containedLayoutMax: 1600,
   nativeScrollbars: false,
   viewAnimation: 'fadeIn',
