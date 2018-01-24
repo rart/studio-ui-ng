@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, PageEvent } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 import { createLocalPagination$ } from '../../app.utils';
 import { EmbeddedViewDialogComponent } from '../embedded-view-dialog/embedded-view-dialog.component';
 import { ProjectCrUDComponent } from './project-crud/project-crud.component';
@@ -46,12 +47,15 @@ export class ProjectManagementComponent extends WithNgRedux implements OnInit {
 
   pager$ = new BehaviorSubject(this.pagerConfig);
 
+  columns = '';
+
   constructor(store: NgRedux<AppState>,
               public router: Router,
               public dialog: MatDialog,
               private projectActions: ProjectActions,
               private activeRoute: ActivatedRoute,
-              private previewTabsActions: PreviewTabsActions) {
+              private previewTabsActions: PreviewTabsActions,
+              private observableMedia: ObservableMedia) {
     super(store);
   }
 
@@ -62,6 +66,16 @@ export class ProjectManagementComponent extends WithNgRedux implements OnInit {
   loading$: Observable<boolean>;
 
   ngOnInit() {
+
+    this.observableMedia.subscribe((change: MediaChange) => {
+      this.columns = ({
+        'xs': '',
+        'sm': 'two column',
+        'md': 'three column',
+        'lg': 'five column',
+        'xl': 'six column'
+      }) [change.mqAlias];
+    });
 
     this.activeRoute.url
     // @see https://github.com/angular/angular/issues/20299

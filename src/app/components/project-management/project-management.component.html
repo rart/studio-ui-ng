@@ -21,34 +21,40 @@
       </std-spinner>
     </div>
 
-    <div class="content pad" *ngSwitchCase="false">
+    <div class="transparent content pad" *ngSwitchCase="false">
 
-      <div class="ui centered cards">
-        <div class="ui card"
-             *ngFor="let project of projects">
-          <div class="image">
-            <img src="http://placehold.it/800?text={{project.name}}">
-          </div>
-          <div class="content">
-            <a class="header">{{project.name}}</a>
-            <div class="meta">
-              <span class="date">Created on 2013</span>
-            </div>
-            <div class="description">
-              {{project.description}}
-            </div>
-          </div>
-          <div class="extra content">
-            <button mat-icon-button [routerLink]="['/project', project.code, 'dashboard']">
-              <i class="fa fa-tachometer"></i>
-            </button>
-            <button mat-icon-button (click)="browse(project.code)">
-              <i class="fa fa-binoculars"></i>
-            </button>
-            <button mat-icon-button [routerLink]="['/projects', project.code]">
-              <i class="fa fa-pencil"></i>
-            </button>
-          </div>
+      <div class="ui {{columns}} stackable grid">
+        <div class="column" *ngFor="let project of projects">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>{{project.name}}</mat-card-title>
+              <mat-card-subtitle>Subtitle</mat-card-subtitle>
+            </mat-card-header>
+            <img mat-card-image src="http://placehold.it/800x500?text={{project.name}}" />
+            <mat-card-content>
+              {{project.description || '(no description)'}}
+            </mat-card-content>
+            <mat-card-actions fxLayoutAlign="space-between center">
+              <button mat-icon-button
+                      matTooltip="{{'Dashboard' | translate}}"
+                      [attr.aria-label]="'Dashboard' | translate"
+                      [routerLink]="['/project', project.code, 'dashboard']">
+                <i class="fa fa-tachometer"></i>
+              </button>
+              <button mat-icon-button
+                      matTooltip="{{'Browse' | translate}}"
+                      [attr.aria-label]="'Browse' | translate"
+                      (click)="browse(project.code)">
+                <i class="fa fa-binoculars"></i>
+              </button>
+              <button mat-icon-button
+                      matTooltip="{{'Update' | translate}}"
+                      [attr.aria-label]="'Update' | translate"
+                      [routerLink]="['/projects', project.code]">
+                <i class="fa fa-pencil"></i>
+              </button>
+            </mat-card-actions>
+          </mat-card>
         </div>
       </div>
 

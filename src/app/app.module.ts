@@ -218,6 +218,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatToolbarModule,
     MatTooltipModule,
     MatChipsModule,
+    MatCardModule,
+    MatGridListModule,
     TreeModule,
     MomentModule,
     NgReduxModule,
