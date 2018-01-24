@@ -85,7 +85,6 @@ import { ContentTreeComponent } from './components/content-tree/content-tree.com
 import { UserCrUDComponent } from './components/user-management/user-crud/user-crud.component';
 import { ProjectCrUDComponent } from './components/project-management/project-crud/project-crud.component';
 import { ItemListDashletComponent } from './components/project/project-dashboard/item-list-dashlet.component';
-import { I18nPipe } from './i18n.pipe';
 import { ChangeLossDecisionViewComponent, EditComponent } from './components/edit/edit.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { CodeEditorComponent } from './components/code-editor/code-editor.component';
@@ -145,7 +144,6 @@ export function HttpLoaderFactory(http: HttpClient) {
 @NgModule({
   declarations: [
 
-    I18nPipe,
     SafeUrlPipe,
     FilterWithPipe,
 

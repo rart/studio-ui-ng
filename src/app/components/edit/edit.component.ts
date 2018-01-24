@@ -271,8 +271,8 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
 @Component({
   selector: 'std-change-loss-decision',
   template: `
-    <h2 i18n>Unsaved Changes</h2>
-    <p i18n><i class="orange warning circle icon"></i> {{assetName}} contains unsaved changes. Save changes before
+    <h2 translate>Unsaved Changes</h2>
+    <p translate><i class="orange warning circle icon"></i> {{assetName}} contains unsaved changes. Save changes before
       closing?</p>
     <button class="ui button primary" (click)="aye()">Yes</button>
     <button class="ui red button" (click)="nay()">No</button>

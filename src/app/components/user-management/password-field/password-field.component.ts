@@ -15,12 +15,12 @@ const TYPE_PASSWORD = 'password';
   ],
   template: `
     <mat-form-field>
-      <input matInput placeholder="Password" i18n-placeholder
+      <input matInput placeholder="{{'Password' | translate}}"
              [type]="revealed ? '${TYPE_TEXT}' : '${TYPE_PASSWORD}'"
              [formControl]="formControlRef"
              [(ngModel)]="model.password">
-      <mat-error i18n *ngIf="formControlRef.hasError('required')">
-        Password is <strong>required</strong>
+      <mat-error translate *ngIf="formControlRef.hasError('required')">
+        Password is required
       </mat-error>
     </mat-form-field>
     <div class="helpers">
@@ -28,11 +28,11 @@ const TYPE_PASSWORD = 'password';
               class="mat-icon-button"
               *ngIf="allowVisibilityControl"
               (click)="revealed = !revealed"
-              [attr.aria-label]="'Show/Hide Password' | i18n"
-              title="'Show/Hide Password' | i18n">
+              [attr.aria-label]="'Show/Hide Password' | translate"
+              [title]="'Show/Hide Password' | translate">
         <i aria-hidden="true" class="fa fa-{{inputType === 'text' ? 'eye-slash' : 'eye'}}"></i>
       </button>
-      <button i18n mat-button *ngIf="allowGeneration" (click)="generatePassword()">
+      <button translate mat-button *ngIf="allowGeneration" (click)="generatePassword()">
         Generate
       </button>
     </div>`
