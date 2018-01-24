@@ -478,6 +478,13 @@ $max-width-centric: 1000px;
 $max-width-comfort: 1200px;
 $max-width-generous: 1500px;
 
+$content-max-widths: (
+  readability: $max-width-readability,
+  centric: $max-width-centric,
+  comfort: $max-width-comfort,
+  generious: $max-width-generous
+);
+
 $font-size-base: 16px;
 
 $body-bg: $grey-main;

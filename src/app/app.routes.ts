@@ -37,17 +37,15 @@ const routes: Routes = [
       },
       {
         path: 'users',
-        component: UserManagementComponent,
-        children: [
-          {
-            path: 'create',
-            component: UserCrUDComponent
-          },
-          {
-            path: 'edit/:username',
-            component: UserCrUDComponent
-          }
-        ]
+        component: UserManagementComponent
+      },
+      {
+        path: 'users/create',
+        component: UserCrUDComponent
+      },
+      {
+        path: 'users/edit/:username',
+        component: UserCrUDComponent
       },
       {
         path: 'projects',

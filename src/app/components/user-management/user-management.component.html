@@ -1,44 +1,47 @@
-<div class="view-container user-management">
-  <std-view-title-bar
-    i18n-title
-    title="Users"
-    icon="fa fa-users"
-    max="comfort">
-    <button class="green background"
-            mat-fab (click)="createUser()"
-            [attr.aria-label]="'Create User' | translate">
-      <mat-icon class="white text" aria-hidden="true">add</mat-icon>
-    </button>
-  </std-view-title-bar>
-  <div class="content set-max responsive-box comfort" [class.split]="hasChild">
+<div class="sticky header view layout">
+  <header class="view header pad" [attr.theme]="(settings$|async).navBarTheme" hue="(settings$|async).topBarThemeHue">
+    <div fxLayoutAlign="space-between center">
+      <h1 translate><mat-icon>people</mat-icon> Users</h1>
+      <div>
+        <button color="default" mat-fab
+                [attr.aria-label]="'Refresh Projects' | translate">
+          <mat-icon class="" aria-hidden="true">refresh</mat-icon>
+        </button>
+        <button theme="green" color="inherit" mat-fab
+                [routerLink]="['/users/create']"
+                [attr.aria-label]="'Create User' | translate">
+          <mat-icon aria-hidden="true">add</mat-icon>
+        </button>
+      </div>
+    </div>
+  </header>
+  <section class="view body">
 
-    <div class="list-column">
-      <div class="ui link divided items">
-        <div class="item" *ngFor="let user of users" (click)="editUser(user)">
-          <div class="ui tiny image">
-            <img [src]="user.avatarUrl" alt="">
-          </div>
-          <div class="content">
-            <div class="header">{{user.firstName}} {{user.lastName}}</div>
-            <div class="meta">{{user.email}}</div>
-            <div class="description">{{user.username}}</div>
+    <div class="pad">
+      <mat-card class="pad" max="readability">
+        <div class="ui link divided items">
+          <div class="item" *ngFor="let user of users" [routerLink]="['/users/edit', user.username]">
+            <div class="ui tiny image">
+              <img [src]="user.avatarUrl" alt="">
+            </div>
+            <div class="content">
+              <div class="header">{{user.firstName}} {{user.lastName}}</div>
+              <div class="meta">{{user.email}}</div>
+              <div class="description">{{user.username}}</div>
+            </div>
           </div>
         </div>
-      </div>
-      <mat-paginator class="responsive-tight"
-                     (page)="pageChanged($event)"
-                     [length]="totalNumOfUsers"
-                     [pageIndex]="pageIndex"
-                     [pageSize]="pageSize"
-                     [pageSizeOptions]="pageSizeOptions">
-      </mat-paginator>
-    </div>
-    <div class="details-column">
-      <router-outlet
-        (activate)="componentAdded($event)"
-        (deactivate)="componentRemoved($event)">
-      </router-outlet>
+      </mat-card>
     </div>
 
-  </div>
+  </section>
+  <footer>
+    <mat-paginator class="responsive-tight"
+                   (page)="pageChanged($event)"
+                   [length]="totalNumOfUsers"
+                   [pageIndex]="pageIndex"
+                   [pageSize]="pageSize"
+                   [pageSizeOptions]="pageSizeOptions">
+    </mat-paginator>
+  </footer>
 </div>

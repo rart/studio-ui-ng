@@ -33,7 +33,7 @@
   }
   overflow-y: auto;
   overflow-x: hidden;
-  z-index: 1;
+  z-index: 5;
   @include mat-elevation(3);
   transition:
     all 250ms cubic-bezier(.55, 0, .55, .2),

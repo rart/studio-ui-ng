@@ -9,6 +9,9 @@ import { Change, ChangeType } from '../../../classes/change-tracker.class';
 import { GroupService } from '../../../services/group.service';
 import { AVATARS } from '../../../app.utils';
 import { ResponseCodesEnum } from '../../../enums/response-codes.enum';
+import { Observable } from 'rxjs/Observable';
+import { select } from '@angular-redux/store';
+import { Settings } from '../../../classes/app-state.interface';
 
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
@@ -20,6 +23,9 @@ const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA
 export class UserCrUDComponent implements OnInit {
 
   @Output() finished = new EventEmitter();
+
+  @select('settings')
+  settings$: Observable<Settings>;
 
   avatars = AVATARS;
 

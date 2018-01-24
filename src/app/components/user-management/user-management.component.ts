@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/observable/defer';
@@ -11,6 +11,9 @@ import {UserService} from '../../services/user.service';
 import {EmbeddedViewDialogComponent} from '../embedded-view-dialog/embedded-view-dialog.component';
 import {openDialog} from '../../utils/material.utils';
 import {UserCrUDComponent} from './user-crud/user-crud.component';
+import { select } from '@angular-redux/store';
+import { Observable } from 'rxjs/Observable';
+import { Settings } from '../../classes/app-state.interface';
 
 declare var $;
 
@@ -20,6 +23,9 @@ declare var $;
   styleUrls: ['./user-management.component.scss']
 })
 export class UserManagementComponent implements OnInit {
+
+  @select('settings')
+  settings$: Observable<Settings>;
 
   hasChild = false;
   childComponent = null;

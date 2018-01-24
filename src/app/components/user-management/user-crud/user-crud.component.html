@@ -1,195 +1,211 @@
-<h2>
-  <span *ngIf="editMode">Editing {{model.firstName}} {{model.lastName}}</span>
-  <span *ngIf="!editMode">New User</span>
-</h2>
-
-<mat-tab-group [dynamicHeight]="true" [(selectedIndex)]="selectedTabIndex">
-  <mat-tab i18n-label label="Basic Information">
-
-    <!-- Read only user view -->
-    <div class="tab-content pad x" *ngIf="model.managedExternally">
-
-      <div class="ui icon message">
-        <i class="info icon"></i>
-        <div class="content">
-          <h3 class="header" translate>Externally Managed</h3>
-          <p translate>This user is managed externally and cannot be edited from Studio.</p>
-        </div>
+<div class="sticky header view layout">
+  <header class="pad view header" [attr.theme]="(settings$|async).navBarTheme" hue="(settings$|async).topBarThemeHue">
+    <div fxLayoutAlign="space-between center">
+      <div fxLayoutAlign="left center">
+        <button color="default" mat-fab
+                [routerLink]="['/users']"
+                [attr.aria-label]="'Back' | translate">
+          <mat-icon class="" aria-hidden="true">chevron_left</mat-icon>
+        </button>
+        <h1 class="pad left">
+          <ng-container *ngIf="editMode">{{model.firstName}} {{model.lastName}}</ng-container>
+          <ng-container *ngIf="!editMode" translate>Create User</ng-container>
+        </h1>
       </div>
-
-      <table class="ui definition very basic table">
-        <tbody>
-        <tr>
-          <td class="text-right" translate>Username</td>
-          <td>{{model.username}}</td>
-        </tr>
-        <tr>
-          <td class="text-right" translate>First name</td>
-          <td>{{model.firstName}}</td>
-        </tr>
-        <tr>
-          <td class="text-right" translate>Last name</td>
-          <td>{{model.lastName}}</td>
-        </tr>
-        <tr>
-          <td class="text-right" translate>Email</td>
-          <td>{{model.email}}</td>
-        </tr>
-        <tr>
-          <td class="text-right" translate>Enabled</td>
-          <td>{{model.enabled ? 'Yes' : 'No'}}</td>
-        </tr>
-        </tbody>
-      </table>
-
+      <ng-container *ngIf="editMode">
+        <button mat-fab color="warn" [matMenuTriggerFor]="deleteConfirm" [attr.aria-label]="'Delete User' | translate">
+          <mat-icon class="white text">delete</mat-icon>
+        </button>
+      </ng-container>
     </div>
+  </header>
+  <div class="view body pad">
+    <mat-card class="full height ensure pad none" max="comfort">
+      <mat-tab-group [dynamicHeight]="true" [(selectedIndex)]="selectedTabIndex">
+        <mat-tab i18n-label label="Basic Information">
 
-    <!-- User edit form -->
-    <div class="tab-content pad x"  *ngIf="!model.managedExternally">
+          <!-- Read only user view -->
+          <div class="tab-content pad x" *ngIf="model.managedExternally">
 
-      <div class="mat-form-fields">
-
-        <div class="two">
-          <div *ngIf="editMode">
-            <div><strong translate>Username</strong></div> <span>{{model.username}}</span>
-          </div>
-          <mat-form-field *ngIf="!editMode">
-            <input matInput i18n-placeholder placeholder="Username"
-                   [(ngModel)]="model.username"
-                   [formControl]="userNameFormControl">
-            <mat-error translate *ngIf="userNameFormControl.hasError('required')">
-              Required field
-            </mat-error>
-          </mat-form-field>
-          <div class="avatar-display">
-            <div class="selected-avatar">
-              <div class="ui tiny image">
-                <img *ngIf="model.avatarUrl" [src]="model.avatarUrl" alt="">
+            <div class="ui icon message">
+              <i class="info icon"></i>
+              <div class="content">
+                <h3 class="header" translate>Externally Managed</h3>
+                <p translate>This user is managed externally and cannot be edited from Studio.</p>
               </div>
             </div>
-            <div class="available-avatars">
-              <div class="ui mini image" [class.active]="avatar === model.avatarUrl" *ngFor="let avatar of avatars" (click)="model.avatarUrl = avatar">
-                <img *ngIf="avatar" [src]="avatar" alt="">
-              </div>
-            </div>
+
+            <table class="ui definition very basic table">
+              <tbody>
+              <tr>
+                <td class="text-right" translate>Username</td>
+                <td>{{model.username}}</td>
+              </tr>
+              <tr>
+                <td class="text-right" translate>First name</td>
+                <td>{{model.firstName}}</td>
+              </tr>
+              <tr>
+                <td class="text-right" translate>Last name</td>
+                <td>{{model.lastName}}</td>
+              </tr>
+              <tr>
+                <td class="text-right" translate>Email</td>
+                <td>{{model.email}}</td>
+              </tr>
+              <tr>
+                <td class="text-right" translate>Enabled</td>
+                <td>{{model.enabled ? 'Yes' : 'No'}}</td>
+              </tr>
+              </tbody>
+            </table>
+
           </div>
-        </div>
 
-        <div class="two">
-          <mat-form-field>
-            <input matInput i18n-placeholder placeholder="First Name"
-                   [(ngModel)]="model.firstName"
-                   [formControl]="firstNameFormControl">
-            <mat-error translate *ngIf="firstNameFormControl.hasError('required')">
-              Required field
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput i18n-placeholder placeholder="Last Name"
-                   [(ngModel)]="model.lastName"
-                   [formControl]="lastNameFormControl">
-            <mat-error translate *ngIf="lastNameFormControl.hasError('required')">
-              Required field
-            </mat-error>
-          </mat-form-field>
-        </div>
+          <!-- User edit form -->
+          <div class="tab-content pad x"  *ngIf="!model.managedExternally">
 
-        <mat-form-field>
-          <input matInput i18n-placeholder placeholder="Email"
-                 [(ngModel)]="model.email"
-                 [formControl]="emailFormControl">
-          <mat-error translate *ngIf="emailFormControl.hasError('pattern')">
-            Please enter a valid email address
-          </mat-error>
-          <mat-error translate *ngIf="emailFormControl.hasError('required')">
-            Required field
-          </mat-error>
-        </mat-form-field>
+            <div class="mat-form-fields">
 
-        <div *ngIf="!editMode" class="">
-          <div>
-            <std-password-field [model]="model" [formControlRef]="passwordFormControl" [autoGenerate]="true"></std-password-field>
-            <span class="ui plain small right floated message">
+              <div class="two">
+                <div *ngIf="editMode">
+                  <div><strong translate>Username</strong></div> <span>{{model.username}}</span>
+                </div>
+                <mat-form-field *ngIf="!editMode">
+                  <input matInput i18n-placeholder placeholder="Username"
+                         [(ngModel)]="model.username"
+                         [formControl]="userNameFormControl">
+                  <mat-error translate *ngIf="userNameFormControl.hasError('required')">
+                    Required field
+                  </mat-error>
+                </mat-form-field>
+                <div class="avatar-display">
+                  <div class="selected-avatar">
+                    <div class="ui tiny image">
+                      <img *ngIf="model.avatarUrl" [src]="model.avatarUrl" alt="">
+                    </div>
+                  </div>
+                  <div class="available-avatars">
+                    <div class="ui mini image" [class.active]="avatar === model.avatarUrl" *ngFor="let avatar of avatars" (click)="model.avatarUrl = avatar">
+                      <img *ngIf="avatar" [src]="avatar" alt="">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="two">
+                <mat-form-field>
+                  <input matInput i18n-placeholder placeholder="First Name"
+                         [(ngModel)]="model.firstName"
+                         [formControl]="firstNameFormControl">
+                  <mat-error translate *ngIf="firstNameFormControl.hasError('required')">
+                    Required field
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                  <input matInput i18n-placeholder placeholder="Last Name"
+                         [(ngModel)]="model.lastName"
+                         [formControl]="lastNameFormControl">
+                  <mat-error translate *ngIf="lastNameFormControl.hasError('required')">
+                    Required field
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <mat-form-field>
+                <input matInput i18n-placeholder placeholder="Email"
+                       [(ngModel)]="model.email"
+                       [formControl]="emailFormControl">
+                <mat-error translate *ngIf="emailFormControl.hasError('pattern')">
+                  Please enter a valid email address
+                </mat-error>
+                <mat-error translate *ngIf="emailFormControl.hasError('required')">
+                  Required field
+                </mat-error>
+              </mat-form-field>
+
+              <div *ngIf="!editMode" class="">
+                <div>
+                  <std-password-field [model]="model" [formControlRef]="passwordFormControl" [autoGenerate]="true"></std-password-field>
+                  <span class="ui plain small right floated message">
                 A password was auto-generated for you <i class="icon smile"></i>
               </span>
-          </div>
-          <div>
+                </div>
+                <div>
+
+                </div>
+              </div>
+
+              <div *ngIf="editMode" class="two">
+                <div><mat-checkbox translate [(ngModel)]="model.enabled" (change)="enabledChanged($event.checked)">Enabled</mat-checkbox></div>
+                <div></div>
+              </div>
+
+            </div>
 
           </div>
-        </div>
 
-        <div *ngIf="editMode" class="two">
-          <div><mat-checkbox translate [(ngModel)]="model.enabled" (change)="enabledChanged($event.checked)">Enabled</mat-checkbox></div>
-          <div></div>
-        </div>
+        </mat-tab>
+        <mat-tab i18n-label label="Password Management" [disabled]="!editMode" *ngIf="!model.managedExternally">
+          <div class="tab-content pad x" *ngIf="editMode" max="readability">
 
-      </div>
+            <div class="mat-form-fields">
+              <std-password-field [model]="model" [formControlRef]="resetPasswordFormControl"></std-password-field>
+            </div>
 
-    </div>
+            <div class="pad y">
+              <mat-checkbox translate [(ngModel)]="notifyPasswordReset">Send email notification</mat-checkbox>
+            </div>
 
-  </mat-tab>
-  <mat-tab i18n-label label="Password Management" [disabled]="!editMode" *ngIf="!model.managedExternally">
-    <div class="tab-content pad x" *ngIf="editMode">
+          </div>
+        </mat-tab>
+        <mat-tab i18n-label label="Projects & Groups" [disabled]="!editMode">
+          <div class="tab-content pad x" *ngIf="editMode">
 
-      <div class="mat-form-fields">
-        <std-password-field [model]="model" [formControlRef]="resetPasswordFormControl"></std-password-field>
-      </div>
+            <std-user-group-manager
+              *ngIf="selectedTabIndex === 2"
+              (change)="userGroupsChanged($event)"
+              [changeRollBack]="groupChangeRollback"
+              [user]="model"></std-user-group-manager>
 
-      <div class="pad y">
-        <mat-checkbox translate [(ngModel)]="notifyPasswordReset">Send email notification</mat-checkbox>
-      </div>
-
-    </div>
-  </mat-tab>
-  <mat-tab i18n-label label="Projects & Groups" [disabled]="!editMode">
-    <div class="tab-content pad x" *ngIf="editMode">
-
-      <std-user-group-manager
-        *ngIf="selectedTabIndex === 2"
-        (change)="userGroupsChanged($event)"
-        [changeRollBack]="groupChangeRollback"
-        [user]="model"></std-user-group-manager>
-
-    </div>
-  </mat-tab>
-</mat-tab-group>
-
-<div fxLayout="row" fxLayoutAlign="space-between center">
-  <div>
-    <ng-container *ngIf="!model.managedExternally">
-      <button mat-raised-button
-              color="warn"
-              *ngIf="selectedTabIndex === 1"
-              (click)="resetPassword()"
-              [disabled]="!resetPasswordFormControl.valid">
-        <span class="white text">Reset Password</span>
-      </button>
-      <button mat-raised-button
-              class="blue background"
-              (click)="update()"
-              [disabled]="!updateBasicInfoFormGroup.valid"
-              *ngIf="editMode && !model.managedExternally && (selectedTabIndex === 0)">
-        <span translate class="white text">Update</span>
-      </button>
-    </ng-container>
-    <button mat-raised-button class="green background"
-            (click)="create()"
-            [disabled]="!updateBasicInfoFormGroup.valid || !passwordFormControl.valid"
-            *ngIf="!editMode">
-      <span translate class="white text">Create</span>
-    </button>
-    <button mat-button (click)="done()" tabindex="2">Done</button>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card>
   </div>
-  <ng-container *ngIf="editMode">
-    <button mat-fab color="warn" [matMenuTriggerFor]="deleteConfirm" [attr.aria-label]="'Delete User' | translate">
-      <mat-icon class="white text">delete</mat-icon>
-    </button>
-  </ng-container>
+  <footer class="view footer pad">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div>
+        <ng-container *ngIf="!model.managedExternally">
+          <button mat-raised-button
+                  color="warn"
+                  *ngIf="selectedTabIndex === 1"
+                  (click)="resetPassword()"
+                  [disabled]="!resetPasswordFormControl.valid">
+            <span class="white text">Reset Password</span>
+          </button>
+          <button mat-raised-button
+                  class="blue background"
+                  (click)="update()"
+                  [disabled]="!updateBasicInfoFormGroup.valid"
+                  *ngIf="editMode && !model.managedExternally && (selectedTabIndex === 0)">
+            <span translate class="white text">Update</span>
+          </button>
+        </ng-container>
+        <button mat-raised-button class="green background"
+                (click)="create()"
+                [disabled]="!updateBasicInfoFormGroup.valid || !passwordFormControl.valid"
+                *ngIf="!editMode">
+          <span translate class="white text">Create</span>
+        </button>
+      </div>
+    </div>
+    <mat-menu #deleteConfirm="matMenu">
+      <button mat-menu-item>Cancel</button>
+      <button mat-menu-item [matMenuTriggerFor]="deleteOptions"><i class="warning icon"></i> Confirm Deletion?</button>
+    </mat-menu>
+    <mat-menu #deleteOptions="matMenu">
+      <button mat-menu-item (click)="eliminate()">Yes, permanently delete user.</button>
+    </mat-menu>
+  </footer>
 </div>
-<mat-menu #deleteConfirm="matMenu">
-  <button mat-menu-item>Cancel</button>
-  <button mat-menu-item [matMenuTriggerFor]="deleteOptions"><i class="warning icon"></i> Confirm Deletion?</button>
-</mat-menu>
-<mat-menu #deleteOptions="matMenu">
-  <button mat-menu-item (click)="eliminate()">Yes, permanently delete user.</button>
-</mat-menu>

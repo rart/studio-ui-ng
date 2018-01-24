@@ -225,6 +225,19 @@ $displays: (inline, block, flex, inline-block, inline-flex);
     }
   }
 
+  &.none {
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    &.ensure {
+      padding-top: 0 !important;
+      padding-right: 0 !important;
+      padding-bottom: 0 !important;
+      padding-left: 0 !important;
+    }
+  }
+
 }
 
 /**
@@ -369,6 +382,14 @@ $displays: (inline, block, flex, inline-block, inline-flex);
   }
 }
 
+@each $key, $max in $content-max-widths {
+  [max="#{$key}"] {
+    margin: auto;
+    max-width: $max;
+  }
+}
+
+// TODO change for [max]
 .set-max {
   margin: 0 auto;
   &.readability {
