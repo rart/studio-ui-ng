@@ -1,3 +1,5 @@
+@import "mixins";
+
 /* // Semantic UI \\ */
 $import-google-fonts: true !default;
 $font-url: 'https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i' !default;
@@ -13,6 +15,9 @@ $mat-font-family: $font-family;
 
 // App
 
+$studio-logo: #283277;
+$color: #C5C5C5;
+
 $color-red: #FF3B30;
 $color-orange: #FF9500;
 $color-yellow: #FFCC00;
@@ -26,6 +31,8 @@ $color-gray-lighter: #E5E5EA;
 $color-gray-light: #D1D1D6;
 $color-gray-mid: #C7C7CC;
 $color-gray: #8E8E93;
+$grey-main: #F8F8F8;
+$grey-header: #EBEBEB;
 $color-white: #FFFFFF;
 $color-black: #000;
 
@@ -48,6 +55,388 @@ $colors: (
   muted: $color-gray
 );
 
+// http://mcg.mbitson.com/
+// https://stackoverflow.com/questions/28503998/how-to-create-custom-palette-with-custom-color-for-material-design-app/36229022#36229022
+$studio-mat-blue: (
+  50 : #e0efff,
+  100 : #b3d7ff,
+  200 : #80bdff,
+  300 : #4da2ff,
+  400 : #268eff,
+  500 : #007aff,
+  600 : #0072ff,
+  700 : #0067ff,
+  800 : #005dff,
+  900 : #004aff,
+  A100 : #ffffff,
+  A200 : #f2f5ff,
+  A400 : #bfceff,
+  A700 : #a6baff,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #ffffff,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+$studio-mat-purple: (
+  50 : #ebebfa,
+  100 : #cdccf3,
+  200 : #acabeb,
+  300 : #8a89e2,
+  400 : #716fdc,
+  500 : #5856d6,
+  600 : #504fd1,
+  700 : #4745cc,
+  800 : #3d3cc6,
+  900 : #2d2bbc,
+  A100 : #fdfdff,
+  A200 : #cbcaff,
+  A400 : #9897ff,
+  A700 : #7f7eff,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #ffffff,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+$studio-mat-red: (
+  50 : #ffe7e6,
+  100 : #ffc4c1,
+  200 : #ff9d98,
+  300 : #ff766e,
+  400 : #ff584f,
+  500 : #ff3b30,
+  600 : #E62217,
+  700 : #CC0800,
+  800 : #B30000,
+  900 : #990000,
+  A100 : #ffffff,
+  A200 : #fffafa,
+  A400 : #ffc8c7,
+  A700 : #ffafad,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+$studio-mat-orange: (
+  50 : #fff2e0,
+  100 : #ffdfb3,
+  200 : #ffca80,
+  300 : #ffb54d,
+  400 : #ffa526,
+  500 : #ff9500,
+  600 : #ff8d00,
+  700 : #ff8200,
+  800 : #ff7800,
+  900 : #ff6700,
+  A100 : #ffffff,
+  A200 : #fff7f2,
+  A400 : #ffd5bf,
+  A700 : #ffc4a6,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #000000,
+    600 : #000000,
+    700 : #000000,
+    800 : #000000,
+    900 : #000000,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+$studio-mat-yellow: (
+  50 : #fff9e0,
+  100 : #fff0b3,
+  200 : #ffe680,
+  300 : #ffdb4d,
+  400 : #ffd426,
+  500 : #ffcc00,
+  600 : #ffc700,
+  700 : #ffc000,
+  800 : #ffb900,
+  900 : #ffad00,
+  A100 : #ffffff,
+  A200 : #fffaf2,
+  A400 : #ffe8bf,
+  A700 : #ffdfa6,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #000000,
+    600 : #000000,
+    700 : #000000,
+    800 : #000000,
+    900 : #000000,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+$studio-mat-green: (
+  50 : #eafaec,
+  100 : #c9f4d1,
+  200 : #a6ecb2,
+  300 : #82e493,
+  400 : #67df7b,
+  500 : #4cd964,
+  600 : #33C04B,
+  700 : #19A631,
+  800 : #008D18,
+  900 : #00800B,
+  A100 : #fcfffc,
+  A200 : #c9ffce,
+  A400 : #96ffa1,
+  A700 : #7cff8a,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #000000,
+    600 : #000000,
+    700 : #FFFFFF,
+    800 : #FFFFFF,
+    900 : #FFFFFF,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+$studio-mat-teal: (
+  50 : #ebf8fe,
+  100 : #ceeffe,
+  200 : #ade4fd,
+  300 : #8cd9fc,
+  400 : #73d0fb,
+  500 : #5ac8fa,
+  600 : #52c2f9,
+  700 : #48bbf9,
+  800 : #3fb4f8,
+  900 : #2ea7f6,
+  A100 : #ffffff,
+  A200 : #ffffff,
+  A400 : #d1ecff,
+  A700 : #b8e1ff,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #000000,
+    600 : #000000,
+    700 : #000000,
+    800 : #000000,
+    900 : #000000,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+$studio-mat-pink: (
+  50 : #ffe6eb,
+  100 : #ffc0cc,
+  200 : #ff96aa,
+  300 : #ff6c88,
+  400 : #ff4d6f,
+  500 : #ff2d55,
+  600 : #ff284e,
+  700 : #ff2244,
+  800 : #ff1c3b,
+  900 : #ff112a,
+  A100 : #ffffff,
+  A200 : #fff8f9,
+  A400 : #ffc5ca,
+  A700 : #ffacb3,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+$studio-mat-grey: (
+  50 : #f1f1f2,
+  100 : #dddddf,
+  200 : #c7c7c9,
+  300 : #b0b0b3,
+  400 : #9f9fa3,
+  500 : #8e8e93,
+  600 : #86868b,
+  700 : #7b7b80,
+  800 : #717176,
+  900 : #5f5f64,
+  A100: #ffffff,
+  A200: #eeeeee,
+  A400: #bdbdbd,
+  A700: #616161,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #000000,
+    600 : #000000,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #ffffff,
+  )
+);
+$studio-mat-black: (
+  50 : #e0e0e0,
+  100 : #b3b3b3,
+  200 : #808080,
+  300 : #4d4d4d,
+  400 : #262626,
+  500 : #000000,
+  600 : #000000,
+  700 : #000000,
+  800 : #000000,
+  900 : #000000,
+  A100 : #a6a6a6,
+  A200 : #8c8c8c,
+  A400 : #737373,
+  A700 : #666666,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #ffffff,
+    400 : #ffffff,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #ffffff,
+    A700 : #ffffff,
+  )
+);
+$studio-mat-white: (
+  500: white,
+  A100 : #a6a6a6,
+  A200 : #8c8c8c,
+  A400 : #737373,
+  A700 : #666666,
+  contrast: (
+    500: rgba(black, 0.87),
+    400: rgba(black, 0.87),
+    700: rgba(black, 0.87)
+  )
+);
+$studio-mat-main: (
+  50 : #fefefe,
+  100 : #fdfdfd,
+  200 : #fcfcfc,
+  300 : #fafafa,
+  400 : #f9f9f9,
+  500 : #f8f8f8,
+  600 : #f7f7f7,
+  700 : #f6f6f6,
+  800 : #f5f5f5,
+  900 : #f3f3f3,
+  A100 : #ffffff,
+  A200 : #ffffff,
+  A400 : #ffffff,
+  A700 : #ffffff,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #333333,
+    600 : #000000,
+    700 : #000000,
+    800 : #000000,
+    900 : #000000,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+
+$studio-material-palettes: (
+  blue: $studio-mat-blue,
+  purple: $studio-mat-purple,
+  red: $studio-mat-red,
+  orange: $studio-mat-orange,
+  yellow: $studio-mat-yellow,
+  green: $studio-mat-green,
+  teal: $studio-mat-teal,
+  pink: $studio-mat-pink,
+  grey: $studio-mat-grey,
+  main: $studio-mat-main,
+  black: $studio-mat-black,
+  white: $studio-mat-white
+);
+
 $color-blue-darkend: darken($color-blue, 15%);
 $color-green-darkend: darken($color-green, 15%);
 $color-teal-darkend: darken($color-teal, 15%);
@@ -68,11 +457,6 @@ $color-yellow-lightend: lighten($color-yellow, 10%);
 $action-light: $color-teal; // #66b4ff;
 $action-medium: $color-blue; // #2185d0;
 $action-dark: darken($color-blue, 10%); // #00599e;
-
-$studio-logo: #283277;
-$color: #C5C5C5;
-$grey-main: #F8F8F8;
-$grey-header: #EBEBEB;
 
 $spacing-tiny: 5px;
 $spacing-mini: 10px;
@@ -108,5 +492,3 @@ $sidebar-width-sm: 220px !default;
 $sidebar-width-minimised: 55px !default;
 $sidebar-background-color: $grey-main !default;
 $sidebar-border-color: #C8C8C8 !default;
-
-@import "mixins";

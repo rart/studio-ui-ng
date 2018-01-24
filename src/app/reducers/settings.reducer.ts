@@ -2,23 +2,27 @@ import { Reducer } from 'redux';
 import { Settings } from '../classes/app-state.interface';
 import { StoreActionsEnum } from '../enums/actions.enum';
 
-export const settings: Reducer<Settings> = (state = {
+const DEFAULTS: Settings = {
   'meta.click.open.tab.in.background': true,
-  layout: 'full',
+  layout: 'contained',
   containedLayoutMax: 1600,
   nativeScrollbars: false,
   viewAnimation: 'fadeIn',
-  topBarShown: false,
-  topBarTheme: 'mat-white-500-bg',
+  topBarTheme: '',
+  topBarThemeHue: '',
   topBarPosition: 'top',
-  navBarTheme: 'mat-grey-100-bg',
+  topBarShown: false,
+  navBarTheme: 'main',
+  navBarThemeHue: '',
   navBarShown: true,
   navBarPosition: 'left',
   navBarMinimised: false,
   footerShown: false,
   footerTheme: 'mat-black-500-bg',
   footerPosition: 'inline'
-}, action) => {
+};
+
+export const settings: Reducer<Settings> = (state = DEFAULTS, action) => {
   switch (action.type) {
     case StoreActionsEnum.UPDATE_GLOBAL_SETTINGS:
       return {

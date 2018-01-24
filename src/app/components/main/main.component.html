@@ -4,13 +4,12 @@
 
     <!-- TOPBAR: Above -->
     <ng-container *ngIf="settings.topBarShown && settings.topBarPosition === 'top'">
-      <std-topbar class="above" [ngClass]="settings.topBarTheme"></std-topbar>
+      <std-topbar class="above"></std-topbar>
     </ng-container>
     <!-- / TOPBAR: Above -->
 
     <!-- NAVBAR: Top -->
     <std-horizontal-navbar class="top-navbar" fxHide fxShow.gt-md
-                           [ngClass]="settings.navBarTheme"
                            *ngIf="settings.navBarShown && settings.navBarPosition === 'top'">
     </std-horizontal-navbar>
     <!-- / NAVBAR: Top -->
@@ -19,7 +18,6 @@
 
       <!-- NAVBAR: Left -->
       <std-vertical-navbar class="left-navbar"
-                           [ngClass]="settings.navBarTheme"
                            *ngIf="(settings.navBarPosition === 'left' || settings.navBarPosition === 'top')">
       </std-vertical-navbar>
       <!-- / NAVBAR: Left -->
@@ -28,7 +26,7 @@
 
         <!-- TOPBAR: Below -->
         <ng-container *ngIf="settings.topBarShown && settings.topBarPosition === 'inline'">
-          <std-topbar class="below" [ngClass]="settings.topBarTheme"></std-topbar>
+          <std-topbar class="below"></std-topbar>
         </ng-container>
         <!-- / TOPBAR: Below -->
 
@@ -46,7 +44,7 @@
 
         <!-- FOOTER: Inline -->
         <ng-container *ngIf="settings.footerShown && settings.footerPosition === 'inline'">
-          <std-footer class="below" [ngClass]="settings.footerTheme"></std-footer>
+          <std-footer class="below"></std-footer>
         </ng-container>
         <!-- / FOOTER: Inline -->
 
@@ -54,7 +52,6 @@
 
       <!-- NAVBAR: Right -->
       <std-vertical-navbar class="right-navbar"
-                           [ngClass]="settings.navBarTheme"
                            *ngIf="settings.navBarPosition === 'right'">
       </std-vertical-navbar>
       <!-- / NAVBAR: Right -->
@@ -63,7 +60,7 @@
 
     <!-- FOOTER: Below -->
     <ng-container *ngIf="settings.footerShown && settings.footerPosition === 'below'">
-      <std-footer class="above" [ngClass]="settings.footerTheme"></std-footer>
+      <std-footer class="above"></std-footer>
     </ng-container>
     <!-- FOOTER: Below -->
 

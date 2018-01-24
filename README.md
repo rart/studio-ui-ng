@@ -63,7 +63,5 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
 ## TODOs
-- Make a main repo and move the UI app into a sub package. Same for other sub packages (e.g. studio/core, studio/models, studio/services, etc)
-- PoC a plugin and plugin system
-- Styles & theming R&D
+- Make a main repo and move the UI app into a sub package. Same for other sub packages (e.g. studio/core, studio/models, studio/services, etc) [WIP]
 - API/HTTP error handling

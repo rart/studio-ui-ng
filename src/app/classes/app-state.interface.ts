@@ -46,9 +46,11 @@ export interface Settings {
   nativeScrollbars: boolean;
   viewAnimation: 'fadeIn' | 'slideUp' | 'slideDown' | 'slideRight' | 'slideLeft' | 'none';
   topBarTheme: string;
+  topBarThemeHue: string;
   topBarShown: boolean;
   topBarPosition: 'top' | 'inline' | 'none';
   navBarTheme: string;
+  navBarThemeHue: string;
   navBarShown: boolean;
   navBarPosition: 'top' | 'right' | 'left' | 'none';
   navBarMinimised: boolean;

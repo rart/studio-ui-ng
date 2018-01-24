@@ -1,0 +1,122 @@
+@import 'settings';
+@import '~@angular/material/theming';
+
+.secondary-text,
+.mat-icon,
+.icon {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.hint-text,
+.disabled-text {
+  color: rgba(0, 0, 0, 0.38);
+}
+
+.divider {
+  color: rgba(0, 0, 0, 0.12);
+}
+
+// Material colors map
+$material-colors: (
+  mat-red: $mat-red,
+  mat-pink: $mat-pink,
+  mat-purple: $mat-purple,
+  mat-deep-purple: $mat-deep-purple,
+  mat-indigo: $mat-indigo,
+  mat-blue: $mat-blue,
+  mat-light-blue: $mat-light-blue,
+  mat-cyan: $mat-cyan,
+  mat-teal: $mat-teal,
+  mat-green: $mat-green,
+  mat-light-green: $mat-light-green,
+  mat-lime: $mat-lime,
+  mat-yellow: $mat-yellow,
+  mat-amber: $mat-amber,
+  mat-orange: $mat-orange,
+  mat-deep-orange: $mat-deep-orange,
+  mat-brown: $mat-brown,
+  mat-grey: $mat-grey,
+  mat-blue-grey: $mat-blue-grey
+);
+
+$palette: map-merge($material-colors, $studio-material-palettes);
+
+// Material palette hues
+$hues: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, A100, A200, A400, A700;
+
+// 500 - dominant
+// 700 - status
+// 300 - secondary info
+// Accents, highlight
+
+@mixin createTheme($name, $map, $hue) {
+
+  $color: map-get($map, $hue);
+  $contrast: map-get(map-get($map, 'contrast'), $hue);
+
+  color: $contrast;
+  background: $color;
+
+  a,
+  mat-icon,
+  .themify.text,
+  .mat-expansion-panel,
+  .mat-expansion-panel-header-title,
+  .fa {
+    color: $contrast;
+  }
+  .themify {
+    &.background {
+      background-color: $color;
+    }
+  }
+  .active {
+    color: $contrast !important;
+    @if (
+      (rgba(black, 1) == rgba($contrast, 1)) or
+      (darken($contrast, 50%) == '#000000')) {
+      background-color: rgba(255, 255, 255, .3);
+    } @else {
+      background-color: rgba(0, 0, 0, .1);
+    }
+  }
+  .text-accent-400 {
+    color: map-get($map, A400);
+  }
+  .text-accent-700 {
+    color: map-get($map, A700);
+  }
+  .bg-accent-400 {
+    background-color: map-get($map, A400);
+  }
+  .bg-accent-400 {
+    background-color: map-get($map, A700);
+  }
+  .interactive {
+    &:hover {
+
+    }
+    &:focus {
+
+    }
+    &:active {
+
+    }
+  }
+
+}
+
+// Generate the color classes...
+@each $colorName, $colorMap in $palette {
+  [theme="#{$colorName}"] {
+    @include createTheme($colorName, $colorMap, 500);
+    @each $hue in $hues {
+      $contrast: map-get(map-get($colorMap, 'contrast'), $hue);
+      @if ($contrast != null) {
+        &[hue="#{$hue}"] {
+          @include createTheme($colorName, $colorMap, $hue);
+        }
+      }
+    }
+  }
+}

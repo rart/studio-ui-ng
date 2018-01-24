@@ -25,6 +25,14 @@ export class VerticalNavBarComponent extends ComponentBase implements OnInit, Af
   @HostBinding('class.minimised') minimised = false;
   @HostBinding('class.reveal') reveal = false;
 
+  @HostBinding('attr.theme') get theme() {
+    return this.settings && this.settings.navBarTheme ? this.settings.navBarTheme : null;
+  }
+
+  @HostBinding('attr.hue') get hue() {
+    return this.settings && this.settings.navBarThemeHue ? this.settings.navBarThemeHue : null;
+  }
+
   @select('settings')
   settings$: Observable<Settings>;
 

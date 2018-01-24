@@ -25,7 +25,7 @@
        [hidden]="(editSessions$ | async).length === 0"
        routerLink="/edit"
        routerLinkActive="active">
-      <i class="fa fa-pencil ensure pink text"></i>
+      <i class="fa fa-pencil"></i>
       <span class="label">Edit ({{(editSessions$ | async).length}})</span>
     </a>
   </div>
@@ -98,7 +98,7 @@
     </div>
 
     <div class="sidebar-actions">
-      <button class="ui button fluid" *ngFor="let item of projectCommands" (click)="runCommand(item.command)">
+      <button mat-raised-button class="stretch x" *ngFor="let item of projectCommands" (click)="runCommand(item.command)">
         {{'SITE_NAV.' + item.label | translate}}
       </button>
     </div>

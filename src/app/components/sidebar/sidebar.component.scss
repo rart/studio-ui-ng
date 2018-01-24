@@ -117,7 +117,6 @@
     display: flex;
     height: 3.5rem;
     overflow: hidden;
-    background: $color-gray-lighter;
   }
   &.title {
     margin: 0;
@@ -163,42 +162,31 @@ $category-heading-color: #7f7f7f;
 $highlight-color: #dcdcdc;
 
 :host {
-  color: $font-color;
-  background-color: $sidebar-background-color;
-  background: linear-gradient(to bottom, #fcfffe 0%, $sidebar-background-color 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfffe', endColorstr='#f8f8f8',GradientType=0 );
   border-color: $sidebar-border-color;
 }
 
-//.mat-expanded {
-//  .sidebar-heading {
-//    @include open-sans-bold;
-//  }
-//}
-
 .sidebar-heading {
   &, &:hover, &:focus {
-    background-color: $grey-header !important;
+    background-color: rgba(0, 0, 0, .04) !important;
   }
 }
 
 .sidebar-items {
   i {
-    color: $icon-color;
+
   }
   .sidebar-sub-heading {
-    color: $category-heading-color;
+
   }
   a,
   .item,
   .sidebar-item-heading {
-    color: $font-color;
+
   }
 }
 
 .sidebar-item {
   &.active {
-    background-color: $highlight-color;
     &.pointer {
       &::after {
         width: 0;
@@ -215,12 +203,3 @@ $highlight-color: #dcdcdc;
   }
 }
 
-.ui.message.user-account-control {
-  box-shadow: none;
-  border-radius: 0;
-  background-color: #EBEBEB;
-  border-color: $sidebar-border-color;
-  .content {
-    overflow: hidden;
-  }
-}

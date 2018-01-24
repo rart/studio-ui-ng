@@ -21,27 +21,20 @@
   }
   &.reveal {
     overflow: visible;
-    header {
-      z-index: initial;
-    }
     .content {
       @include mat-elevation(5);
     }
   }
-  background-color: $sidebar-background-color;
+  //background-color: $sidebar-background-color;
   overflow-y: auto;
   overflow-x: hidden;
-  z-index: 4;
-  box-shadow:
-    0 5px 5px -3px rgba(0, 0, 0, .2),
-    0 8px 10px 1px rgba(0, 0, 0, .14),
-    0 3px 14px 2px rgba(0, 0, 0, .12);
+  z-index: 1;
+  @include mat-elevation(3);
   transition:
-    all .3s cubic-bezier(.55, 0, .55, .2),
-    width .1s linear,
-    min-width .1s linear,
-    max-width .1s linear;
-  transform: translateX(0);
+    all 250ms cubic-bezier(.55, 0, .55, .2),
+    width 250ms linear,
+    min-width 250ms linear,
+    max-width 250ms linear;
   &.minimised {
     .logo.wrapper {
       display: none;
@@ -55,11 +48,6 @@
 
     }
   }
-}
-
-header {
-  z-index: 1;
-  @include mat-elevation(1);
 }
 
 header, footer {
@@ -90,7 +78,7 @@ header, footer {
 
 .content {
   flex: 1;
-  background-color: $grey-main;
+  //background-color: $grey-main;
 }
 
 footer {
