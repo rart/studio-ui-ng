@@ -6,23 +6,76 @@
     max="comfort">
   </std-view-title-bar>
   <div class="content transparent set-max comfort responsive-box">
-    <div class="ui card">
-      <div class="image">
-        <img src="https://semantic-ui.com/images/avatar2/large/kristy.png">
-      </div>
-      <div class="content">
-        <a class="header">Kristy</a>
-        <div class="meta">
-          <span class="date">Joined in 2013</span>
+    <div class="pad">
+      <div class="ui stackable doubling grid">
+        <div class="four wide column">
+          <div class="ui card">
+            <div class="image">
+              <img src="https://semantic-ui.com/images/avatar2/large/kristy.png">
+            </div>
+            <div class="content">
+              <a class="header">Kristy</a>
+              <div class="meta">
+                <span class="date">Joined in 2013</span>
+              </div>
+              <div class="description">
+                Kristy is an art director living in New York.
+              </div>
+            </div>
+            <div class="extra content">
+              <button class="ui mini purple button" (click)="logout()">
+                Log Out
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="description">
-          Kristy is an art director living in New York.
+        <div class="twelve wide column">
+          <mat-card class="pad" style="margin-bottom: 20px">
+            <mat-card-content>
+
+              <mat-form-field>
+                <input matInput placeholder="Username"
+                       [(ngModel)]="user.username">
+                <!--<mat-error translate *ngIf="userNameFormControl.hasError('required')">
+                  Required field
+                </mat-error>-->
+              </mat-form-field>
+
+              <std-password-field [model]="user"></std-password-field>
+
+            </mat-card-content>
+          </mat-card>
+          <mat-card class="pad">
+            <mat-card-content>
+
+              <h2>Make Studio Your Own</h2>
+              <p>Customise studio's appearance & behaviour here.</p>
+
+              <h3>Sidebar Theme</h3>
+              <mat-radio-group
+                [(ngModel)]="settings.navBarTheme"
+                (change)="settingsChanged()">
+                <mat-radio-button
+                  class="display block"
+                  [value]="'main'">Default</mat-radio-button>
+                <mat-radio-button
+                  class="ensure display block"
+                  *ngFor="let color of colors"
+                  [value]="color">{{color}}</mat-radio-button>
+              </mat-radio-group>
+
+              <h3>Navigation / Meta + Click</h3>
+              <p>When you use <code>cmd/ctrl + click</code> to open a page</p>
+              <mat-radio-group
+                (change)="settingsChanged()"
+                [(ngModel)]="settings.metaClickOpenTabInBackground">
+                <mat-radio-button class="display block" [value]="true">Open New Tab In Background</mat-radio-button>
+                <mat-radio-button class="display block" [value]="false">Open New Tab As Active</mat-radio-button>
+              </mat-radio-group>
+
+            </mat-card-content>
+          </mat-card>
         </div>
-      </div>
-      <div class="extra content">
-        <button class="ui mini purple button" (click)="logout()">
-          Log Out
-        </button>
       </div>
     </div>
   </div>

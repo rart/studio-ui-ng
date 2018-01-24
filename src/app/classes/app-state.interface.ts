@@ -57,7 +57,7 @@ export interface Settings {
   footerShown: boolean;
   footerPosition: 'inline' | 'below' | 'none';
   footerTheme: string;
-  'meta.click.open.tab.in.background': boolean;
+  metaClickOpenTabInBackground: boolean;
 }
 
 export interface ProjectSettings {

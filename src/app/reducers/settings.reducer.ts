@@ -3,7 +3,7 @@ import { Settings } from '../classes/app-state.interface';
 import { StoreActionsEnum } from '../enums/actions.enum';
 
 const DEFAULTS: Settings = {
-  'meta.click.open.tab.in.background': true,
+  metaClickOpenTabInBackground: true,
   layout: 'full',
   containedLayoutMax: 1600,
   nativeScrollbars: false,
@@ -24,7 +24,12 @@ const DEFAULTS: Settings = {
 
 export const settings: Reducer<Settings> = (state = DEFAULTS, action) => {
   switch (action.type) {
-    case StoreActionsEnum.UPDATE_GLOBAL_SETTINGS:
+    case StoreActionsEnum.UPDATE_SETTINGS:
+      return {
+        ...state,
+        ...action.payload
+      };
+    case StoreActionsEnum.UPDATE_SETTING:
       return {
         ...state,
         [action.payload.key]: action.payload.value
