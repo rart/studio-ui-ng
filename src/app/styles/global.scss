@@ -311,13 +311,18 @@ $displays: (inline, block, flex, inline-block, inline-flex);
 }
 
 .stretch {
-  &.x {
-    width: 100%;
+  &.width {
+    &.min {
+      min-width: 100%;
+    }
   }
-  &.y {
-    height: 100%;
+  &.height {
+    &.min {
+      min-height: 100%;
+    }
   }
 }
+
 
 .app-box {
   @include create-box;

@@ -98,7 +98,7 @@
     </div>
 
     <div class="sidebar-actions">
-      <button mat-raised-button class="stretch x" *ngFor="let item of projectCommands" (click)="runCommand(item.command)">
+      <button mat-raised-button class="full width" *ngFor="let item of projectCommands" (click)="runCommand(item.command)">
         {{'SITE_NAV.' + item.label | translate}}
       </button>
     </div>
