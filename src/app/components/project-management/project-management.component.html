@@ -1,71 +1,78 @@
-<div class="view-container">
+<div class="sticky header view layout">
   <std-view-title-bar
-    i18n-title
+    class="pad"
     title="Projects"
-    icon="fa fa-laptop">
-    <button mat-icon-button (click)="load()"
-            [attr.aria-label]="'Refresh Projects' | translate">
-      <mat-icon class="" aria-hidden="true">refresh</mat-icon>
-    </button>
-    <button class="green background"
-            mat-mini-fab [routerLink]="['/projects/create']"
-            [attr.aria-label]="'Create Project' | translate">
-      <mat-icon class="white text" aria-hidden="true">add</mat-icon>
-    </button>
+    icon="laptop">
+    <div>
+      <button mat-icon-button (click)="load()"
+              [attr.aria-label]="'Refresh Projects' | translate">
+        <mat-icon class="" aria-hidden="true">refresh</mat-icon>
+      </button>
+      <button class="green background"
+              mat-fab [routerLink]="['/projects/create']"
+              [attr.aria-label]="'Create Project' | translate">
+        <mat-icon class="white text" aria-hidden="true">add</mat-icon>
+      </button>
+    </div>
   </std-view-title-bar>
   <ng-container [ngSwitch]="loading$ | async">
 
-    <div class="relative position flex grow full height" *ngSwitchCase="true">
-      <std-spinner class="absolute position opaque cover">
-        Loading Projects&hellip;
-      </std-spinner>
-    </div>
-
-    <div class="transparent content pad" *ngSwitchCase="false">
-
-      <div class="ui {{columns}} stackable grid">
-        <div class="column" *ngFor="let project of projects">
-          <mat-card>
-            <mat-card-header>
-              <mat-card-title>{{project.name}}</mat-card-title>
-              <mat-card-subtitle>Subtitle</mat-card-subtitle>
-            </mat-card-header>
-            <img mat-card-image src="http://placehold.it/800x500?text={{project.name}}" />
-            <mat-card-content>
-              {{project.description || '(no description)'}}
-            </mat-card-content>
-            <mat-card-actions fxLayoutAlign="space-between center">
-              <button mat-icon-button
-                      matTooltip="{{'Dashboard' | translate}}"
-                      [attr.aria-label]="'Dashboard' | translate"
-                      [routerLink]="['/project', project.code, 'dashboard']">
-                <i class="fa fa-tachometer"></i>
-              </button>
-              <button mat-icon-button
-                      matTooltip="{{'Browse' | translate}}"
-                      [attr.aria-label]="'Browse' | translate"
-                      (click)="browse(project.code)">
-                <i class="fa fa-binoculars"></i>
-              </button>
-              <button mat-icon-button
-                      matTooltip="{{'Update' | translate}}"
-                      [attr.aria-label]="'Update' | translate"
-                      [routerLink]="['/projects', project.code]">
-                <i class="fa fa-pencil"></i>
-              </button>
-            </mat-card-actions>
-          </mat-card>
-        </div>
+    <section class="view body" *ngSwitchCase="true">
+      <div class="relative position flex grow full height">
+        <std-spinner class="absolute position opaque cover">
+          Loading Projects&hellip;
+        </std-spinner>
       </div>
+    </section>
 
-      <mat-paginator (page)="pageChanged($event)"
-                     [length]="totalNumOfProjects"
-                     [pageIndex]="(pager$ | async).pageIndex"
-                     [pageSize]="(pager$ | async).pageSize"
-                     [pageSizeOptions]="pageSizeOptions">
-      </mat-paginator>
-
-    </div>
+    <ng-container *ngSwitchCase="false">
+      <section class="view body">
+        <div class="pad">
+          <div class="ui {{columns}} stackable grid">
+            <div class="column" *ngFor="let project of projects">
+              <mat-card>
+                <mat-card-header>
+                  <mat-card-title>{{project.name}}</mat-card-title>
+                  <mat-card-subtitle>Subtitle</mat-card-subtitle>
+                </mat-card-header>
+                <img mat-card-image src="http://placehold.it/800x500?text={{project.name}}" />
+                <mat-card-content>
+                  {{project.description || '(no description)'}}
+                </mat-card-content>
+                <mat-card-actions fxLayoutAlign="space-between center">
+                  <button mat-icon-button
+                          matTooltip="{{'Dashboard' | translate}}"
+                          [attr.aria-label]="'Dashboard' | translate"
+                          [routerLink]="['/project', project.code, 'dashboard']">
+                    <i class="fa fa-tachometer"></i>
+                  </button>
+                  <button mat-icon-button
+                          matTooltip="{{'Browse' | translate}}"
+                          [attr.aria-label]="'Browse' | translate"
+                          (click)="browse(project.code)">
+                    <i class="fa fa-binoculars"></i>
+                  </button>
+                  <button mat-icon-button
+                          matTooltip="{{'Update' | translate}}"
+                          [attr.aria-label]="'Update' | translate"
+                          [routerLink]="['/projects', project.code]">
+                    <i class="fa fa-pencil"></i>
+                  </button>
+                </mat-card-actions>
+              </mat-card>
+            </div>
+          </div>
+        </div>
+      </section>
+      <footer class="view footer">
+        <mat-paginator (page)="pageChanged($event)"
+                       [length]="totalNumOfProjects"
+                       [pageIndex]="(pager$ | async).pageIndex"
+                       [pageSize]="(pager$ | async).pageSize"
+                       [pageSizeOptions]="pageSizeOptions">
+        </mat-paginator>
+      </footer>
+    </ng-container>
 
   </ng-container>
 </div>

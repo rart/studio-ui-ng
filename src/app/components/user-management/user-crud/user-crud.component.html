@@ -1,24 +1,11 @@
 <div class="sticky header view layout">
-  <header class="pad view header" [attr.theme]="(settings$|async).navBarTheme" [attr.hue]="(settings$|async).topBarThemeHue">
-    <div fxLayoutAlign="space-between center">
-      <div fxLayoutAlign="left center">
-        <button color="default" mat-fab
-                [routerLink]="['/users']"
-                [attr.aria-label]="'Back' | translate">
-          <mat-icon class="" aria-hidden="true">chevron_left</mat-icon>
-        </button>
-        <h1 class="pad left">
-          <ng-container *ngIf="editMode">{{model.firstName}} {{model.lastName}}</ng-container>
-          <ng-container *ngIf="!editMode" translate>Create User</ng-container>
-        </h1>
-      </div>
-      <ng-container *ngIf="editMode">
-        <button mat-fab color="warn" [matMenuTriggerFor]="deleteConfirm" [attr.aria-label]="'Delete User' | translate">
-          <mat-icon class="white text">delete</mat-icon>
-        </button>
-      </ng-container>
-    </div>
-  </header>
+  <std-view-title-bar class="pad" back="/users" [title]="editMode ? (model.name) : 'Create User'">
+    <ng-container *ngIf="editMode">
+      <button mat-fab color="warn" [matMenuTriggerFor]="deleteConfirm" [attr.aria-label]="'Delete User' | translate">
+        <mat-icon class="white text">delete</mat-icon>
+      </button>
+    </ng-container>
+  </std-view-title-bar>
   <div class="view body pad">
     <mat-card class="stretch min height ensure pad none" max="comfort">
       <mat-tab-group [dynamicHeight]="true" [(selectedIndex)]="selectedTabIndex">

@@ -11,6 +11,7 @@
 
   > .view.header {
     z-index: 1;
+    width: 100%;
     @include mat-elevation(2);
   }
   > .view.body {

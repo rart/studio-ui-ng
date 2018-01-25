@@ -62,6 +62,7 @@ export class UserProfileComponent extends ComponentBase implements OnInit {
   settingsChanged() {
     return SettingsActions.updateMany({
       ...this.settings,
+      topBarTheme: this.settings.navBarTheme,
       navBarThemeHue: (this.settings.navBarTheme === 'main') ? 500 : 700
     });
   }
