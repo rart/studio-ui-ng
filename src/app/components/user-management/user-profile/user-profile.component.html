@@ -70,6 +70,7 @@
                 [(ngModel)]="settings.metaClickOpenTabInBackground">
                 <mat-radio-button class="display block" [value]="true" translate>Open new tab in background</mat-radio-button>
                 <mat-radio-button class="display block" [value]="false" translate>Open new tab as active</mat-radio-button>
+                <mat-radio-button class="display block" [disabled]="true" translate>Open new tab in background without leaving current view</mat-radio-button>
               </mat-radio-group>
 
               <h3>Sidebar position</h3>

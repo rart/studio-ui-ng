@@ -69,11 +69,12 @@
 }
 
 header, footer {
-  padding: 0 10px;
+  $height: 65px;
   display: flex;
+  padding: 0 10px;
+  height: $height;
+  min-height: $height;
   align-items: center;
-  height: 64px;
-  min-height: 64px;
   justify-content: space-between;
   transition: padding 200ms ease;
   background-color: rgba(255, 255, 255, .05);

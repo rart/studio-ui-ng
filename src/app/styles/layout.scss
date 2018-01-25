@@ -12,6 +12,10 @@
   > .view.header {
     z-index: 1;
     width: 100%;
+    display: flex;
+    > .wrapper {
+      flex: 1;
+    }
     @include mat-elevation(2);
   }
   > .view.body {
@@ -44,7 +48,7 @@
           min-height: $slimHeight;
         }
         &.slimmer {
-          $slimHeight: 60px;
+          $slimHeight: 65px;
           height: $slimHeight;
           min-height: $slimHeight;
         }

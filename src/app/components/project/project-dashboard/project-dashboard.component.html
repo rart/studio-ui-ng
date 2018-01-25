@@ -1,19 +1,24 @@
 <div class="sticky header view layout">
   <std-view-title-bar
-    class="pad x slim"
+    class="pad x slimmer"
     icon="dashboard"
     [title]="!project ? 'Project Dashboard' : project.name">
-    <div *ngIf="actions.length > 0">
-      <button mat-mini-fab [matMenuTriggerFor]="bulkActionsMenu">
-        <mat-icon>done_all</mat-icon>
-      </button>
-      <mat-menu #bulkActionsMenu="matMenu" class="mat-menu-compact">
-        <button mat-menu-item
-          *ngFor="let action of actions"
-          (click)="actionSelected(action.action)">
-          {{action.label}}
+    <div>
+      <ng-container *ngIf="actions.length > 0">
+        <button mat-mini-fab color="warn" [matMenuTriggerFor]="bulkActionsMenu">
+          <mat-icon>done_all</mat-icon>
         </button>
-      </mat-menu>
+        <mat-menu #bulkActionsMenu="matMenu" class="mat-menu-compact">
+          <button mat-menu-item
+                  *ngFor="let action of actions"
+                  (click)="actionSelected(action.action)">
+            {{action.label}}
+          </button>
+        </mat-menu>
+      </ng-container>
+      <button mat-mini-fab color="primary">
+        <mat-icon>search</mat-icon>
+      </button>
     </div>
   </std-view-title-bar>
   <div class="view body">

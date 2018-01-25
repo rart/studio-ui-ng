@@ -8,7 +8,7 @@ import { ComponentBase } from '../../classes/component-base.class';
 @Component({
   selector: 'std-view-title-bar',
   template: `
-      <header fxLayoutAlign="space-between center" [attr.max]="childMax">
+      <header fxFlex="100%" fxLayoutAlign="space-between center" [attr.max]="childMax">
         <section fxLayoutAlign="left center">
           <button color="default" mat-fab 
                   *ngIf="back !== ''" [routerLink]="[back]"
