@@ -55,7 +55,7 @@ export class VerticalNavBarComponent extends ComponentBase implements OnInit, Af
         this.hue = settings.navBarThemeHue ? settings.navBarThemeHue : null;
         this.minimised = settings.navBarMinimised;
         this.visibility = settings.navBarShown ? 'expanded' : 'minimised';
-        this.logoImage = (['main', 'yellow', 'teal'].includes(settings.navBarTheme))
+        this.logoImage = (['main', 'yellow', 'teal', 'white'].includes(settings.navBarTheme))
           ? `${PATH_IMAGES}/logo-black.png`
           : `${PATH_IMAGES}/logo-white.png`;
         if (settings.navBarMinimised) {

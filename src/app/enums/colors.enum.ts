@@ -15,6 +15,7 @@ export enum ColorsEnum {
   GREY_MID = '#C7C7CC',
   GREY = '#8E8E93',
   BLACK = '#000',
+  WHITE = '#FFF',
 
   MAT_RED = '#f44336',
   MAT_PINK = '#e91e63',

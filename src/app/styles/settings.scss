@@ -352,10 +352,10 @@ $studio-mat-black: (
   300 : #4d4d4d,
   400 : #262626,
   500 : #000000,
-  600 : #000000,
-  700 : #000000,
-  800 : #000000,
-  900 : #000000,
+  600 : lighten(black, 25%),
+  700 : lighten(black, 20%),
+  800 : lighten(black, 15%),
+  900 : lighten(black, 10%),
   A100 : #a6a6a6,
   A200 : #8c8c8c,
   A400 : #737373,
@@ -378,15 +378,35 @@ $studio-mat-black: (
   )
 );
 $studio-mat-white: (
+  50 : lighten($color-grey-main, 30%),
+  100 : lighten($color-grey-main, 25%),
+  200 : lighten($color-grey-main, 20%),
+  300 : lighten($color-grey-main, 15%),
+  400 : lighten($color-grey-main, 10%),
   500: white,
+  600 : $color-grey-lighter,
+  700 : $color-grey-light,
+  800 : $color-grey-mid,
+  900 : $color-grey,
   A100 : #a6a6a6,
   A200 : #8c8c8c,
   A400 : #737373,
   A700 : #666666,
   contrast: (
-    500: rgba(black, 0.87),
-    400: rgba(black, 0.87),
-    700: rgba(black, 0.87)
+    50 : #777,
+    100 : #777,
+    200 : #777,
+    300 : #666,
+    400 : #666,
+    500 : #555,
+    600 : #555,
+    700 : #333,
+    800 : #555,
+    900 : #444,
+    A100 : #999,
+    A200 : #888,
+    A400 : #333,
+    A700 : #222
   )
 );
 $studio-mat-main: (
@@ -418,7 +438,7 @@ $studio-mat-main: (
     A100 : #999,
     A200 : #888,
     A400 : #333,
-    A700 : #222,
+    A700 : #222
   )
 );
 
