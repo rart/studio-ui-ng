@@ -127,6 +127,9 @@ import { UserMenuComponent } from './components/user-menu/user-menu.component'; 
 
 // This is just for "pretty" to be available globally, really.
 import { global } from './utils/logging.utils';
+import { SelectionManagementComponent } from './components/selection-management/selection-management.component';
+import { AssetMenuComponent } from './components/asset-menu/asset-menu.component';
+import { ManageAssetComponent } from './components/manage-asset/manage-asset.component';
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
@@ -188,7 +191,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     FooterComponent,
     VerticalNavBarComponent,
     HorizontalNavbarComponent,
-    UserMenuComponent
+    UserMenuComponent,
+    SelectionManagementComponent,
+    AssetMenuComponent,
+    ManageAssetComponent
 
   ],
   imports: [

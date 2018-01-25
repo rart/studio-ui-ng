@@ -4,7 +4,14 @@
     icon="dashboard"
     [title]="!project ? 'Project Dashboard' : project.name">
     <div>
-      <ng-container *ngIf="actions.length > 0">
+      <std-asset-menu>
+        <ng-template #buttonTemplate let-props>
+          <button mat-mini-fab color="warn" [matMenuTriggerFor]="props.menu">
+            <mat-icon>done_all</mat-icon>
+          </button>
+        </ng-template>
+      </std-asset-menu>
+      <!--<ng-container *ngIf="actions.length > 0">
         <button mat-mini-fab color="warn" [matMenuTriggerFor]="bulkActionsMenu">
           <mat-icon>done_all</mat-icon>
         </button>
@@ -15,7 +22,7 @@
             {{action.label}}
           </button>
         </mat-menu>
-      </ng-container>
+      </ng-container>-->
       <button mat-mini-fab color="primary">
         <mat-icon>search</mat-icon>
       </button>

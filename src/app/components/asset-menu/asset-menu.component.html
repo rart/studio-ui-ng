@@ -1,0 +1,16 @@
+<button *ngIf="!template" class="simple menu" (click)="menuButtonClicked($event)" [matMenuTriggerFor]="assetMenu">
+  <i class="material-icons">more_horiz</i>
+</button>
+<ng-container
+  [ngTemplateOutlet]="template"
+  [ngTemplateOutletContext]="{ $implicit: { menu: assetMenu } }">
+</ng-container>
+<mat-menu class="mat-menu-compact" #assetMenu="matMenu">
+  <ng-container *ngFor="let option of menu">
+    <button mat-menu-item
+            (click)="menuItemSelected(option.action)">
+      {{option.label}}
+    </button>
+    <div class="mat-menu-divider" *ngIf="option.divider"></div>
+  </ng-container>
+</mat-menu>

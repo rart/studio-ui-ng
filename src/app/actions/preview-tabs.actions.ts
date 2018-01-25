@@ -39,6 +39,14 @@ export class PreviewTabsActions {
     });
   }
 
+  openMany(tabs: PreviewTabCore[]): AnyAction {
+    return this.process({
+      type: StoreActionsEnum.OPEN_TAB,
+      payload: tabs,
+      affects
+    });
+  }
+
   openInBackground(tab: PreviewTabCore): AnyAction {
     return this.process({
       type: StoreActionsEnum.OPEN_TAB_BACKGROUND,

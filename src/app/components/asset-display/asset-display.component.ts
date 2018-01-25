@@ -57,8 +57,6 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
   @Input() showLabel = true;
   @Input() showLink = true; // Asset renders as a link when 'previewable'
   @Input() displayField: keyof Asset = 'label';
-  @Input() actionHandler: (actionDef: any, $actionNext: () => void) => boolean;
-  // @Input() handleUpdates = false;
 
   @Output() action = new EventEmitter();
 
@@ -149,7 +147,6 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
 
   }
 
-  menu: Array<AssetMenuOption> = []; // Options of the asset menu drop down
   navigable = true; // Internal control of whether the asset displays as a link or a label
   selected = false;
 
@@ -174,8 +171,6 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
     // pretty('RED', 'Changes!', changes);
 
     this.navigable = this.isNavigable();
-    this.menu = this.workflowService
-      .getAvailableAssetOptions(this.state.user, this.asset);
 
     if (this.showMenu === 'true') {
       this.shouldShowMenu = true;
@@ -269,39 +264,6 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
     return checked
       ? SelectedItemsActions.select(this.asset.id, this.asset.projectCode)
       : SelectedItemsActions.deselect(this.asset.id, this.asset.projectCode);
-  }
-
-  menuItemSelected(action) {
-    let handleAction = true;
-    let eventData = { asset: this.asset, action: action };
-    if (this.actionHandler) {
-      handleAction = !this.actionHandler(eventData,
-        () => this.action.next(eventData));
-    }
-    if (handleAction) {
-      this.handleAction(action);
-      this.action.next(eventData);
-    }
-  }
-
-  handleAction(action) {
-    switch (action) {
-      case AssetActionEnum.EDIT: {
-        let asset = this.asset;
-        this.dispatch(
-          this.assetActions.edit(
-            asset.projectCode,
-            asset.id));
-        break;
-      }
-      default:
-
-        break;
-    }
-  }
-
-  menuButtonClicked($event: Event) {
-    $event.stopPropagation();
   }
 
   private selectedItemsStateChanged(selectedItems) {

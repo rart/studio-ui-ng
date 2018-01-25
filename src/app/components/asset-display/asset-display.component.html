@@ -18,18 +18,7 @@
   </ng-container>
 
   <ng-container *ngIf="shouldShowMenu">
-    <button class="simple menu" (click)="menuButtonClicked($event)" [matMenuTriggerFor]="assetMenu">
-      <i class="material-icons">more_horiz</i>
-    </button>
-    <mat-menu class="mat-menu-compact" #assetMenu="matMenu">
-      <ng-container *ngFor="let option of menu">
-        <button mat-menu-item
-                (click)="menuItemSelected(option.action)">
-          {{option.label}}
-        </button>
-        <div class="mat-menu-divider" *ngIf="option.divider"></div>
-      </ng-container>
-    </mat-menu>
+    <std-asset-menu [asset]="asset"></std-asset-menu>
   </ng-container>
 
 </ng-container>

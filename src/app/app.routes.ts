@@ -16,6 +16,8 @@ import { UserCrUDComponent } from './components/user-management/user-crud/user-c
 import { WorkflowStatesComponent } from './components/workflow-states/workflow-states.component';
 import { EditComponent } from './components/edit/edit.component';
 import { EntryComponent } from './components/entry/entry.component';
+import { SelectionManagementComponent } from './components/selection-management/selection-management.component';
+import { ManageAssetComponent } from './components/manage-asset/manage-asset.component';
 
 // Not having as a route requires for it to be added as entry component on AppModule
 // import {ProjectCrUDComponent} from './components/project-management/project-crud/project-crud.component';
@@ -80,6 +82,14 @@ const routes: Routes = [
           {
             path: 'dashboard',
             component: ProjectDashboardComponent
+          },
+          {
+            path: 'manage-selection',
+            component: SelectionManagementComponent
+          },
+          {
+            path: 'manage',
+            component: ManageAssetComponent
           },
           {
             path: 'preview',

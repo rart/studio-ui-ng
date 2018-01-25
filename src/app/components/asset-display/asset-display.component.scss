@@ -37,6 +37,18 @@ $menu-width: 30px;
 $component-height: 1.8em;
 $color-dark: #444;
 
+::ng-deep std-asset-display {
+  .menu,
+  std-asset-menu {
+    height: 100%;
+    width: $menu-width;
+    min-width: $menu-width;
+  }
+  &.hover-menu:not(:hover) std-asset-menu {
+    display: none;
+  }
+}
+
 :host {
   font-size: 1em;
   position: relative;
@@ -53,13 +65,6 @@ $color-dark: #444;
       text-overflow: ellipsis;
     }
   }
-  &.hover-menu {
-    &:not(:hover) {
-      .menu {
-        display: none;
-      }
-    }
-  }
   &.label-left-clear {
     .label {
       padding-left: 0;
@@ -71,12 +76,6 @@ mat-checkbox {
   top: -.15em;
   position: relative;
   margin-right: .1em;
-}
-
-.menu {
-  height: 100%;
-  width: $menu-width;
-  min-width: $menu-width;
 }
 
 .label {

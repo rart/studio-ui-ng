@@ -65,14 +65,14 @@ const mix = (query, mixin = {}) => Object.assign({
 }, mixin);
 
 export enum AssetActionEnum {
+  INFO = '',
   PREVIEW = '',
   SCHEDULE = '',
-  APPROVE_PUBLISH = '',
+  APPROVE = '',
   EDIT = 'EDIT',
   DELETE = '',
   HISTORY = '',
-  DEPENDENCIES = '',
-  FORM_VIEW = ''
+  DEPENDENCIES = ''
 }
 
 export interface AssetMenuOption {
@@ -179,25 +179,19 @@ export class WorkflowService {
     if (!isArray(assets)) {
       assets = Object.values(assets);
     }
-    return assets.length ? [
-      { label: 'Edit', action: '' },
-      { label: 'Delete', action: '' },
-      { label: 'Schedule', action: '' },
-      { label: 'Approve', action: '' },
-      { label: 'History', action: '' },
-      { label: 'Dependencies', action: '' }
-    ] : [];
+    return assets.length ? this.getAvailableAssetOptions(user, null) : [];
   }
 
   getAvailableAssetOptions(user, item): AssetMenuOption[] {
     return [
-      { label: 'Get Info', action: '', divider: true },
+      { label: 'Preview', action: AssetActionEnum.PREVIEW, divider: true },
+      { label: 'Get Info', action: AssetActionEnum.INFO, divider: true },
       { label: 'Edit', action: AssetActionEnum.EDIT },
-      { label: 'Delete', action: '' },
-      { label: 'Schedule', action: '' },
-      { label: 'Approve', action: '' },
-      { label: 'History', action: '' },
-      { label: 'Dependencies', action: '' }
+      { label: 'Delete', action: AssetActionEnum.DELETE },
+      { label: 'Schedule', action: AssetActionEnum.SCHEDULE },
+      { label: 'Approve', action: AssetActionEnum.APPROVE },
+      { label: 'History', action: AssetActionEnum.HISTORY },
+      { label: 'Dependencies', action: AssetActionEnum.DEPENDENCIES }
     ];
   }
 

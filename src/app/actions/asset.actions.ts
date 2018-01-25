@@ -42,6 +42,13 @@ export class AssetActions {
     };
   }
 
+  editMany(assets: { projectCode: string, assetId: string }[]): AnyAction {
+    return {
+      type: StoreActionsEnum.EDIT_ASSET,
+      payload: assets
+    };
+  }
+
   closeEditSession(session, asset): AnyAction {
     return {
       type: StoreActionsEnum.CLOSE_EDIT_SESSION,
