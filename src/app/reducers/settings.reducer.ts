@@ -14,7 +14,7 @@ const DEFAULTS: Settings = {
   topBarPosition: 'top',
   topBarShown: false,
   navBarTheme: 'main',
-  navBarThemeHue: '700',
+  navBarThemeHue: '500',
   navBarShown: true,
   navBarPosition: 'left',
   navBarMinimised: false,

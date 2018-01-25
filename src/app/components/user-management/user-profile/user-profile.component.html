@@ -56,12 +56,11 @@
                 [(ngModel)]="settings.navBarTheme"
                 (change)="settingsChanged()">
                 <mat-radio-button
-                  class="display block"
-                  [value]="'main'">Default</mat-radio-button>
-                <mat-radio-button
                   class="ensure display block"
                   *ngFor="let color of colors"
-                  [value]="color">{{color}}</mat-radio-button>
+                  [value]="color.key">
+                  <span class="color preview" [style.background]="color.code"></span> {{color.label | translate}}
+                </mat-radio-button>
               </mat-radio-group>
 
               <h3>Navigation / Meta + Click</h3>

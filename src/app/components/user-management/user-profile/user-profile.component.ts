@@ -8,6 +8,7 @@ import { ComponentBase } from '../../../classes/component-base.class';
 import { takeUntil } from 'rxjs/operators';
 import { SettingsActions } from '../../../actions/settings.actions';
 import { User } from '../../../models/user.model';
+import { StringUtils } from '../../../utils/string.utils';
 
 @Component({
   selector: 'std-user-profile',
@@ -23,7 +24,14 @@ export class UserProfileComponent extends ComponentBase implements OnInit {
 
   user: User;
   settings: Settings;
-  colors = Object.keys(ColorsEnum).map(color => color.toLowerCase());
+  colors = Object.keys(ColorsEnum)
+    .filter((color) => !['GREY_LIGHTEST', 'GREY_LIGHTER', 'GREY_LIGHT', 'GREY_MID'].includes(color))
+    .map(color => ({
+      key: color === 'GREY_MAIN' ? 'main' : StringUtils.dasherize(color.toLowerCase()),
+      label: color,
+      code: ColorsEnum[color],
+      defaultHue: color === 'GREY_MAIN' ? 500 : 700
+    }));
 
   constructor() {
     super();
@@ -52,7 +60,10 @@ export class UserProfileComponent extends ComponentBase implements OnInit {
 
   @dispatch()
   settingsChanged() {
-    return SettingsActions.updateMany(this.settings);
+    return SettingsActions.updateMany({
+      ...this.settings,
+      navBarThemeHue: (this.settings.navBarTheme === 'main') ? 500 : 700
+    });
   }
 
 }
