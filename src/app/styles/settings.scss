@@ -26,13 +26,13 @@ $color-teal: #5AC8FA;
 $color-blue: #007AFF;
 $color-purple: #5856D6;
 $color-pink: #FF2D55;
-$color-gray-lightest: #EFEFF4;
-$color-gray-lighter: #E5E5EA;
-$color-gray-light: #D1D1D6;
-$color-gray-mid: #C7C7CC;
-$color-gray: #8E8E93;
-$grey-main: #F8F8F8;
-$grey-header: #EBEBEB;
+$color-grey-lightest: #EFEFF4;
+$color-grey-lighter: #E5E5EA;
+$color-grey-light: #D1D1D6;
+$color-grey-mid: #C7C7CC;
+$color-grey: #8E8E93;
+$color-grey-main: #F8F8F8;
+$color-grey-header: #EBEBEB;
 $color-white: #FFFFFF;
 $color-black: #000;
 
@@ -45,14 +45,14 @@ $colors: (
   blue: $color-blue,
   purple: $color-purple,
   pink: $color-pink,
-  gray-lightest: $color-gray-lightest,
-  gray-lighter: $color-gray-lighter,
-  gray-light: $color-gray-light,
-  gray-mid: $color-gray-mid,
-  gray: $color-gray,
+  grey-lightest: $color-grey-lightest,
+  grey-lighter: $color-grey-lighter,
+  grey-light: $color-grey-light,
+  grey-mid: $color-grey-mid,
+  grey: $color-grey,
   black: $color-black,
   white: $color-white,
-  muted: $color-gray
+  muted: $color-grey
 );
 
 // http://mcg.mbitson.com/
@@ -390,35 +390,35 @@ $studio-mat-white: (
   )
 );
 $studio-mat-main: (
-  50 : #fefefe,
-  100 : #fdfdfd,
-  200 : #fcfcfc,
-  300 : #fafafa,
-  400 : #f9f9f9,
-  500 : #f8f8f8,
-  600 : #f7f7f7,
-  700 : #f6f6f6,
-  800 : #f5f5f5,
-  900 : #f3f3f3,
+  50 : lighten($color-grey-main, 30%),
+  100 : lighten($color-grey-main, 25%),
+  200 : lighten($color-grey-main, 20%),
+  300 : lighten($color-grey-main, 15%),
+  400 : lighten($color-grey-main, 10%),
+  500 : $color-grey-main,
+  600 : $color-grey-lighter,
+  700 : $color-grey-light,
+  800 : $color-grey-mid,
+  900 : $color-grey,
   A100 : #ffffff,
   A200 : #ffffff,
   A400 : #ffffff,
   A700 : #ffffff,
   contrast: (
-    50 : #000000,
-    100 : #000000,
-    200 : #000000,
-    300 : #000000,
-    400 : #000000,
-    500 : #333333,
-    600 : #000000,
-    700 : #000000,
-    800 : #000000,
-    900 : #000000,
-    A100 : #000000,
-    A200 : #000000,
-    A400 : #000000,
-    A700 : #000000,
+    50 : #777,
+    100 : #777,
+    200 : #777,
+    300 : #666,
+    400 : #666,
+    500 : #555,
+    600 : #555,
+    700 : #333,
+    800 : #555,
+    900 : #444,
+    A100 : #999,
+    A200 : #888,
+    A400 : #333,
+    A700 : #222,
   )
 );
 
@@ -487,8 +487,8 @@ $content-max-widths: (
 
 $font-size-base: 16px;
 
-$body-bg: $grey-main;
-$gray-light: $grey-header;
+$body-bg: $color-grey-main;
+$grey-light: $color-grey-header;
 
 // Sidebar
 
@@ -497,5 +497,5 @@ $sidebar-breakpoint-sm: 1200px;
 $sidebar-width: 300px !default;
 $sidebar-width-sm: 220px !default;
 $sidebar-width-minimised: 55px !default;
-$sidebar-background-color: $grey-main !default;
+$sidebar-background-color: $color-grey-main !default;
 $sidebar-border-color: #C8C8C8 !default;

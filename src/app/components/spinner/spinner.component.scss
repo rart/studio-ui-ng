@@ -6,7 +6,7 @@
   align-items: center;
   margin: $spacing-lg auto;
   &.opaque {
-    background: rgba($gray-light, .6);
+    background: rgba($grey-light, .6);
     //-webkit-filter: blur($blur);
     //-moz-filter: blur($blur);
     //-o-filter: blur($blur);

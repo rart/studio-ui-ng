@@ -518,7 +518,7 @@ thead.uppercase {
 .ui.tab.bar {
   display: none;
   flex-wrap: nowrap;
-  background: $grey-main;
+  background: $color-grey-main;
   .tabbed & {
     display: flex;
   }
@@ -531,8 +531,8 @@ thead.uppercase {
     line-height: 30px;
     text-align: center;
     position: relative;
-    border-top: 1px solid $grey-header;
-    border-right: 1px solid $grey-header;
+    border-top: 1px solid $color-grey-header;
+    border-right: 1px solid $color-grey-header;
     &.active {
       cursor: default;
       background-color: #ffffff;

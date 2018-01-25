@@ -7,10 +7,10 @@ export enum ColorsEnum {
   BLUE = '#007AFF',
   PURPLE = '#5856D6',
   PINK = '#FF2D55',
-  GRAY_LIGHTEST = '#EFEFF4',
-  GRAY_LIGHTER = '#E5E5EA',
-  GRAY_LIGHT = '#D1D1D6',
-  GRAY_MID = '#C7C7CC',
-  GRAY = '#8E8E93',
+  GREY_LIGHTEST = '#EFEFF4',
+  GREY_LIGHTER = '#E5E5EA',
+  GREY_LIGHT = '#D1D1D6',
+  GREY_MID = '#C7C7CC',
+  GREY = '#8E8E93',
   BLACK = '#000'
 }

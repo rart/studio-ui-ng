@@ -29,7 +29,7 @@ mat-mini-fab,
   @each $name, $code in $colors {
     &[color="#{$name}"] {
       &, mat-icon {
-        //@if ($name != 'gray-lightest' && $name != 'gray-lighter' && $name != 'gray-light' && $name != 'gray-mid') {
+        //@if ($name != 'grey-lightest' && $name != 'grey-lighter' && $name != 'grey-light' && $name != 'grey-mid') {
         //
         //} @else if($name != 'white') {
         //
@@ -246,7 +246,7 @@ mat-form-field {
       left: 0;
       top: .4em;
       position: absolute;
-      color: $color-gray;
+      color: $color-grey;
       @include fa-base-styles;
     }
   }
