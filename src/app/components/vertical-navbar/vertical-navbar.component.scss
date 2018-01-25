@@ -4,20 +4,23 @@
 :host {
   display: flex;
   flex-direction: column;
-  &, .content {
-    width: $sidebar-width-sm;
-    min-width: $sidebar-width-sm;
-    max-width: $sidebar-width-sm;
-    @media (min-width: $sidebar-breakpoint-sm) {
-      width: $sidebar-width;
-      min-width: $sidebar-width;
-      max-width: $sidebar-width;
-    }
+  width: $sidebar-width-sm;
+  min-width: $sidebar-width-sm;
+  max-width: $sidebar-width-sm;
+  @media (min-width: $sidebar-breakpoint-sm) {
+    width: $sidebar-width;
+    min-width: $sidebar-width;
+    max-width: $sidebar-width;
   }
   &.minimised {
     width: $sidebar-width-minimised;
     min-width: $sidebar-width-minimised;
     max-width: $sidebar-width-minimised;
+    .content {
+      width: $sidebar-width;
+      min-width: $sidebar-width;
+      max-width: $sidebar-width;
+    }
   }
   &.reveal {
     overflow: visible;
@@ -93,7 +96,6 @@ header, footer {
 
 .content {
   flex: 1;
-  //background-color: $color-grey-main;
 }
 
 footer {
