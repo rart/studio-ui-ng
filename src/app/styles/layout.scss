@@ -35,8 +35,24 @@
 
       }
       > .view.header {
-        height: 120px;
-        min-height: 120px;
+        $height: 120px;
+        height: $height;
+        min-height: $height;
+        &.slim {
+          $slimHeight: 80px;
+          height: $slimHeight;
+          min-height: $slimHeight;
+        }
+        &.slimmer {
+          $slimHeight: 60px;
+          height: $slimHeight;
+          min-height: $slimHeight;
+        }
+        &.slimmest {
+          $slimHeight: 40px;
+          height: $slimHeight;
+          min-height: $slimHeight;
+        }
       }
       > .view.body {
         flex: 1 0 0;

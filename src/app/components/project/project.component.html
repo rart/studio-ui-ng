@@ -1,12 +1,12 @@
-<div class="view-container">
+<div class="sticky header view layout">
   <std-view-title-bar
     i18n-title
     [title]="project.name"
-    icon="fa fa-tachometer"
-    max="readability">
+    icon="dashboard"
+    childMax="readability">
     <button class="ui basic blue button" (click)="$event">Edit Project</button>
   </std-view-title-bar>
-  <div class="content set-max readability responsive-box">
+  <div class="view layout responsive-box" max="readability">
 
     <table class="ui definition very basic table">
       <tbody>

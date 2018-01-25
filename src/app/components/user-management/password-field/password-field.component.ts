@@ -30,7 +30,7 @@ const TYPE_PASSWORD = 'password';
               (click)="revealed = !revealed"
               [attr.aria-label]="'Show/Hide Password' | translate"
               [title]="'Show/Hide Password' | translate">
-        <i aria-hidden="true" class="fa fa-{{inputType === 'text' ? 'eye-slash' : 'eye'}}"></i>
+        <mat-icon>{{inputType === 'text' ? 'visibility_off' : 'visibilty'}}</mat-icon>
       </button>
       <button translate mat-button *ngIf="allowGeneration" (click)="generatePassword()">
         Generate

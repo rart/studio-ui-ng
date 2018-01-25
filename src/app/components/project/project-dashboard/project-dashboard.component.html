@@ -1,14 +1,22 @@
-<div class="view-container">
+<div class="sticky header view layout">
   <std-view-title-bar
-    i18n-title [title]="!project ? 'Project Dashboard' : project.name"
-    icon="fa fa-tachometer">
-    <div *ngIf="actions.length > 0" class="ui extremely compact flat basic buttons"
-         [class.tiny]="actions.length > 3 && actions.length <= 5"
-         [class.mini]="actions.length > 5">
-      <button class="ui button" *ngFor="let action of actions" (click)="actionSelected(action.action)">{{action.label | translate}}</button>
+    class="pad x slim"
+    icon="dashboard"
+    [title]="!project ? 'Project Dashboard' : project.name">
+    <div *ngIf="actions.length > 0">
+      <button mat-mini-fab [matMenuTriggerFor]="bulkActionsMenu">
+        <mat-icon>done_all</mat-icon>
+      </button>
+      <mat-menu #bulkActionsMenu="matMenu" class="mat-menu-compact">
+        <button mat-menu-item
+          *ngFor="let action of actions"
+          (click)="actionSelected(action.action)">
+          {{action.label}}
+        </button>
+      </mat-menu>
     </div>
   </std-view-title-bar>
-  <div class="content transparent">
+  <div class="view body">
 
     <div class="wrapper">
       <div class="ui two column doubling grid top padded">

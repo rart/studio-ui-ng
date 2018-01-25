@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 import { Asset } from '../../../models/asset.model';
 import { Observable } from 'rxjs/Observable';
-import { WorkflowService, WorkflowServiceResponse } from '../../../services/workflow.service';
+import { WorkflowService } from '../../../services/workflow.service';
 import { Project } from '../../../models/project.model';
 import { Router } from '@angular/router';
 import { CommunicationService } from '../../../services/communication.service';

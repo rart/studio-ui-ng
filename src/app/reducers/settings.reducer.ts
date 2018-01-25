@@ -9,7 +9,7 @@ const DEFAULTS: Settings = {
   containedLayoutMax: 2000,
   nativeScrollbars: false,
   viewAnimation: 'fadeIn',
-  topBarTheme: '',
+  topBarTheme: 'white',
   topBarThemeHue: '500',
   topBarPosition: 'top',
   topBarShown: false,

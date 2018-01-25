@@ -19,8 +19,7 @@
 }
 
 @media only screen and (min-height: 650px) and (min-width: 992px) {
-  .content {
-    height: calc(100% - 82px);
+  .view.body {
     > .wrapper {
       height: 100%;
       display: flex;
