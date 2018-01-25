@@ -1,5 +1,4 @@
 import { ColorsEnum } from '../enums/colors.enum';
-import { environment } from '../../environments/environment';
 
 // @see https://github.com/Qix-/color
 
@@ -21,7 +20,7 @@ const LogStyle = {
   RED: `background: ${ColorsEnum.RED}; color: #FFF`,
   BLUE: `background: ${ColorsEnum.BLUE}; color: #FFF`,
   PURPLE: `background: ${ColorsEnum.PURPLE}; color: #FFF`,
-  BLACK: `background: ${ColorsEnum.BLACK}; color: #FFF`,
+  BLACK: `background: ${ColorsEnum.BLACK}; color: #FFF`
 };
 
 type LogStyle = (typeof LogStyle)[keyof typeof LogStyle];
@@ -72,12 +71,12 @@ function pretty(style: LogStyle | string, ...anything) {
 export { LogStyle, log, pretty };
 
 export const global = () => {
-	log['CLEAR'] = CLEAR_CONSOLE;
-	pretty['CLEAR'] = CLEAR_CONSOLE;
-	pretty['PPO'] = '$o';
-	Object.keys(LogStyle).forEach(style => pretty[style] = LogStyle[style]);
-	if (window.console) {
-    	window['pretty'] = pretty;
-    	window['log'] = log;
-  	}
+  log['CLEAR'] = CLEAR_CONSOLE;
+  pretty['CLEAR'] = CLEAR_CONSOLE;
+  pretty['PPO'] = '$o';
+  Object.keys(LogStyle).forEach(style => pretty[style] = LogStyle[style]);
+  if (window.console) {
+    window['pretty'] = pretty;
+    window['log'] = log;
+  }
 };
