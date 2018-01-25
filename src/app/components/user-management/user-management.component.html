@@ -1,5 +1,5 @@
 <div class="sticky header view layout">
-  <header class="view header pad" [attr.theme]="(settings$|async).navBarTheme" hue="(settings$|async).topBarThemeHue">
+  <header class="view header pad" [attr.theme]="(settings$|async).navBarTheme" [attr.hue]="(settings$|async).topBarThemeHue">
     <div fxLayoutAlign="space-between center">
       <h1 translate><mat-icon>people</mat-icon> Users</h1>
       <div>
@@ -7,7 +7,7 @@
                 [attr.aria-label]="'Refresh Projects' | translate">
           <mat-icon class="" aria-hidden="true">refresh</mat-icon>
         </button>
-        <button theme="green" color="inherit" mat-fab
+        <button theme="green" hue="600" color="inherit" mat-fab
                 [routerLink]="['/users/create']"
                 [attr.aria-label]="'Create User' | translate">
           <mat-icon aria-hidden="true">add</mat-icon>

@@ -1,5 +1,5 @@
 <div class="sticky header view layout">
-  <header class="pad view header" [attr.theme]="(settings$|async).navBarTheme" hue="(settings$|async).topBarThemeHue">
+  <header class="pad view header" [attr.theme]="(settings$|async).navBarTheme" [attr.hue]="(settings$|async).topBarThemeHue">
     <div fxLayoutAlign="space-between center">
       <div fxLayoutAlign="left center">
         <button color="default" mat-fab
