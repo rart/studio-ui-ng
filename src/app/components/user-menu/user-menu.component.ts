@@ -35,7 +35,7 @@ export class UserMenuComponent implements OnInit {
 
   @dispatch()
   logout() {
-    return UserActions.loggedOut();
+    return UserActions.logout();
   }
 
 }
