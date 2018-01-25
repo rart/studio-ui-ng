@@ -44,7 +44,7 @@ export class AssetActions {
 
   editMany(assets: { projectCode: string, assetId: string }[]): AnyAction {
     return {
-      type: StoreActionsEnum.EDIT_ASSET,
+      type: StoreActionsEnum.EDIT_ASSETS,
       payload: assets
     };
   }

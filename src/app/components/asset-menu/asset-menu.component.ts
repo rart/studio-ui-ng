@@ -2,8 +2,8 @@ import { Component, ContentChild, HostBinding, Input, OnChanges, OnInit, Output,
 import { AssetActionEnum, AssetMenuOption, WorkflowService } from '../../services/workflow.service';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { Asset } from '../../models/asset.model';
-import { NgRedux } from '@angular-redux/store';
-import { AppState } from '../../classes/app-state.interface';
+import { NgRedux, select } from '@angular-redux/store';
+import { AppState, LookUpTable } from '../../classes/app-state.interface';
 import { Subject } from 'rxjs/Subject';
 import { AssetActions } from '../../actions/asset.actions';
 import { Router } from '@angular/router';
@@ -11,6 +11,7 @@ import { PreviewTabsActions } from '../../actions/preview-tabs.actions';
 import { notNullOrUndefined } from '../../app.utils';
 import { Subscription } from 'rxjs/Subscription';
 import { isNullOrUndefined } from 'util';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'std-asset-menu',
@@ -23,13 +24,13 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
     return (this.menu.length === 0) ? 'none' : null;
   }
 
-  @Input() asset: Asset = null;
   @ContentChild('buttonTemplate') template: TemplateRef<any>;
-  @Output() selection = new Subject();
 
   sub: Subscription;
 
-  assets: Asset[];
+  @Input() asset: Asset = null;
+  assetsLookUpTable: LookUpTable<Asset>;
+  selected: LookUpTable<boolean>;
 
   menu: AssetMenuOption[] = [];
   mode: 'single' | 'multi' = null;
@@ -46,15 +47,14 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
       this.sub.unsubscribe();
     }
     if (notNullOrUndefined(this.asset)) {
-      this.mode = 'single';
+      this.selected = { [this.asset.id]: true };
       this.menu = this.workflowService
         .getAvailableAssetOptions(this.state.user, this.asset);
     } else {
-      this.mode = 'multi';
       this.sub = this.store.select(['workspaceRef', 'selectedItems'])
         .pipe(...this.noNullsAndUnSubOps)
-        .subscribe((assets: Asset[]) => {
-          this.assets = assets;
+        .subscribe((assets: LookUpTable<boolean>) => {
+          this.selected = assets;
           this.menu = this.workflowService
             .getAvailableWorkflowOptions(this.state.user, assets);
         });
@@ -62,11 +62,20 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
   }
 
   ngOnInit() {
+
+    this
+      .select(['entities', 'assets', 'byId'])
+      .pipe(this.endWhenDestroyed)
+      .subscribe((assetTable: LookUpTable<Asset>) => {
+        this.assetsLookUpTable = assetTable;
+      });
+
     if (isNullOrUndefined(this.mode)) {
       // When no input provided, ngOnChanges is not called.
       // (and that's where I'm doing the initialization)
       this.ngOnChanges();
     }
+
   }
 
   menuButtonClicked($event: Event) {
@@ -74,21 +83,21 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
   }
 
   menuItemSelected(action) {
-    this.selection.next(action);
     this.handleAction(action);
   }
 
   handleAction(action) {
 
     let
-      assets = this.assets,
-      singleMode = (this.mode === 'single');
+      lookup = this.assetsLookUpTable,
+      array = Object.keys(this.selected),
+      singleMode = (array.length === 1),
+      asset = singleMode ? lookup[array[0]] : null;
 
     switch (action) {
 
       case AssetActionEnum.EDIT:
         if (singleMode) {
-          let asset = assets[0];
           this.dispatch(
             this.assetActions.edit(
               asset.projectCode,
@@ -96,10 +105,10 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
         } else {
           this.dispatch(
             this.assetActions.editMany(
-              assets.map(
-                asset => ({
-                  projectCode: asset.projectCode,
-                  assetId: asset.id
+              array.map(
+                id => ({
+                  projectCode: lookup[id].projectCode,
+                  assetId: lookup[id].id
                 }))));
         }
         break;
@@ -114,7 +123,12 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
       case AssetActionEnum.APPROVE:
       case AssetActionEnum.SCHEDULE:
       case AssetActionEnum.DEPENDENCIES:
-        this.router.navigate(singleMode ? ['manage', assets[0].id] : ['manage-selection']);
+        this.router.navigate([
+          '/project/',
+          ...(singleMode
+            ? ['manage', asset.projectCode, asset.id.replace(`${asset.projectCode}:`, '')]
+            : [this.store.getState().activeProjectCode, 'manage-selection'])
+        ]);
         break;
 
     }

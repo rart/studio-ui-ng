@@ -74,7 +74,7 @@ const Bundle: StudioPluginBundle = {
       render() {
         let sessions = host.getState().editSessions.order.length;
         node.innerHTML = `
-          <div class="pad lg center text">
+          <div class="pad lg all center text">
             <button class="mat-raised-button mat-icon-button mat-accent" color="accent" mat-raised-button mat-button>
               <span class="mat-button-wrapper">
                 <i class="material-icons" role="img" aria-hidden="true">menu</i>

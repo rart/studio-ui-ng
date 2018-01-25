@@ -88,7 +88,7 @@ const routes: Routes = [
             component: SelectionManagementComponent
           },
           {
-            path: 'manage',
+            path: 'manage/:id',
             component: ManageAssetComponent
           },
           {

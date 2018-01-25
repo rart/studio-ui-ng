@@ -65,14 +65,14 @@ const mix = (query, mixin = {}) => Object.assign({
 }, mixin);
 
 export enum AssetActionEnum {
-  INFO = '',
-  PREVIEW = '',
-  SCHEDULE = '',
-  APPROVE = '',
+  INFO = 'INFO',
+  PREVIEW = 'PREVIEW',
+  SCHEDULE = 'SCHEDULE',
+  APPROVE = 'APPROVE',
   EDIT = 'EDIT',
-  DELETE = '',
-  HISTORY = '',
-  DEPENDENCIES = ''
+  DELETE = 'DELETE',
+  HISTORY = 'HISTORY',
+  DEPENDENCIES = 'DEPENDENCIES'
 }
 
 export interface AssetMenuOption {

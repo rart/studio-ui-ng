@@ -11,6 +11,11 @@ export const editSessions: Reducer<EditSessions> = (state = {
 }, action) => {
   switch (action.type) {
 
+    case StoreActionsEnum.EDIT_ASSETS: {
+
+      break;
+    }
+
     case StoreActionsEnum.EDIT_ASSET: {
       let assetId = action.payload.assetId;
       let projectCode = action.payload.projectCode;
