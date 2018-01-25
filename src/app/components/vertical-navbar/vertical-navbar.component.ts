@@ -21,12 +21,12 @@ const PATH_IMAGES = `${environment.url.assets}/img`;
 })
 export class VerticalNavBarComponent extends ComponentBase implements OnInit, AfterViewInit {
 
-  @HostBinding('@visibility') private visibility = 'expanded';
-  @HostBinding('class.minimised') private minimised = false;
-  @HostBinding('class.reveal') private reveal = false;
-  @HostBinding('class.right') private right = false;
-  @HostBinding('attr.theme') private theme = null;
-  @HostBinding('attr.hue') private hue = null;
+  @HostBinding('@visibility') visibility = 'expanded';
+  @HostBinding('class.minimised') minimised = false;
+  @HostBinding('class.right') right = false;
+  @HostBinding('class.reveal') reveal = false;
+  @HostBinding('attr.theme') theme = null;
+  @HostBinding('attr.hue') hue = null;
 
   @select('settings')
   settings$: Observable<Settings>;
@@ -55,6 +55,9 @@ export class VerticalNavBarComponent extends ComponentBase implements OnInit, Af
         this.hue = settings.navBarThemeHue ? settings.navBarThemeHue : null;
         this.minimised = settings.navBarMinimised;
         this.visibility = settings.navBarShown ? 'expanded' : 'minimised';
+        this.logoImage = (['main', 'yellow', 'teal'].includes(settings.navBarTheme))
+          ? `${PATH_IMAGES}/logo-black.png`
+          : `${PATH_IMAGES}/logo-white.png`;
         if (settings.navBarMinimised) {
           this.beginRevealService();
         }

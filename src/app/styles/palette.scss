@@ -72,12 +72,14 @@ $hues: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, A100, A200, A400, A700;
   }
   .active {
     color: $contrast !important;
+    $contrastDarker50: darken($contrast, 50%);
     @if (
-      (rgba(black, 1) == rgba($contrast, 1))/* or
-      (darken($contrast, 50%) == '#000000')*/) {
-      background-color: rgba(255, 255, 255, .3);
+      (rgba(black, 1) == rgba($contrast, 1)) or
+      ('#{$contrastDarker50}' == '#000000') or
+      ('#{$contrastDarker50}' == 'black')) {
+      background-color: rgba(darken($color, 20%), .4);
     } @else {
-      background-color: rgba(0, 0, 0, .1);
+      background-color: rgba(lighten($color, 20%), .4);
     }
   }
   .text-accent-400 {
@@ -111,8 +113,9 @@ $hues: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, A100, A200, A400, A700;
   [theme="#{$colorName}"] {
     @include createTheme($colorName, $colorMap, 500);
     @each $hue in $hues {
+      $color: map-get($colorMap, $hue);
       $contrast: map-get(map-get($colorMap, 'contrast'), $hue);
-      @if ($contrast != null) {
+      @if (($color != null) and ($contrast != null)) {
         &[hue="#{$hue}"] {
           @include createTheme($colorName, $colorMap, $hue);
         }

@@ -1,9 +1,9 @@
 <header>
 
-  <div class="logo wrapper">
+  <a class="logo wrapper" [routerLink]="['/']">
     <img class="logo" [src]="logoImage">
     <span class="text">Crafter Studio</span>
-  </div>
+  </a>
 
   <button mat-button class="toggle minimise mat-icon-button" (click)="toggleMinimised()">
     <mat-icon>arrow_back</mat-icon>
