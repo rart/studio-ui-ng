@@ -2,8 +2,7 @@
 @import '~@angular/material/theming';
 
 :host {
-  // h-offset v-offset blur spread color |inset|initial|inherit
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2) inset;
+  @include mat-elevation(1);
 }
 
 .user.account.control.menu {
