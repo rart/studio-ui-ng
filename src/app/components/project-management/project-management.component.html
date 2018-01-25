@@ -1,6 +1,6 @@
 <div class="sticky header view layout">
   <std-view-title-bar
-    class="pad"
+    class="pad all"
     title="Projects"
     icon="laptop">
     <div>
@@ -27,7 +27,7 @@
 
     <ng-container *ngSwitchCase="false">
       <section class="view body">
-        <div class="pad">
+        <div class="pad all">
           <div class="ui {{columns}} stackable grid">
             <div class="column" *ngFor="let project of projects">
               <mat-card>

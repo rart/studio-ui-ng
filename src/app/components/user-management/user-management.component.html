@@ -1,6 +1,6 @@
 <div class="sticky header view layout">
   <std-view-title-bar
-    class="pad"
+    class="pad all"
     title="Users"
     icon="people"
     childMax="comfort">
@@ -18,8 +18,8 @@
   </std-view-title-bar>
   <section class="view body">
 
-    <div class="pad">
-      <mat-card class="pad" max="readability">
+    <div class="pad all">
+      <mat-card class="pad all" max="readability">
         <div class="ui link divided items">
           <div class="item" *ngFor="let user of users" [routerLink]="['/users/edit', user.username]">
             <div class="ui tiny image">

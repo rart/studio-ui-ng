@@ -175,7 +175,8 @@ $displays: (inline, block, flex, inline-block, inline-flex);
  */
 
 .pad {
-  &:not(.x):not(.y):not(.top):not(.right):not(.bottom):not(.left) {
+
+  &.all {
     padding: $spacing-conservative;
     @each $type, $spacing in $spacings {
       &.#{$type} {
@@ -235,6 +236,14 @@ $displays: (inline, block, flex, inline-block, inline-flex);
       padding-right: 0 !important;
       padding-bottom: 0 !important;
       padding-left: 0 !important;
+    }
+  }
+
+  &.no {
+    &.dialog {
+      .mat-dialog-container {
+        padding: 0;
+      }
     }
   }
 
@@ -323,7 +332,6 @@ $displays: (inline, block, flex, inline-block, inline-flex);
   }
 }
 
-
 .app-box {
   @include create-box;
 }
@@ -384,6 +392,16 @@ $displays: (inline, block, flex, inline-block, inline-flex);
         }
       }
     }
+  }
+}
+
+.dialog.done.button {
+  display: none;
+}
+
+.mat-dialog-container {
+  .dialog.done.button {
+    display: initial;
   }
 }
 

@@ -3,14 +3,13 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/observable/defer';
 import 'rxjs/add/operator/delay';
-import {Router} from '@angular/router';
-import {PageEvent} from '@angular/material';
-import {ActivatedRoute} from '@angular/router';
-import {MatDialog} from '@angular/material';
-import {UserService} from '../../services/user.service';
-import {EmbeddedViewDialogComponent} from '../embedded-view-dialog/embedded-view-dialog.component';
-import {openDialog} from '../../utils/material.utils';
-import {UserCrUDComponent} from './user-crud/user-crud.component';
+import { Router } from '@angular/router';
+import { PageEvent } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material';
+import { UserService } from '../../services/user.service';
+import { openDialog } from '../../utils/material.utils';
+import { UserCrUDComponent } from './user-crud/user-crud.component';
 import { select } from '@angular-redux/store';
 import { Observable } from 'rxjs/Observable';
 import { Settings } from '../../classes/app-state.interface';
@@ -80,7 +79,7 @@ export class UserManagementComponent implements OnInit {
         }
 
         if (edit !== undefined && edit !== '') {
-          setTimeout(() => this.openDialog({username: edit}));
+          setTimeout(() => this.openDialog({ username: edit }));
         }
 
       });
@@ -98,7 +97,7 @@ export class UserManagementComponent implements OnInit {
 
   createUser() {
     if (this.useModal()) {
-      this.router.navigate(['/users'], {queryParams: {create: 'true'}});
+      this.router.navigate(['/users'], { queryParams: { create: 'true' } });
     } else {
       this.router.navigate(['/users/create']);
     }
@@ -106,7 +105,7 @@ export class UserManagementComponent implements OnInit {
 
   editUser(user) {
     if (this.useModal()) {
-      this.router.navigate(['/users'], {queryParams: {edit: user.username}});
+      this.router.navigate(['/users'], { queryParams: { edit: user.username } });
     } else {
       this.router.navigate(['/users/edit', user.username]);
     }
@@ -117,21 +116,21 @@ export class UserManagementComponent implements OnInit {
   }
 
   openDialog(data = {}) {
-    let dialogRef, subscription;
-    dialogRef = openDialog(this.dialog, EmbeddedViewDialogComponent, {
+    let dialogRef;
+    dialogRef = openDialog(this.dialog, UserCrUDComponent, {
       width: '800px',
+      height: '80vh',
+      panelClass: ['no', 'pad', 'dialog'],
       disableClose: true,
-      data: Object.assign({
-        component: UserCrUDComponent
-      }, data)
+      data
     });
-    subscription = dialogRef.afterClosed()
+    dialogRef.afterClosed()
       .subscribe(() => {
         this.editFinished();
-      }, () => {
-        console.log('2');
-      }, () => {
-        console.log('3');
+      });
+    dialogRef.componentInstance.finished
+      .subscribe(() => {
+        dialogRef.close();
       });
   }
 
@@ -141,7 +140,7 @@ export class UserManagementComponent implements OnInit {
 
   pageChanged($event: PageEvent) {
     this.router.navigate(['/users'], {
-      queryParams: {pageIndex: $event.pageIndex, pageSize: $event.pageSize}
+      queryParams: { pageIndex: $event.pageIndex, pageSize: $event.pageSize }
     });
   }
 

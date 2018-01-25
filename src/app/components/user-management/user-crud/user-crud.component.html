@@ -1,12 +1,12 @@
 <div class="sticky header view layout">
-  <std-view-title-bar class="pad" back="/users" [title]="editMode ? (model.name) : 'Create User'">
+  <std-view-title-bar class="pad all" back="/users" [title]="editMode ? (model.name) : 'Create User'">
     <ng-container *ngIf="editMode">
       <button mat-fab color="warn" [matMenuTriggerFor]="deleteConfirm" [attr.aria-label]="'Delete User' | translate">
         <mat-icon class="white text">delete</mat-icon>
       </button>
     </ng-container>
   </std-view-title-bar>
-  <div class="view body pad">
+  <div class="view body pad all">
     <mat-card class="stretch min height ensure pad none" max="comfort">
       <mat-tab-group [dynamicHeight]="true" [(selectedIndex)]="selectedTabIndex">
         <mat-tab i18n-label label="Basic Information">
@@ -160,7 +160,7 @@
       </mat-tab-group>
     </mat-card>
   </div>
-  <footer class="view footer pad">
+  <footer class="view footer pad all">
     <div fxLayout="row" fxLayoutAlign="space-between center">
       <div>
         <ng-container *ngIf="!model.managedExternally">
@@ -184,6 +184,9 @@
                 [disabled]="!updateBasicInfoFormGroup.valid || !passwordFormControl.valid"
                 *ngIf="!editMode">
           <span translate class="white text">Create</span>
+        </button>
+        <button mat-button (click)="done()" class="dialog done button">
+          Done
         </button>
       </div>
     </div>
