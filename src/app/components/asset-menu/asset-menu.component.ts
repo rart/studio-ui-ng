@@ -64,6 +64,7 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
   ngOnInit() {
     if (isNullOrUndefined(this.mode)) {
       // When no input provided, ngOnChanges is not called.
+      // (and that's where I'm doing the initialization)
       this.ngOnChanges();
     }
   }
