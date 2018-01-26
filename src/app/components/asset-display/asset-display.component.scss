@@ -70,6 +70,128 @@ $color-dark: #444;
       padding-left: 0;
     }
   }
+  &.status.icons.right {
+    .icons {
+      > .lock {
+        left: 1.05em;
+        &.yourself {
+          top: -.1em;
+          left: 1.1em;
+        }
+      }
+      > .status {
+        bottom: .15em;
+        left: 1.2em;
+      }
+      > .type {
+        text-align: left;
+      }
+    }
+    > .label {
+      padding-left: .55em;
+    }
+  }
+  &.status.icons.left {
+    .icons {
+      > .lock {
+        left: -.07em;
+        &.yourself {
+          top: -.1em;
+          left: 0;
+        }
+      }
+      > .status {
+        bottom: .15em;
+        left: .05em;
+      }
+      > .type {
+        left: .65em;
+      }
+    }
+    > .label {
+      padding-left: .55em;
+    }
+  }
+  &.status.icons.bottom {
+    .icons {
+      > .lock {
+        top: auto;
+        left: -.1em;
+        bottom: 0em;
+        &.yourself {
+          left: 0em;
+          bottom: -0.05em;
+        }
+      }
+      > .status {
+        right: -.1em;
+        bottom: .05em;
+      }
+      > .type {
+        top: -.4em;
+      }
+    }
+    > .label {
+
+    }
+  }
+  &.icons.above,
+  &.icons.below,
+  &.status.icons.inline {
+    // margin-bottom: 200px;
+    display: block;
+    height: auto;
+    .icons {
+      width: auto;
+      min-width: 0;
+      max-width: none;
+      position: static;
+      height: auto;
+      display: inline;
+      > .lock,
+      > .type,
+      > .status {
+
+        width: auto;
+        min-width: 0;
+        display: inline-block;
+        height: auto;
+
+        top: auto;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        position: static;
+
+        &::before {
+          font-size: 1em;
+        }
+
+      }
+    }
+    > .label {
+      width: auto;
+      overflow: visible;
+      white-space: normal;
+      display: inline;
+    }
+  }
+  &.icons.above {
+    .icons,
+    .label {
+      display: block;
+      text-align: center;
+    }
+  }
+  &.icons.below {
+    display: flex;
+    flex-direction: column-reverse;
+    .icons,
+    .label {
+      display: block;
+      text-align: center;
+    }
+  }
 }
 
 mat-checkbox {

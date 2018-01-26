@@ -123,13 +123,14 @@ import { TopBarComponent } from './components/topbar/topbar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { VerticalNavBarComponent } from './components/vertical-navbar/vertical-navbar.component';
 import { HorizontalNavbarComponent } from './components/horizontal-navbar/horizontal-navbar.component';
-import { UserMenuComponent } from './components/user-menu/user-menu.component'; global();
+import { UserMenuComponent } from './components/user-menu/user-menu.component';
+import { AssetMenuComponent } from './components/asset-menu/asset-menu.component';
+import { ManageAssetComponent } from './components/asset-manager/manage-asset.component';
+import { InfoSheetComponent } from './components/asset-info-sheet/info-sheet.component';
+import { InfoSheetListComponent } from './components/asset-info-sheet/info-sheet-list.component';
 
 // This is just for "pretty" to be available globally, really.
-import { global } from './utils/logging.utils';
-import { SelectionManagementComponent } from './components/selection-management/selection-management.component';
-import { AssetMenuComponent } from './components/asset-menu/asset-menu.component';
-import { ManageAssetComponent } from './components/manage-asset/manage-asset.component';
+import { global } from './utils/logging.utils'; global();
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
@@ -192,9 +193,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     VerticalNavBarComponent,
     HorizontalNavbarComponent,
     UserMenuComponent,
-    SelectionManagementComponent,
     AssetMenuComponent,
-    ManageAssetComponent
+    ManageAssetComponent,
+    InfoSheetComponent,
+    InfoSheetListComponent
 
   ],
   imports: [

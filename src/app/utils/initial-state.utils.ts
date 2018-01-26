@@ -39,14 +39,14 @@ export const initialState: AppState = {
       expandedPanels: {
         'pending.panel.pages': true,
         'scheduled.panel.02/16 02:30am': true,
-        // 'sidebar.projectnav.pages': true,
-        'sidebar.projectnav.assets': true,
+        'sidebar.projectnav.pages': true,
+        // 'sidebar.projectnav.assets': true,
         'sidebar.appnav.panel': true,
         'pending.panel.assets': true,
         'pending.panel.templates': true
       },
       expandedPaths: {
-        // '/site/website/index.xml': true,
+        '/site/website/index.xml': true,
         // '/static-assets/js': true
       }
     },

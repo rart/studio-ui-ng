@@ -28,8 +28,7 @@ export class MainComponent extends WithNgRedux implements OnInit {
   navState = '';
 
   constructor(store: NgRedux<AppState>,
-              private router: Router,
-              private route: ActivatedRoute) {
+              private router: Router) {
     super(store);
   }
 
@@ -39,8 +38,7 @@ export class MainComponent extends WithNgRedux implements OnInit {
       .subscribe((settings) => this.settings = settings);
     this.router.events
       .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        map(() => this.route))
+        filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
         this.navState = this.settings.viewAnimation;
         setTimeout(() => this.navState = '', 500);

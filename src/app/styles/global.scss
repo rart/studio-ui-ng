@@ -301,12 +301,17 @@ $displays: (inline, block, flex, inline-block, inline-flex);
 }
 
 .flex {
-  display: flex;
   &.column {
     flex-direction: column
   }
+  &.row {
+    flex-direction: row
+  }
   &.grow {
     flex-grow: 1;
+  }
+  &.one {
+    flex: 1
   }
 }
 
@@ -332,8 +337,21 @@ $displays: (inline, block, flex, inline-block, inline-flex);
   }
 }
 
+.round {
+  &.bottom {
+    &.no {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+}
+
 .app-box {
   @include create-box;
+}
+
+.scrollable {
+  overflow: auto;
 }
 
 .view.container,
@@ -432,12 +450,17 @@ $displays: (inline, block, flex, inline-block, inline-flex);
 
 .ui {
 
-  &.table.flat {
-    border: none;
-    border-radius: 0;
-    thead tr:first-child > th:first-child,
-    thead tr:first-child > th:last-child {
+  &.table {
+    &.no.borders tr td {
+      border-style: none;
+    }
+    &.flat {
+      border: none;
       border-radius: 0;
+      thead tr:first-child > th:first-child,
+      thead tr:first-child > th:last-child {
+        border-radius: 0;
+      }
     }
   }
 
@@ -579,6 +602,12 @@ thead.uppercase {
       position: absolute;
     }*/
   }
+}
+
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /**

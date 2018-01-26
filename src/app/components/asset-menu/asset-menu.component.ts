@@ -136,8 +136,8 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
         let projectCode = this.store.getState().activeProjectCode;
         this.router.navigate(['/project/',
           ...(singleMode
-            ? [projectCode, 'manage', /*asset.id*/'uuid']
-            : [projectCode, 'manage/selected']),
+            ? [projectCode, 'review', /*asset.id*/'uuid']
+            : [projectCode, 'review', 'selected']),
           action.toLowerCase()
         ]);
         break;

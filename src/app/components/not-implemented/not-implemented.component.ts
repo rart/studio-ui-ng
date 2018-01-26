@@ -40,15 +40,7 @@ export class NotImplementedComponent implements OnInit {
   fetch() {
     this.contentService.tree(this.path)
       .subscribe((item) => {
-
         this.asset = item;
-        setTimeout(() => {
-          console.clear();
-          console.log(item.workflowStatus);
-          console.log(this.component.typeClass);
-          console.log(this.component.statusClass);
-        });
-
       });
   }
 

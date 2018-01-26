@@ -1,4 +1,4 @@
-import { Routes, RouterModule, CanActivate, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
 
 import { AuthGuard } from './auth.guard';
 import { ProjectResolver } from './services/project.resolver';
@@ -16,13 +16,13 @@ import { UserCrUDComponent } from './components/user-management/user-crud/user-c
 import { WorkflowStatesComponent } from './components/workflow-states/workflow-states.component';
 import { EditComponent } from './components/edit/edit.component';
 import { EntryComponent } from './components/entry/entry.component';
-import { SelectionManagementComponent } from './components/selection-management/selection-management.component';
-import { ManageAssetComponent } from './components/manage-asset/manage-asset.component';
+import { ManageAssetComponent } from './components/asset-manager/manage-asset.component';
+import { InfoSheetListComponent } from './components/asset-info-sheet/info-sheet-list.component';
 
 // Not having as a route requires for it to be added as entry component on AppModule
 // import {ProjectCrUDComponent} from './components/project-management/project-crud/project-crud.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     resolve: { projects: ProjectsResolver },
@@ -84,12 +84,50 @@ const routes: Routes = [
             component: ProjectDashboardComponent
           },
           {
-            path: 'manage-selection',
-            component: SelectionManagementComponent
-          },
-          {
-            path: 'manage/:id',
-            component: ManageAssetComponent
+            path: 'review',
+            children: [
+              {
+                path: '',
+                pathMatch: 'full',
+                redirectTo: 'selected/info'
+              },
+              {
+                path: ':asset',
+                component: ManageAssetComponent,
+                children: [
+                  {
+                    path: 'info',
+                    data: { label: 'Info' },
+                    component: InfoSheetListComponent
+                  },
+                  {
+                    path: 'delete',
+                    data: { label: 'Delete' },
+                    component: DashboardComponent
+                  },
+                  {
+                    path: 'history',
+                    data: { label: 'History' },
+                    component: NotImplementedComponent
+                  },
+                  {
+                    path: 'publish',
+                    data: { label: 'Publish' },
+                    component: NotImplementedComponent
+                  },
+                  {
+                    path: 'schedule',
+                    data: { label: 'Schedule' },
+                    component: NotImplementedComponent
+                  },
+                  {
+                    path: 'dependencies',
+                    data: { label: 'Dependencies' },
+                    component: NotImplementedComponent
+                  }
+                ]
+              }
+            ]
           },
           {
             path: 'preview',

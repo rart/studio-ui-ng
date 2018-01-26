@@ -68,7 +68,8 @@ export enum AssetActionEnum {
   INFO = 'INFO',
   PREVIEW = 'PREVIEW',
   SCHEDULE = 'SCHEDULE',
-  APPROVE = 'APPROVE',
+  PUBLISH = 'PUBLISH',
+  DUPLICATE = 'DUPLICATE',
   EDIT = 'EDIT',
   DELETE = 'DELETE',
   HISTORY = 'HISTORY',
@@ -184,14 +185,15 @@ export class WorkflowService {
 
   getAvailableAssetOptions(user, item): AssetMenuOption[] {
     return [
+      { label: 'Get Info', action: AssetActionEnum.INFO },
       { label: 'Preview', action: AssetActionEnum.PREVIEW, divider: true },
-      { label: 'Get Info', action: AssetActionEnum.INFO, divider: true },
       { label: 'Edit', action: AssetActionEnum.EDIT },
       { label: 'Delete', action: AssetActionEnum.DELETE },
       { label: 'Schedule', action: AssetActionEnum.SCHEDULE },
-      { label: 'Approve', action: AssetActionEnum.APPROVE },
+      { label: 'Publish', action: AssetActionEnum.PUBLISH },
       { label: 'History', action: AssetActionEnum.HISTORY },
-      { label: 'Dependencies', action: AssetActionEnum.DEPENDENCIES }
+      { label: 'Dependencies', action: AssetActionEnum.DEPENDENCIES, divider: true },
+      { label: 'Duplicate', action: AssetActionEnum.DUPLICATE }
     ];
   }
 

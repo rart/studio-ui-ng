@@ -23,7 +23,7 @@ import { createPreviewTabCore } from '../../utils/state.utils';
 import { SettingsEnum } from '../../enums/Settings.enum';
 import { AssetActions } from '../../actions/asset.actions';
 import { notNullOrUndefined } from '../../app.utils';
-import { skip, tap } from 'rxjs/operators';
+import { filter, skip, tap } from 'rxjs/operators';
 import { isNullOrUndefined } from 'util';
 
 @Component({
@@ -186,15 +186,17 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
         this.assetSub.unsubscribe();
         this.assetSub = null;
       }
-      this.assetSub = this.select(['entities', 'assets', 'byId', this.id])
-      // right now, skipping the first since the asset will
-      // always be pre-loaded by the host component. Probably
-      // should change in the future
-        .pipe(this.endWhenDestroyed)
-        .subscribe((a: Asset) => {
-          this.asset = a;
-          this.navigable = this.isNavigable();
-        });
+      if (notNullOrUndefined(this.id)) {
+        this.assetSub = this.select(['entities', 'assets', 'byId', this.id])
+        // right now, skipping the first since the asset will
+        // always be pre-loaded by the host component. Probably
+        // should change in the future
+          .pipe(this.endWhenDestroyed, filter(x => notNullOrUndefined(x)))
+          .subscribe((a: Asset) => {
+            this.asset = a;
+            this.navigable = this.isNavigable();
+          });
+      }
     }
 
     if (changes.showCheck.previousValue !== changes.showCheck.currentValue) {

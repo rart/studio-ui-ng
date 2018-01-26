@@ -1,0 +1,55 @@
+<h2>
+  <std-asset-display [id]="id" [showMenu]="false" [showLink]="false" class="icons above"></std-asset-display>
+</h2>
+
+<section max="readability" *ngIf="asset">
+  <table class="ui very basic no borders table">
+    <tbody>
+    <tr class="type">
+      <th class="text align right">Type</th>
+      <td>{{ ('AssetTypes.' + asset.type) | translate }}</td>
+    </tr>
+
+    <tr class="size">
+      <th class="text align right">Children</th>
+      <td>
+        {{asset.numOfChildren
+        ? (('Yes' | translate) + ' (' + asset.numOfChildren + ')')
+        : ('None'|translate)}}
+      </td>
+    </tr>
+
+    <tr class="location">
+      <th class="text align right">Url</th>
+      <td>
+        <div class="full width ellipsis">{{ asset.url }}</div>
+      </td>
+    </tr>
+
+    <tr class="owner">
+      <th class="text align right">State</th>
+      <td>{{ ('WorkflowStatus.' + asset.workflowStatus) | translate }}</td>
+    </tr>
+
+    <tr class="modified" *ngIf="asset.lastEditedOn">
+      <th class="text align right" translate>Last Edit On</th>
+      <td>{{ asset.lastEditedOn | amTimeAgo }}</td>
+    </tr>
+
+    <tr class="modified" *ngIf="asset.lastEditedBy">
+      <th class="text align right" translate>Last Edit by</th>
+      <td>{{ asset.lastEditedBy.name }}</td>
+    </tr>
+
+    <tr class="opened" *ngIf="asset.contentModelId">
+      <th class="text align right" translate>Content Model</th>
+      <td>{{ asset.contentModelId }}</td>
+    </tr>
+
+    <tr class="created" *ngIf="asset.publishedOn">
+      <th class="text align right" translate>Published on</th>
+      <td>{{ asset.publishedOn | amDateFormat:'MM/DD/YY h:mm a' }}</td>
+    </tr>
+    </tbody>
+  </table>
+</section>
