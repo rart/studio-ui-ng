@@ -1,14 +1,9 @@
 import { Injectable } from '@angular/core';
-
 import { User } from '../models/user.model';
-import {
-  // mapToPagedResponse,
-  // mapToPostResponse,
-  StudioHttpService
-} from './http.service';
+import { StudioHttpService } from './http.service';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs/Observable';
-import { catchError, combineLatest, map, tap } from 'rxjs/operators';
+import { combineLatest, map } from 'rxjs/operators';
 import { EntityService } from '../classes/entity-service.interface';
 import { PagedResponse } from '../classes/paged-response.interface';
 import { PostResponse } from '../classes/post-response.interface';
@@ -19,6 +14,7 @@ const security = `${environment.apiUrl}/security`;
 
 @Injectable()
 export class UserService implements EntityService<User> {
+
   constructor(private http: StudioHttpService) {
 
   }
@@ -34,15 +30,7 @@ export class UserService implements EntityService<User> {
   page(options?): Observable<PagedResponse<User>> {
     return this.http
       .get(`${baseUrl}/get-all.json`, options)
-      .pipe(
-        catchError(e => {
-          if (e.status === 401) {
-
-          }
-          return Observable.of({ total: 0, users: [] });
-        }),
-        map(StudioHttpService.mapToPagedResponse('users', User))
-      );
+      .pipe(map(StudioHttpService.mapToPagedResponse('users', User)));
   }
 
   by(entityProperty: string, value): Observable<User> {
@@ -124,6 +112,10 @@ export class UserService implements EntityService<User> {
   retrieve() {
     // TODO: must mock this up for the time being...
     // This should return the initial state (with the user) if there's a session
+    return this.http.get(`${security}/validate-session.json`);
+  }
+
+  validateSession() {
     return this.http.get(`${security}/validate-session.json`);
   }
 

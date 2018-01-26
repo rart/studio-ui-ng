@@ -1,6 +1,13 @@
 <ng-container *ngIf="preRequisitesPassed">
-  <router-outlet *ngIf="(auth$ | async) === 'void'"></router-outlet>
-  <std-main *ngIf="(auth$ | async) !== 'void'"></std-main>
+  <ng-container [ngSwitch]="auth">
+
+    <!--  -->
+    <router-outlet *ngSwitchCase="'void'"></router-outlet>
+
+    <!-- Show the app until user is logged in -->
+    <std-main *ngSwitchDefault></std-main>
+
+  </ng-container>
 </ng-container>
 
 <ng-container *ngIf="!preRequisitesPassed">

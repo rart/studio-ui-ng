@@ -14,6 +14,10 @@ export const environment: Environment = {
     assets: '/app/assets',
   },
 
+  cfg: {
+    timeout: 600000 // ten minutes
+  },
+
   // TODO: change all references to use environment.url
   appUrl: '/app',
   assetsUrl: '/app/assets',
