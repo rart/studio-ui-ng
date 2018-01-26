@@ -66,6 +66,10 @@ import { studioRoutes } from './app.routes';
 import { SafeUrlPipe } from './safe-url.pipe';
 import { ComponentHostDirective } from './components/component-host.directive';
 
+// This is just for "pretty" to be available globally, really.
+import { global } from './utils/logging.utils';
+global();
+
 // Studio Components
 import { AppComponent } from './app.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
@@ -128,10 +132,11 @@ import { AssetMenuComponent } from './components/asset-menu/asset-menu.component
 import { AssetOverviewComponent } from './components/asset-review/asset-overview.component';
 import { InfoSheetComponent } from './components/asset-info-sheet/info-sheet.component';
 import { InfoSheetListComponent } from './components/asset-info-sheet/info-sheet-list.component';
-
-// This is just for "pretty" to be available globally, really.
-import { global } from './utils/logging.utils';
-global();
+import { DeleteReviewComponent } from './components/asset-review/delete-review.component';
+import { ScheduleReviewComponent } from './components/asset-review/schedule-review.component';
+import { PublishReviewComponent } from './components/asset-review/publish-review.component';
+import { DependencyReviewComponent } from './components/asset-review/dependency-review.component';
+import { HistoryReviewComponent } from './components/asset-review/history-review.component';
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
@@ -197,7 +202,12 @@ export function HttpLoaderFactory(http: HttpClient) {
     AssetMenuComponent,
     AssetOverviewComponent,
     InfoSheetComponent,
-    InfoSheetListComponent
+    InfoSheetListComponent,
+    DeleteReviewComponent,
+    DependencyReviewComponent,
+    HistoryReviewComponent,
+    PublishReviewComponent,
+    ScheduleReviewComponent
 
   ],
   imports: [

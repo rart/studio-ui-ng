@@ -18,6 +18,11 @@ import { EditComponent } from './components/edit/edit.component';
 import { EntryComponent } from './components/entry/entry.component';
 import { AssetOverviewComponent } from './components/asset-review/asset-overview.component';
 import { InfoSheetListComponent } from './components/asset-info-sheet/info-sheet-list.component';
+import { DeleteReviewComponent } from './components/asset-review/delete-review.component';
+import { HistoryReviewComponent } from './components/asset-review/history-review.component';
+import { PublishReviewComponent } from './components/asset-review/publish-review.component';
+import { ScheduleReviewComponent } from './components/asset-review/schedule-review.component';
+import { DependencyReviewComponent } from './components/asset-review/dependency-review.component';
 
 // Not having as a route requires for it to be added as entry component on AppModule
 // import {ProjectCrUDComponent} from './components/project-management/project-crud/project-crud.component';
@@ -103,27 +108,27 @@ export const routes: Routes = [
                   {
                     path: 'delete',
                     data: { label: 'Delete' },
-                    component: DashboardComponent
+                    component: DeleteReviewComponent
                   },
                   {
                     path: 'history',
                     data: { label: 'History' },
-                    component: NotImplementedComponent
+                    component: HistoryReviewComponent
                   },
                   {
                     path: 'publish',
                     data: { label: 'Publish' },
-                    component: NotImplementedComponent
+                    component: PublishReviewComponent
                   },
                   {
                     path: 'schedule',
                     data: { label: 'Schedule' },
-                    component: NotImplementedComponent
+                    component: ScheduleReviewComponent
                   },
                   {
                     path: 'dependencies',
                     data: { label: 'Dependencies' },
-                    component: NotImplementedComponent
+                    component: DependencyReviewComponent
                   }
                 ]
               }
