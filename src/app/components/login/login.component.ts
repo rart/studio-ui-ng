@@ -15,7 +15,7 @@ import { environment } from '../../../environments/environment';
 })
 export class LoginComponent extends WithNgRedux implements OnInit {
 
-  studioLogoUrl = `${environment.assetsUrl}/img/crafter-logo-white.png`;
+  studioLogoUrl = `${environment.assetsUrl}/img/logos/white.png`;
 
   showRecoverView = false;
 

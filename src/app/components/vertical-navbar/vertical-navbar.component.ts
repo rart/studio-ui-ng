@@ -11,7 +11,7 @@ import { navBarAnimations } from '../../utils/animations.utils';
 import { fromEvent } from 'rxjs/observable/fromEvent';
 import { interval } from 'rxjs/observable/interval';
 
-const PATH_IMAGES = `${environment.url.assets}/img`;
+const PATH_IMAGES = `${environment.url.assets}/img/logos`;
 
 @Component({
   selector: 'std-vertical-navbar',
@@ -33,7 +33,7 @@ export class VerticalNavBarComponent extends ComponentBase implements OnInit, Af
 
   isMobile = false;
   settings: Settings;
-  logoImage = `${PATH_IMAGES}/crafter_studio_360.png`;
+  logoImage = `${PATH_IMAGES}/flat.png`;
 
   viewInitialized = false;
 
@@ -56,8 +56,8 @@ export class VerticalNavBarComponent extends ComponentBase implements OnInit, Af
         this.minimised = settings.navBarMinimised;
         this.visibility = settings.navBarShown ? 'expanded' : 'minimised';
         this.logoImage = (['main', 'yellow', 'teal', 'white'].includes(settings.navBarTheme))
-          ? `${PATH_IMAGES}/logo-black.png`
-          : `${PATH_IMAGES}/logo-white.png`;
+          ? `${PATH_IMAGES}/black.png`
+          : `${PATH_IMAGES}/white.png`;
         if (settings.navBarMinimised) {
           this.beginRevealService();
         }
