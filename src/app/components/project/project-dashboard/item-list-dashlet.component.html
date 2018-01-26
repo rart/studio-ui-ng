@@ -105,7 +105,7 @@
 <ng-template #modernFormatTpl let-items>
   <div class="ui vertical segment" *ngFor="let assetId of items">
     <div class="asset-display">
-      <std-asset-display [asset]="assets[assetId]" [showCheck]="true" [showMenu]="true"></std-asset-display>
+      <std-asset-display [id]="assetId" [showCheck]="true" [showMenu]="true"></std-asset-display>
     </div>
     <div class="stats muted text" *ngIf="assets[assetId].lastEditedOn || assets[assetId].lastEditedBy">
       Edited
@@ -118,7 +118,7 @@
     </div>
     <std-asset-display
       displayField="url"
-      [asset]="assets[assetId]"
+      [id]="assetId"
       [showIcons]="false"
       [showCheck]="false"
       [showMenu]="false"></std-asset-display>
@@ -159,7 +159,7 @@
     <tr *ngFor="let assetId of items">
       <td class="label">
         <div>
-          <std-asset-display [asset]="assets[assetId]" [disallowWrap]="true" [showCheck]="true"></std-asset-display>
+          <std-asset-display [id]="assetId" [disallowWrap]="true" [showCheck]="true"></std-asset-display>
         </div>
       </td>
       <td class="url">
@@ -176,7 +176,7 @@
       <td class="menu">
         <div>
           <std-asset-display
-            [asset]="assets[assetId]"
+            [id]="assetId"
             [showMenu]="true"
             [showLabel]="false"
             [showCheck]="false"

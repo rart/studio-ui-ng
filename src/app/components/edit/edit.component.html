@@ -17,7 +17,7 @@
           <button (click)="selectTab(tab)" class="main">
             <std-asset-display
               *ngIf="assets[tab.assetId]"
-              [asset]="assets[tab.assetId]"
+              [id]="tab.assetId"
               [disallowWrap]="false"
               [showLink]="false"
               [showLabel]="true"

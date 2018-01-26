@@ -24,6 +24,7 @@ import { SettingsEnum } from '../../enums/Settings.enum';
 import { AssetActions } from '../../actions/asset.actions';
 import { notNullOrUndefined } from '../../app.utils';
 import { skip, tap } from 'rxjs/operators';
+import { isNullOrUndefined } from 'util';
 
 @Component({
   selector: 'std-asset-display',
@@ -42,12 +43,10 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
     super(store);
   }
 
-  // asset$: Observable<Asset>;
-
+  asset: Asset;
   settings: Settings;
 
-  @Input() assetID: string;
-  @Input() asset: Asset;
+  @Input() id: string;
   @Input() disallowWrap = true;
   @Input() showCheck = false;
   @Input() showIcons = true;
@@ -150,12 +149,6 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
   navigable = true; // Internal control of whether the asset displays as a link or a label
   selected = false;
 
-  // Keeps track of the value of showCheck to determine
-  // whether to update stuff related to state.selectedItems
-  private priorShowCheckValue;
-  //
-  private priorAssetID;
-
   // internal compiled value of the @input showmenu
   // updated every ngOnChanges
   shouldShowMenu = this.showMenu;
@@ -166,11 +159,16 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
       .subscribe((x: Settings) => this.settings = x);
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(ngChanges: SimpleChanges) {
 
-    // pretty('RED', 'Changes!', changes);
-
-    this.navigable = this.isNavigable();
+    let changes: any = { ...ngChanges };
+    let stub = { previousValue: null, currentValue: null, firstChange: null };
+    if (isNullOrUndefined(changes.id)) {
+      changes.id = stub;
+    }
+    if (isNullOrUndefined(changes.showCheck)) {
+      changes.showCheck = stub;
+    }
 
     if (this.showMenu === 'true') {
       this.shouldShowMenu = true;
@@ -183,48 +181,36 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
       this.shouldShowMenu = this.showMenu;
     }
 
-    // if (this.handleUpdates) {}
-    // TODO: implement with changes.asset.currentValue/changes.asset.previousValue
-    if (this.priorAssetID !== this.asset.id) {
-
-      this.priorAssetID = this.asset.id;
+    if (changes.id.previousValue !== changes.id.currentValue) {
       if (notNullOrUndefined(this.assetSub)) {
         this.assetSub.unsubscribe();
+        this.assetSub = null;
       }
-      this.assetSub = this.select(['entities', 'assets', 'byId', this.asset.id])
+      this.assetSub = this.select(['entities', 'assets', 'byId', this.id])
       // right now, skipping the first since the asset will
       // always be pre-loaded by the host component. Probably
       // should change in the future
         .pipe(this.endWhenDestroyed)
-        .subscribe((a: Asset) => this.asset = a);
+        .subscribe((a: Asset) => {
+          this.asset = a;
+          this.navigable = this.isNavigable();
+        });
     }
 
-    // TODO: implement with changes.showCheck.currentValue/changes.showCheck.previousValue
-    if (this.priorShowCheckValue !== this.showCheck) {
+    if (changes.showCheck.previousValue !== changes.showCheck.currentValue) {
       // Only good as far as there's a single subscription...
-      if (this.priorShowCheckValue === true) {
+      if (notNullOrUndefined(this.selectedAssetsSub)) {
         this.selectedAssetsSub.unsubscribe();
+        this.selectedAssetsSub = null;
       }
       if (this.showCheck) {
         this.selectedAssetsSub = this.store.select(['workspaceRef', 'selectedItems'])
           .pipe(this.endWhenDestroyed)
           .subscribe(selectedItems => this.selectedItemsStateChanged(selectedItems));
       }
-      this.priorShowCheckValue = this.showCheck;
     }
 
   }
-
-  // onChanges() {
-  //
-  //   let assetID = this.assetID;
-  //   if (this.assetID) {
-  //     asset
-  //   }
-  //
-  //   this.asset$ = this.select(['entities', 'assets', ]);
-  //
-  // }
 
   isNavigable() {
     if (!this.showLink) {

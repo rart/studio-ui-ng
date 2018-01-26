@@ -32,7 +32,7 @@
         </div>
         <std-asset-display
           *ngIf="activeTabAsset"
-          [asset]="activeTabAsset"
+          [id]="activeTabAsset.id"
           [disallowWrap]="false"
           [showLabel]="false"
           [showMenu]="false"></std-asset-display>
@@ -42,7 +42,7 @@
                (keyup.enter)="requestUrl(urlBox.value)" />
         <std-asset-display
           *ngIf="activeTabAsset"
-          [asset]="activeTabAsset"
+          [id]="activeTabAsset.id"
           [disallowWrap]="false"
           [showLink]="false"
           [showLabel]="false"
@@ -59,7 +59,7 @@
       <button (click)="selectTab(tab)" class="main" [title]="tab.title">
         <std-asset-display
           *ngIf="assets[tab.assetId]"
-          [asset]="assets[tab.assetId]"
+          [id]="tab.assetId"
           [disallowWrap]="false"
           [showLink]="false"
           [showLabel]="false"

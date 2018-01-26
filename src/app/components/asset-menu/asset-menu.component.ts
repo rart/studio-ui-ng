@@ -28,7 +28,7 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
 
   sub: Subscription;
 
-  @Input() asset: Asset = null;
+  @Input() ids: string[] = null;
   assetsLookUpTable: LookUpTable<Asset>;
   selected: LookUpTable<boolean>;
 
@@ -45,11 +45,21 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
   ngOnChanges() {
     if (notNullOrUndefined(this.sub)) {
       this.sub.unsubscribe();
+      this.sub = null;
     }
-    if (notNullOrUndefined(this.asset)) {
-      this.selected = { [this.asset.id]: true };
-      this.menu = this.workflowService
-        .getAvailableAssetOptions(this.state.user, this.asset);
+    if (notNullOrUndefined(this.ids)) {
+      if (this.ids.length > 1) {
+        this.selected = this.ids.reduce((prev, current) => {
+          prev[current] = true;
+          return prev;
+        }, {});
+        this.menu = this.workflowService
+          .getAvailableWorkflowOptions(this.state.user, this.selected);
+      } else {
+        this.selected = { [`${this.ids[0]}`]: true };
+        this.menu = this.workflowService
+          .getAvailableAssetOptions(this.state.user, this.ids[0]);
+      }
     } else {
       this.sub = this.store.select(['workspaceRef', 'selectedItems'])
         .pipe(...this.noNullsAndUnSubOps)
@@ -120,14 +130,15 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
       case AssetActionEnum.INFO:
       case AssetActionEnum.DELETE:
       case AssetActionEnum.HISTORY:
-      case AssetActionEnum.APPROVE:
+      case AssetActionEnum.PUBLISH:
       case AssetActionEnum.SCHEDULE:
       case AssetActionEnum.DEPENDENCIES:
-        this.router.navigate([
-          '/project/',
+        let projectCode = this.store.getState().activeProjectCode;
+        this.router.navigate(['/project/',
           ...(singleMode
-            ? ['manage', asset.projectCode, asset.id.replace(`${asset.projectCode}:`, '')]
-            : [this.store.getState().activeProjectCode, 'manage-selection'])
+            ? [projectCode, 'manage', /*asset.id*/'uuid']
+            : [projectCode, 'manage/selected']),
+          action.toLowerCase()
         ]);
         break;
 
