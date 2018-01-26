@@ -11,11 +11,11 @@ import { ComponentBase } from '../../classes/component-base.class';
 import { routes } from '../../app.routes';
 
 @Component({
-  selector: 'std-manage-asset',
-  templateUrl: './manage-asset.component.html',
-  styleUrls: ['./manage-asset.component.scss']
+  selector: 'std-asset-overview',
+  templateUrl: './asset-overview.component.html',
+  styleUrls: ['./asset-overview.component.scss']
 })
-export class ManageAssetComponent extends ComponentBase implements AfterViewInit {
+export class AssetOverviewComponent extends ComponentBase implements AfterViewInit {
 
   @ViewChild('tabGroup') tabGroup: MatTabGroup;
 

@@ -16,7 +16,7 @@ import { UserCrUDComponent } from './components/user-management/user-crud/user-c
 import { WorkflowStatesComponent } from './components/workflow-states/workflow-states.component';
 import { EditComponent } from './components/edit/edit.component';
 import { EntryComponent } from './components/entry/entry.component';
-import { ManageAssetComponent } from './components/asset-manager/manage-asset.component';
+import { AssetOverviewComponent } from './components/asset-review/asset-overview.component';
 import { InfoSheetListComponent } from './components/asset-info-sheet/info-sheet-list.component';
 
 // Not having as a route requires for it to be added as entry component on AppModule
@@ -93,7 +93,7 @@ export const routes: Routes = [
               },
               {
                 path: ':asset',
-                component: ManageAssetComponent,
+                component: AssetOverviewComponent,
                 children: [
                   {
                     path: 'info',

@@ -125,12 +125,13 @@ import { VerticalNavBarComponent } from './components/vertical-navbar/vertical-n
 import { HorizontalNavbarComponent } from './components/horizontal-navbar/horizontal-navbar.component';
 import { UserMenuComponent } from './components/user-menu/user-menu.component';
 import { AssetMenuComponent } from './components/asset-menu/asset-menu.component';
-import { ManageAssetComponent } from './components/asset-manager/manage-asset.component';
+import { AssetOverviewComponent } from './components/asset-review/asset-overview.component';
 import { InfoSheetComponent } from './components/asset-info-sheet/info-sheet.component';
 import { InfoSheetListComponent } from './components/asset-info-sheet/info-sheet-list.component';
 
 // This is just for "pretty" to be available globally, really.
-import { global } from './utils/logging.utils'; global();
+import { global } from './utils/logging.utils';
+global();
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
@@ -194,7 +195,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     HorizontalNavbarComponent,
     UserMenuComponent,
     AssetMenuComponent,
-    ManageAssetComponent,
+    AssetOverviewComponent,
     InfoSheetComponent,
     InfoSheetListComponent
 
