@@ -27,7 +27,6 @@ import { notNullOrUndefined } from '../../app.utils';
 import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { isNullOrUndefined } from 'util';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { Subject } from 'rxjs/Subject';
 
 declare type LabelFactory = (asset: Asset) => string;
 
