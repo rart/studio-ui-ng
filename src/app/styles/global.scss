@@ -275,7 +275,8 @@ $displays: (inline, block, flex, inline-block, inline-flex);
   }
 }
 
-.is-interactive {
+.cursor.pointer,
+.is.interactive {
   cursor: pointer;
 }
 
