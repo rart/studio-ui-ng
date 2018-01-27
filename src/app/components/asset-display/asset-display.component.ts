@@ -105,8 +105,6 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
 
   ngOnChanges(ngChanges: SimpleChanges) {
 
-    pretty('RED', 'Changes');
-
     let changes: any = { ...ngChanges };
     let stub = { previousValue: null, currentValue: null, firstChange: null };
     if (isNullOrUndefined(changes.id)) {
