@@ -249,6 +249,15 @@ $displays: (inline, block, flex, inline-block, inline-flex);
 
 }
 
+.margin {
+  &.no {
+    margin: 0;
+    &.ensure {
+      margin: 0 !important;
+    }
+  }
+}
+
 /**
  *
  */
@@ -278,6 +287,12 @@ $displays: (inline, block, flex, inline-block, inline-flex);
 .cursor.pointer,
 .is.interactive {
   cursor: pointer;
+}
+
+.hide.last {
+  &:last-child {
+    display: none;
+  }
 }
 
 .highlight-interaction {

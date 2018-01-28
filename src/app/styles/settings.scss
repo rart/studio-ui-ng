@@ -486,6 +486,8 @@ $spacing-md: 30px;
 $spacing-lg: 40px;
 
 $spacings: (
+  tn: $spacing-tiny,
+  mn: $spacing-mini,
   sm: $spacing-sm,
   md: $spacing-md,
   lg: $spacing-lg

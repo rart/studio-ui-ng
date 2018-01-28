@@ -40,7 +40,7 @@ export class API3Parser extends APIParser {
 
     asset.label = json.internalName || json.name;
 
-    asset.children = (json.children && json.children.length)
+    asset.children = (json.children)
       ? json.children
       // Get rid of crafter-component.xml
         .filter(jsonItem => jsonItem.name !== 'crafter-component.xml')

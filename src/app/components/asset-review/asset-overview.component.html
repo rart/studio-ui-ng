@@ -1,16 +1,11 @@
 <div class="sticky header view layout">
-  <std-view-title-bar
-    class="slimmer"
-    icon="pencil"
-    [title]="title">
-  </std-view-title-bar>
   <section class="view body pad top right left">
     <mat-card class="pad none full height no round bottom display flex column">
 
       <mat-tab-group #tabGroup [(selectedIndex)]="index">
         <mat-tab *ngFor="let tab of tabs" [label]="tab.label | translate"></mat-tab>
       </mat-tab-group>
-      <div id="manageRouterWrapper" class="position relative flex one scrollable">
+      <div id="manageRouterWrapper" class="router wrapper position relative flex one">
         <router-outlet></router-outlet>
       </div>
 

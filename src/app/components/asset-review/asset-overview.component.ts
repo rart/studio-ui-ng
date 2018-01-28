@@ -19,7 +19,6 @@ export class AssetOverviewComponent extends ComponentBase implements AfterViewIn
 
   @ViewChild('tabGroup') tabGroup: MatTabGroup;
 
-  title = 'Asset';
   tabs = [];
   index = 0;
   goal = 0;
@@ -42,10 +41,6 @@ export class AssetOverviewComponent extends ComponentBase implements AfterViewIn
         let noTabRoute = `/project/${params.project}/review/${params.asset}`;
         if (router.url === noTabRoute) {
           return router.navigateByUrl(`${this.router.url}/info`);
-        }
-        // Not true... there may be just one selected.
-        if (params.asset === 'selected') {
-          this.title = 'Multiple selected';
         }
       });
 
