@@ -18,9 +18,8 @@ import { Project } from '../../models/project.model';
 import { NgRedux, dispatch, select } from '@angular-redux/store';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { ComponentRef } from '@angular/core/src/linker/component_factory';
-import { filter, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { ProjectActions } from '../../actions/project.actions';
-import { notNullOrUndefined } from '../../app.utils';
 
 const NavItemTypesEnum = {
   Link: 'link',
@@ -114,7 +113,7 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
       .subscribe(() => {
         this.onProjectChanged$
           .pipe(
-            filter(p => notNullOrUndefined(p)),
+            this.filterNulls(),
             takeUntil(this.cmpHosts.changes)
           )
           // TODO: revise

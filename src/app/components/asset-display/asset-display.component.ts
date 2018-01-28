@@ -24,7 +24,7 @@ import { createPreviewTabCore } from '../../utils/state.utils';
 import { SettingsEnum } from '../../enums/Settings.enum';
 import { AssetActions } from '../../actions/asset.actions';
 import { notNullOrUndefined } from '../../app.utils';
-import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { filter, withLatestFrom } from 'rxjs/operators';
 import { isNullOrUndefined } from 'util';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 
@@ -129,7 +129,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
         this.assetSub = this.select<Asset>(['entities', 'assets', 'byId', this.id])
           .pipe(
             filter(x => notNullOrUndefined(x)),
-            takeUntil(this.ngOnDestroy$)
+            this.untilDestroyed()
           )
           .subscribe(asset => {
 
@@ -157,7 +157,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
         this.selectedAssetsSub = this.store.select<LookUpTable<boolean>>(['workspaceRef', 'selectedItems'])
           .pipe(
             withLatestFrom(this.asset$, x => x),
-            takeUntil(this.ngOnDestroy$)
+            this.untilDestroyed()
           )
           .subscribe(selectedItems => this.selectedItemsStateChanged(selectedItems));
       }

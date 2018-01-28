@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ElementRef, HostBinding, Input, OnInit } from
 import { select } from '@angular-redux/store';
 import { Observable } from 'rxjs/Observable';
 import { Settings } from '../../classes/app-state.interface';
-import { takeUntil } from 'rxjs/operators';
 import { ComponentBase } from '../../classes/component-base.class';
 
 @Component({

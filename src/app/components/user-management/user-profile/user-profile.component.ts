@@ -5,7 +5,6 @@ import { ColorsEnum } from '../../../enums/colors.enum';
 import { Observable } from 'rxjs/Observable';
 import { Settings } from '../../../classes/app-state.interface';
 import { ComponentBase } from '../../../classes/component-base.class';
-import { takeUntil } from 'rxjs/operators';
 import { SettingsActions } from '../../../actions/settings.actions';
 import { User } from '../../../models/user.model';
 import { StringUtils } from '../../../utils/string.utils';

@@ -2,9 +2,9 @@ import { Component, HostBinding, OnInit } from '@angular/core';
 import { NgRedux, select } from '@angular-redux/store';
 import { AppState, Settings } from '../../classes/app-state.interface';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { routerAnimations } from '../../utils/animations.utils';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'std-main',

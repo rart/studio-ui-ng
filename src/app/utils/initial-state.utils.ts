@@ -34,7 +34,8 @@ export const initialState: AppState = {
         }
       },
       selectedItems: {
-        'launcher:/site/website/index.xml': true
+        'launcher:/site/website/index.xml': true,
+        'launcher:/site/website/movies/index.xml': true
       },
       expandedPanels: {
         'pending.panel.pages': true,

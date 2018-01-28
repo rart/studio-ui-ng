@@ -7,16 +7,13 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  QueryList,
   ViewChild,
-  ViewChildren,
   OnChanges
 } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { CommunicationService } from '../../services/communication.service';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ComponentBase } from '../../classes/component-base.class';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'std-iframe',

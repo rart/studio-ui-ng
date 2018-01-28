@@ -5,7 +5,7 @@ import { AppState, EditSession, EditSessions, LookUpTable } from '../../classes/
 import { dispatch, NgRedux, select } from '@angular-redux/store';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { Asset } from '../../models/asset.model';
-import { filter, skip, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { filter, skip, switchMap, take, takeUntil } from 'rxjs/operators';
 import { AssetActions } from '../../actions/asset.actions';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { notNullOrUndefined } from '../../app.utils';

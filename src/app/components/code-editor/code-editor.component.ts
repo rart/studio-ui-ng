@@ -11,7 +11,7 @@ import {
 import { CodeEditor, CodeEditorChange, CodeEditorChoiceEnum } from '../../classes/code-editor.abstract';
 import { CodeEditorFactory } from '../../classes/code-editor-factory.class';
 import { Subject } from 'rxjs/Subject';
-import { switchMap, take, takeUntil } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { CommunicationService } from '../../services/communication.service';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { AppState } from '../../classes/app-state.interface';

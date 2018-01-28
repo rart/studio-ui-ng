@@ -11,8 +11,8 @@ import {
 import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import { filter, map, skip, switchMap, take, takeUntil } from 'rxjs/operators';
-import { dispatch, NgRedux, select } from '@angular-redux/store';
+import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { dispatch, NgRedux } from '@angular-redux/store';
 import { CookieService } from 'ngx-cookie-service';
 
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
@@ -230,7 +230,7 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
       .pipe(
         switchMap(() => previewTabsObserver$.pipe(takeUntil(checkIn$))),
         filter(() => this.activeTabType === 'iFrameComponent'),
-        takeUntil(this.ngOnDestroy$)
+        this.untilDestroyed()
       )
       .subscribe(url => {
         try {

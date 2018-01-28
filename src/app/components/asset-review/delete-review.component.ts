@@ -1,10 +1,10 @@
-import { Component, SimpleChanges } from '@angular/core';
+import { Component } from '@angular/core';
 import { ContentService } from '../../services/content.service';
 import { dispatch, NgRedux } from '@angular-redux/store';
-import { AppState, LookUpTable } from '../../classes/app-state.interface';
+import { AppState } from '../../classes/app-state.interface';
 import { ReviewBase } from '../../classes/review-base.class';
 import { ActivatedRoute } from '@angular/router';
-import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, switchMap, tap } from 'rxjs/operators';
 import { Asset } from '../../models/asset.model';
 import { notNullOrUndefined } from '../../app.utils';
 import { AssetActions } from '../../actions/asset.actions';

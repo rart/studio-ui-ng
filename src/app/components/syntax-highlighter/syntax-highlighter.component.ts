@@ -2,8 +2,7 @@ import { Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@ang
 import { ContentService } from '../../services/content.service';
 import { Asset } from '../../models/asset.model';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { AssetTypeEnum } from '../../enums/asset-type.enum';
-import { combineLatest, filter, takeUntil, zip } from 'rxjs/operators';
+import { filter, zip } from 'rxjs/operators';
 import { ComponentBase } from '../../classes/component-base.class';
 import { isNullOrUndefined } from 'util';
 
