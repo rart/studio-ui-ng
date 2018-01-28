@@ -40,13 +40,13 @@ export class UserProfileComponent extends ComponentBase implements OnInit {
   ngOnInit() {
 
     this.user$
-      .pipe(takeUntil(this.unSubscriber$))
+      .pipe(this.untilDestroyed())
       .subscribe((user) => {
         this.user = { ...user } as User;
       });
 
     this.settings$
-      .pipe(takeUntil(this.unSubscriber$))
+      .pipe(this.untilDestroyed())
       .subscribe((settings) => {
         this.settings = { ...settings };
       });

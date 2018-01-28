@@ -1,12 +1,9 @@
 import { MatTabGroup } from '@angular/material';
-import { group, transition, trigger } from '@angular/animations';
-import { fadeInEntryQueries, slideUpEntry } from '../../utils/animations.utils';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 
-import { Asset } from '../../models/asset.model';
 import { ComponentBase } from '../../classes/component-base.class';
 import { routes } from '../../app.routes';
 
@@ -46,7 +43,7 @@ export class AssetOverviewComponent extends ComponentBase implements AfterViewIn
 
     router.events
       .pipe(
-        takeUntil(this.unSubscriber$),
+        this.untilDestroyed(),
         filter(e => e instanceof NavigationEnd),
         map((e: NavigationEnd) => e.url.substr((e.url.lastIndexOf('/') + 1)))
       )

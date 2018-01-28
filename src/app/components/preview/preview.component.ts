@@ -168,14 +168,16 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
 
     this.addTearDown(() => clearTimeout(this.guestLoadControlTimeout));
 
+    // TODO: check why map is before filter
     this.projects$ = this.select(['entities', 'projects', 'byId'])
       .pipe(
         map(lookupTable => Object.values(lookupTable)),
-        ...this.noNullsAndUnSubOps
+        this.filterNulls(),
+        this.untilDestroyed()
       ) as Observable<Project[]>;
 
-    this.select<LookUpTable<Asset>>(['entities', 'assets', 'byId'])
-      .pipe(...this.noNullsAndUnSubOps)
+    this.pipeFilterAndTakeUntil(
+      this.select<LookUpTable<Asset>>(['entities', 'assets', 'byId']))
       .subscribe((lookupTable: LookUpTable<Asset>) => {
         this.assets = lookupTable;
       });
@@ -187,12 +189,6 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
       checkIn$,
       previewTabsObserver$
     } = this;
-
-    // this.select('activeProjectCode')
-    //   .pipe(skip(1), ...this.noNullsAndUnSubOps)
-    //   .subscribe(code => {
-    //     this.setProject(code);
-    //   });
 
     projects$
       .subscribe(entries => this.projects = entries);
@@ -210,7 +206,7 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
 
     communicator.subscribe(
       message => this.processMessage(message),
-      this.endWhenDestroyed);
+      this.untilDestroyed());
 
     // this.route.queryParams
     //   .subscribe(params => {
@@ -221,11 +217,11 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
     //   });
 
     // TODO: handle closing project workspace and swiching to global preview mode
-    let previewTabs$ = this.select<PreviewTabStateContainer>(
-      notNullOrUndefined(this.state.activeProjectCode)
-        ? ['workspaceRef', 'previewTabs']
-        : 'previewTabs')
-      .pipe(...this.noNullsAndUnSubOps);
+    let previewTabs$ = this.pipeFilterAndTakeUntil(
+      this.select<PreviewTabStateContainer>(
+        notNullOrUndefined(this.state.activeProjectCode)
+          ? ['workspaceRef', 'previewTabs']
+          : 'previewTabs'));
 
     previewTabs$
       .subscribe(container => this.previewTabsStateChanged(container));
@@ -234,7 +230,7 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
       .pipe(
         switchMap(() => previewTabsObserver$.pipe(takeUntil(checkIn$))),
         filter(() => this.activeTabType === 'iFrameComponent'),
-        takeUntil(this.unSubscriber$)
+        takeUntil(this.ngOnDestroy$)
       )
       .subscribe(url => {
         try {

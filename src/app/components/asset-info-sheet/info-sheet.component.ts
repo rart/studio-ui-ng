@@ -25,14 +25,14 @@ export class InfoSheetComponent extends WithNgRedux implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    let { unSubscriber$, assetChanged$, id } = this;
+    let { ngOnDestroy$, assetChanged$, id } = this;
     if (changes.id.previousValue !== changes.id.currentValue) {
       assetChanged$.next();
       if (notNullOrUndefined(id)) {
         this.select<Asset>(['entities', 'assets', 'byId', id])
           .pipe(
             filter(x => notNullOrUndefined(x)),
-            takeUntil(merge(unSubscriber$, assetChanged$))
+            takeUntil(merge(ngOnDestroy$, assetChanged$))
           )
           .subscribe(asset => this.asset = asset);
       }

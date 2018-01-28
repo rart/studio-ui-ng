@@ -58,7 +58,7 @@ export class IFrameComponent extends ComponentBase implements OnInit, OnDestroy,
 
   ngOnInit() {
     this.load
-      .pipe(takeUntil(this.unSubscriber$))
+      .pipe(this.untilDestroyed())
       .subscribe(x => this.loading$.next(false));
   }
 

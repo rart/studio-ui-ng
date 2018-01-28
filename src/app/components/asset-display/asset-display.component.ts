@@ -99,7 +99,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
 
   ngOnInit() {
     this.select('settings')
-      .pipe(this.endWhenDestroyed)
+      .pipe(this.untilDestroyed())
       .subscribe((x: Settings) => this.settings = x);
   }
 
@@ -129,7 +129,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
         this.assetSub = this.select<Asset>(['entities', 'assets', 'byId', this.id])
           .pipe(
             filter(x => notNullOrUndefined(x)),
-            takeUntil(this.unSubscriber$)
+            takeUntil(this.ngOnDestroy$)
           )
           .subscribe(asset => {
 
@@ -157,7 +157,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
         this.selectedAssetsSub = this.store.select<LookUpTable<boolean>>(['workspaceRef', 'selectedItems'])
           .pipe(
             withLatestFrom(this.asset$, x => x),
-            takeUntil(this.unSubscriber$)
+            takeUntil(this.ngOnDestroy$)
           )
           .subscribe(selectedItems => this.selectedItemsStateChanged(selectedItems));
       }

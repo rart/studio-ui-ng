@@ -151,7 +151,7 @@ export class EditorComponent extends WithNgRedux implements OnInit, AfterViewIni
       this.hasIFrame$.complete();
     });
 
-    let { sessions$, sessionId$, unSubscriber$, value$ } = this;
+    let { sessions$, sessionId$, value$ } = this;
 
     sessionId$
       .pipe(
@@ -160,7 +160,7 @@ export class EditorComponent extends WithNgRedux implements OnInit, AfterViewIni
         withLatestFrom(sessions$, (id, container) => {
           return container.byId[id];
         }),
-        takeUntil(unSubscriber$)
+        this.untilDestroyed()
       )
       .subscribe((session) => {
         this.sessionChanged(session);
@@ -185,11 +185,11 @@ export class EditorComponent extends WithNgRedux implements OnInit, AfterViewIni
           this.emitData();
         }
       }, /* any scope */undefined,
-      this.endWhenDestroyed);
+      this.untilDestroyed());
 
     this.communicator.resize(() => {
       this.recalculateSplit();
-    }, this.endWhenDestroyed);
+    }, this.untilDestroyed());
 
   }
 
@@ -210,7 +210,7 @@ export class EditorComponent extends WithNgRedux implements OnInit, AfterViewIni
         // If not mapped above this comparison would ALWAYS return true
         // despite it having changed internally — in this case the length
         distinctUntilChanged((prevQL, nextQL) => prevQL.length === nextQL.length),
-        takeUntil(this.unSubscriber$)
+        this.untilDestroyed()
       )
       .subscribe(ql => {
         this.hasIFrame$.next(ql.length > 0);

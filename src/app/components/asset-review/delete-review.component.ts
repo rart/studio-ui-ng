@@ -36,14 +36,12 @@ export class DeleteReviewComponent extends ReviewBase {
               private translate: TranslateService) {
     super(store, route);
 
-    window['component'] = this;
-
     this.ids$
       .pipe(
         filter(ids => !(this.empty = !ids.length)),
         tap(() => this.loading = true),
         switchMap(ids => this.contentService.fetchDeleteDependants(ids)),
-        takeUntil(this.unSubscriber$)
+        this.untilDestroyed()
       )
       .subscribe((data) => {
         this.notifyAssetLoaded(Object.values(data.lookUpTable));

@@ -47,7 +47,7 @@ export class VerticalNavBarComponent extends ComponentBase implements OnInit, Af
 
   ngOnInit() {
     this.settings$
-      .pipe(takeUntil(this.unSubscriber$))
+      .pipe(this.untilDestroyed())
       .subscribe((settings) => {
         this.settings = settings;
         this.right = settings.navBarPosition === 'right';

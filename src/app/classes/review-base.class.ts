@@ -15,7 +15,7 @@ export class ReviewBase extends ComponentBase {
       .subscribe((params) => {
         if (params.asset === 'selected') {
           store.select(['workspaceRef', 'selectedItems'])
-            .pipe(this.endWhenDestroyed)
+            .pipe(this.untilDestroyed())
             .subscribe((selected) => {
               this.ids$.next(Object.keys(selected));
             });

@@ -77,16 +77,16 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
 
     this.onProjectChanged$ =
       this.select('projectRef')
-        .pipe(takeUntil(this.unSubscriber$));
+        .pipe(this.untilDestroyed());
 
-    this.select(['entities', 'projects', 'byId'])
-      .pipe(...this.noNullsAndUnSubOps)
+    this.pipeFilterAndTakeUntil(
+      this.select(['entities', 'projects', 'byId']))
       .subscribe((lookupTable: LookUpTable<Project>) => {
         this.projects = Object.values(lookupTable);
       });
 
-    this.select('workspaceRef')
-      .pipe(...this.noNullsAndUnSubOps)
+    this.pipeFilterAndTakeUntil(
+      this.select('workspaceRef'))
       .subscribe((workspace: Workspace) => {
         this.expandedPanels = workspace.expandedPanels;
       });

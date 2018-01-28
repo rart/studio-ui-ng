@@ -41,7 +41,7 @@ export class ViewTitleBarComponent extends ComponentBase implements OnInit, Afte
 
   ngOnInit() {
     this.settings$
-      .pipe(takeUntil(this.unSubscriber$))
+      .pipe(this.untilDestroyed())
       .subscribe((settings) => {
         this.theme = settings.topBarTheme;
         this.hue = settings.topBarThemeHue;

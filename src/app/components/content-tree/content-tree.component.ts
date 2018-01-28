@@ -53,8 +53,8 @@ export class ContentTreeComponent
       this.ngOnChanges$.complete();
     });
 
-    this.store.select(['workspaceRef'])
-      .pipe(...this.noNullsAndUnSubOps)
+    this.pipeFilterAndTakeUntil(
+      this.store.select(['workspaceRef']))
       .subscribe((workspace: Workspace) => {
         this.treeState.expandedNodeIds = workspace.expandedPaths;
       });

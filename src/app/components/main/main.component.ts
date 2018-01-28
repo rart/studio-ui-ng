@@ -34,7 +34,7 @@ export class MainComponent extends WithNgRedux implements OnInit {
 
   ngOnInit() {
     this.settings$
-      .pipe(takeUntil(this.unSubscriber$))
+      .pipe(this.untilDestroyed())
       .subscribe((settings) => this.settings = settings);
     this.router.events
       .pipe(

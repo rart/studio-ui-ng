@@ -207,8 +207,7 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
       this.type = 'simple';
     }
 
-    this.assets$
-      .pipe(...this.noNullsAndUnSubOps)
+    this.pipeFilterAndTakeUntil(this.assets$)
       .subscribe(assets => {
         this.assets = assets;
       });
@@ -222,12 +221,12 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
 
     (!this.isDialog) && (this.finished = null);
 
-    this.store.select(['workspaceRef', 'expandedPanels'])
-      .pipe(...this.noNullsAndUnSubOps)
+    this.pipeFilterAndTakeUntil(
+      this.store.select(['workspaceRef', 'expandedPanels']))
       .subscribe(expandedPanels => this.updateLocalExpandedState(expandedPanels));
 
-    this.store.select(['workspaceRef', 'selectedItems'])
-      .pipe(...this.noNullsAndUnSubOps)
+    this.pipeFilterAndTakeUntil(
+      this.store.select(['workspaceRef', 'selectedItems']))
       .subscribe(selectedItems => this.updateLocalCheckedState(selectedItems));
 
   }

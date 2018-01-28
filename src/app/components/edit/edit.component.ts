@@ -30,7 +30,7 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
   editSessions$: Observable<EditSessions>;
 
   @select(['entities', 'assets', 'byId'])
-  assets$: Observable<EditSessions>;
+  assets$: Observable<LookUpTable<Asset>>;
 
   sessionAssetsHaveLoaded$ = new BehaviorSubject(false);
 
@@ -51,11 +51,10 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
 
   ngOnInit() {
 
-    let { editSessions$, assets$, unSubscriber$, waitingSaveToClose$ } = this;
+    let { editSessions$, assets$, waitingSaveToClose$ } = this;
 
-    assets$
-      .pipe(...this.noNullsAndUnSubOps)
-      .subscribe((x: any) => this.assets = x);
+    this.pipeFilterAndTakeUntil(assets$)
+      .subscribe(x => this.assets = x);
 
     waitingSaveToClose$
       .pipe(
@@ -70,15 +69,14 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
               // causing editSessions$ to stop emitting, so we skip the first
               waitingSaveToClose$.pipe(skip(1))
             ))),
-        takeUntil(unSubscriber$)
+        this.untilDestroyed()
       )
       .subscribe((sessions: EditSessions) => {
         this.sessionsChanged(sessions);
       });
 
     // Make sure all the assets are loaded
-    editSessions$
-      .pipe(...this.noNullsAndUnSubOps, take(1))
+    this.pipeFilterAndTakeUntil(editSessions$, take(1))
       .subscribe((sessions: EditSessions) => {
 
         let query = [];

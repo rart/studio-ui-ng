@@ -47,22 +47,19 @@ export class SyntaxHighlighterComponent extends ComponentBase implements OnInit,
   }
 
   ngOnInit() {
-    let { libs$, content$, unSubscriber$ } = this;
+    let { libs$, content$ } = this;
     libs$.pipe(
       filter(libs => libs.fetched),
       zip(
         content$.pipe(filter(c => c !== null)),
         (libs: Libs, content: string) => ({ content, ...libs })),
-      takeUntil(this.unSubscriber$)
+      this.untilDestroyed()
     ).subscribe(reqs => this.render(reqs));
-    unSubscriber$
-      .subscribe({
-        complete: () => {
-          libs$.complete();
-          content$.complete();
-          this.tearDown();
-        }
-      });
+    this.addTearDown(() => {
+      libs$.complete();
+      content$.complete();
+      this.tearDown();
+    });
   }
 
   tearDown() {
@@ -103,7 +100,7 @@ export class SyntaxHighlighterComponent extends ComponentBase implements OnInit,
 
       this.contentService
         .read(asset.id)
-        .pipe(takeUntil(this.unSubscriber$))
+        .pipe(this.untilDestroyed())
         .subscribe(data => content$.next(data.content));
 
     }

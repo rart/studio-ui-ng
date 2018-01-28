@@ -26,7 +26,7 @@ export class ComponentWithState extends ComponentBase {
                         subscriber: AnySubscriber = (key => this[`${keyMapOrKeys}StateChanged`](key))) {
     let
       store = this.store,
-      until = this.endWhenDestroyed;
+      until = this.untilDestroyed();
     if (typeof keyMapOrKeys === 'string') {
       // is a key
       store.subscribeTo(keyMapOrKeys, subscriber, until);

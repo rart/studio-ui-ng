@@ -2,16 +2,13 @@ import { Component, ContentChild, HostBinding, Input, OnChanges, OnInit, Output,
 import { AssetActionEnum, AssetMenuOption, WorkflowService } from '../../services/workflow.service';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { Asset } from '../../models/asset.model';
-import { NgRedux, select } from '@angular-redux/store';
+import { NgRedux } from '@angular-redux/store';
 import { AppState, LookUpTable } from '../../classes/app-state.interface';
-import { Subject } from 'rxjs/Subject';
 import { AssetActions } from '../../actions/asset.actions';
 import { Router } from '@angular/router';
-import { PreviewTabsActions } from '../../actions/preview-tabs.actions';
 import { notNullOrUndefined } from '../../app.utils';
 import { Subscription } from 'rxjs/Subscription';
 import { isNullOrUndefined } from 'util';
-import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'std-asset-menu',
@@ -61,8 +58,8 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
           .getAvailableAssetOptions(this.state.user, this.ids[0]);
       }
     } else {
-      this.sub = this.store.select(['workspaceRef', 'selectedItems'])
-        .pipe(...this.noNullsAndUnSubOps)
+      this.sub = this.pipeFilterAndTakeUntil(
+        this.store.select(['workspaceRef', 'selectedItems']))
         .subscribe((assets: LookUpTable<boolean>) => {
           this.selected = assets;
           this.menu = this.workflowService
@@ -75,7 +72,7 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
 
     this
       .select(['entities', 'assets', 'byId'])
-      .pipe(this.endWhenDestroyed)
+      .pipe(this.untilDestroyed())
       .subscribe((assetTable: LookUpTable<Asset>) => {
         this.assetsLookUpTable = assetTable;
       });

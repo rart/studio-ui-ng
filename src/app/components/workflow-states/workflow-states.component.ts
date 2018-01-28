@@ -61,11 +61,11 @@ export class WorkflowStatesComponent extends ComponentBase implements OnInit, On
   }
 
   fetch() {
-    this.unSubscriber$.next();
+    this.ngOnDestroy$.next();
     return this.items = createLocalPagination$({
 
       pager$: this.pager$,
-      takeUntilOp: this.endWhenDestroyed,
+      takeUntilOp: this.untilDestroyed(),
       filterFn: (item, query) => item.asset.id.includes(query),
 
       source$: this.workflowService

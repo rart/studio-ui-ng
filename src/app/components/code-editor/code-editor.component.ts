@@ -66,7 +66,7 @@ export class CodeEditorComponent extends WithNgRedux implements OnInit, OnChange
       this.initialized$.complete();
       this.ngOnChanges$.complete();
     });
-    let { unSubscriber$, ngOnChanges$, communicationService } = this;
+    let { ngOnChanges$, communicationService } = this;
     ngOnChanges$
       .subscribe(() => this.onChanges());
     communicationService.resize((e) => {
@@ -74,7 +74,7 @@ export class CodeEditorComponent extends WithNgRedux implements OnInit, OnChange
       if (editor && editor.vendor === 'monaco') {
         editor.resize();
       }
-    }, takeUntil(unSubscriber$));
+    }, this.untilDestroyed());
   }
 
   ngAfterViewInit() {
