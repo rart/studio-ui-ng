@@ -41,7 +41,7 @@ export class PreviewTabsActions {
 
   openMany(tabs: PreviewTabCore[]): AnyAction {
     return this.process({
-      type: StoreActionsEnum.OPEN_TAB,
+      type: StoreActionsEnum.OPEN_TABS,
       payload: tabs,
       affects
     });
@@ -52,6 +52,14 @@ export class PreviewTabsActions {
       type: StoreActionsEnum.OPEN_TAB_BACKGROUND,
       affects,
       tab
+    });
+  }
+
+  openManyInBackground(tabs: PreviewTabCore[]): AnyAction {
+    return this.process({
+      type: StoreActionsEnum.OPEN_TABS_BACKGROUND,
+      payload: tabs,
+      affects
     });
   }
 

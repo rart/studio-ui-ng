@@ -67,11 +67,13 @@ export function rootReducer(state = {} as AppState, action) {
     case StoreActionsEnum.STUDIO_INIT:
     case StoreActionsEnum.GUEST_CHECK_IN:
     case StoreActionsEnum.OPEN_TAB:
+    case StoreActionsEnum.OPEN_TABS:
     case StoreActionsEnum.NAVIGATE_ON_ACTIVE:
     case StoreActionsEnum.TAB_NAVIGATE_BACK:
     case StoreActionsEnum.TAB_NAVIGATE_FORWARD:
     case StoreActionsEnum.CLOSE_TAB:
     case StoreActionsEnum.OPEN_TAB_BACKGROUND:
+    case StoreActionsEnum.OPEN_TABS_BACKGROUND:
     case StoreActionsEnum.SELECT_TAB:
       return (projectCodeActive)
         ? spreadRoot(nextState, {

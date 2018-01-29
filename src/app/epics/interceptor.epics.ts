@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ignoreElements, switchMap } from 'rxjs/operators';
+import { ignoreElements } from 'rxjs/operators';
 import { StoreActionsEnum } from '../enums/actions.enum';
 import { RootEpic } from './root.epic';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PreviewTabCore } from '../classes/app-state.interface';
-import { PromiseObservable } from 'rxjs/observable/PromiseObservable';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
-import { Asset } from '../models/asset.model';
 import { BaseEpic } from './base-epic';
 
 @Injectable()
@@ -25,7 +23,8 @@ export class InterceptorEpics extends BaseEpic {
   private navigation = RootEpic.createEpic(
     [
       StoreActionsEnum.NAVIGATE_ON_ACTIVE,
-      StoreActionsEnum.OPEN_TAB_BACKGROUND
+      StoreActionsEnum.OPEN_TAB,
+      StoreActionsEnum.OPEN_TABS
     ],
     (tab: PreviewTabCore) => {
       let router = this.router;

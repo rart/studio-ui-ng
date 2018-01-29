@@ -2,13 +2,18 @@ import { Component, ContentChild, HostBinding, Input, OnChanges, OnInit, Output,
 import { AssetActionEnum, AssetMenuOption, WorkflowService } from '../../services/workflow.service';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { Asset } from '../../models/asset.model';
-import { NgRedux } from '@angular-redux/store';
-import { AppState, LookUpTable } from '../../classes/app-state.interface';
+import { NgRedux, select } from '@angular-redux/store';
+import { AppState, LookUpTable, Settings } from '../../classes/app-state.interface';
 import { AssetActions } from '../../actions/asset.actions';
 import { Router } from '@angular/router';
 import { notNullOrUndefined } from '../../app.utils';
 import { Subscription } from 'rxjs/Subscription';
 import { isNullOrUndefined } from 'util';
+import { SettingsEnum } from '../../enums/Settings.enum';
+import { createPreviewTabCore } from '../../utils/state.utils';
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
+import { PreviewTabsActions } from '../../actions/preview-tabs.actions';
 
 @Component({
   selector: 'std-asset-menu',
@@ -23,7 +28,9 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
 
   @ContentChild('buttonTemplate') template: TemplateRef<any>;
 
-  sub: Subscription;
+  settings: Settings;
+
+  ngOnChanges$ = new Subject();
 
   @Input() ids: string[] = null;
   assetsLookUpTable: LookUpTable<Asset>;
@@ -35,15 +42,18 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
   constructor(store: NgRedux<AppState>,
               private workflowService: WorkflowService,
               private assetActions: AssetActions,
-              private router: Router) {
+              private router: Router,
+              private previewTabsActions: PreviewTabsActions) {
     super(store);
+
+    store.select<Settings>('settings')
+      .pipe(this.untilDestroyed())
+      .subscribe(x => this.settings = x);
+
   }
 
   ngOnChanges() {
-    if (notNullOrUndefined(this.sub)) {
-      this.sub.unsubscribe();
-      this.sub = null;
-    }
+    this.ngOnChanges$.next();
     if (notNullOrUndefined(this.ids)) {
       if (this.ids.length > 1) {
         this.selected = this.ids.reduce((prev, current) => {
@@ -58,8 +68,9 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
           .getAvailableAssetOptions(this.state.user, this.ids[0]);
       }
     } else {
-      this.sub = this.pipeFilterAndTakeUntil(
-        this.store.select(['workspaceRef', 'selectedItems']))
+      this.pipeFilterAndTakeUntil(
+        this.store.select(['workspaceRef', 'selectedItems']),
+        takeUntil(this.ngOnChanges$))
         .subscribe((assets: LookUpTable<boolean>) => {
           this.selected = assets;
           this.menu = this.workflowService
@@ -89,11 +100,11 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
     $event.stopPropagation();
   }
 
-  menuItemSelected(action) {
-    this.handleAction(action);
+  menuItemSelected(action, $event) {
+    this.handleAction(action, $event);
   }
 
-  handleAction(action) {
+  handleAction(action, $event) {
 
     let
       lookup = this.assetsLookUpTable,
@@ -120,9 +131,35 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
         }
         break;
 
-      case AssetActionEnum.PREVIEW:
+      case AssetActionEnum.PREVIEW: {
+
+        let { settings } = this;
+        let tabs = [];
+
+        array.forEach(id => {
+          asset = lookup[id];
+          tabs.push(createPreviewTabCore({
+            url: asset.url,
+            projectCode: asset.projectCode,
+            title: asset.label,
+            assetId: asset.id
+          }));
+        });
+
+        this.dispatch(
+          (singleMode)
+            ? ($event.metaKey)
+              ? settings.metaClickOpenTabInBackground
+                ? this.previewTabsActions.openInBackground(tabs[0])
+                : this.previewTabsActions.open(tabs[0])
+              : this.previewTabsActions.nav(tabs[0])
+            : settings.metaClickOpenTabInBackground && $event.metaKey
+              ? this.previewTabsActions.openManyInBackground(tabs)
+              : this.previewTabsActions.openMany(tabs)
+        );
 
         break;
+      }
 
       case AssetActionEnum.INFO:
       case AssetActionEnum.DELETE:

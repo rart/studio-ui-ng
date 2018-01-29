@@ -65,6 +65,15 @@ export const previewTabs: Reducer<PreviewTabStateContainer> =
         tab = createPreviewTab(core);
         return setActive(addTab(state, tab), tab);
 
+      case StoreActionsEnum.OPEN_TABS: {
+        let tabs = action.payload;
+        tabs.forEach(tabCore => {
+          tab = createPreviewTab(tabCore);
+          nextState = addTab(state, tab);
+        });
+        return setActive(nextState, tab);
+      }
+
       case StoreActionsEnum.NAVIGATE_ON_ACTIVE:
         nextState = trackHistoryEntry(state, active, core);
         if (nextState === state) {
@@ -116,6 +125,15 @@ export const previewTabs: Reducer<PreviewTabStateContainer> =
 
       case StoreActionsEnum.OPEN_TAB_BACKGROUND:
         return addTab(state, createPreviewTab(core));
+
+      case StoreActionsEnum.OPEN_TABS_BACKGROUND: {
+        let tabs = action.payload;
+        tabs.forEach(tabCore => {
+          tab = createPreviewTab(tabCore);
+          nextState = addTab(state, tab);
+        });
+        return nextState;
+      }
 
       case StoreActionsEnum.SELECT_TAB:
         return setActive(nextState, nextState.byId[id]);
