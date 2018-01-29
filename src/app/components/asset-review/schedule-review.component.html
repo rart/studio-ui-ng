@@ -1,14 +1,109 @@
 
-<std-spinner *ngIf="loading" class="take over"></std-spinner>
+<div class="sticky header view layout" *ngIf="data">
+  <std-view-title-bar class="slimmer pad left right">
+    <ng-template #heading>
+      <h2 class="margin none" translate>Schedule</h2>
+    </ng-template>
+    <div>
+      <button mat-icon-button
+              (click)="selectAll()"
+              [attr.aria-label]="'Select all'|translate"
+              [matTooltip]="'Select all'|translate">
+        <mat-icon aria-hidden="true">check_box</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="selectNone()"
+              [attr.aria-label]="'Select none'|translate"
+              [matTooltip]="'Select none'|translate">
+        <mat-icon aria-hidden="true">check_box_outline_blank</mat-icon>
+      </button>
+    </div>
+  </std-view-title-bar>
+  <div class="view body">
+    <div class="pad all">
+
+      <div class="ui stackable grid">
+        <section class="ten wide computer column">
+
+          <ng-container *ngFor="let entry of data.dependencies.entries; let isLast=last">
+            <std-asset-display
+              [id]="entry.assetId"
+              [showLink]="false"
+              [showCheck]="!finished"
+              [showMenu]="false"
+              [checked]="checked[entry.assetId]"
+              checkMode="local">
+            </std-asset-display>
+            <div *ngFor="let dependantId of entry.dependantIds" class="pad left">
+              <std-asset-display
+                [id]="dependantId"
+                [showLink]="false"
+                [showCheck]="!finished"
+                [showMenu]="false"
+                [checked]="checked[dependantId]"
+                checkMode="local">
+              </std-asset-display>
+            </div>
+            <div class="ui divider" *ngIf="!isLast"></div>
+          </ng-container>
+
+        </section>
+        <section class="six wide computer column">
+
+          <h4 translate>Item Scheduling</h4>
+          <mat-radio-group
+            [(ngModel)]="submission.now"
+            (change)="schedulingChanged()">
+            <mat-radio-button class="ensure display block" [value]="true" translate>
+              Publish items now
+            </mat-radio-button>
+            <mat-radio-button class="ensure display block" [value]="false" translate>
+              Publish items on a specific date/time
+            </mat-radio-button>
+          </mat-radio-group>
+
+          <ng-container *ngIf="!submission.now">
+            <h4 translate>Publishing Schedule</h4>
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker" placeholder="Choose a date" (click)="picker.open()">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </ng-container>
+
+          <h4 translate>Publishing Channel</h4>
+          <mat-radio-group
+            [(ngModel)]="submission.channel">
+            <mat-radio-button class="ensure display block"
+                              *ngFor="let channel of data.channels"
+                              [value]="channel.name">
+              {{channel.name}}
+            </mat-radio-button>
+          </mat-radio-group>
+
+          <div class="margin top">
+            <!--<h4 translate class="sr-only">Submission Comment</h4>-->
+            <mat-form-field>
+            <textarea matInput style="min-height: 70px" [placeholder]="'Submission Comment'|translate"
+                      [(ngModel)]="submission.comment"></textarea>
+            </mat-form-field>
+          </div>
+
+        </section>
+      </div>
+
+    </div>
+  </div>
+  <footer class="view footer mat-elevation-z1 pad all mn" *ngIf="!finished">
+    <button mat-raised-button color="blue">
+      <mat-icon>publish</mat-icon>
+      <span>Submit</span>
+    </button>
+  </footer>
+</div>
 
 <div class="pad all lg text muted center" *ngIf="empty">
   <span translate>Nothing selected for displaying.</span>
 </div>
 
-<div class="sticky header view layout">
-  <std-view-title-bar class="slimmer pad left right">
-    <ng-template #heading>
-      <h2 class="margin none" translate>Schedule</h2>
-    </ng-template>
-  </std-view-title-bar>
-</div>
+<std-spinner *ngIf="loading" class="take over"></std-spinner>
