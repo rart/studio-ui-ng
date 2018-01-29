@@ -1,0 +1,33 @@
+@import "../../styles/settings";
+
+::ng-deep {
+  std-history-review {
+    .mat-cell,
+    .mat-header-cell {
+      &:not(.checkbox):not(.actions) {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        padding: 0 $spacing-sm;
+      }
+      &.actions,
+      &.checkbox {
+        overflow: visible;
+      }
+      &.checkbox {
+        width: 30px;
+        min-width: 30px;
+        max-width: 30px;
+      }
+      &.actions {
+        width: 30px;
+        min-width: 30px;
+        max-width: 30px;
+      }
+    }
+  }
+}
+
+.body > .entry.wrapper {
+  margin-bottom: $spacing-lg;
+}

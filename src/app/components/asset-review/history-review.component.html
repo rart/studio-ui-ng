@@ -5,10 +5,70 @@
   <span translate>Nothing selected for displaying.</span>
 </div>
 
-<div class="sticky header view layout">
+<div class="sticky header view layout" *ngIf="data">
   <std-view-title-bar class="slimmer pad left right">
     <ng-template #heading>
-      <h2 class="no margin" translate>History</h2>
+      <h2 class="margin none" translate>History</h2>
     </ng-template>
   </std-view-title-bar>
+  <div class="view body">
+    <section class="entry wrapper">
+      <section *ngFor="let entry of data.entries" class="entry">
+
+        <h3 class="pad left margin-bottom-none">
+          <std-asset-display
+            [id]="entry.assetId"
+            [showMenu]="false"
+            [showCheck]="false"
+            [showLink]="false">
+          </std-asset-display>
+        </h3>
+        <div *ngIf="!entry.versions.length" translate class="text center muted">DeleteReview.NoEntriesForItem</div>
+        <mat-table *ngIf="entry.versions.length" #table [dataSource]="dataSources[entry.assetId]">
+
+          <ng-container cdkColumnDef="check">
+            <mat-header-cell *cdkHeaderCellDef class="checkbox"></mat-header-cell>
+            <mat-cell *cdkCellDef="let version" class="checkbox">
+              <mat-checkbox></mat-checkbox>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container cdkColumnDef="comment">
+            <mat-header-cell *cdkHeaderCellDef translate>Comment</mat-header-cell>
+            <mat-cell *cdkCellDef="let version">{{version.comment}}</mat-cell>
+          </ng-container>
+          <ng-container cdkColumnDef="modifiedBy">
+            <mat-header-cell *cdkHeaderCellDef translate>Modified By</mat-header-cell>
+            <mat-cell *cdkCellDef="let version">{{version.modifiedBy}}</mat-cell>
+          </ng-container>
+          <ng-container cdkColumnDef="modifiedOn">
+            <mat-header-cell *cdkHeaderCellDef translate>Date</mat-header-cell>
+            <mat-cell *cdkCellDef="let version">{{version.modifiedOn|amTimeAgo}}</mat-cell>
+          </ng-container>
+          <ng-container cdkColumnDef="version">
+            <mat-header-cell *cdkHeaderCellDef translate>Version</mat-header-cell>
+            <mat-cell *cdkCellDef="let version">{{version.version}}</mat-cell>
+          </ng-container>
+
+          <!-- Menu Button -->
+          <ng-container cdkColumnDef="actions">
+            <mat-header-cell *cdkHeaderCellDef class="actions"></mat-header-cell>
+            <mat-cell *cdkCellDef="let version" class="actions">
+              <button mat-icon-button>
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *cdkHeaderRowDef="columns"></mat-header-row>
+          <mat-row *cdkRowDef="let row; columns: columns;"
+                   (click)="historyItemClicked(row)"
+                   [ngClass]="{ 'mat-light-blue-50-bg': row == selected }"
+                   matRipple>
+          </mat-row>
+        </mat-table>
+
+      </section>
+    </section>
+  </div>
 </div>

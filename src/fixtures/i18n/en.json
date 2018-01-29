@@ -26,6 +26,9 @@
     "Preview Sync": "Preview Sync",
     "Sync From Repo": "Sync From Repo"
   },
+  "DeleteReview": {
+    "NoEntriesForItem": "There are no versions for this item."
+  },
   "": {
 
   },

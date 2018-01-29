@@ -40,7 +40,7 @@ export class DeleteReviewComponent extends ReviewBase {
         this.untilDestroyed()
       )
       .subscribe((data) => {
-        this.notifyAssetLoaded(Object.values(data.lookupTable));
+        this.notifyAssetLoaded(Object.values(data.assetLookup));
         this.data = data;
         this.loading = false;
       });
@@ -53,10 +53,10 @@ export class DeleteReviewComponent extends ReviewBase {
   }
 
   assetChecked($event, assetId) {
-    let {checked, data} = this;
+    let { checked, data } = this;
     checked[assetId] = $event;
     if ($event) {
-      let dependants = data.dependants;
+      let dependants = data.dependantIdsLookup;
       if (notNullOrUndefined(dependants[assetId])) {
         this.parentChecked($event, assetId);
       }
@@ -71,11 +71,11 @@ export class DeleteReviewComponent extends ReviewBase {
           checked[entry.assetId]) {
           checked[entry.assetId] = false;
           deselected.push({
-            parent: data.lookupTable[entry.assetId].label,
-            child: data.lookupTable[assetId].label
+            parent: data.assetLookup[entry.assetId].label,
+            child: data.assetLookup[assetId].label
           });
-          if (assetId in data.dependants) {
-            data.dependants[assetId].forEach((id) => {
+          if (assetId in data.dependantIdsLookup) {
+            data.dependantIdsLookup[assetId].forEach((id) => {
               checked[id] = false;
             });
           }
@@ -96,8 +96,8 @@ export class DeleteReviewComponent extends ReviewBase {
   parentChecked($event, assetId) {
     this.checked[assetId] = $event;
     if ($event) {
-      let dependants = this.data.dependants;
-      Object.values(dependants[assetId])
+      let dependants = this.data.dependantIdsLookup;
+      dependants[assetId]
         .forEach((id) => {
           this.checked[id] = true;
         });
@@ -106,7 +106,7 @@ export class DeleteReviewComponent extends ReviewBase {
 
   selectAll() {
     let { data, checked } = this;
-    Object.keys(data.lookupTable)
+    Object.keys(data.assetLookup)
       .forEach(id => checked[id] = true);
   }
 
@@ -122,7 +122,7 @@ export class DeleteReviewComponent extends ReviewBase {
       this.contentService.delete(ids)
         .subscribe((result) => {
 
-          let assets = data.lookupTable;
+          let assets = data.assetLookup;
 
           ids
           // TODO: need the socket working to do this right. Other wise need to request again :(

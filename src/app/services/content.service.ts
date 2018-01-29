@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { delay, map, switchMap } from 'rxjs/operators';
+import { delay, map, switchMap, combineLatest } from 'rxjs/operators';
 import { StudioHttpService } from './http.service';
 import { Asset } from '../models/asset.model';
 import { Observable } from 'rxjs/Observable';
@@ -118,11 +118,11 @@ export class ContentService {
           assetId: asset.id,
           dependantIds: (asset.children || []).map(child => child.id)
         })),
-        dependants: parsedItems.reduce((table, asset) => {
+        dependantIdsLookup: parsedItems.reduce((table, asset) => {
           table[asset.id] = (asset.children || []).map(child => child.id);
           return table;
         }, {}),
-        lookupTable: {}
+        assetLookup: {}
       };
 
       let items = [];
@@ -132,10 +132,10 @@ export class ContentService {
       return forkJoin(requests)
         .pipe(
           map(responses => {
-            answer.lookupTable = responses.reduce((table, asset) => {
+            answer.assetLookup = responses.reduce((table, asset) => {
               table[asset.id] = asset;
               return table;
-            }, answer.lookupTable);
+            }, answer.assetLookup);
             return answer;
           })
         );
@@ -181,6 +181,58 @@ export class ContentService {
 
   }
 
+  history(id: string): Observable<HistoryResponse>;
+  history(asset: Asset): Observable<HistoryResponse>;
+  history(ids: string[]): Observable<HistoryResponse>;
+  history(assets: Asset[]): Observable<HistoryResponse>;
+  history(assets: string[] | Asset[] | string | Asset): Observable<HistoryResponse> {
+
+    let ids, modelRequests, historyRequests;
+
+    if (typeof assets === 'string') {
+      ids = [assets];
+    } else if (assets instanceof Asset) {
+      ids = [assets.id];
+    } else {
+      ids = (assets[0] instanceof Asset) ? (<Asset[]>assets).map(a => a.id) : assets;
+    }
+
+    modelRequests = ids.map(id => this.byId(id));
+    historyRequests = ids.map(id => this.http.get(`${content}/get-item-versions.json`, {
+      ...extract(id),
+      maxhistory: 100,
+      nocache: `${Date.now()}`
+    }));
+
+    return forkJoin(...historyRequests)
+      .pipe(combineLatest(
+        forkJoin(...modelRequests),
+        (histories: any[], models: Asset[]) => {
+
+          let answer = { entries: [], assetLookup: {}, historyLookup: {} };
+
+          histories.forEach(response => {
+            let asset = <Asset>parseEntity(Asset, response.item);
+            let versions = <AssetHistoryItem[]>response.versions.map(v => ({
+              comment: v.comment,
+              modifiedOn: v.lastModifiedDate,
+              modifiedBy: v.lastModifier,
+              version: v.versionNumber
+            }));
+            answer.historyLookup[asset.id] = versions;
+            answer.entries.push({ assetId: asset.id, versions });
+          });
+
+          models.forEach(asset => {
+            answer.assetLookup[asset.id] = asset;
+          });
+
+          return answer;
+
+        }));
+
+  }
+
 }
 
 function extractProjectCodeFromId(asset) {
@@ -209,10 +261,23 @@ function flattenDeleteDepsRecursive(source, destination, duplicateControl) {
   });
 }
 
+interface AssetHistoryItem {
+  comment: string;
+  modifiedOn: string;
+  modifiedBy: string;
+  version: string;
+}
+
+interface HistoryResponse {
+  historyLookup: LookupTable<AssetHistoryItem[]>;
+  assetLookup: LookupTable<Asset>;
+  entries: Array<{ assetId: string; versions: AssetHistoryItem[] }>;
+}
+
 interface DeleteDependenciesResponse {
-  dependants: LookupTable<string[]>;
-  entries: { assetId: string; dependantIds: string[] } [];
-  lookupTable: LookupTable<Asset>;
+  dependantIdsLookup: LookupTable<string[]>;
+  assetLookup: LookupTable<Asset>;
+  entries: Array<{ assetId: string; dependantIds: string[] }>;
 }
 
 interface API3DependenciesResponse {

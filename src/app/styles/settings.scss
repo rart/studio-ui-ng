@@ -490,7 +490,8 @@ $spacings: (
   mn: $spacing-mini,
   sm: $spacing-sm,
   md: $spacing-md,
-  lg: $spacing-lg
+  lg: $spacing-lg,
+  none: 0
 );
 
 $box-model-zones: (top, right, bottom, left);
