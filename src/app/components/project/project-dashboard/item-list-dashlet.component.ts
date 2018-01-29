@@ -11,7 +11,7 @@ import { CommunicationService } from '../../../services/communication.service';
 import { EmbeddedViewDialogComponent } from '../../embedded-view-dialog/embedded-view-dialog.component';
 import { openDialog } from '../../../utils/material.utils';
 import { MatDialog } from '@angular/material';
-import { AppState, LookUpTable } from '../../../classes/app-state.interface';
+import { AppState, LookupTable } from '../../../classes/app-state.interface';
 import { ExpandedPanelsActions } from '../../../actions/expanded-panels.actions';
 import { WithNgRedux } from '../../../classes/with-ng-redux.class';
 import { dispatch, NgRedux, select } from '@angular-redux/store';
@@ -127,7 +127,7 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
 
   cachedItemIds: string[] = []; // cache of all the asset ids this dashlet is handling
   cachedPanelKeys: string[] = []; // cache of all panel ids this dashlet is handling
-  assets: LookUpTable<Asset>; // the list of items TODO: get form state asset store
+  assets: LookupTable<Asset>; // the list of items TODO: get form state asset store
 
   expandedStateRef = {};
   selectedItemsRef = {};
@@ -182,7 +182,7 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
   deliveryTableSpace$;
 
   @select(['entities', 'assets', 'byId'])
-  assets$: Observable<LookUpTable<Asset>>;
+  assets$: Observable<LookupTable<Asset>>;
 
   private cachePreInitialized = false;
 

@@ -10,7 +10,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppState, LookUpTable, Settings } from '../../classes/app-state.interface';
+import { AppState, LookupTable, Settings } from '../../classes/app-state.interface';
 import { Asset } from '../../models/asset.model';
 import { StringUtils } from '../../utils/string.utils';
 import { AssetTypeEnum } from '../../enums/asset-type.enum';
@@ -154,7 +154,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
         this.selectedAssetsSub = null;
       }
       if (this.showCheck && this.checkMode === 'state') {
-        this.selectedAssetsSub = this.store.select<LookUpTable<boolean>>(['workspaceRef', 'selectedItems'])
+        this.selectedAssetsSub = this.store.select<LookupTable<boolean>>(['workspaceRef', 'selectedItems'])
           .pipe(
             withLatestFrom(this.asset$, x => x),
             this.untilDestroyed()

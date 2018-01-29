@@ -9,7 +9,7 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 import { StudioService } from '../../services/studio.service';
-import { AppState, LookUpTable, Workspace } from '../../classes/app-state.interface';
+import { AppState, LookupTable, Workspace } from '../../classes/app-state.interface';
 import { ExpandedPanelsActions } from '../../actions/expanded-panels.actions';
 import { User } from '../../models/user.model';
 import { ComponentHostDirective } from '../component-host.directive';
@@ -80,7 +80,7 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
 
     this.pipeFilterAndTakeUntil(
       this.select(['entities', 'projects', 'byId']))
-      .subscribe((lookupTable: LookUpTable<Project>) => {
+      .subscribe((lookupTable: LookupTable<Project>) => {
         this.projects = Object.values(lookupTable);
       });
 

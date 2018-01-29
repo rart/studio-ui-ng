@@ -3,7 +3,7 @@ import { AssetActionEnum, AssetMenuOption, WorkflowService } from '../../service
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { Asset } from '../../models/asset.model';
 import { NgRedux, select } from '@angular-redux/store';
-import { AppState, LookUpTable, Settings } from '../../classes/app-state.interface';
+import { AppState, LookupTable, Settings } from '../../classes/app-state.interface';
 import { AssetActions } from '../../actions/asset.actions';
 import { Router } from '@angular/router';
 import { notNullOrUndefined } from '../../app.utils';
@@ -33,8 +33,8 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
   ngOnChanges$ = new Subject();
 
   @Input() ids: string[] = null;
-  assetsLookUpTable: LookUpTable<Asset>;
-  selected: LookUpTable<boolean>;
+  assetsLookupTable: LookupTable<Asset>;
+  selected: LookupTable<boolean>;
 
   menu: AssetMenuOption[] = [];
   mode: 'single' | 'multi' = null;
@@ -71,7 +71,7 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
       this.pipeFilterAndTakeUntil(
         this.store.select(['workspaceRef', 'selectedItems']),
         takeUntil(this.ngOnChanges$))
-        .subscribe((assets: LookUpTable<boolean>) => {
+        .subscribe((assets: LookupTable<boolean>) => {
           this.selected = assets;
           this.menu = this.workflowService
             .getAvailableWorkflowOptions(this.state.user, assets);
@@ -84,8 +84,8 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
     this
       .select(['entities', 'assets', 'byId'])
       .pipe(this.untilDestroyed())
-      .subscribe((assetTable: LookUpTable<Asset>) => {
-        this.assetsLookUpTable = assetTable;
+      .subscribe((assetTable: LookupTable<Asset>) => {
+        this.assetsLookupTable = assetTable;
       });
 
     if (isNullOrUndefined(this.mode)) {
@@ -107,7 +107,7 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
   handleAction(action, $event) {
 
     let
-      lookup = this.assetsLookUpTable,
+      lookup = this.assetsLookupTable,
       array = Object.keys(this.selected),
       singleMode = (array.length === 1),
       asset = singleMode ? lookup[array[0]] : null;

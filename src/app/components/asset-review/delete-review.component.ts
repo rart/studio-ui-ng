@@ -40,7 +40,7 @@ export class DeleteReviewComponent extends ReviewBase {
         this.untilDestroyed()
       )
       .subscribe((data) => {
-        this.notifyAssetLoaded(Object.values(data.lookUpTable));
+        this.notifyAssetLoaded(Object.values(data.lookupTable));
         this.data = data;
         this.loading = false;
       });
@@ -71,8 +71,8 @@ export class DeleteReviewComponent extends ReviewBase {
           checked[entry.assetId]) {
           checked[entry.assetId] = false;
           deselected.push({
-            parent: data.lookUpTable[entry.assetId].label,
-            child: data.lookUpTable[assetId].label
+            parent: data.lookupTable[entry.assetId].label,
+            child: data.lookupTable[assetId].label
           });
           if (assetId in data.dependants) {
             data.dependants[assetId].forEach((id) => {
@@ -106,7 +106,7 @@ export class DeleteReviewComponent extends ReviewBase {
 
   selectAll() {
     let { data, checked } = this;
-    Object.keys(data.lookUpTable)
+    Object.keys(data.lookupTable)
       .forEach(id => checked[id] = true);
   }
 
@@ -122,7 +122,7 @@ export class DeleteReviewComponent extends ReviewBase {
       this.contentService.delete(ids)
         .subscribe((result) => {
 
-          let assets = data.lookUpTable;
+          let assets = data.lookupTable;
 
           ids
           // TODO: need the socket working to do this right. Other wise need to request again :(

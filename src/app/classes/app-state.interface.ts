@@ -78,7 +78,7 @@ export interface StateEntity<T> {
   error: any;
   order?: string[];
   loading: boolean;
-  byId: LookUpTable<T>;
+  byId: LookupTable<T>;
 }
 
 export interface PreviewTabHistory {
@@ -105,7 +105,7 @@ export interface EntityLookupTable<T> {
   [id: string]: T;
 }
 
-export interface LookUpTable<T> {
+export interface LookupTable<T> {
   [id: string]: T;
 }
 

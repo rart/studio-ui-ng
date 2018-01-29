@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Inject, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
-import { AppState, EditSession, EditSessions, LookUpTable } from '../../classes/app-state.interface';
+import { AppState, EditSession, EditSessions, LookupTable } from '../../classes/app-state.interface';
 import { dispatch, NgRedux, select } from '@angular-redux/store';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { Asset } from '../../models/asset.model';
@@ -30,11 +30,11 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
   editSessions$: Observable<EditSessions>;
 
   @select(['entities', 'assets', 'byId'])
-  assets$: Observable<LookUpTable<Asset>>;
+  assets$: Observable<LookupTable<Asset>>;
 
   sessionAssetsHaveLoaded$ = new BehaviorSubject(false);
 
-  assets: LookUpTable<Asset>;
+  assets: LookupTable<Asset>;
   active: EditSession;
   sessions: EditSession[] = [];
 

@@ -6,7 +6,7 @@ import { Asset } from '../models/asset.model';
 import { Observable } from 'rxjs/Observable';
 import { parseEntity } from '../utils/api.utils';
 import { forkJoin } from 'rxjs/observable/forkJoin';
-import { LookUpTable } from '../classes/app-state.interface';
+import { LookupTable } from '../classes/app-state.interface';
 import { of } from 'rxjs/observable/of';
 
 const content = `${environment.apiUrl}/content`;
@@ -93,8 +93,8 @@ export class ContentService {
       );
   }
 
-  fetchDeleteDependants(assets: Asset[]): Observable<DeleteDependenciesResponse>;
   fetchDeleteDependants(ids: string[]): Observable<DeleteDependenciesResponse>;
+  fetchDeleteDependants(assets: Asset[]): Observable<DeleteDependenciesResponse>;
   fetchDeleteDependants(assets: string[] | Asset[]): Observable<DeleteDependenciesResponse> {
 
     let projectCode = extractProjectCodeFromId(assets[0]);
@@ -122,7 +122,7 @@ export class ContentService {
           table[asset.id] = (asset.children || []).map(child => child.id);
           return table;
         }, {}),
-        lookUpTable: {}
+        lookupTable: {}
       };
 
       let items = [];
@@ -132,10 +132,10 @@ export class ContentService {
       return forkJoin(requests)
         .pipe(
           map(responses => {
-            answer.lookUpTable = responses.reduce((table, asset) => {
+            answer.lookupTable = responses.reduce((table, asset) => {
               table[asset.id] = asset;
               return table;
-            }, answer.lookUpTable);
+            }, answer.lookupTable);
             return answer;
           })
         );
@@ -156,8 +156,8 @@ export class ContentService {
          "message": "Item(s) has been pushed for delete. It will be deleted shortly."
        }
    */
-  delete(assets: Asset[]);
   delete(ids: string[]);
+  delete(assets: Asset[]);
   delete(assets: string[] | Asset[]) {
 
     let projectCode = extractProjectCodeFromId(assets[0]);
@@ -210,9 +210,9 @@ function flattenDeleteDepsRecursive(source, destination, duplicateControl) {
 }
 
 interface DeleteDependenciesResponse {
-  dependants: LookUpTable<string[]>;
+  dependants: LookupTable<string[]>;
   entries: { assetId: string; dependantIds: string[] } [];
-  lookUpTable: LookUpTable<Asset>;
+  lookupTable: LookupTable<Asset>;
 }
 
 interface API3DependenciesResponse {

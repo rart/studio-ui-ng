@@ -1,7 +1,8 @@
 import { isNullOrUndefined, isString } from 'util';
 import { v4 as uuid } from 'uuid';
 import {
-  EntityLookupTable, LookUpTable,
+  EntityLookupTable,
+  LookupTable,
   PreviewTab,
   PreviewTabCore,
   PreviewTabHistory,
@@ -82,7 +83,7 @@ export const createPreviewTabStateContainer =
   ({
      activeId = undefined as string,
      order = undefined as string[],
-     byId = undefined as LookUpTable<PreviewTab>
+     byId = undefined as LookupTable<PreviewTab>
    }): PreviewTabStateContainer => {
     let tab;
     if (isNullOrUndefined(byId)) {

@@ -22,7 +22,7 @@ import { CommunicationService } from '../../services/communication.service';
 import { WindowMessageScopeEnum } from '../../enums/window-message-scope.enum';
 import { Asset } from '../../models/asset.model';
 import { WindowMessageTopicEnum } from '../../enums/window-message-topic.enum';
-import { AppState, LookUpTable, PreviewTab, PreviewTabStateContainer } from '../../classes/app-state.interface';
+import { AppState, LookupTable, PreviewTab, PreviewTabStateContainer } from '../../classes/app-state.interface';
 import { IFrameComponent } from '../iframe/iframe.component';
 import { PreviewTabsActions } from '../../actions/preview-tabs.actions';
 import { StringUtils } from '../../utils/string.utils';
@@ -128,7 +128,7 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
 
   project: Project;
   projects: Array<Project>;
-  assets: LookUpTable<Asset> = {};
+  assets: LookupTable<Asset> = {};
 
   tabs: PreviewTab[];
   activeTab: PreviewTab;
@@ -177,8 +177,8 @@ export class PreviewComponent extends WithNgRedux implements OnInit, AfterViewIn
       ) as Observable<Project[]>;
 
     this.pipeFilterAndTakeUntil(
-      this.select<LookUpTable<Asset>>(['entities', 'assets', 'byId']))
-      .subscribe((lookupTable: LookUpTable<Asset>) => {
+      this.select<LookupTable<Asset>>(['entities', 'assets', 'byId']))
+      .subscribe((lookupTable: LookupTable<Asset>) => {
         this.assets = lookupTable;
       });
 
