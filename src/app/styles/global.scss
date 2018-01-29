@@ -368,6 +368,9 @@ $displays: (inline, block, flex, inline-block, inline-flex);
 
 .scrollable {
   overflow: auto;
+  &.not {
+    overflow: hidden;
+  }
 }
 
 .view.container,

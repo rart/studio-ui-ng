@@ -5,7 +5,7 @@
       <mat-tab-group #tabGroup [(selectedIndex)]="index">
         <mat-tab *ngFor="let tab of tabs" [label]="tab.label | translate"></mat-tab>
       </mat-tab-group>
-      <div id="manageRouterWrapper" class="router wrapper position relative flex one">
+      <div id="manageRouterWrapper" class="router wrapper position relative flex one not scrollable">
         <router-outlet></router-outlet>
       </div>
 

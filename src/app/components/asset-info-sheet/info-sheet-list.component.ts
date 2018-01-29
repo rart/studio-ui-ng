@@ -8,9 +8,11 @@ import { ReviewBase } from '../../classes/review-base.class';
   selector: 'std-info-sheet-list',
   template: `
     <ng-container *ngIf="ids$ | async as ids">
-      <div class="pad all" *ngFor="let id of ids; let isLast=last">
-        <std-info-sheet [id]="id"></std-info-sheet>
-        <div class="ui divider" *ngIf="!isLast"></div>
+      <div class="pad all full height scrollable">
+        <ng-container *ngFor="let id of ids; let isLast=last">
+          <std-info-sheet [id]="id"></std-info-sheet>
+          <div class="ui divider" *ngIf="!isLast"></div>
+        </ng-container>
       </div>
       <div class="pad all lg text muted center" *ngIf="!ids.length">
         <span translate>Nothing selected for displaying.</span>

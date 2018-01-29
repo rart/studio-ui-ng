@@ -1,3 +1,14 @@
-<p>
-  history-review works!
-</p>
+
+<std-spinner *ngIf="loading" class="take over"></std-spinner>
+
+<div class="pad all lg text muted center" *ngIf="empty">
+  <span translate>Nothing selected for displaying.</span>
+</div>
+
+<div class="sticky header view layout">
+  <std-view-title-bar class="slimmer pad left right">
+    <ng-template #heading>
+      <h2 class="no margin" translate>History</h2>
+    </ng-template>
+  </std-view-title-bar>
+</div>

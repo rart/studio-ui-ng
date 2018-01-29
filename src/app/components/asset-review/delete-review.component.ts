@@ -23,10 +23,6 @@ export class DeleteReviewComponent extends ReviewBase {
 
   data;
   checked = {};
-  finished = false;
-
-  empty = false;
-  loading = false;
 
   constructor(store: NgRedux<AppState>,
               route: ActivatedRoute,
@@ -38,7 +34,7 @@ export class DeleteReviewComponent extends ReviewBase {
 
     this.ids$
       .pipe(
-        filter(ids => !(this.empty = !ids.length)),
+        filter(ids => !!ids.length),
         tap(() => this.loading = true),
         switchMap(ids => this.contentService.fetchDeleteDependants(ids)),
         this.untilDestroyed()

@@ -6,9 +6,13 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 export class ReviewBase extends ComponentBase {
 
+  empty = false;
+  loading = false;
+  finished = false;
+
   ids$: BehaviorSubject<string[]> = new BehaviorSubject([]);
 
-  constructor(store: NgRedux<AppState>, protected route: ActivatedRoute) {
+  constructor(store: NgRedux<AppState>, route: ActivatedRoute) {
     super();
 
     route.parent.params
@@ -22,6 +26,12 @@ export class ReviewBase extends ComponentBase {
         } else {
           this.ids$.next(['launcher:/site/website/index.xml']); // [params.asset];
         }
+      });
+
+    this.ids$
+      .pipe(this.untilDestroyed())
+      .subscribe(ids => {
+        this.empty = !ids.length;
       });
 
   }

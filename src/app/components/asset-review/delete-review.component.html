@@ -1,28 +1,26 @@
 
 <div class="sticky header view layout" *ngIf="data">
-  <header class="slimmer view header">
-    <div fxFlex="100%" fxLayoutAlign="space-between center">
-      <section fxLayoutAlign="left center">
-        <h2 class="pad left no margin display flex">
-          Delete Asset(s)
-        </h2>
-      </section>
-      <div class="pad right" *ngIf="data">
-        <button mat-icon-button
-                (click)="selectAll()"
-                [attr.aria-label]="'Select all'|translate"
-                [matTooltip]="'Select all'|translate">
-          <mat-icon aria-hidden="true">check_box</mat-icon>
-        </button>
-        <button mat-icon-button
-                (click)="selectNone()"
-                [attr.aria-label]="'Select none'|translate"
-                [matTooltip]="'Select none'|translate">
-          <mat-icon aria-hidden="true">check_box_outline_blank</mat-icon>
-        </button>
-      </div>
+  <std-view-title-bar class="slimmer pad left right">
+    <ng-template #heading>
+      <h2 class="no margin" translate>
+        Delete Asset(s)
+      </h2>
+    </ng-template>
+    <div>
+      <button mat-icon-button
+              (click)="selectAll()"
+              [attr.aria-label]="'Select all'|translate"
+              [matTooltip]="'Select all'|translate">
+        <mat-icon aria-hidden="true">check_box</mat-icon>
+      </button>
+      <button mat-icon-button
+              (click)="selectNone()"
+              [attr.aria-label]="'Select none'|translate"
+              [matTooltip]="'Select none'|translate">
+        <mat-icon aria-hidden="true">check_box_outline_blank</mat-icon>
+      </button>
     </div>
-  </header>
+  </std-view-title-bar>
   <div class="view body">
     <div class="pad all">
       <ng-container *ngFor="let entry of data.entries">
