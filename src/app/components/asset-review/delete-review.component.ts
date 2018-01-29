@@ -36,7 +36,7 @@ export class DeleteReviewComponent extends ReviewBase {
       .pipe(
         filter(ids => !!ids.length),
         tap(() => this.loading = true),
-        switchMap(ids => this.contentService.fetchDeleteDependants(ids)),
+        switchMap(ids => this.contentService.dependants(ids, true)),
         this.untilDestroyed()
       )
       .subscribe((data) => {

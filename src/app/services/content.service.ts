@@ -93,12 +93,27 @@ export class ContentService {
       );
   }
 
-  fetchDeleteDependants(ids: string[]): Observable<DeleteDependenciesResponse>;
-  fetchDeleteDependants(assets: Asset[]): Observable<DeleteDependenciesResponse>;
-  fetchDeleteDependants(assets: string[] | Asset[]): Observable<DeleteDependenciesResponse> {
+  dependants(id: string, recursive?: boolean): Observable<DependantsResponse>;
+  dependants(asset: Asset, recursive?: boolean): Observable<DependantsResponse>;
+  dependants(ids: string[], recursive?: boolean): Observable<DependantsResponse>;
+  dependants(assets: Asset[], recursive?: boolean): Observable<DependantsResponse>;
+  dependants(assets: string | Asset | string[] | Asset[], recursive: boolean = false): Observable<DependantsResponse> {
 
-    let projectCode = extractProjectCodeFromId(assets[0]);
-    let ids = arrayOfAssetIds(assets).map(id => ({ uri: id }));
+    let ids, projectCode;
+
+    if (typeof assets === 'string') {
+      // The composed asset ID itself
+      ids = [assets];
+    } else if (assets instanceof Asset) {
+      // The actual Asset model instance
+      ids = [assets.id];
+    } else {
+      // An array of IDs or Asset models
+      ids = (assets[0] instanceof Asset) ? (<Asset[]>assets).map(a => a.id) : assets;
+    }
+
+    projectCode = extractProjectCodeFromId(assets[0]);
+    ids = arrayOfAssetIds(ids).map(id => ({ uri: id }));
 
     return this.http.post(`${dependency}/get-dependencies.json`, JSON.stringify(ids), {
       headers: {
@@ -106,14 +121,14 @@ export class ContentService {
       },
       params: {
         site: projectCode,
-        deletedep: 'true',
+        deletedep: `${recursive}`,
         nocache: `${Date.now()}`
       }
     }).pipe(switchMap((response: API3DependenciesResponse) => {
 
       let parsedItems: Asset[] = response.items.map(item => <Asset>parseEntity(Asset, item));
 
-      let answer: DeleteDependenciesResponse = {
+      let answer: DependantsResponse = {
         entries: parsedItems.map((asset) => ({
           assetId: asset.id,
           dependantIds: (asset.children || []).map(child => child.id)
@@ -141,7 +156,6 @@ export class ContentService {
         );
 
     }));
-
   }
 
   /*
@@ -261,6 +275,12 @@ function flattenDeleteDepsRecursive(source, destination, duplicateControl) {
   });
 }
 
+interface DependantsResponse {
+  dependantIdsLookup: LookupTable<string[]>;
+  assetLookup: LookupTable<Asset>;
+  entries: Array<{ assetId: string; dependantIds: string[] }>;
+}
+
 interface AssetHistoryItem {
   comment: string;
   modifiedOn: string;
@@ -274,11 +294,6 @@ interface HistoryResponse {
   entries: Array<{ assetId: string; versions: AssetHistoryItem[] }>;
 }
 
-interface DeleteDependenciesResponse {
-  dependantIdsLookup: LookupTable<string[]>;
-  assetLookup: LookupTable<Asset>;
-  entries: Array<{ assetId: string; dependantIds: string[] }>;
-}
 
 interface API3DependenciesResponse {
   items: any[];

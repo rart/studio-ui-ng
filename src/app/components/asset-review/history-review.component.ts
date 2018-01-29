@@ -5,8 +5,6 @@ import { ReviewBase } from '../../classes/review-base.class';
 import { AppState } from '../../classes/app-state.interface';
 import { filter, switchMap, tap } from 'rxjs/operators';
 import { ContentService } from '../../services/content.service';
-import { DataSource } from '@angular/cdk/collections';
-import { Observable } from 'rxjs/Observable';
 import { MatTableDataSource } from '@angular/material';
 
 @Component({
