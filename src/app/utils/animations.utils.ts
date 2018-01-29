@@ -216,7 +216,7 @@ export function slideDownEntry(selector) {
   ];
 }
 
-const ROUTER_WRAPPER = '.main.router.wrapper';
+const ROUTER_WRAPPER = '.router.wrapper';
 
 export const routerAnimations = [
   trigger('navigation', [
@@ -227,8 +227,6 @@ export const routerAnimations = [
     transition('* => slideDown', slideDownEntry(ROUTER_WRAPPER))
   ])
 ];
-
-const NAVBAR = 'std-';
 
 export const navBarAnimations = [
   trigger('visibility', [
