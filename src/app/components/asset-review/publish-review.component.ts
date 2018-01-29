@@ -15,6 +15,8 @@ import { Asset } from '../../models/asset.model';
 })
 export class PublishReviewComponent extends DependencyReviewBase implements OnInit {
 
+  max = 'comfort';
+
   submission = {
     now: true,
     channel: null,

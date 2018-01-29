@@ -1,6 +1,5 @@
-
 <div class="sticky header view layout" *ngIf="data">
-  <std-view-title-bar class="slimmer pad left right">
+  <std-view-title-bar class="slimmer pad left right" [childMax]="max">
     <ng-template #heading>
       <h2 class="margin none" translate>Publish</h2>
     </ng-template>
@@ -20,7 +19,7 @@
     </div>
   </std-view-title-bar>
   <div class="view body">
-    <div class="pad all">
+    <div class="pad all" [attr.max]="max">
 
       <div class="ui stackable grid">
         <section class="ten wide computer column">
@@ -95,10 +94,12 @@
     </div>
   </div>
   <footer class="view footer mat-elevation-z1 pad all mn" *ngIf="!finished">
-    <button mat-raised-button color="blue">
-      <mat-icon>publish</mat-icon>
-      <span>Publish</span>
-    </button>
+    <div [attr.max]="max">
+      <button mat-raised-button color="blue">
+        <mat-icon>publish</mat-icon>
+        <span>Publish</span>
+      </button>
+    </div>
   </footer>
 </div>
 
