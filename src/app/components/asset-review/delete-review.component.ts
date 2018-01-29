@@ -61,29 +61,35 @@ export class DeleteReviewComponent extends ReviewBase {
         this.parentChecked($event, assetId);
       }
     } else {
+
       let entries = data.entries;
-      ArrayUtils.forEachBreak(entries, (entry) => {
+      let deselected = [];
+
+      entries.forEach((entry) => {
         if (
           entry.dependantIds.includes(assetId) &&
           checked[entry.assetId]) {
           checked[entry.assetId] = false;
-          let
-            parent = data.lookUpTable[entry.assetId],
-            child = data.lookUpTable[assetId];
+          deselected.push({
+            parent: data.lookUpTable[entry.assetId].label,
+            child: data.lookUpTable[assetId].label
+          });
           if (assetId in data.dependants) {
             data.dependants[assetId].forEach((id) => {
               checked[id] = false;
             });
           }
-          showSnackBar(
-            this.snackBar,
-            this.translate.instant(`{{parent}} has been deselected. You may delete children without their parent but not vise-versa.`, {
-              child: child.label,
-              parent: parent.label
-            }));
-          return true;
         }
       });
+
+      let message = deselected.map(desc => this.translate.instant('{{parent}} has been deselected', desc));
+      message.length && message.push('You may delete children without their parent but not vise-versa.');
+
+      showSnackBar(
+        this.snackBar,
+        this.translate.instant(message.join('. ')),
+        this.translate.instant('Ok'));
+
     }
   }
 

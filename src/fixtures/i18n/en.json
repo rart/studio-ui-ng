@@ -29,6 +29,6 @@
   "": {
 
   },
-  "{{child}} is a child of {{parent}}. {{parent}} has been deselected.": "{{child}} is a child of {{parent}}. {{parent}} has been deselected.",
-  "{{parent}} has been deselected. You may delete children without their parent but not vise-versa.": "{{parent}} has been deselected. You may delete children without their parent but not vise-versa."
+  "{{parent}} has been deselected": "{{parent}} has been deselected",
+  "You may delete children without their parent but not vise-versa.": "You may delete children without their parent but not vise-versa."
 }
