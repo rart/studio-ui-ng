@@ -52,6 +52,22 @@
   text-overflow: ellipsis;
 }
 
+@mixin widths($width, $min: true, $max: true) {
+  width: $width;
+  @if ($min) {
+    min-width: $width;
+  }
+  @if ($max) {
+    max-width: $width;
+  }
+}
+
+@mixin mediaQuery($bp) {
+  @media #{map_get($breakpoints, $bp)} {
+    @content;
+  }
+}
+
 @mixin fa-base-styles() {
   display: inline-block;
   font: normal normal normal 14px/1 FontAwesome;

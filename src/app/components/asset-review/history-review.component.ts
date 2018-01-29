@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NgRedux } from '@angular-redux/store';
 import { ActivatedRoute } from '@angular/router';
 import { ReviewBase } from '../../classes/review-base.class';
 import { AppState } from '../../classes/app-state.interface';
 import { filter, switchMap, tap } from 'rxjs/operators';
 import { ContentService } from '../../services/content.service';
-import { MatTableDataSource } from '@angular/material';
+import { MatMenu, MatTableDataSource } from '@angular/material';
 
 @Component({
   selector: 'std-history-review',
@@ -15,8 +15,11 @@ import { MatTableDataSource } from '@angular/material';
 export class HistoryReviewComponent extends ReviewBase {
 
   data;
+  selectedEntry;
   dataSources = {};
   columns = ['check', 'comment', 'modifiedBy', 'modifiedOn', 'version', 'actions'];
+
+  @ViewChild(MatMenu) historyItemMenu: MatMenu;
 
   constructor(store: NgRedux<AppState>,
               route: ActivatedRoute,
@@ -42,8 +45,19 @@ export class HistoryReviewComponent extends ReviewBase {
 
   }
 
-  historyItemClicked(something) {
-
+  historyItemClicked(version, entry) {
+    this.selectedEntry = { version, assetId: entry.assetId };
   }
 
+  viewVersion() {
+    let {selectedEntry} = this;
+  }
+
+  compareVersions() {
+    let {selectedEntry} = this;
+  }
+
+  makeCurrentVersion() {
+    let {selectedEntry} = this;
+  }
 }

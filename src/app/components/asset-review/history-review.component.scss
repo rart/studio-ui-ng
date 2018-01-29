@@ -2,8 +2,30 @@
 
 ::ng-deep {
   std-history-review {
+    .mat-cell {
+      &.version {
+        direction: rtl;
+      }
+    }
     .mat-cell,
     .mat-header-cell {
+      &.comment {
+        @include mediaQuery(sm) {
+          @include widths(250px, $max: false);
+        }
+        @include mediaQuery(md) {
+          @include widths(300px, $max: false);
+        }
+        @include mediaQuery(lg) {
+          @include widths(400px, $max: false);
+        }
+        @media screen and (min-width: 1400px) {
+          min-width: 550px
+        }
+      }
+      &.version {
+        @include widths(125px);
+      }
       &:not(.checkbox):not(.actions) {
         overflow: hidden;
         white-space: nowrap;
@@ -15,14 +37,10 @@
         overflow: visible;
       }
       &.checkbox {
-        width: 30px;
-        min-width: 30px;
-        max-width: 30px;
+        @include widths(30px);
       }
       &.actions {
-        width: 30px;
-        min-width: 30px;
-        max-width: 30px;
+        @include widths(45px);
       }
     }
   }

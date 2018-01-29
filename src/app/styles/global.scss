@@ -650,10 +650,8 @@ thead.uppercase {
       padding: 0;
       flex-grow: 1;
       cursor: pointer;
-      overflow: hidden;
+      @include ellipsis;
       text-align: center;
-      white-space: nowrap;
-      text-overflow: ellipsis;
       max-width: calc(100% - 30px);
     }
     .close {
@@ -670,9 +668,7 @@ thead.uppercase {
 }
 
 .ellipsis {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  @include ellipsis;
 }
 
 /**
