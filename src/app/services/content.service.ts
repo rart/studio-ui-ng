@@ -8,6 +8,7 @@ import { parseEntity } from '../utils/api.utils';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { LookupTable } from '../classes/app-state.interface';
 import { of } from 'rxjs/observable/of';
+import { PublishingChannel } from '../models/publishing-channel.model';
 
 const content = `${environment.apiUrl}/content`;
 const dependency = `${environment.apiUrl}/dependency`;
@@ -247,6 +248,47 @@ export class ContentService {
 
   }
 
+  publishingChannels(projectCode: string) {
+    return this.http.get(`${environment.apiUrl}/deployment/get-available-publishing-channels.json`, {
+      site: projectCode
+    }).pipe(map(response =>
+      response.availablePublishChannels.map(channel =>
+        PublishingChannel.deserialize(channel))
+    ));
+  }
+
+  prePublishReport(id: string): Observable<PrePublishReportResponse>;
+  prePublishReport(asset: Asset): Observable<PrePublishReportResponse>;
+  prePublishReport(ids: string[]): Observable<PrePublishReportResponse>;
+  prePublishReport(assets: Asset[]): Observable<PrePublishReportResponse>;
+  prePublishReport(assets: string | Asset | string[] | Asset[]): Observable<PrePublishReportResponse> {
+
+    let ids, projectCode, dependencies$, channels$;
+
+    if (typeof assets === 'string') {
+      ids = [assets];
+    } else if (assets instanceof Asset) {
+      ids = [assets.id];
+    } else {
+      ids = (assets[0] instanceof Asset) ? (<Asset[]>assets).map(a => a.id) : assets;
+    }
+
+    projectCode = extractProjectCodeFromId(ids[0]);
+
+    dependencies$ = this.dependants(<any>assets, false);
+
+    channels$ = this.publishingChannels(projectCode);
+
+    return forkJoin(dependencies$, channels$)
+      .pipe(map(responses => {
+        let answer = { dependencies: null, channels: null };
+        answer.dependencies = responses[0];
+        answer.channels = responses[1];
+        return answer;
+      }));
+
+  };
+
 }
 
 function extractProjectCodeFromId(asset) {
@@ -294,6 +336,10 @@ interface HistoryResponse {
   entries: Array<{ assetId: string; versions: AssetHistoryItem[] }>;
 }
 
+interface PrePublishReportResponse {
+  dependencies: DependantsResponse;
+  channels: PublishingChannel[];
+}
 
 interface API3DependenciesResponse {
   items: any[];

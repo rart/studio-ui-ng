@@ -14,7 +14,6 @@ import { MatMenu, MatTableDataSource } from '@angular/material';
 })
 export class HistoryReviewComponent extends ReviewBase {
 
-  data;
   selectedEntry;
   dataSources = {};
   columns = ['check', 'comment', 'modifiedBy', 'modifiedOn', 'version', 'actions'];

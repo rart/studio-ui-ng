@@ -1,14 +1,31 @@
 
-<std-spinner *ngIf="loading" class="take over"></std-spinner>
-
-<div class="pad all lg text muted center" *ngIf="empty">
-  <span translate>Nothing selected for displaying.</span>
-</div>
-
-<div class="sticky header view layout">
+<div class="sticky header view layout" *ngIf="data">
   <std-view-title-bar class="slimmer pad left right">
     <ng-template #heading>
       <h2 class="margin none" translate>Dependencies</h2>
     </ng-template>
   </std-view-title-bar>
+  <div class="view body">
+    <div class="pad all" max="readability">
+      <ng-container *ngFor="let entry of data.entries; let isLast=last">
+        <std-asset-display
+          [id]="entry.assetId"
+          [showLink]="false">
+        </std-asset-display>
+        <div *ngFor="let dependantId of entry.dependantIds" class="pad left">
+          <std-asset-display
+            [id]="dependantId"
+            [showLink]="false">
+          </std-asset-display>
+        </div>
+        <div class="ui divider" *ngIf="!isLast"></div>
+      </ng-container>
+    </div>
+  </div>
 </div>
+
+<div class="pad all lg text muted center" *ngIf="empty">
+  <span translate>Nothing selected for displaying.</span>
+</div>
+
+<std-spinner *ngIf="loading" class="take over"></std-spinner>

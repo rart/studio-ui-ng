@@ -154,6 +154,12 @@
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/@angular/language-service/-/language-service-5.0.0.tgz#6ccbb69f4757270dd04ec5857d37634b2f02c40c"
 
+"@angular/material-moment-adapter@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@angular/material-moment-adapter/-/material-moment-adapter-5.1.0.tgz#95bd8fdc6b8ad9170628f42ccecce9e9952a932e"
+  dependencies:
+    tslib "^1.7.1"
+
 "@angular/material@^5.0.0-rc0":
   version "5.0.0-rc0"
   resolved "https://registry.yarnpkg.com/@angular/material/-/material-5.0.0-rc0.tgz#d37e104a284b41084f91e7613ac119cfb627c56d"

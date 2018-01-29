@@ -1,55 +1,36 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ContentService } from '../../services/content.service';
-import { dispatch, NgRedux } from '@angular-redux/store';
-import { AppState } from '../../classes/app-state.interface';
-import { ReviewBase } from '../../classes/review-base.class';
+import { NgRedux } from '@angular-redux/store';
+import { AppState, LookupTable } from '../../classes/app-state.interface';
 import { ActivatedRoute } from '@angular/router';
-import { filter, switchMap, tap } from 'rxjs/operators';
-import { Asset } from '../../models/asset.model';
+import { switchMap } from 'rxjs/operators';
 import { notNullOrUndefined } from '../../app.utils';
 import { AssetActions } from '../../actions/asset.actions';
 import { showSnackBar } from '../../utils/material.utils';
 import { MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { WorkflowStatusEnum } from '../../enums/workflow-status.enum';
-import { ArrayUtils } from '../../utils/array.utils';
+import { DependencyReviewBase } from '../../classes/dependency-review-base.class';
+import { Asset } from '../../models/asset.model';
 
 @Component({
   selector: 'std-delete-review',
   templateUrl: './delete-review.component.html',
   styleUrls: ['./delete-review.component.scss']
 })
-export class DeleteReviewComponent extends ReviewBase {
-
-  data;
-  checked = {};
+export class DeleteReviewComponent extends DependencyReviewBase implements OnInit {
 
   constructor(store: NgRedux<AppState>,
               route: ActivatedRoute,
+              actions: AssetActions,
               private contentService: ContentService,
-              private assetActions: AssetActions,
               private snackBar: MatSnackBar,
               private translate: TranslateService) {
-    super(store, route);
-
-    this.ids$
-      .pipe(
-        filter(ids => !!ids.length),
-        tap(() => this.loading = true),
-        switchMap(ids => this.contentService.dependants(ids, true)),
-        this.untilDestroyed()
-      )
-      .subscribe((data) => {
-        this.notifyAssetLoaded(Object.values(data.assetLookup));
-        this.data = data;
-        this.loading = false;
-      });
-
+    super(store, route, actions);
   }
 
-  @dispatch()
-  notifyAssetLoaded(assets: Asset[]) {
-    return this.assetActions.fetchedSome(assets);
+  switchAndMap() {
+    return switchMap((ids: string[]) => this.contentService.dependants(ids, true));
   }
 
   assetChecked($event, assetId) {
@@ -104,14 +85,8 @@ export class DeleteReviewComponent extends ReviewBase {
     }
   }
 
-  selectAll() {
-    let { data, checked } = this;
-    Object.keys(data.assetLookup)
-      .forEach(id => checked[id] = true);
-  }
-
-  selectNone() {
-    this.checked = {};
+  getAssetLookupTable(): LookupTable<Asset> {
+    return this.data.assetLookup;
   }
 
   submit() {

@@ -6,6 +6,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 export class ReviewBase extends ComponentBase {
 
+  data;
   empty = false;
   loading = false;
   finished = false;

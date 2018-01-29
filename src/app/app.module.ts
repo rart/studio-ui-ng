@@ -36,8 +36,9 @@ import {
   MatTabsModule,
   MatToolbarModule,
   MatTooltipModule,
-  MatStepperModule
+  MatStepperModule, MAT_DATE_LOCALE, DateAdapter, MAT_DATE_FORMATS
 } from '@angular/material';
+import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
 // Config
 import { environment } from '../environments/environment';
@@ -68,6 +69,7 @@ import { ComponentHostDirective } from './components/component-host.directive';
 
 // This is just for "pretty" to be available globally, really.
 import { global } from './utils/logging.utils';
+
 global();
 
 // Studio Components
@@ -238,6 +240,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatCardModule,
     MatGridListModule,
     MatTableModule,
+    MatDatepickerModule,
     TreeModule,
     MomentModule,
     NgReduxModule,
@@ -290,7 +293,14 @@ export function HttpLoaderFactory(http: HttpClient) {
     ProjectResolver,
     ProjectsResolver,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: PERFECT_SCROLLBAR_CONFIG, useValue: {  } }
+    { provide: PERFECT_SCROLLBAR_CONFIG, useValue: {} },
+
+    { provide: MAT_DATE_LOCALE, useValue: 'en' },
+    // `MomentDateAdapter` and `MAT_MOMENT_DATE_FORMATS` can be automatically provided by importing
+    // `MatMomentDateModule` in your applications root module. We provide it at the component level
+    // here, due to limitations of our example generation script.
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS }
 
   ],
   bootstrap: [AppComponent]

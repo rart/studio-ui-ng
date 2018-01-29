@@ -2,9 +2,7 @@
 <div class="sticky header view layout" *ngIf="data">
   <std-view-title-bar class="slimmer pad left right">
     <ng-template #heading>
-      <h2 class="margin none" translate>
-        Delete Asset(s)
-      </h2>
+      <h2 class="margin none" translate>Delete Asset(s)</h2>
     </ng-template>
     <div>
       <button mat-icon-button
@@ -22,8 +20,8 @@
     </div>
   </std-view-title-bar>
   <div class="view body">
-    <div class="pad all">
-      <ng-container *ngFor="let entry of data.entries">
+    <div class="pad all" max="readability">
+      <ng-container *ngFor="let entry of data.entries; let isLast=last">
         <std-asset-display
           [id]="entry.assetId"
           [showLink]="false"
@@ -44,7 +42,7 @@
             checkMode="local">
           </std-asset-display>
         </div>
-        <div class="ui divider"></div>
+        <div class="ui divider" *ngIf="!isLast"></div>
       </ng-container>
     </div>
   </div>
