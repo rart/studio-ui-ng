@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostBinding, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ContentChild, ElementRef, HostBinding, Input, OnInit, TemplateRef } from '@angular/core';
 import { select } from '@angular-redux/store';
 import { Observable } from 'rxjs/Observable';
 import { Settings } from '../../classes/app-state.interface';
@@ -7,19 +7,23 @@ import { ComponentBase } from '../../classes/component-base.class';
 @Component({
   selector: 'std-view-title-bar',
   template: `
-      <header fxFlex="100%" fxLayoutAlign="space-between center" [attr.max]="childMax">
-        <section fxLayoutAlign="left center">
-          <button color="default" mat-fab 
-                  *ngIf="back !== ''" [routerLink]="[back]"
-                  [attr.aria-label]="'Back' | translate">
-            <mat-icon class="" aria-hidden="true">chevron_left</mat-icon>
-          </button>
-          <h1 [ngClass]="{ 'pad left': back !== '' }">
-            <mat-icon *ngIf="icon">{{icon}}</mat-icon> {{title|translate}}
-          </h1>
-        </section>
-        <ng-content></ng-content>
-      </header>`,
+    <header fxFlex="100%" fxLayoutAlign="space-between center" [attr.max]="childMax">
+      <section fxLayoutAlign="left center">
+        <button color="default" mat-fab 
+                *ngIf="back !== ''" [routerLink]="[back]"
+                [attr.aria-label]="'Back' | translate">
+          <mat-icon class="" aria-hidden="true">chevron_left</mat-icon>
+        </button>
+        <h1 *ngIf="!heading" [ngClass]="{ 'pad left': back !== '' }">
+          <mat-icon *ngIf="icon">{{icon}}</mat-icon> {{title|translate}}
+        </h1>
+        <ng-container
+          [ngTemplateOutlet]="heading"
+          [ngTemplateOutletContext]="{ $implicit: { icon: icon, title: title } }">
+        </ng-container>
+      </section>
+      <ng-content></ng-content>
+    </header>`,
   styleUrls: ['./view-title-bar.component.scss']
 })
 export class ViewTitleBarComponent extends ComponentBase implements OnInit, AfterViewInit {
@@ -28,6 +32,8 @@ export class ViewTitleBarComponent extends ComponentBase implements OnInit, Afte
 
   @HostBinding('attr.hue') hue;
   @HostBinding('attr.theme') theme;
+
+  @ContentChild('heading') heading: TemplateRef<any>;
 
   @Input() title;
   @Input() icon;
