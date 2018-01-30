@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ProjectEpics } from './project.epics';
 import { combineEpics, ofType } from 'redux-observable';
-import { switchMap } from 'rxjs/operators';
+import { mergeMap, switchMap } from 'rxjs/operators';
 import { isArray } from 'util';
 import { InterceptorEpics } from './interceptor.epics';
 import { AssetEpics } from './asset.epics';
@@ -10,12 +10,12 @@ import { UserEpics } from './user.epics';
 @Injectable()
 export class RootEpic {
 
-  static createEpic(type, switchMapProj) {
+  static createEpic(type, mapProject, useSwitchMap = true) {
     type = isArray(type) ? type : [type];
     return (action$, store, dependencies) => {
       return action$.pipe(
         ofType(...type),
-        switchMap(switchMapProj)
+        useSwitchMap ? switchMap(mapProject) : mergeMap(mapProject)
       );
     };
   }
