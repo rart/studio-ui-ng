@@ -3,9 +3,8 @@ import { Component, HostBinding } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
 import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
 import { interval } from 'rxjs/observable/interval';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { NgRedux, select } from '@angular-redux/store';
 import { TranslateService } from '@ngx-translate/core';
@@ -33,14 +32,10 @@ export class AppComponent extends WithNgRedux {
   @HostBinding('class.sidebar-collapsed')
   sidebarCollapsed = false;
 
-  @select(['entities', 'projects'])
-  projectsEntity$: Observable<StateEntity<Project>>;
-
   @select(['sidebar', 'visible'])
   sidebarVisibility$;
 
   preRequisitesPassed = false;
-  preRequisitesPassed$ = new Subject();
 
   constructor(store: NgRedux<AppState>,
               translate: TranslateService,
@@ -92,12 +87,13 @@ export class AppComponent extends WithNgRedux {
     this.sidebarVisibility$
       .subscribe((visible: boolean) => this.sidebarCollapsed = !visible);
 
-    this.projectsEntity$
-      .pipe(takeUntil(this.preRequisitesPassed$))
-      .subscribe(data => {
-        if (this.preRequisitesPassed = !isNullOrUndefined(data.byId)) {
-          this.preRequisitesPassed$.next();
-        }
+    this.select<StateEntity<Project>>(['entities', 'projects'])
+      .pipe(
+        filter(data => data.loading.all === false),
+        take(1)
+      )
+      .subscribe(() => {
+        this.preRequisitesPassed = true;
       });
 
   }

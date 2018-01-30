@@ -10,13 +10,16 @@ export const projects: Reducer<StateEntity<Project>> =
     switch (action.type) {
 
       case StoreActionsEnum.FETCH_PROJECTS:
-        return createEntityState({
-          loading: { all: true },
+        return ({
+          ...state,
+          loading: { ...state.loading, all: true },
           byId: state.byId
         });
 
       case StoreActionsEnum.PROJECTS_FETCHED:
-        return createEntityState({
+        return ({
+          ...state,
+          loading: { ...state.loading, all: false },
           byId: createLookupTable(action.projects, 'code')
         });
 

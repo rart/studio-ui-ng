@@ -4,7 +4,7 @@ import { ComponentBase } from './component-base.class';
 
 export class WithNgRedux extends ComponentBase {
 
-  get state() {
+  get state(): AppState {
     return this.store.getState();
   }
 

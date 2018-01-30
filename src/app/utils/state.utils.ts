@@ -16,8 +16,8 @@ export const createEntityState =
   <T>({
         order = undefined as any[],
         error = {  },
-        loading = { all: false } as { [key: string]: boolean },
-        byId = null as EntityLookupTable<any>
+        loading = {  } as { [key: string]: boolean },
+        byId = {} as EntityLookupTable<any>
       }): StateEntity<T> => {
     let obj: StateEntity<any> = {
       error,
