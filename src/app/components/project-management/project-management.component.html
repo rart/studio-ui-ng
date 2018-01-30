@@ -36,8 +36,9 @@
                   <mat-card-subtitle>Subtitle</mat-card-subtitle>
                 </mat-card-header>
                 <img mat-card-image src="http://placehold.it/800x500?text={{project.name}}" />
-                <mat-card-content>
-                  {{project.description || '(no description)'}}
+                <mat-card-content class="ellipsis">
+                  <div *ngIf="project.description" [matTooltip]="project.description">{{project.description}}</div>
+                  <div class="text muted center" *ngIf="!project.description" translate>(no description)</div>
                 </mat-card-content>
                 <mat-card-actions fxLayoutAlign="space-between center">
                   <button mat-icon-button
