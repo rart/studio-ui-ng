@@ -11,10 +11,10 @@ export const assets: Reducer<StateEntity<Asset>> =
     switch (action.type) {
 
       case StoreActionsEnum.FETCH_ASSETS:
-        return createEntityState({
-          loading: true,
-          byId: state.byId
-        });
+        return {
+          ...state,
+          loading: { ...state.loading }
+        };
 
       case StoreActionsEnum.ASSETS_FETCHED:
         return createEntityState({

@@ -11,7 +11,7 @@ export const projects: Reducer<StateEntity<Project>> =
 
       case StoreActionsEnum.FETCH_PROJECTS:
         return createEntityState({
-          loading: true,
+          loading: { all: true },
           byId: state.byId
         });
 
@@ -23,7 +23,7 @@ export const projects: Reducer<StateEntity<Project>> =
       case StoreActionsEnum.PROJECTS_FETCH_ERROR:
         return {
           ...state,
-          error: new Error('')
+          error: { ...state.error, all: new Error('') }
         };
 
       case StoreActionsEnum.FETCH_PROJECT:
