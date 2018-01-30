@@ -114,14 +114,13 @@
 
 .workspace {
   &.heading {
-    display: flex;
     height: 3.5rem;
     overflow: hidden;
   }
   &.title {
     margin: 0;
     flex-grow: 1;
-    padding: 0 15px;
+    padding: 0 0 0 0.6em;
     overflow: hidden;
     font-size: 1.5rem;
     line-height: 3.5rem;
@@ -129,26 +128,21 @@
     text-overflow: ellipsis;
   }
   &.options {
-    width: 2.5rem;
-    display: flex;
-    flex-direction: column;
+    @include widths(5.5em);
     button {
-      margin: 0;
-      padding: 0;
-      height: 50%;
       i {
         margin: 0;
         padding: 0;
       }
+      &.close,
+      &.change {
+
+      }
       &.close {
-        &:hover {
-          color: $color-red;
-        }
+
       }
       &.change {
-        &:hover {
-          color: $color-purple;
-        }
+
       }
     }
   }

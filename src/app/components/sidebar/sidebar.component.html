@@ -42,25 +42,31 @@
 
 <ng-container *ngIf="project">
   <section class="workspace heading">
-    <h2 class="workspace title">{{project.name}}</h2>
-    <div class="workspace options">
-      <button class="close" [title]="'Close Workspace' | translate: { name: project.name }"
-              (click)="closeWorkspace()">
-        <mat-icon>close</mat-icon>
-      </button>
-      <button class="change" title="Change Project" i18n-title
-              [matMenuTriggerFor]="projectsMenu">
-        <mat-icon>compare_arrows</mat-icon>
-      </button>
-    </div>
-    <mat-menu class="mat-menu-compact" #projectsMenu="matMenu">
-      <ng-container *ngFor="let project of projects">
-        <button mat-menu-item (click)="selectProject(project.code)">
-          {{project.name}}
+    <div fxLayoutAlign="space-between center">
+      <h2 class="workspace ellipsis title">{{project.name}}</h2>
+      <div class="workspace options">
+        <button mat-icon-button class="change"
+                [attr.aria-label]="'Change Project'|translate"
+                [title]="'Change Project'|translate"
+                [matMenuTriggerFor]="projectsMenu">
+          <mat-icon aria-hidden="true">compare_arrows</mat-icon>
         </button>
-      </ng-container>
-    </mat-menu>
+        <button mat-icon-button class="close"
+                [attr.aria-label]="'Close Workspace' | translate: { name: project.name }"
+                [title]="'Close Workspace' | translate: { name: project.name }"
+                (click)="closeWorkspace()">
+          <mat-icon aria-hidden="true">close</mat-icon>
+        </button>
+      </div>
+    </div>
   </section>
+  <mat-menu class="mat-menu-compact" #projectsMenu="matMenu">
+    <ng-container *ngFor="let project of projects">
+      <button mat-menu-item (click)="selectProject(project.code)">
+        {{project.name}}
+      </button>
+    </ng-container>
+  </mat-menu>
   <div class="sidebar-items">
 
     <!-- TODO: make this into individual components? -->
