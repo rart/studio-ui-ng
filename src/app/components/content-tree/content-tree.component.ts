@@ -108,7 +108,7 @@ export class ContentTreeComponent
       .then(item => {
         this.dispatch(
           (item.children && item.children.length > 0)
-            ? this.assetActions.fetchedSome([item].concat(item.children))
+            ? this.assetActions.fetchedMany([item].concat(item.children))
             : this.assetActions.gotten(item));
         return item;
       });

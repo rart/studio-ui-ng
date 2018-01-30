@@ -51,7 +51,7 @@ export abstract class DependencyReviewBase extends ReviewBase {
 
   @dispatch()
   notifyAssetLoaded(assets: Asset[]) {
-    return this.actions.fetchedSome(assets);
+    return this.actions.fetchedMany(assets);
   }
 
 }

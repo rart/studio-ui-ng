@@ -1,20 +1,21 @@
 import { Injectable } from '@angular/core';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, catchError, switchMap } from 'rxjs/operators';
 import { StoreActionsEnum } from '../enums/actions.enum';
 import { WorkflowService } from '../services/workflow.service';
 import { AssetActions } from '../actions/asset.actions';
 import { RootEpic } from './root.epic';
 import { ContentService } from '../services/content.service';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/forkJoin';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Asset } from '../models/asset.model';
 import { isArray } from 'util';
 import { BaseEpic } from './base-epic';
+import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class AssetEpics extends BaseEpic {
 
   protected manifest = [
+    'get',
     'some',
     'recallForEdit',
     'closeEditSession',
@@ -27,12 +28,22 @@ export class AssetEpics extends BaseEpic {
     super();
   }
 
+  private get = RootEpic.createEpic(
+    StoreActionsEnum.FETCH_ASSET,
+    ({ payload }) => {
+      return this.content
+        .byId(payload.id)
+        .pipe(
+          map(this.actions.gotten),
+          catchError((error, caught) => of(this.actions.getError(payload.id)))
+        );
+    }, false);
+
   private recallForEdit = RootEpic.createEpic(
     StoreActionsEnum.FETCH_ASSET_FOR_EDIT,
     ({ payload }) => {
       let { assetId, sessionUUID } = payload;
-      return Observable
-        .forkJoin([
+      return forkJoin([
           this.content.read(assetId, true),
           this.content.byId(assetId)
         ])
@@ -69,9 +80,8 @@ export class AssetEpics extends BaseEpic {
     StoreActionsEnum.FETCH_SOME_ASSETS,
     ({ payload }) => {
       if (isArray(payload)) {
-        return Observable
-          .forkJoin(payload.map(obj => this.content.byId(obj.assetId)))
-          .pipe(map((results: Asset[]) => this.actions.fetchedSome(<Asset[]>results)));
+        return forkJoin(payload.map(obj => this.content.byId(obj.assetId)))
+          .pipe(map((results: Asset[]) => this.actions.fetchedMany(<Asset[]>results)));
       }
     });
 

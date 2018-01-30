@@ -129,7 +129,7 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
           .pipe(take(1))
           .subscribe((met) => {
             if (!met) {
-              this.dispatch(this.assetActions.fetchSome(query));
+              this.dispatch(this.assetActions.fetchMany(query));
             }
           });
 

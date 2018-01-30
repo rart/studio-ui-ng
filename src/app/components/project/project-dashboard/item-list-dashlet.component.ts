@@ -253,7 +253,7 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
         } else {
           values = assets.map(asset => asset.id);
         }
-        this.dispatch(this.assetActions.fetchedSome(assets));
+        this.dispatch(this.assetActions.fetchedMany(assets));
         this.collection = Observable.of(values);
         this.afterItemsFetched(values);
         this.itemsFetching = false;

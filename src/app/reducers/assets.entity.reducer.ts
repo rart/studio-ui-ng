@@ -25,26 +25,32 @@ export const assets: Reducer<StateEntity<Asset>> =
         return createEntityState({
           byId: {
             ...state.byId || {},
-            ...createLookupTable(action.payload)
+            ...createLookupTable<Asset>(action.payload)
           }
         });
 
       case StoreActionsEnum.FETCH_ASSET:
-        return state;
+        return {
+          ...state,
+          loading: { ...state.loading, [action.payload.id]: true }
+        };
+
+      case StoreActionsEnum.ASSET_FETCH_ERROR:
+        return {
+          ...state,
+          error: { ...state.error, [action.payload.id]: true },
+          loading: { ...state.loading, [action.payload.id]: false }
+        };
 
       case StoreActionsEnum.ASSET_FETCHED:
-        return createEntityState({
+        return {
           ...state,
+          error: { ...state.error, [action.payload.id]: false },
+          loading: { ...state.loading, [action.payload.id]: false },
           byId: {
             ...state.byId,
             [action.payload.id]: action.payload
           }
-        });
-
-      case StoreActionsEnum.PROJECTS_FETCH_ERROR:
-        return {
-          ...state,
-          error: new Error('')
         };
 
       case StoreActionsEnum.CREATE_ASSET:

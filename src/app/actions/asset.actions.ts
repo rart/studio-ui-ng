@@ -14,7 +14,7 @@ export class AssetActions {
     };
   }
 
-  fetchSome(query): AnyAction {
+  fetchMany(query): AnyAction {
     return {
       type: StoreActionsEnum.FETCH_SOME_ASSETS,
       payload: query
@@ -28,7 +28,7 @@ export class AssetActions {
     };
   }
 
-  fetchedSome(assets: Asset[]): AnyAction {
+  fetchedMany(assets: Asset[]): AnyAction {
     return {
       type: StoreActionsEnum.SOME_ASSETS_FETCHED,
       payload: assets
@@ -105,10 +105,17 @@ export class AssetActions {
     };
   }
 
-  get(assetId): AnyAction {
+  get(id: string): AnyAction {
     return {
       type: StoreActionsEnum.FETCH_ASSET,
-      payload: assetId
+      payload: { id }
+    };
+  }
+
+  getError(id: string): AnyAction {
+    return {
+      type: StoreActionsEnum.ASSET_FETCH_ERROR,
+      payload: { id }
     };
   }
 

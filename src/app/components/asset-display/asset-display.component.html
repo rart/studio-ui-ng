@@ -1,3 +1,11 @@
+<div *ngIf="loading">
+  <i class="fa fa-spinner"></i> <span translate>Loading</span>&hellip;
+</div>
+
+<div *ngIf="error">
+  <mat-icon class="red text">warning</mat-icon> <span translate>Error loading asset</span> (<a translate (click)="ngOnChanges$.next()">retry</a>)
+</div>
+
 <ng-container *ngIf="asset">
 
   <mat-checkbox
@@ -13,7 +21,6 @@
     (change)="checkedStateChange($event.checked)"
     [ngModel]="checked">
   </mat-checkbox>
-  <!--(change)="checkedStateChange($event.checked)"-->
 
   <div *ngIf="showIcons && (showTypeIcon || showStatusIcons)"
        [class]="'icons ' + typeClass + ' ' + statusClass" [title]="iconDescription">

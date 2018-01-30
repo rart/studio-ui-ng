@@ -24,9 +24,12 @@ import { createPreviewTabCore } from '../../utils/state.utils';
 import { SettingsEnum } from '../../enums/Settings.enum';
 import { AssetActions } from '../../actions/asset.actions';
 import { notNullOrUndefined } from '../../app.utils';
-import { filter, withLatestFrom } from 'rxjs/operators';
+import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { merge } from 'rxjs/observable/merge';
 import { isNullOrUndefined } from 'util';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 declare type LabelFactory = (asset: Asset) => string;
 
@@ -49,12 +52,13 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
     super(store);
   }
 
-  count = count++;
-
+  count = count++; // A couter to produce unique IDs on the template for label[for] to point to the checkbox
   asset: Asset;
-  settings: Settings;
 
   asset$ = new ReplaySubject<Asset>();
+  ngOnChanges$ = new Subject();
+  loading = false;
+  error = false;
 
   @Input() id: string;
   @Input() @HostBinding('class.no-wrap') disallowWrap = true;
@@ -77,9 +81,6 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
   // https://angular.io/guide/template-syntax
   // @Output() showIconsChange = new EventEmitter();
 
-  assetSub;
-  selectedAssetsSub;
-
   label;
   statusClass;
   typeClass;
@@ -89,78 +90,67 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
   labelLeftClear;
   @HostBinding('class.hover-menu')
   hoverMenu;
-
   navigable = true; // Internal control of whether the asset displays as a link or a label
   selected = false;
-
-  // internal compiled value of the @input showmenu
-  // updated every ngOnChanges
-  shouldShowMenu = false;
+  shouldShowMenu = false; // internal compiled value of the @input showMenu
 
   ngOnInit() {
-    this.select('settings')
-      .pipe(this.untilDestroyed())
-      .subscribe((x: Settings) => this.settings = x);
+
   }
 
   ngOnChanges(ngChanges: SimpleChanges) {
+    let { ngOnChanges$, ngOnDestroy$, asset$, id, state } = this;
 
-    let changes: any = { ...ngChanges };
-    let stub = { previousValue: null, currentValue: null, firstChange: null };
-    if (isNullOrUndefined(changes.id)) {
-      changes.id = stub;
-    }
-    if (isNullOrUndefined(changes.showCheck)) {
-      changes.showCheck = stub;
-    }
-    if (isNullOrUndefined(changes.checkMode)) {
-      changes.checkMode = stub;
-    }
+    ngOnChanges$.next(ngChanges);
 
     this.setMenuVisibility();
     this.setLabelLeftClear();
 
-    if (changes.id.previousValue !== changes.id.currentValue) {
-      if (notNullOrUndefined(this.assetSub)) {
-        this.assetSub.unsubscribe();
-        this.assetSub = null;
-      }
-      if (notNullOrUndefined(this.id)) {
-        this.assetSub = this.select<Asset>(['entities', 'assets', 'byId', this.id])
+    if (notNullOrUndefined(id)) {
+
+      this.select<Asset>(['entities', 'assets', 'byId', id])
+        .pipe(
+          this.filterNulls(),
+          takeUntil(merge(ngOnChanges$, ngOnDestroy$))
+        )
+        .subscribe(asset => {
+
+          this.asset = asset;
+          this.asset$.next(asset);
+          this.loading = this.error = false;
+
+          this.setIsNavigable();
+          this.setIconDescription();
+          this.setLockedByCurrent();
+          this.setTypeClass();
+          this.setStatusClass();
+          this.setLabel();
+
+        });
+
+      if (isNullOrUndefined(state.entities.assets.byId[id])) {
+        this.loading = true;
+        this.dispatch(this.assetActions.get(id));
+        this.select<boolean>(['entities', 'assets', 'loading', id])
           .pipe(
-            filter(x => notNullOrUndefined(x)),
-            this.untilDestroyed()
+            filter(x => x === true),
+            takeUntil(merge(ngOnChanges$, ngOnDestroy$))
           )
-          .subscribe(asset => {
-
-            this.asset = asset;
-            this.asset$.next(asset);
-
-            this.setIsNavigable();
-            this.setIconDescription();
-            this.setLockedByCurrent();
-            this.setTypeClass();
-            this.setStatusClass();
-            this.setLabel();
-
+          .subscribe(() => {
+            this.loading = false;
+            this.error = true;
           });
       }
+
     }
 
-    if (changes.showCheck.previousValue !== changes.showCheck.currentValue ||
-      changes.checkMode.previousValue !== changes.checkMode.currentValue) {
-      if (notNullOrUndefined(this.selectedAssetsSub)) {
-        this.selectedAssetsSub.unsubscribe();
-        this.selectedAssetsSub = null;
-      }
-      if (this.showCheck && this.checkMode === 'state') {
-        this.selectedAssetsSub = this.store.select<LookupTable<boolean>>(['workspaceRef', 'selectedItems'])
-          .pipe(
-            withLatestFrom(this.asset$, x => x),
-            this.untilDestroyed()
-          )
-          .subscribe(selectedItems => this.selectedItemsStateChanged(selectedItems));
-      }
+    if (this.showCheck && this.checkMode === 'state') {
+      this.select<LookupTable<boolean>>(['workspaceRef', 'selectedItems'])
+        .pipe(
+          withLatestFrom(asset$, x => x),
+          takeUntil(merge(ngOnChanges$, ngOnDestroy$))
+        )
+        .subscribe(selectedItems => this.selectedItemsStateChanged(selectedItems));
     }
 
   }
@@ -168,7 +158,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
   @dispatch()
   navigate($event) {
     let
-      { asset, settings } = this,
+      { asset, state } = this,
       tab = createPreviewTabCore({
         url: asset.url,
         projectCode: asset.projectCode,
@@ -176,7 +166,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
         assetId: asset.id
       });
     if ($event.metaKey) {
-      return settings[SettingsEnum.CLICK_WITH_META_OPENS_TAB_IN_BACKGROUND]
+      return state.settings[SettingsEnum.CLICK_WITH_META_OPENS_TAB_IN_BACKGROUND]
         ? this.previewTabsActions.openInBackground(tab)
         : this.previewTabsActions.open(tab);
     } else {
