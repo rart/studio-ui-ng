@@ -141,7 +141,7 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
     num: 20,
     sortDirection: 'ASC',
     sortBy: 'lastEditedOn',
-    includeInProgress: true,
+    includeInProgress: false,
     filterType: 'all',
     username: null,
     includeLive: true,

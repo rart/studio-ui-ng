@@ -80,7 +80,6 @@ const isExternalURL = (url) => {
 const FileAssociations = {
 
   [AssetTypeEnum.CSS]: 'SyntaxHighlighterComponent',
-  [AssetTypeEnum.HTML]: 'SyntaxHighlighterComponent',
   [AssetTypeEnum.SCSS]: 'SyntaxHighlighterComponent',
   [AssetTypeEnum.SASS]: 'SyntaxHighlighterComponent',
   [AssetTypeEnum.LESS]: 'SyntaxHighlighterComponent',
@@ -103,7 +102,8 @@ const FileAssociations = {
   [AssetTypeEnum.SVG]: 'ImageViewerComponent',
   [AssetTypeEnum.JPEG]: 'ImageViewerComponent',
 
-  [AssetTypeEnum.PAGE]: 'iFrameComponent'
+  [AssetTypeEnum.PAGE]: 'iFrameComponent',
+  [AssetTypeEnum.HTML]: 'iFrameComponent'
 
 };
 

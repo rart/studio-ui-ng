@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   HostBinding,
@@ -10,7 +11,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppState, LookupTable, Settings } from '../../classes/app-state.interface';
+import { AppState, LookupTable } from '../../classes/app-state.interface';
 import { Asset } from '../../models/asset.model';
 import { StringUtils } from '../../utils/string.utils';
 import { AssetTypeEnum } from '../../enums/asset-type.enum';
@@ -38,9 +39,10 @@ let count = 0;
 @Component({
   selector: 'std-asset-display',
   templateUrl: './asset-display.component.html',
-  styleUrls: ['./asset-display.component.scss']
+  styleUrls: ['./asset-display.component.scss']/*,
+  changeDetection: ChangeDetectionStrategy.OnPush*/
 })
-export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChanges, OnDestroy {
+export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnDestroy {
 
   constructor(store: NgRedux<AppState>,
               private workflowService: WorkflowService,
@@ -52,7 +54,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
     super(store);
   }
 
-  count = count++; // A couter to produce unique IDs on the template for label[for] to point to the checkbox
+  count = count++; // A counter to produce unique IDs on the template for label[for] to point to the checkbox
   asset: Asset;
 
   asset$ = new ReplaySubject<Asset>();
@@ -93,10 +95,6 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
   navigable = true; // Internal control of whether the asset displays as a link or a label
   selected = false;
   shouldShowMenu = false; // internal compiled value of the @input showMenu
-
-  ngOnInit() {
-
-  }
 
   ngOnChanges(ngChanges: SimpleChanges) {
     let { ngOnChanges$, ngOnDestroy$, asset$, id, state } = this;
@@ -147,6 +145,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
     if (this.showCheck && this.checkMode === 'state') {
       this.select<LookupTable<boolean>>(['workspaceRef', 'selectedItems'])
         .pipe(
+          this.filterNulls(),
           withLatestFrom(asset$, x => x),
           takeUntil(merge(ngOnChanges$, ngOnDestroy$))
         )
@@ -298,7 +297,4 @@ export class AssetDisplayComponent extends WithNgRedux implements OnInit, OnChan
     this.selected = checked.includes(this.asset.id);
   }
 
-  labelClicked() {
-
-  }
 }

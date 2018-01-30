@@ -30,7 +30,7 @@
   </div>
 
   <ng-container *ngIf="showLabel" [ngSwitch]="navigable">
-    <label *ngSwitchCase="false" class="label" [ngClass]="{ 'cursor pointer': showCheck }" title="{{ label }}" (click)="labelClicked($event)" [attr.for]="'assetDisplay' + count + '-input'">{{ label }}</label>
+    <label *ngSwitchCase="false" class="label" [ngClass]="{ 'cursor pointer': showCheck }" title="{{ label }}" [attr.for]="'assetDisplay' + count + '-input'">{{ label }}</label>
     <a *ngSwitchCase="true" class="label" title="{{ label }}" (click)="navigate($event)">{{ label }}</a>
   </ng-container>
 
