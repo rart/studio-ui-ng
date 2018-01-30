@@ -62,7 +62,7 @@ export class ProjectManagementComponent extends WithNgRedux implements OnInit {
   @select(anonym)
   projects$: Observable<Project[]>;
 
-  @select(['entities', 'projects', 'loading'])
+  @select(['entities', 'projects', 'loading', 'all'])
   loading$: Observable<boolean>;
 
   ngOnInit() {

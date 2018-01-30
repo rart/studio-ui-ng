@@ -75,9 +75,9 @@ export interface Entities {
 }
 
 export interface StateEntity<T> {
-  error: any;
+  error: { [key: string]: any; };
   order?: string[];
-  loading: boolean;
+  loading: { [key: string]: boolean; };
   byId: LookupTable<T>;
 }
 

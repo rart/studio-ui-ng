@@ -15,8 +15,8 @@ const DEFAULT_TAB_TITLE = '...';
 export const createEntityState =
   <T>({
         order = undefined as any[],
-        error = null as any,
-        loading = false,
+        error = {  },
+        loading = { all: false } as { [key: string]: boolean },
         byId = null as EntityLookupTable<any>
       }): StateEntity<T> => {
     let obj: StateEntity<any> = {
