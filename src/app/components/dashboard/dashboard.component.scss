@@ -11,6 +11,7 @@
 
 .card.layout {
   mat-card {
+    cursor: pointer;
     margin: $spacing-md;
   }
   i {

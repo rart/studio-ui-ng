@@ -1,35 +1,7 @@
 <h1><img class="logo" src="/app/assets/img/logos/flat.png" alt="Crafter Studio"></h1>
 <section class="card layout">
-  <mat-card>
-    <i class="fa fa-globe"></i>
-    <h2>Organizations</h2>
-  </mat-card>
-  <mat-card>
-    <i class="fa fa-briefcase"></i>
-    <h2>Projects</h2>
-  </mat-card>
-  <mat-card>
-    <i class="fa fa-address-card-o"></i>
-    <h2>Users</h2>
-  </mat-card>
-  <mat-card>
-    <i class="fa fa-file-o"></i>
-    <h2>Assets</h2>
-  </mat-card>
-  <mat-card>
-    <i class="fa fa-binoculars"></i>
-    <h2>Browser</h2>
-  </mat-card>
-  <mat-card>
-    <i class="fa fa-question-circle-o"></i>
-    <h2>Help</h2>
-  </mat-card>
-  <mat-card>
-    <i class="fa fa-cogs"></i>
-    <h2>Configuration</h2>
-  </mat-card>
-  <mat-card>
-    <i class="fa fa-shopping-cart"></i>
-    <h2>Marketplace</h2>
+  <mat-card *ngFor="let option of nav" [routerLink]="option.href">
+    <i [class]="option.icon"></i>
+    <h2>{{option.label|translate}}</h2>
   </mat-card>
 </section>

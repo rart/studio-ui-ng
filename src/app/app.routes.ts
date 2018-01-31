@@ -47,12 +47,20 @@ export const routes: Routes = [
         component: UserManagementComponent
       },
       {
+        path: 'assets',
+        component: NotImplementedComponent
+      },
+      {
         path: 'users/create',
         component: UserCrUDComponent
       },
       {
         path: 'users/edit/:username',
         component: UserCrUDComponent
+      },
+      {
+        path: 'organizations',
+        component: NotImplementedComponent
       },
       {
         path: 'projects',
@@ -69,7 +77,15 @@ export const routes: Routes = [
         ]
       },
       {
+        path: 'config',
+        component: NotImplementedComponent
+      },
+      {
         path: 'help',
+        component: NotImplementedComponent
+      },
+      {
+        path: 'market',
         component: NotImplementedComponent
       },
       {
