@@ -27,42 +27,38 @@
 
     <ng-container *ngSwitchCase="false">
       <section class="view body">
-        <div class="pad all">
-          <div class="ui {{columns}} stackable grid">
-            <div class="column" *ngFor="let project of projects">
-              <mat-card>
-                <mat-card-header>
-                  <mat-card-title>{{project.name}}</mat-card-title>
-                  <mat-card-subtitle>Subtitle</mat-card-subtitle>
-                </mat-card-header>
-                <img mat-card-image src="http://placehold.it/800x500?text={{project.name}}" />
-                <mat-card-content class="ellipsis">
-                  <div *ngIf="project.description" [matTooltip]="project.description">{{project.description}}</div>
-                  <div class="text muted center" *ngIf="!project.description" translate>(no description)</div>
-                </mat-card-content>
-                <mat-card-actions fxLayoutAlign="space-between center">
-                  <button mat-icon-button
-                          matTooltip="{{'Dashboard' | translate}}"
-                          [attr.aria-label]="'Dashboard' | translate"
-                          [routerLink]="['/project', project.code, 'dashboard']">
-                    <i class="fa fa-tachometer"></i>
-                  </button>
-                  <button mat-icon-button
-                          matTooltip="{{'Browse' | translate}}"
-                          [attr.aria-label]="'Browse' | translate"
-                          (click)="browse(project.code)">
-                    <i class="fa fa-binoculars"></i>
-                  </button>
-                  <button mat-icon-button
-                          matTooltip="{{'Update' | translate}}"
-                          [attr.aria-label]="'Update' | translate"
-                          [routerLink]="['/projects', project.code]">
-                    <i class="fa fa-pencil"></i>
-                  </button>
-                </mat-card-actions>
-              </mat-card>
-            </div>
-          </div>
+        <div class="card layout">
+          <mat-card *ngFor="let project of projects">
+            <mat-card-header>
+              <mat-card-title>{{project.name}}</mat-card-title>
+              <mat-card-subtitle>Subtitle</mat-card-subtitle>
+            </mat-card-header>
+            <img mat-card-image src="http://placehold.it/800x500?text={{project.name}}" />
+            <mat-card-content class="ellipsis">
+              <div class="ellipsis" *ngIf="project.description" [matTooltip]="project.description">{{project.description}}</div>
+              <div class="text muted center" *ngIf="!project.description" translate>(no description)</div>
+            </mat-card-content>
+            <mat-card-actions fxLayoutAlign="space-between center">
+              <button mat-icon-button
+                      matTooltip="{{'Dashboard' | translate}}"
+                      [attr.aria-label]="'Dashboard' | translate"
+                      [routerLink]="['/project', project.code, 'dashboard']">
+                <i class="fa fa-tachometer"></i>
+              </button>
+              <button mat-icon-button
+                      matTooltip="{{'Browse' | translate}}"
+                      [attr.aria-label]="'Browse' | translate"
+                      (click)="browse(project.code)">
+                <i class="fa fa-binoculars"></i>
+              </button>
+              <button mat-icon-button
+                      matTooltip="{{'Update' | translate}}"
+                      [attr.aria-label]="'Update' | translate"
+                      [routerLink]="['/projects', project.code]">
+                <i class="fa fa-pencil"></i>
+              </button>
+            </mat-card-actions>
+          </mat-card>
         </div>
       </section>
       <footer class="view footer">

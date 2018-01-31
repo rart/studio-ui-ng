@@ -62,6 +62,16 @@
   }
 }
 
+@mixin heights($height, $min: true, $max: true) {
+  height: $height;
+  @if ($min) {
+    min-width: $height;
+  }
+  @if ($max) {
+    max-width: $height;
+  }
+}
+
 @mixin mediaQuery($bp) {
   @media #{map_get($breakpoints, $bp)} {
     @content;

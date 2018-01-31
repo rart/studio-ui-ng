@@ -488,6 +488,20 @@ $displays: (inline, block, flex, inline-block, inline-flex);
   }
 }
 
+.card {
+  &.layout {
+    display: flex;
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    @include widths(100%);
+    place-content: center space-evenly;
+    .card.item {
+
+    }
+  }
+}
+
 @each $key, $max in $content-max-widths {
   [max="#{$key}"] {
     margin: auto;
