@@ -174,7 +174,7 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
         let projectCode = this.store.getState().activeProjectCode;
         this.router.navigate(['/project/',
           ...(singleMode
-            ? [projectCode, 'review', /*asset.id*/'uuid']
+            ? [projectCode, 'review', /*asset.id*/'uuid'] // TODO: <--
             : [projectCode, 'review', 'selected']),
           action.toLowerCase()
         ]);
@@ -184,7 +184,7 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
         openDialog(this.dialog, UploaderComponent, {
           width: '80vh',
           height: '80vh',
-          data: { files: [] },
+          data: { site: '', path: '' }, // TODO: <--
           panelClass: ['no', 'pad', 'dialog', 'uploader']
         });
 
