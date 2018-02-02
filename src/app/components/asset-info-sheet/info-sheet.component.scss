@@ -1,3 +1,5 @@
+@import "../../styles/settings";
+
 ::ng-deep {
   std-info-sheet-list std-asset-display {
 
@@ -5,5 +7,79 @@
 }
 
 :host {
+  display: block;
+  @include widths;
+  overflow: hidden;
+  &.labels {
+    &.right {
+      .label {
+        text-align: right;
+      }
+    }
+    &.sm {
+      .label {
+        flex: 0 0 90px;
+      }
+    }
+    &.md {
+      .label {
+        flex: 0 0 150px;
+      }
+    }
+    &.lg {
+      .label {
+        flex: 0 0 200px;
+      }
+    }
+  }
+  &.spacious {
+    .label, .value {
+      padding-top: $spacing-sm;
+    }
+  }
+  &.compact {
+    .label, .value {
+      padding-top: $spacing-mini;
+    }
+  }
+  &.compressed {
+    .label, .value {
+
+    }
+  }
+}
+
+std-collapsible {
+  display: block;
+  ::ng-deep {
+    .toggle {
+      padding: $spacing-tiny 0;
+    }
+  }
+}
+
+.properties {
 
 }
+
+.property {
+  display: flex;
+  align-items: center;
+}
+
+.label, .value {
+  line-height: 1.5;
+}
+
+.label {
+  flex: 0 0 100px;
+  padding-right: $spacing-mini;
+  color: map_get($studio-mat-grey, 900);
+  @include ellipsis;
+}
+
+.value {
+  flex: 1 1 auto;
+  @include ellipsis;
+}
+

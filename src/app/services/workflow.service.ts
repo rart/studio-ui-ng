@@ -65,6 +65,7 @@ const mix = (query, mixin = {}) => Object.assign({
 }, mixin);
 
 export enum AssetActionEnum {
+  UPLOAD = 'UPLOAD',
   INFO = 'INFO',
   PREVIEW = 'PREVIEW',
   SCHEDULE = 'SCHEDULE',
@@ -193,7 +194,8 @@ export class WorkflowService {
       { label: 'Publish', action: AssetActionEnum.PUBLISH },
       { label: 'History', action: AssetActionEnum.HISTORY },
       { label: 'Dependencies', action: AssetActionEnum.DEPENDENCIES, divider: true },
-      { label: 'Duplicate', action: AssetActionEnum.DUPLICATE }
+      { label: 'Duplicate', action: AssetActionEnum.DUPLICATE },
+      { label: 'Upload', action: AssetActionEnum.UPLOAD }
     ];
   }
 

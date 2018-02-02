@@ -115,7 +115,6 @@ export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnD
 
           this.asset = asset;
           this.asset$.next(asset);
-          this.loading = this.error = false;
 
           this.setIsNavigable();
           this.setIconDescription();
@@ -126,18 +125,26 @@ export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnD
 
         });
 
+      this.select<boolean>(['entities', 'assets', 'error', id])
+        .pipe(
+          this.filterNulls(),
+          takeUntil(merge(ngOnChanges$, ngOnDestroy$))
+        )
+        .subscribe((x) => {
+          this.error = x;
+        });
+
+      this.select<boolean>(['entities', 'assets', 'loading', id])
+        .pipe(
+          takeUntil(merge(ngOnChanges$, ngOnDestroy$))
+        )
+        .subscribe(() => {
+          this.loading = false;
+        });
+
       if (isNullOrUndefined(state.entities.assets.byId[id])) {
         this.loading = true;
         this.dispatch(this.assetActions.get(id));
-        this.select<boolean>(['entities', 'assets', 'loading', id])
-          .pipe(
-            filter(x => x === true),
-            takeUntil(merge(ngOnChanges$, ngOnDestroy$))
-          )
-          .subscribe(() => {
-            this.loading = false;
-            this.error = true;
-          });
       }
 
     }

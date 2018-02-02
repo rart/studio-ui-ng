@@ -52,7 +52,7 @@
   text-overflow: ellipsis;
 }
 
-@mixin widths($width, $min: true, $max: true) {
+@mixin widths($width: 100%, $min: true, $max: true) {
   width: $width;
   @if ($min) {
     min-width: $width;
@@ -62,13 +62,13 @@
   }
 }
 
-@mixin heights($height, $min: true, $max: true) {
+@mixin heights($height: 100%, $min: true, $max: true) {
   height: $height;
   @if ($min) {
-    min-width: $height;
+    min-height: $height;
   }
   @if ($max) {
-    max-width: $height;
+    max-height: $height;
   }
 }
 

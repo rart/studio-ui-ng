@@ -14,6 +14,9 @@ import { createPreviewTabCore } from '../../utils/state.utils';
 import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';
 import { PreviewTabsActions } from '../../actions/preview-tabs.actions';
+import { openDialog } from '../../utils/material.utils';
+import { MatDialog } from '@angular/material';
+import { UploaderComponent } from '../uploader/uploader.component';
 
 @Component({
   selector: 'std-asset-menu',
@@ -43,7 +46,8 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
               private workflowService: WorkflowService,
               private assetActions: AssetActions,
               private router: Router,
-              private previewTabsActions: PreviewTabsActions) {
+              private previewTabsActions: PreviewTabsActions,
+              private dialog: MatDialog) {
     super(store);
 
     store.select<Settings>('settings')
@@ -175,6 +179,14 @@ export class AssetMenuComponent extends WithNgRedux implements OnInit, OnChanges
           action.toLowerCase()
         ]);
         break;
+
+      case AssetActionEnum.UPLOAD:
+        openDialog(this.dialog, UploaderComponent, {
+          width: '80vh',
+          height: '80vh',
+          data: { files: [] },
+          panelClass: ['no', 'pad', 'dialog', 'uploader']
+        });
 
     }
 

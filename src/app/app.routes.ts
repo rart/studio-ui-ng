@@ -23,6 +23,7 @@ import { HistoryReviewComponent } from './components/asset-review/history-review
 import { PublishReviewComponent } from './components/asset-review/publish-review.component';
 import { ScheduleReviewComponent } from './components/asset-review/schedule-review.component';
 import { DependencyReviewComponent } from './components/asset-review/dependency-review.component';
+import { AssetBrowserComponent } from './components/asset-browser/asset-browser.component';
 
 // Not having as a route requires for it to be added as entry component on AppModule
 // import {ProjectCrUDComponent} from './components/project-management/project-crud/project-crud.component';
@@ -48,7 +49,7 @@ export const routes: Routes = [
       },
       {
         path: 'assets',
-        component: NotImplementedComponent
+        component: AssetBrowserComponent,
       },
       {
         path: 'users/create',

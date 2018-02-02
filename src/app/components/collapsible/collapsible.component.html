@@ -1,0 +1,10 @@
+<a *ngIf="!toggleTemplate" class="toggle" matRipple (click)="toggle($event)">
+  {{title|translate}} <mat-icon *ngIf="indicator" class="indicator">keyboard_arrow_up</mat-icon>
+</a>
+<ng-container
+  [ngTemplateOutlet]="toggleTemplate"
+  [ngTemplateOutletContext]="{ $implicit: { toggle: toggle } }">
+</ng-container>
+<div class="content" *ngIf="!closed" [@collapseInOut]="closed">
+  <ng-content></ng-content>
+</div>

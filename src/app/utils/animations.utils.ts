@@ -216,6 +216,18 @@ export function slideDownEntry(selector) {
   ];
 }
 
+export function collapseInOut(defaultState: string, collapsedState: string, animationName: string = 'collapseInOut') {
+  return trigger(`${animationName}`, [
+    state(`${collapsedState}`, style({
+      height : '0px',
+      display: 'none',
+      overflow: 'hidden'
+    })),
+    transition(`${defaultState} => ${collapsedState}`, animate('250ms ease-out')),
+    transition(`${collapsedState} => ${defaultState}`, animate('250ms ease-in'))
+  ]);
+};
+
 const ROUTER_WRAPPER = '.router.wrapper';
 
 export const routerAnimations = [

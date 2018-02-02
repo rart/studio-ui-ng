@@ -14,6 +14,7 @@ import { ComponentBase } from '../../classes/component-base.class';
                 [attr.aria-label]="'Back' | translate">
           <mat-icon class="" aria-hidden="true">chevron_left</mat-icon>
         </button>
+        <std-sidebar-toggler *ngIf="navToggler"></std-sidebar-toggler>
         <h1 *ngIf="!heading" [ngClass]="{ 'pad left': back !== '' }">
           <mat-icon *ngIf="icon">{{icon}}</mat-icon> {{title|translate}}
         </h1>
@@ -37,6 +38,7 @@ export class ViewTitleBarComponent extends ComponentBase implements OnInit, Afte
 
   @Input() title;
   @Input() icon;
+  @Input() navToggler = false;
   @Input() back = '';
   @Input() childMax;
 

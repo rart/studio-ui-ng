@@ -5,6 +5,7 @@ import { Group } from '../models/group.model';
 import { StudioModel } from '../utils/type.utils';
 
 export interface AppState {
+  explorer: ExplorerState;
   user: any;
   auth: 'void' | 'fetching' | 'validated' | 'timeout';
   previewTabs: PreviewTabStateContainer;
@@ -16,6 +17,11 @@ export interface AppState {
   settings?: Settings;
   deliveryTable?: { [uuid: string]: any }; // This feels like a terrible practice. Need to figure out something...
   editSessions?: EditSessions;
+}
+
+export interface ExplorerState {
+  activeProjectCode;
+  byProject;
 }
 
 export interface Workspaces {

@@ -1,0 +1,61 @@
+@import "../../styles/settings";
+@import "~@angular/material/theming";
+
+$border-color: $color-grey-lightest;
+
+:host {
+  @include widths(250px);
+  padding: $spacing-mini 0 0 0;
+  border-right: 1px solid $border-color;
+  &.drag-over {
+    @include mat-elevation(7);
+    background: map_get($mat-light-blue, 100);
+  }
+}
+
+.border {
+  border-bottom: 1px solid $border-color;
+}
+
+.flex {
+  place-content: center space-between;
+}
+
+.listing {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  list-style: none;
+  .entry {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 $spacing-sm;
+    @include heights(50px);
+    &.active {
+      background: map_get($mat-light-blue, 50);
+    }
+  }
+  std-asset-display {
+    flex: 1;
+  }
+  mat-icon {
+    text-align: center;
+    @include widths(25px);
+  }
+}
+
+::ng-deep {
+  std-asset-browser {
+    std-collapsible.content {
+      > .toggle {
+        padding: $spacing-tiny $spacing-mini;
+      }
+    }
+    std-info-sheet {
+      > .heading {
+        margin: 0;
+      }
+    }
+  }
+}

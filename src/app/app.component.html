@@ -1,4 +1,4 @@
-<ng-container *ngIf="preRequisitesPassed">
+<ng-container *ngIf="preRequisitesPassed else loading">
   <ng-container [ngSwitch]="auth">
 
     <!--  -->
@@ -10,8 +10,8 @@
   </ng-container>
 </ng-container>
 
-<ng-container *ngIf="!preRequisitesPassed">
+<ng-template #loading>
   <std-spinner class="absolute position full with height cover">
     Loading Crafter Studio&hellip;
   </std-spinner>
-</ng-container>
+</ng-template>

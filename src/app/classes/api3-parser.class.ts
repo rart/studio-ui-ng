@@ -38,7 +38,7 @@ export class API3Parser extends APIParser {
       asset.lockedBy = user;
     }
 
-    asset.label = json.internalName || json.name;
+    asset.label = json.internalName || json.name || (json.uri === '/' && json.site) || '';
 
     asset.children = (json.children && json.children.length)
       ? json.children

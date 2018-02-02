@@ -1,0 +1,24 @@
+<div class="sticky header view layout">
+  <std-view-title-bar
+    class="pad left right"
+    [title]="'Assets'"
+    [navToggler]="true">
+  </std-view-title-bar>
+  <div class="view body pad all sm">
+    <mat-card class="wrapper">
+
+      <std-projects-view></std-projects-view>
+
+      <std-directory-listing
+        [id]="path"
+        *ngFor="let path of paths; trackBy directoryTracker"
+        (selectionChange)="selectionChange($event)">
+      </std-directory-listing>
+
+      <std-info-sheet
+        *ngIf="selectedAsset"
+        [id]="selectedAsset"></std-info-sheet>
+
+    </mat-card>
+  </div>
+</div>

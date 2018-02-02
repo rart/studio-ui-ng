@@ -184,7 +184,7 @@ $displays: (inline, block, flex, inline-block, inline-flex);
       padding-#{$zone}: $spacing-conservative;
       @each $type, $spacing in $spacings {
         &.#{$type} {
-          padding: $spacing;
+          padding-#{$zone}: $spacing;
         }
       }
     }
@@ -332,7 +332,9 @@ $displays: (inline, block, flex, inline-block, inline-flex);
 
 .cursor.pointer,
 .is.interactive {
-  cursor: pointer;
+  &, * {
+    cursor: pointer;
+  }
 }
 
 .hide.last {

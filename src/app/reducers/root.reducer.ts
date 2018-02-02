@@ -11,6 +11,9 @@ import { editSessions } from './edit-sessions.reducer';
 import { auth } from './auth.reducer';
 import { previewTabs } from './preview-tabs.reducer';
 import { isNullOrUndefined } from 'util';
+import { uppy } from './uppy.reducer';
+import { explorer } from './explorer.reducer';
+import { notNullOrUndefined } from '../app.utils';
 
 const foo = (state = null) => state;
 
@@ -23,6 +26,8 @@ export const reducerMap = {
   activeProjectCode,
   editSessions,
   settings,
+  uppy,
+  explorer,
 
   deliveryTable,
 

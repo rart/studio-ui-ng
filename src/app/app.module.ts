@@ -139,6 +139,11 @@ import { ScheduleReviewComponent } from './components/asset-review/schedule-revi
 import { PublishReviewComponent } from './components/asset-review/publish-review.component';
 import { DependencyReviewComponent } from './components/asset-review/dependency-review.component';
 import { HistoryReviewComponent } from './components/asset-review/history-review.component';
+import { UploaderComponent } from './components/uploader/uploader.component';
+import { AssetBrowserComponent } from './components/asset-browser/asset-browser.component';
+import { CollapsibleComponent } from './components/collapsible/collapsible.component';
+import { DirectoryViewComponent } from './components/directory-view/directory-view.component';
+import { ProjectsViewComponent } from './components/directory-view/projects-view.component';
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
@@ -209,7 +214,12 @@ export function HttpLoaderFactory(http: HttpClient) {
     DependencyReviewComponent,
     HistoryReviewComponent,
     PublishReviewComponent,
-    ScheduleReviewComponent
+    ScheduleReviewComponent,
+    UploaderComponent,
+    AssetBrowserComponent,
+    CollapsibleComponent,
+    DirectoryViewComponent,
+    ProjectsViewComponent
 
   ],
   imports: [
@@ -265,7 +275,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     ContentTreeComponent,
     ChangeLossDecisionViewComponent,
     PluginHostComponent,
-    LoginComponent
+    LoginComponent,
+    UploaderComponent
   ],
   providers: [
 

@@ -1,0 +1,48 @@
+@import "../../styles/settings";
+@import "~@angular/material/theming";
+
+:host,
+.uploader,
+::ng-deep .uppy-Dashboard {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+::ng-deep {
+  .uppy-Dashboard-inner {
+    border: none;
+    border-radius: 0;
+    background-color: transparent;
+    @media (min-width: 768px) {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .uppy-StatusBar-actionBtn {
+    position: relative;
+    user-select: none;
+    cursor: pointer;
+    outline: 0;
+    border: none;
+    -webkit-tap-highlight-color: transparent;
+    display: inline-block;
+    white-space: nowrap;
+    text-decoration: none;
+    vertical-align: baseline;
+    text-align: center;
+    margin: 0;
+    line-height: 36px;
+    padding: 0 16px !important;
+    border-radius: 2px;
+    color: #fff;
+    background-color: $color-blue !important;
+    @include mat-elevation(1);
+
+    .uppy-StatusBar-actionBtn[disabled] {
+      color: rgba(0, 0, 0, 0.38);
+      background-color: rgba($color-blue, 0.12);
+    }
+
+  }
+}

@@ -1,0 +1,26 @@
+
+<div *ngIf="error">Error</div>
+
+<std-spinner *ngIf="loading" class="take over"></std-spinner>
+
+<ng-container *ngIf="projects">
+  <ul class="listing" *ngIf="projects.length else empty">
+    <li class="is interactive entry flex space between"
+        *ngFor="let project of projects; last as last"
+        [ngClass]="{ border: !last, active: activeProjectCode === project.code }"
+        (click)="onSelection(project)">
+      <span><i aria-hidden="true" class="fa fa-briefcase margin right tn"></i> {{project.name}}</span>
+      <mat-icon>chevron_right</mat-icon>
+    </li>
+  </ul>
+</ng-container>
+
+<ng-template #nill>
+  <div class="text center muted" translate>No Project Selected</div>
+</ng-template>
+
+<ng-template #empty>
+  <div class="pad all text center muted">
+    <span translate>You have no projects.</span> (<a translate routerLink="/projects/create">create one</a>)
+  </div>
+</ng-template>

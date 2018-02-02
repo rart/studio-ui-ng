@@ -1,0 +1,44 @@
+
+<div *ngIf="error">Error</div>
+
+<ng-container *ngIf="directory">
+
+  <std-info-sheet
+    class="pad top right left mn"
+    *ngIf="showInfoSheet"
+    [id]="directory.id"
+    [closed]="{ general: true, permissions: true }"
+    [showPermissions]="showPermissions"></std-info-sheet>
+
+  <div class="ui divider"></div>
+
+  <ng-container [ngTemplateOutlet]="listing"></ng-container>
+
+</ng-container>
+
+<ng-template #nill>
+  <div class="text center muted" translate>No Directory Selected For Viewing</div>
+</ng-template>
+
+<ng-template #empty>
+  <div class="pad all text center muted" translate>Directory is empty</div>
+</ng-template>
+
+<ng-template #listing>
+  <ul class="listing" *ngIf="directory.children else empty">
+    <li class="is interactive entry"
+        *ngFor="let item of directory.children; last as last"
+        [ngClass]="{ border: !last, active: selection === item }"
+        (click)="onSelection(item)">
+      <std-asset-display
+        [id]="item.id"
+        [showLink]="false"
+        [showCheck]="false"
+        [showMenu]="false">
+      </std-asset-display>
+      <mat-icon>chevron_right</mat-icon>
+    </li>
+  </ul>
+</ng-template>
+
+<std-spinner *ngIf="loading" class="take over"></std-spinner>

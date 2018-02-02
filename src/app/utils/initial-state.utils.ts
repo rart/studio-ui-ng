@@ -2,7 +2,8 @@ import { AppState } from '../classes/app-state.interface';
 import { AVATARS } from '../app.utils';
 
 export const initialState: AppState = {
-  activeProjectCode: 'launcher',
+  explorer: undefined,
+  activeProjectCode: 'canvas',
   auth: 'validated',
   user: {
     avatarUrl: AVATARS[9],
@@ -51,7 +52,7 @@ export const initialState: AppState = {
         // '/static-assets/js': true
       }
     },
-    'business-casual': {
+    'canvas': {
       previewTabs: undefined,
       selectedItems: undefined,
       expandedPanels: {

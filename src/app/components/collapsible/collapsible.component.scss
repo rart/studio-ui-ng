@@ -1,0 +1,20 @@
+.toggle {
+  display: flex;
+  align-items: center;
+}
+
+.content.ng-animating {
+  overflow: hidden !important;
+}
+
+:host {
+  &.closed {
+    .indicator {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.indicator {
+  transition: transform 250ms;
+}

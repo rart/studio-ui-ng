@@ -1,0 +1,20 @@
+@import "../../styles/settings";
+@import "~@angular/material/theming";
+
+:host {
+
+}
+
+.mat-card {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.wrapper {
+  padding: 0;
+  display: flex;
+  @include widths();
+  // Desktop only
+  @include heights();
+}
+

@@ -15,4 +15,8 @@ export class ArrayUtils {
     }
     return false;
   }
+
+  static toArray(arrayLike: any): any[] {
+    return Array.prototype.slice.call(arrayLike, 0);
+  }
 }

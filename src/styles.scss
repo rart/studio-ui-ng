@@ -5,12 +5,16 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800i');
 @import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
 
+@import url("https://transloadit.edgly.net/releases/uppy/v0.22.0/dist/uppy.min.css");
+
 // Perfect Scrollbar Styles
 // @import '~perfect-scrollbar/css/perfect-scrollbar.css';
 // .ps__rail-y { left: auto !important; }
 
 // Theming
 @import "app/styles/material";
+@include generate-material-theme;
+@import 'app/styles/material-overrides';
 
 @import "app/styles/palette";
 

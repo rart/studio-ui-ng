@@ -4,7 +4,6 @@ import { StoreActionsEnum } from '../enums/actions.enum';
 import { StateEntity } from '../classes/app-state.interface';
 import { createEntityState, createLookupTable } from '../utils/state.utils';
 import { Asset } from '../models/asset.model';
-import { isArray } from 'util';
 
 export const assets: Reducer<StateEntity<Asset>> =
   (state = createEntityState<Asset>({}), action: AnyAction): StateEntity<Asset> => {
