@@ -1,0 +1,40 @@
+@import "../../styles/settings";
+@import "~@angular/material/theming";
+
+:host {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #ffffff;
+  place-content: center space-between;
+  border: 1px solid $color-grey-lightest;
+  &.hover {
+    border: 1px solid $color-grey-lighter;
+  }
+  &.focus {
+    @include mat-elevation(1);
+  }
+}
+
+.magnifier {
+  text-align: center;
+  @include widths(40px);
+  color: $color-grey;
+}
+
+.options {
+  @include widths(40px);
+}
+
+input {
+  border: none;
+  outline: none;
+  display: block;
+  flex-grow: 1;
+}
+
+.clear {
+  display: flex;
+  font-size: 1em;
+  align-items: center;
+}

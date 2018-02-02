@@ -18,3 +18,25 @@
   @include heights();
 }
 
+
+
+.breadcrumbs {
+  height: 70px;
+  display: flex;
+  align-items: center;
+}
+
+a.crumb.mat-button {
+  min-width: 0;
+  padding: 0 $spacing-tiny;
+}
+
+.crumbs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.crumb.wrap {
+  display: inline-block;
+}

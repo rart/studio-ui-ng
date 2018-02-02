@@ -1,0 +1,6 @@
+<mat-icon class="magnifier">search</mat-icon>
+<input #input type="text" [(ngModel)]="value" (keyup.enter)="submit($event)" (focus)="focus($event)" (blur)="blur($event)" placeholder="Search..." />
+<mat-icon *ngIf="value" class="is interactive clear" (click)="clear($event)" role="button" [attr.aria-label]="'Clear'|translate" aria-hidden="true">cancel</mat-icon>
+<button mat-icon-button class="options" [attr.aria-label]="'Search Options'|translate">
+  <mat-icon aria-hidden="true">arrow_drop_down</mat-icon>
+</button>

@@ -138,8 +138,8 @@ export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnD
         .pipe(
           takeUntil(merge(ngOnChanges$, ngOnDestroy$))
         )
-        .subscribe(() => {
-          this.loading = false;
+        .subscribe((x) => {
+          this.loading = x;
         });
 
       if (isNullOrUndefined(state.entities.assets.byId[id])) {

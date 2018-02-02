@@ -6,7 +6,7 @@
 <ng-container *ngIf="projects">
   <ul class="listing" *ngIf="projects.length else empty">
     <li class="is interactive entry flex space between"
-        *ngFor="let project of projects; last as last"
+        *ngFor="let project of projects; last as last; trackBy:projectTracker"
         [ngClass]="{ border: !last, active: activeProjectCode === project.code }"
         (click)="onSelection(project)">
       <span><i aria-hidden="true" class="fa fa-briefcase margin right tn"></i> {{project.name}}</span>

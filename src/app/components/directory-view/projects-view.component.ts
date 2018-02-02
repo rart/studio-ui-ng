@@ -42,6 +42,10 @@ export class ProjectsViewComponent extends WithNgRedux {
 
   }
 
+  projectTracker(index, project) {
+    return project.code;
+  }
+
   @dispatch()
   onSelection(nextSelection) {
     let { activeProjectCode } = this;

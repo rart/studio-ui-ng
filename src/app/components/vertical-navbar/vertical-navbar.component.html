@@ -11,9 +11,13 @@
 
 </header>
 
-<perfect-scrollbar class="content" [ngClass]="{ themify: reveal, background: reveal }" [disabled]="!viewInitialized || isMobile || settings.nativeScrollbars">
+<div class="content" style="overflow: auto;" [ngClass]="{ themify: reveal, background: reveal }">
   <std-sidebar></std-sidebar>
-</perfect-scrollbar>
+</div>
+
+<!--<perfect-scrollbar class="content" [ngClass]="{ themify: reveal, background: reveal }" [disabled]="!viewInitialized || isMobile || settings.nativeScrollbars">
+  <std-sidebar></std-sidebar>
+</perfect-scrollbar>-->
 
 <footer>
   <std-user-menu></std-user-menu>

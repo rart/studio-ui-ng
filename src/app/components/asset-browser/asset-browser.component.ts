@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { AppState, ExplorerState } from '../../classes/app-state.interface';
-import { dispatch, NgRedux } from '@angular-redux/store';
+import { AppState, ExplorerState, LookupTable } from '../../classes/app-state.interface';
+import { dispatch, NgRedux, select } from '@angular-redux/store';
 import { ComponentBase } from '../../classes/component-base.class';
 import { Asset } from '../../models/asset.model';
 import { ExplorerActions } from '../../actions/explorer.actions';
@@ -17,6 +17,9 @@ export class AssetBrowserComponent extends ComponentBase {
   tree = {};
   paths = [];
   selectedAsset: string;
+
+  @select(['entities', 'assets', 'byId'])
+  assets$: LookupTable<Asset>;
 
   constructor(store: NgRedux<AppState>) {
     super();
@@ -45,6 +48,14 @@ export class AssetBrowserComponent extends ComponentBase {
   @dispatch()
   selectionChange(item: Asset) {
     return ExplorerActions.selectAsset(item);
+  }
+
+  directoryTracker(index, path) {
+    return path;
+  }
+
+  search(query) {
+    console.log(query);
   }
 
 }

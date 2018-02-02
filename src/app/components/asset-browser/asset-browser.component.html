@@ -1,8 +1,25 @@
 <div class="sticky header view layout">
   <std-view-title-bar
-    class="pad left right"
+    class="pad left right flex column"
     [title]="'Assets'"
     [navToggler]="true">
+    <std-search-bar (queryChange)="search($event)"></std-search-bar>
+    <ng-template #toolbar>
+      <nav class="breadcrumbs" *ngIf="assets$ | async as assets">
+        <ng-container
+          *ngFor="let path of paths; last as last">
+          <a class="crumb" mat-button
+             (click)="search()">
+            <span>{{assets[path] && assets[path].label || '...'}}</span>
+          </a>
+          <mat-icon *ngIf="!last || selectedAsset">chevron_right</mat-icon>
+        </ng-container>
+        <a class="crumb" mat-button
+           *ngIf="selectedAsset" (click)="search()">
+          <span>{{assets[selectedAsset] && assets[selectedAsset].label || '...'}}</span>
+        </a>
+      </nav>
+    </ng-template>
   </std-view-title-bar>
   <div class="view body pad all sm">
     <mat-card class="wrapper">
@@ -11,8 +28,8 @@
 
       <std-directory-listing
         [id]="path"
-        *ngFor="let path of paths; trackBy directoryTracker"
-        (selectionChange)="selectionChange($event)">
+        (selectionChange)="selectionChange($event)"
+        *ngFor="let path of paths; trackBy:directoryTracker">
       </std-directory-listing>
 
       <std-info-sheet

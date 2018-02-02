@@ -144,6 +144,7 @@ import { AssetBrowserComponent } from './components/asset-browser/asset-browser.
 import { CollapsibleComponent } from './components/collapsible/collapsible.component';
 import { DirectoryViewComponent } from './components/directory-view/directory-view.component';
 import { ProjectsViewComponent } from './components/directory-view/projects-view.component';
+import { SearchBarComponent } from './components/search-bar/search-bar.component';
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
@@ -219,7 +220,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     AssetBrowserComponent,
     CollapsibleComponent,
     DirectoryViewComponent,
-    ProjectsViewComponent
+    ProjectsViewComponent,
+    SearchBarComponent
 
   ],
   imports: [

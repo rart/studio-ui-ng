@@ -109,8 +109,4 @@ export class DirectoryViewComponent extends WithNgRedux implements AfterViewInit
     this.selectionChange.next(selection);
   }
 
-  directoryTracker(index, path) {
-    return path;
-  }
-
 }

@@ -7,15 +7,15 @@ import { ComponentBase } from '../../classes/component-base.class';
 @Component({
   selector: 'std-view-title-bar',
   template: `
-    <header fxFlex="100%" fxLayoutAlign="space-between center" [attr.max]="childMax">
-      <section fxLayoutAlign="left center">
+    <header [attr.max]="childMax">
+      <section class="left">
         <button color="default" mat-fab 
                 *ngIf="back !== ''" [routerLink]="[back]"
                 [attr.aria-label]="'Back' | translate">
           <mat-icon class="" aria-hidden="true">chevron_left</mat-icon>
         </button>
         <std-sidebar-toggler *ngIf="navToggler"></std-sidebar-toggler>
-        <h1 *ngIf="!heading" [ngClass]="{ 'pad left': back !== '' }">
+        <h1 class="heading" *ngIf="!heading" [ngClass]="{ 'pad left': back !== '' }">
           <mat-icon *ngIf="icon">{{icon}}</mat-icon> {{title|translate}}
         </h1>
         <ng-container
@@ -24,7 +24,8 @@ import { ComponentBase } from '../../classes/component-base.class';
         </ng-container>
       </section>
       <ng-content></ng-content>
-    </header>`,
+    </header>
+    <ng-container [ngTemplateOutlet]="toolbar"></ng-container>`,
   styleUrls: ['./view-title-bar.component.scss']
 })
 export class ViewTitleBarComponent extends ComponentBase implements OnInit, AfterViewInit {
@@ -35,6 +36,7 @@ export class ViewTitleBarComponent extends ComponentBase implements OnInit, Afte
   @HostBinding('attr.theme') theme;
 
   @ContentChild('heading') heading: TemplateRef<any>;
+  @ContentChild('toolbar') toolbar: TemplateRef<any>;
 
   @Input() title;
   @Input() icon;
