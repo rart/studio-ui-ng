@@ -2,6 +2,8 @@ import { User, UserProps } from './user.model';
 import { WorkflowStatusEnum } from '../enums/workflow-status.enum';
 import { AssetTypeEnum } from '../enums/asset-type.enum';
 import { MimeTypeEnum } from '../enums/mime-type.enum';
+import { notNullOrUndefined } from '../app.utils';
+import { isNullOrUndefined } from 'util';
 
 interface RenderingTemplate {
   name: 'DEFAULT' | 'MOBILE';
@@ -11,25 +13,7 @@ interface RenderingTemplate {
 // const reverseMimeMap = {};
 // Object.keys(MimeTypeEnum).forEach(type => reverseMimeMap[MimeTypeEnum[type]] = type);
 
-export interface AssetProps {
-  id: string;
-  url: string;
-  label: string;
-  contentModelId: string;
-  projectCode: string;
-  children: AssetProps[];
-  numOfChildren: number;
-  lockedBy: UserProps;
-  lastEditedBy: UserProps;
-  lastEditedOn: string;
-  publishedOn: string;
-  type: AssetTypeEnum;
-  mimeType: MimeTypeEnum;
-  workflowStatus: WorkflowStatusEnum;
-  renderingTemplates: RenderingTemplate[];
-}
-
-export class Asset implements AssetProps {
+export class Asset {
 
   id: string;
   path: string;
@@ -38,7 +22,7 @@ export class Asset implements AssetProps {
   label: string;
   contentModelId: string;
   projectCode: string;
-  children: Asset[];
+  children: Asset[] | string[];
   numOfChildren: number;
   lockedBy: User;
   lastEditedBy: User;
@@ -58,20 +42,38 @@ export class Asset implements AssetProps {
   }
 
   static deserialize(json: any) {
-    if (json === undefined || json === null) {
+    if (isNullOrUndefined(json)) {
       return null;
     }
+
     let model = new Asset();
-    Object.keys(json).forEach(prop => {
-      if (prop === 'children' && json.children) {
-        model[prop] = json.children.map(a => Asset.deserialize(a));
-      } else if (['lockedBy', 'lastEditedBy'].includes(prop)) {
-        model[prop] = User.deserialize(json[prop]);
-      } else {
-        model[prop] = json[prop];
-      }
-    });
+
+    model.id = json.id;
+    model.path = json.path;
+    model.fileName = json.fileName;
+    model.url = json.url;
+    model.label = json.label;
+    model.contentModelId = json.contentModelId;
+    model.projectCode = json.projectCode;
+    model.children = notNullOrUndefined(json.children)
+      ? json.children.map(a => a instanceof Asset ? a : Asset.deserialize(a))
+      : null;
+    model.numOfChildren = json.numOfChildren;
+    model.lockedBy = (json.lockedBy instanceof User)
+      ? json.lockedBy
+      : User.deserialize(json.lockedBy);
+    model.lastEditedBy = (json.lastEditedBy instanceof User)
+      ? json.lastEditedBy
+      : User.deserialize(json.lastEditedBy);
+    model.lastEditedOn = json.lastEditedOn;
+    model.publishedOn = json.publishedOn;
+    model.type = json.type;
+    model.mimeType = json.mimeType;
+    model.workflowStatus = json.workflowStatus;
+    model.renderingTemplates = json.renderingTemplates;
+
     return model;
+
   }
 
 }

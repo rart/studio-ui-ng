@@ -6,31 +6,36 @@
     <std-search-bar (queryChange)="search($event)"></std-search-bar>
     <ng-template #toolbar>
       <nav class="breadcrumbs" *ngIf="assets$ | async as assets">
+        <a class="crumb" mat-button
+           (click)="crumbClicked('ROOT', -1)">
+          <span translate>sites</span>
+        </a>
+        <mat-icon>chevron_right</mat-icon>
         <ng-container
-          *ngFor="let path of paths; last as last">
+          *ngFor="let path of paths; last as last; index as i">
           <a class="crumb" mat-button
-             (click)="search()">
+             (click)="crumbClicked(path, i)">
             <span>{{assets[path] && assets[path].label || '...'}}</span>
           </a>
           <mat-icon *ngIf="!last || selectedAsset">chevron_right</mat-icon>
         </ng-container>
         <a class="crumb" mat-button
-           *ngIf="selectedAsset" (click)="search()">
+           *ngIf="selectedAsset" (click)="crumbClicked('ASSET', -1)">
           <span>{{assets[selectedAsset] && assets[selectedAsset].label || '...'}}</span>
         </a>
       </nav>
     </ng-template>
   </std-view-title-bar>
   <div class="view body pad all sm">
-    <mat-card class="wrapper">
+    <mat-card #wrapper class="wrapper">
 
       <std-projects-view></std-projects-view>
 
-      <std-directory-listing
+      <std-directory-view
         [id]="path"
         (selectionChange)="selectionChange($event)"
         *ngFor="let path of paths; trackBy:directoryTracker">
-      </std-directory-listing>
+      </std-directory-view>
 
       <std-info-sheet
         *ngIf="selectedAsset"

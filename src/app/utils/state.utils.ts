@@ -9,6 +9,7 @@ import {
   PreviewTabStateContainer, StateEntity,
   Workspace
 } from '../classes/app-state.interface';
+import { notNullOrUndefined } from '../app.utils';
 
 const DEFAULT_TAB_TITLE = '...';
 
@@ -32,11 +33,17 @@ export const createEntityState =
 
 export function createLookupTable<T>(items: T[], idProp = 'id'): EntityLookupTable<T> {
   return items
-    .reduce((lookupTable: Object, item: T) =>
-        // in the case of assets, some virtual assets are created by the API (e.g. for the dashlets) to
-        // group assets. If it doesn't have an ID it won't be tracked in the lookup table
-        Object.assign(lookupTable, item[idProp] ? { [item[idProp]]: item } : {}),
-      {});
+    .reduce((lookupTable: Object, item: T) => {
+      // in the case of assets, some virtual assets are created by the API (e.g. for the dashlets) to
+      // group assets. If it doesn't have an ID it won't be tracked in the lookup table
+      if (item[idProp]) {
+        lookupTable[item[idProp]] = item;
+        if (notNullOrUndefined(item['children'])) {
+          Object.assign(lookupTable, createLookupTable(item['children'], idProp));
+        }
+      }
+      return lookupTable;
+    }, {});
 }
 
 export const createPreviewTabHistory =

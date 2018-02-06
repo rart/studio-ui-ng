@@ -132,10 +132,10 @@ export class ContentService {
       let answer: DependantsResponse = {
         entries: parsedItems.map((asset) => ({
           assetId: asset.id,
-          dependantIds: (asset.children || []).map(child => child.id)
+          dependantIds: (<Asset[]>asset.children || []).map(child => child.id)
         })),
         dependantIdsLookup: parsedItems.reduce((table, asset) => {
-          table[asset.id] = (asset.children || []).map(child => child.id);
+          table[asset.id] = (<Asset[]>asset.children || []).map(child => child.id);
           return table;
         }, {}),
         assetLookup: {}
@@ -287,7 +287,7 @@ export class ContentService {
         return answer;
       }));
 
-  };
+  }
 
 }
 

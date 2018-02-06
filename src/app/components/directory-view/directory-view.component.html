@@ -4,13 +4,13 @@
 <ng-container *ngIf="directory">
 
   <std-info-sheet
-    class="pad top right left mn"
+    class="pad right left mn"
     *ngIf="showInfoSheet"
     [id]="directory.id"
     [closed]="{ general: true, permissions: true }"
     [showPermissions]="showPermissions"></std-info-sheet>
 
-  <div class="ui divider"></div>
+  <div class="ui divider no bottom margin"></div>
 
   <ng-container [ngTemplateOutlet]="listing"></ng-container>
 
@@ -26,18 +26,20 @@
 
 <ng-template #listing>
   <ul class="listing" *ngIf="directory.children else empty">
+    <ng-container *ngIf="ASSETS$ | async as ASSETS">
     <li class="is interactive entry"
         *ngFor="let item of directory.children; last as last"
         [ngClass]="{ border: !last, active: selection === item }"
         (click)="onSelection(item)">
       <std-asset-display
-        [id]="item.id"
+        [id]="item"
         [showLink]="false"
         [showCheck]="false"
         [showMenu]="false">
       </std-asset-display>
       <mat-icon>chevron_right</mat-icon>
     </li>
+    </ng-container>
   </ul>
 </ng-template>
 

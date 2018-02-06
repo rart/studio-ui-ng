@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ITreeOptions, TREE_ACTIONS, TreeNode, ITreeState } from 'angular-tree-component';
 import { NgRedux } from '@angular-redux/store';
 
@@ -10,11 +10,14 @@ import { ExpandedPathsActions } from '../../actions/expanded-paths.actions';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { AssetActions } from '../../actions/asset.actions';
 import { Subject } from 'rxjs/Subject';
+import { notNullOrUndefined } from '../../app.utils';
+import { denormalize } from '../../reducers/assets.entity.reducer';
 
 @Component({
   selector: 'std-content-tree',
   templateUrl: './content-tree.component.html',
-  styleUrls: ['./content-tree.component.scss']
+  styleUrls: ['./content-tree.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentTreeComponent
   extends WithNgRedux
@@ -39,7 +42,8 @@ export class ContentTreeComponent
   constructor(store: NgRedux<AppState>,
               private contentService: ContentService,
               private workflowService: WorkflowService,
-              private assetActions: AssetActions) {
+              private assetActions: AssetActions,
+              private detector: ChangeDetectorRef) {
     super(store);
   }
 
@@ -101,17 +105,22 @@ export class ContentTreeComponent
     }
   }
 
-  private fetch(uid: string) {
-    return this.contentService
-      .tree(uid)
-      .toPromise()
-      .then(item => {
-        this.dispatch(
-          (item.children && item.children.length > 0)
-            ? this.assetActions.fetchedMany([item].concat(item.children))
-            : this.assetActions.gotten(item));
-        return item;
+  private fetch(uid: string): Promise<Asset> {
+    let table = this.state.entities.assets.byId;
+    if (notNullOrUndefined(table[uid]) && notNullOrUndefined(table[uid].children)) {
+      return new Promise((resolve) => {
+        // Give the tree a chance to show loading message
+        setTimeout(() => resolve(denormalize(table[uid], table)));
       });
+    } else {
+      return this.contentService
+        .tree(uid)
+        .toPromise()
+        .then(item => {
+          this.dispatch(this.assetActions.gotten(item));
+          return item;
+        });
+    }
   }
 
   private setTreeOptionDefaults() {
@@ -153,7 +162,7 @@ export class ContentTreeComponent
     } else {
       this.nodes = asset.children || [];
     }
-
+this.detector.detectChanges();
   }
 
 }

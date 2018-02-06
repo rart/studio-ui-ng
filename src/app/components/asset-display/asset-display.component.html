@@ -23,7 +23,7 @@
   </mat-checkbox>
 
   <div *ngIf="showIcons && (showTypeIcon || showStatusIcons)" class="icons" [title]="iconDescription">
-    <i [class]="typeClass" [ngClass]="{ 'visibility-hidden': !showTypeIcon }"></i>
+    <i [class]="typeClass" [class.visibility-hidden]="!showTypeIcon"></i>
     <i *ngIf="showStatusIcons" [class]="statusClass"></i>
     <i *ngIf="asset.locked && showStatusIcons" [class]="lockClass"></i>
   </div>

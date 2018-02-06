@@ -1,9 +1,37 @@
 import { AnyAction, Reducer } from 'redux';
 
 import { StoreActionsEnum } from '../enums/actions.enum';
-import { StateEntity } from '../classes/app-state.interface';
+import { LookupTable, StateEntity } from '../classes/app-state.interface';
 import { createEntityState, createLookupTable } from '../utils/state.utils';
 import { Asset } from '../models/asset.model';
+import { notNullOrUndefined } from '../app.utils';
+
+export function flatten(array: Asset[]): Asset[] {
+  let flat = [];
+  array.forEach(asset => {
+    let nextAsset = Asset.deserialize(asset);
+    nextAsset.children ? (flat = flat.concat(nextAsset, ...flatten(<Asset[]>nextAsset.children))) : flat.push(nextAsset);
+  });
+  return flat;
+}
+
+export function normalize(model: Asset): Asset {
+  if (notNullOrUndefined(model.children)) {
+    let nextModel = Asset.deserialize(model);
+    nextModel.children = (<Asset[]>model.children).map(child => child.id);
+    return nextModel;
+  }
+  return model;
+}
+
+export function denormalize(model: Asset, table: LookupTable<Asset>): Asset {
+  if (notNullOrUndefined(model.children)) {
+    let nextModel = Asset.deserialize(model);
+    nextModel.children = (<string[]>model.children).map(child => table[child]);
+    return nextModel;
+  }
+  return model;
+}
 
 export const assets: Reducer<StateEntity<Asset>> =
   (state = createEntityState<Asset>({}), action: AnyAction): StateEntity<Asset> => {
@@ -17,14 +45,14 @@ export const assets: Reducer<StateEntity<Asset>> =
 
       case StoreActionsEnum.ASSETS_FETCHED:
         return createEntityState({
-          byId: createLookupTable<Asset>(action.payload)
+          byId: createLookupTable<Asset>(flatten(action.payload).map(a => normalize(a)))
         });
 
       case StoreActionsEnum.SOME_ASSETS_FETCHED:
         return createEntityState({
           byId: {
             ...state.byId || {},
-            ...createLookupTable<Asset>(action.payload)
+            ...createLookupTable<Asset>(flatten(action.payload).map(a => normalize(a)))
           }
         });
 
@@ -48,7 +76,7 @@ export const assets: Reducer<StateEntity<Asset>> =
           loading: { ...state.loading, [action.payload.id]: false },
           byId: {
             ...state.byId,
-            [action.payload.id]: action.payload
+            ...createLookupTable<Asset>(flatten([action.payload]).map(a => normalize(a)))
           }
         };
 

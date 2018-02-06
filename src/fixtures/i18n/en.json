@@ -29,9 +29,8 @@
   "DeleteReview": {
     "NoEntriesForItem": "There are no versions for this item."
   },
-  "": {
-
-  },
+  "": {},
+  "Yes ({{num}})": "Yes ({{num}})",
   "{{parent}} has been deselected": "{{parent}} has been deselected",
   "You may delete children without their parent but not vise-versa.": "You may delete children without their parent but not vise-versa."
 }

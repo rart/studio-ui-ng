@@ -35,29 +35,24 @@ export const explorer: Reducer<ExplorerState> = (state = {
       let asset: Asset = action.payload.asset;
       let code = state.activeProjectCode;
       let container = state.byProject[code] || {};
-      if (asset.type !== AssetTypeEnum.FOLDER) {
-        return {
-          ...state,
-          byProject: {
-            ...state.byProject,
-            [code]: {
-              ...container,
-              asset: asset.id
-            }
-          }
-        };
-      }
 
-      let paths = container.paths;
       let id = asset.id;
-      let parent = id.substr(0, id.lastIndexOf('/'));
+      let pathId = id.replace('/index.xml', '');
+      let paths = container.paths;
+      let parent = pathId.substr(0, pathId.lastIndexOf('/'));
+
+      let isFolder = asset.type === AssetTypeEnum.FOLDER;
 
       if (parent === `${asset.projectCode}:`) {
         parent = `${asset.projectCode}:/`;
       }
 
       let index = paths.findIndex((path) => path === parent);
-      paths = paths.slice(0, (index + 1)).concat(id);
+      paths = paths.slice(0, (index + 1)).concat(pathId);
+
+      if (!isFolder) {
+        paths.pop();
+      }
 
       return {
         ...state,
@@ -66,7 +61,7 @@ export const explorer: Reducer<ExplorerState> = (state = {
           [code]: {
             ...container,
             paths: paths,
-            asset: null
+            asset: isFolder ? null : id
           }
         }
       };

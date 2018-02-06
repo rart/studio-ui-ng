@@ -4,6 +4,8 @@
 $border-color: $color-grey-lightest;
 
 :host {
+  overflow-y: auto;
+  overflow-x: hidden;
   @include widths(250px);
   padding: $spacing-mini 0 0 0;
   border-right: 1px solid $border-color;
@@ -38,6 +40,7 @@ $border-color: $color-grey-lightest;
   }
   std-asset-display {
     flex: 1;
+    @include widths(calc(100% - 25px));
   }
   mat-icon {
     text-align: center;

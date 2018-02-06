@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from '../../classes/app-state.interface';
 import { Asset } from '../../models/asset.model';
 import { Subject } from 'rxjs/Subject';
@@ -15,7 +15,7 @@ import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { AssetActions } from '../../actions/asset.actions';
 
 @Component({
-  selector: 'std-directory-listing',
+  selector: 'std-directory-view',
   templateUrl: './directory-view.component.html',
   styleUrls: ['./directory-view.component.scss']
 })
@@ -26,6 +26,9 @@ export class DirectoryViewComponent extends WithNgRedux implements AfterViewInit
   @Input() showPermissions = true;
 
   @Output() selectionChange = new Subject();
+
+  @select(['entities', 'assets', 'byId'])
+  ASSETS$;
 
   selection: Asset;
   directory: Asset;
