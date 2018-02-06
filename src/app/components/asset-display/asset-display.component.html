@@ -1,4 +1,4 @@
-<div *ngIf="loading">
+<div *ngIf="loading && !asset">
   <i class="fa fa-spinner"></i> <span translate>Loading</span>&hellip;
 </div>
 
@@ -22,11 +22,10 @@
     [ngModel]="checked">
   </mat-checkbox>
 
-  <div *ngIf="showIcons && (showTypeIcon || showStatusIcons)"
-       [class]="'icons ' + typeClass + ' ' + statusClass" [title]="iconDescription">
-    <i [class.visibility-hidden]="!showTypeIcon" [class]="'type fa ' + typeClass"></i>
-    <i *ngIf="showStatusIcons" [class]="'status fa ' + statusClass"></i>
-    <i *ngIf="asset.locked && showStatusIcons" [class]="'lock fa ' + (lockedByCurrent ? 'yourself' : '')"></i>
+  <div *ngIf="showIcons && (showTypeIcon || showStatusIcons)" class="icons" [title]="iconDescription">
+    <i [class]="typeClass" [ngClass]="{ 'visibility-hidden': !showTypeIcon }"></i>
+    <i *ngIf="showStatusIcons" [class]="statusClass"></i>
+    <i *ngIf="asset.locked && showStatusIcons" [class]="lockClass"></i>
   </div>
 
   <ng-container *ngIf="showLabel" [ngSwitch]="navigable">

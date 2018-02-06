@@ -1,10 +1,7 @@
-
 // http://fontawesome.io/icons/
 // http://plnkr.co/edit/uMNxmhBBj1E87FjTsdsU
-
 // State for stuff being published because it's a dependecy
 // Publishing package name
-
 @import url('https://fonts.googleapis.com/css?family=Overpass+Mono');
 @import "../../styles/settings";
 
@@ -32,690 +29,547 @@
   right: 0;
 }
 
+@mixin submittedIcon() {
+  top: -2px;
+  left: 1px;
+  font-size: .75em;
+  @include fa(clock-o);
+}
+
+@mixin scheduledIcon() {
+  top: -3px;
+  font-size: .7em;
+  @include fa(calendar-o);
+}
+
+@mixin deletedIcon {
+  right: -.1em;
+  bottom: .15em;
+  @include fa(trash);
+}
+
+@mixin publishingFailedIcon {
+  right: .15em;
+  bottom: .2em;
+  @include fa(exclamation-triangle);
+}
+
+@mixin newIcon {
+  @include fa(plus)
+}
+
+@mixin editedIcon {
+  top: -2px;
+  left: 1px;
+  @include fa(pencil)
+}
+
+@mixin spinnerIcon {
+  @include fa(spinner)
+}
+
+@mixin spinningAnimation {
+  animation: fa-spin 4s infinite linear;
+}
+
+@mixin all-icons-common {
+  @include fa-base-styles;
+  position: relative;
+  line-height: 1em;
+}
+
+@mixin lock-n-status-common {
+  width: 50%;
+  height: 50%;
+  max-width: 50%;
+  position: absolute;
+  &::before {
+    font-size: .8em;
+    position: relative;
+    display: inline-flex;
+    align-items: flex-start;
+  }
+}
+
 $icon-width: 1.5em;
 $menu-width: 30px;
 $component-height: 1.8em;
 $color-dark: #444;
 
-::ng-deep std-asset-display {
-  .menu,
-  std-asset-menu {
-    height: 100%;
-    width: $menu-width;
-    min-width: $menu-width;
-  }
-  &.hover-menu:not(:hover) std-asset-menu {
-    display: none;
-  }
-}
+::ng-deep {
 
-:host {
-  font-size: 1em;
-  position: relative;
-  align-items: center;
-  display: inline-flex;
-  height: $component-height;
-  line-height: $component-height;
-  &.no-wrap {
-    width: 100%;
-    .label {
+  std-asset-display {
+
+    font-size: 1em;
+    position: relative;
+    align-items: center;
+    display: inline-flex;
+    height: $component-height;
+    line-height: $component-height;
+    &.no-wrap {
       width: 100%;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
+      .label {
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
     }
-  }
-  &.label-left-clear {
-    .label {
-      padding-left: 0;
+    &.hover-menu:not(:hover) std-asset-menu {
+      display: none;
     }
-  }
-  &.status.icons.right {
-    .icons {
-      > .lock {
-        left: 1.05em;
-        &.yourself {
-          top: -.1em;
-          left: 1.1em;
+    .menu, std-asset-menu {
+      height: 100%;
+      width: $menu-width;
+      min-width: $menu-width;
+    }
+    &.label-left-clear {
+      .label {
+        padding-left: 0;
+      }
+    }
+    &.status.icons.right {
+      .icons {
+        > .lock {
+          left: 1.05em;
+          &.yourself {
+            top: -.1em;
+            left: 1.1em;
+          }
+        }
+        > .status {
+          bottom: .15em;
+          left: 1.2em;
+        }
+        > .type {
+          text-align: left;
         }
       }
-      > .status {
-        bottom: .15em;
-        left: 1.2em;
-      }
-      > .type {
-        text-align: left;
+      > .label {
+        padding-left: .55em;
       }
     }
-    > .label {
-      padding-left: .55em;
-    }
-  }
-  &.status.icons.left {
-    .icons {
-      > .lock {
-        left: -.07em;
-        &.yourself {
-          top: -.1em;
-          left: 0;
+    &.status.icons.left {
+      .icons {
+        > .lock {
+          left: -.07em;
+          &.yourself {
+            top: -.1em;
+            left: 0;
+          }
+        }
+        > .status {
+          bottom: .15em;
+          left: .05em;
+        }
+        > .type {
+          left: .65em;
         }
       }
-      > .status {
-        bottom: .15em;
-        left: .05em;
-      }
-      > .type {
-        left: .65em;
+      > .label {
+        padding-left: .55em;
       }
     }
-    > .label {
-      padding-left: .55em;
-    }
-  }
-  &.status.icons.bottom {
-    .icons {
-      > .lock {
-        top: auto;
-        left: -.1em;
-        bottom: 0em;
-        &.yourself {
-          left: 0em;
-          bottom: -0.05em;
+    &.status.icons.bottom {
+      .icons {
+        > .lock {
+          top: auto;
+          left: -.1em;
+          bottom: 0em;
+          &.yourself {
+            left: 0em;
+            bottom: -0.05em;
+          }
+        }
+        > .status {
+          right: -.1em;
+          bottom: .05em;
+        }
+        > .type {
+          top: -.4em;
         }
       }
-      > .status {
-        right: -.1em;
-        bottom: .05em;
-      }
-      > .type {
-        top: -.4em;
-      }
-    }
-    > .label {
+      > .label {
 
+      }
     }
-  }
-  &.icons.above,
-  &.icons.below,
-  &.status.icons.inline {
-    // margin-bottom: 200px;
-    display: block;
-    height: auto;
-    .icons {
-      width: auto;
-      min-width: 0;
-      max-width: none;
-      position: static;
+    &.icons.above,
+    &.icons.below,
+    &.status.icons.inline {
+      // margin-bottom: 200px;
+      display: block;
       height: auto;
-      display: inline;
-      > .lock,
-      > .type,
-      > .status {
-
+      .icons {
         width: auto;
         min-width: 0;
-        display: inline-block;
-        height: auto;
-
-        top: auto;
-        left: auto;
-        right: auto;
-        bottom: auto;
+        max-width: none;
         position: static;
+        height: auto;
+        display: inline;
+        > .lock,
+        > .type,
+        > .status {
 
-        &::before {
-          font-size: 1em;
+          width: auto;
+          min-width: 0;
+          display: inline-block;
+          height: auto;
+
+          top: auto;
+          left: auto;
+          right: auto;
+          bottom: auto;
+          position: static;
+
+          &::before {
+            font-size: 1em;
+          }
+
         }
-
+      }
+      > .label {
+        width: auto;
+        overflow: visible;
+        white-space: normal;
+        display: inline;
       }
     }
-    > .label {
-      width: auto;
-      overflow: visible;
-      white-space: normal;
-      display: inline;
+    &.icons.above {
+      .icons,
+      .label {
+        display: block;
+        text-align: center;
+      }
     }
-  }
-  &.icons.above {
-    .icons,
+    &.icons.below {
+      display: flex;
+      flex-direction: column-reverse;
+      .icons,
+      .label {
+        display: block;
+        text-align: center;
+      }
+    }
+
+    mat-checkbox {
+      top: -.15em;
+      position: relative;
+      margin-right: .1em;
+    }
+
     .label {
-      display: block;
-      text-align: center;
+      display: inline-block;
+      padding: 0 0 0 .1em;
     }
-  }
-  &.icons.below {
-    display: flex;
-    flex-direction: column-reverse;
-    .icons,
-    .label {
-      display: block;
-      text-align: center;
-    }
-  }
-}
 
-mat-checkbox {
-  top: -.15em;
-  position: relative;
-  margin-right: .1em;
-}
-
-.label {
-  display: inline-block;
-  padding: 0 0 0 .1em;
-}
-
-.type,
-.status,
-.lock {
-  @include fa-base-styles;
-}
-
-.type {
-
-  &::before {
-    @include fa(question);
   }
 
-  &.page {
-    &::before {
-      @include fa(file-o);
-    }
-  }
-  &.folder {
-    &::before {
-      @include fa(folder-open-o);
-    }
-  }
-  &.component {
-    &::before {
-      @include fa(puzzle-piece);
-    }
-  }
-  &.document {
-    &::before {
-
-    }
-  }
-  &.level.descriptor {
-    &::before {
-      @include fa(sort-amount-desc);
-    }
-  }
-  &.css,
-  &.scss,
-  &.sass,
-  &.less,
-  &.stylesheet {
-    &::before {
-      @include fa(css3);
-    }
-  }
-  &.font {
-    &::before {
-      @include fa(font);
-    }
-  }
-  &.html,
-  &.groovy,
-  &.template,
-  &.freemarker,
-  &.javascript,
-  &.typescript {
-    &::before {
-      @include fa(code);
-    }
-  }
-  &.javascript {
-    &::before {
-      @include reg-font();
-      content: 'JS';
-    }
-  }
-  &.typescript {
-    &::before {
-      @include reg-font();
-      content: 'TS';
-    }
-  }
-  &.freemarker {
-    &::before {
-      @include reg-font();
-      content: 'FM';
-      // content: 'FTL';
-      // font-size: .7em;
-    }
-  }
-  &.template {
-    &::before {
-
-    }
-  }
-  &.groovy {
-    &::before {
-      @include reg-font();
-      content: 'GR';
-    }
-  }
-  &.video {
-    &::before {
-      // other: .fa-file-movie-o, .fa-file-video-o
-      @include fa(video-camera);
-    }
-  }
-  &.audio {
-    &::before {
-      @include fa(volume-up);
-    }
-  }
-  &.image {
-    &::before {
-      // others: .fa-file-photo-o, .fa-file-picture-o, .fa-file-image-o
-      @include fa(picture-o);
-    }
-  }
-  &.powerpoint {
-    &::before {
-      @include fa(file-powerpoint-o);
-    }
-  }
-  &.excel {
-    &::before {
-      @include fa(file-excel-o);
-    }
-  }
-  &.word {
-    &::before {
-      @include fa(file-word-o);
-    }
-  }
-  &.pdf {
-    &::before {
-      @include fa(file-pdf-o);
-    }
-  }
-  &.zip {
-    &::before {
-      // other fa-file-archive-o
-      @include fa(archive);
-    }
-  }
-  &.taxonomy {
-    &::before {
-      @include fa(tags);
-    }
-  }
-}
-
-.status {
-
-  &.submitted {
-    color: $color-purple;
-    &::before {
-      @include fa(clock-o);
-    }
-  }
-
-  &.scheduled {
-    color: $color-dark;
-    &::before {
-      @include fa(calendar-o);
-    }
-  }
-
-  &.with.wf {
-    color: $color-purple;
-    &::before {
-
-    }
-  }
-
-  &.deleted {
-    color: $color-red;
-    &::before {
-      @include fa(trash);
-    }
-  }
-
-  &.publishing.failed,
-  &.new.publishing.failed,
-  &.existing.publishing.failed {
-    color: $color-pink;
-    &::before {
-      @include fa(exclamation-triangle);
-    }
-  }
-
-  &.new,
-  &.existing {
-    &.submitted {
-      &::before {
-        @include fa(clock-o);
-      }
-      &.with.wf {
-        &.scheduled {
-          color: $color-purple;
-          &::before {
-
-          }
-        }
-        &.locked {
-          &::before {
-
-          }
-        }
-        &.unscheduled {
-          &::before {
-
-          }
-          &.locked {
-            &::before {
-
-            }
-          }
-        }
-      }
-      &.no.wf {
-        &.scheduled {
-          &::before {
-            @include fa(calendar-o)
-          }
-          &.locked {
-            &::before {
-
-            }
-          }
-        }
-        &.unscheduled {
-          animation: fa-spin 4s infinite linear;
-          &::before {
-            color: $color-purple;
-            // other: fa-cog
-            @include fa(spinner)
-          }
-        }
-      }
-    }
-    &.publishing.failed {
-      &::before {
-
-      }
-    }
-  }
-
-  &.new {
-    &::before {
-
-    }
-    &.locked {
-
-    }
-    &.unpublished {
-      color: $color-green-darkend;
-      &::before {
-        @include fa(plus)
-      }
-    }
-    &.submitted {
-      &::before {
-
-      }
-      &.with.wf {
-        &::after {
-
-        }
-        &.scheduled {
-          &::before {
-
-          }
-        }
-        &.locked {
-          &::before {
-
-          }
-        }
-        &.unscheduled {
-          &::before {
-
-          }
-          &.locked {
-            &::before {
-
-            }
-          }
-        }
-      }
-      &.no.wf {
-        &.scheduled {
-          &::before {
-
-          }
-          &.locked {
-            &::before {
-
-            }
-          }
-        }
-        &.unscheduled {
-          &::before {
-
-          }
-        }
-      }
-    }
-    &.publishing.failed {
-      &::before {
-
-      }
-    }
-    &.deleted {
-      &::before {
-
-      }
-    }
-  }
-
-  &.existing {
-    &.unedited {
-      &::before {
-
-      }
-      &.locked {
-        &::before {
-
-        }
-      }
-      &.unlocked {
-        &::before {
-
-        }
-      }
-    }
-    &.edited {
-      color: $color-yellow;
-      &::before {
-        @include fa(pencil)
-      }
-      &.locked {
-        &::before {
-
-        }
-      }
-      &.unlocked {
-        &::before {
-
-        }
-      }
-    }
-    &.submitted {
-      &.with.wf {
-        &.scheduled {
-          &::before {
-
-          }
-          &.locked {
-            &::before {
-
-            }
-          }
-        }
-        &.unscheduled {
-          &::before {
-
-          }
-          &.locked {
-            &::before {
-
-            }
-          }
-        }
-      }
-
-      &.no.wf {
-        .scheduled {
-          &::before {
-
-          }
-          &.locked {
-            &::before {
-
-            }
-          }
-        }
-        .unscheduled {
-          &::before {
-
-          }
-        }
-      }
-
-    }
-    &.publishing.failed {
-      &::before {
-
-      }
-    }
-    &.deleted {
-      &::before {
-
-      }
-    }
-  }
-
-}
-
-.icons {
-  height: 100%;
-  font-size: 1.1em;
-  width: $icon-width;
-  min-width: $icon-width;
-  display: inline-block;
-  position: relative;
-  cursor: help;
-
-  &:hover {
-    .type {
-      // opacity: .2;
-    }
-    .lock,
-    .status {
-      // opacity: 1;
-    }
-    .status {
-
-    }
-  }
-
-  .lock,
   .type,
-  .status {
-    // transition: opacity .4s;
-    position: relative;
-    line-height: 1em;
+  .status,
+  .lock {
+    @include fa-base-styles;
   }
 
   .type {
-    top: 0;
-    left: 0;
-    height: 1em;
-    max-height: 1em;
-    color: $color-teal-darkend;
-    // color: $color-teal;
-    // color: $color-dark;
-    text-align: center;
-    min-width: 100%;
-    width: 100%;
+
     &::before {
-      width: 100%;
-      min-width: 100%;
-      display: block;
+      @include fa(question);
+    }
+
+    &.page {
+      &::before {
+        @include fa(file-o);
+      }
+    }
+    &.folder {
+      &::before {
+        @include fa(folder-open-o);
+      }
+    }
+    &.component {
+      &::before {
+        @include fa(puzzle-piece);
+      }
+    }
+    &.document {
+      &::before {
+
+      }
+    }
+    &.level.descriptor {
+      &::before {
+        @include fa(sort-amount-desc);
+      }
+    }
+    &.css,
+    &.scss,
+    &.sass,
+    &.less,
+    &.stylesheet {
+      &::before {
+        @include fa(css3);
+      }
+    }
+    &.font {
+      &::before {
+        @include fa(font);
+      }
+    }
+    &.html,
+    &.groovy,
+    &.template,
+    &.freemarker,
+    &.javascript,
+    &.typescript {
+      &::before {
+        @include fa(code);
+      }
+    }
+    &.javascript {
+      &::before {
+        @include reg-font();
+        content: 'JS';
+      }
+    }
+    &.typescript {
+      &::before {
+        @include reg-font();
+        content: 'TS';
+      }
+    }
+    &.freemarker {
+      &::before {
+        @include reg-font();
+        content: 'FM';
+        // content: 'FTL';
+        // font-size: .7em;
+      }
+    }
+    &.template {
+      &::before {
+
+      }
+    }
+    &.groovy {
+      &::before {
+        @include reg-font();
+        content: 'GR';
+      }
+    }
+    &.video {
+      &::before {
+        // other: .fa-file-movie-o, .fa-file-video-o
+        @include fa(video-camera);
+      }
+    }
+    &.audio {
+      &::before {
+        @include fa(volume-up);
+      }
+    }
+    &.image {
+      &::before {
+        // others: .fa-file-photo-o, .fa-file-picture-o, .fa-file-image-o
+        @include fa(picture-o);
+      }
+    }
+    &.powerpoint {
+      &::before {
+        @include fa(file-powerpoint-o);
+      }
+    }
+    &.excel {
+      &::before {
+        @include fa(file-excel-o);
+      }
+    }
+    &.word {
+      &::before {
+        @include fa(file-word-o);
+      }
+    }
+    &.pdf {
+      &::before {
+        @include fa(file-pdf-o);
+      }
+    }
+    &.zip {
+      &::before {
+        // other fa-file-archive-o
+        @include fa(archive);
+      }
+    }
+    &.taxonomy {
+      &::before {
+        @include fa(tags);
+      }
     }
   }
 
-  .lock,
   .status {
-    width: 50%;
-    height: 50%;
-    max-width: 50%;
-    position: absolute;
-    &::before {
-      font-size: .8em;
-      position: relative;
-      display: inline-flex;
-      align-items: flex-start;
-    }
-  }
 
-  .status {
-    @include br-quadrant();
-    &::before {
-      text-align: left;
+    &.submitted {
+      color: $color-purple;
+      &::before {
+        @include fa(clock-o);
+      }
+    }
+
+    &.scheduled {
+      color: $color-dark;
+      &::before {
+        @include fa(calendar-o);
+      }
+    }
+
+    &.with.wf {
+      color: $color-purple;
+      &::before {
+
+      }
+    }
+
+    &.deleted {
+      color: $color-red;
+      &::before {
+        @include fa(trash);
+      }
+    }
+
+    &.publishing.failed,
+    &.new.publishing.failed,
+    &.existing.publishing.failed {
+      color: $color-pink;
+      &::before {
+        @include fa(exclamation-triangle);
+      }
     }
 
     &.new,
     &.existing {
       &.submitted {
         &::before {
-          top: -2px;
-          left: 1px;
-          font-size: .75em;
+          @include fa(clock-o);
         }
         &.with.wf {
-          &::after {
-            top: -90%;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            max-width: 100%;
-            position: absolute;
-            text-align: center;
-            align-items: flex-end;
-            display: inline-flex;
-            font-size: .7em;
+          &.scheduled {
+            color: $color-purple;
+            &::before {
+
+            }
+          }
+          &.locked {
+            &::before {
+
+            }
+          }
+          &.unscheduled {
+            &::before {
+
+            }
+            &.locked {
+              &::before {
+
+              }
+            }
           }
         }
         &.no.wf {
           &.scheduled {
             &::before {
-              top: -3px;
-              font-size: .7em;
+              @include fa(calendar-o)
+            }
+            &.locked {
+              &::before {
+
+              }
+            }
+          }
+          &.unscheduled {
+            @include spinningAnimation;
+            &::before {
+              color: $color-purple;
+              // other: fa-cog
+              @include fa(spinner)
             }
           }
         }
       }
-      &.deleted {
+      &.publishing.failed {
         &::before {
-          right: -.1em;
-          bottom: .15em;
+
         }
       }
     }
 
     &.new {
+      &::before {
+
+      }
+      &.locked {
+
+      }
+      &.unpublished {
+        color: $color-green-darkend;
+        &::before {
+          @include fa(plus)
+        }
+      }
+      &.submitted {
+        &::before {
+
+        }
+        &.with.wf {
+          &::after {
+
+          }
+          &.scheduled {
+            &::before {
+
+            }
+          }
+          &.locked {
+            &::before {
+
+            }
+          }
+          &.unscheduled {
+            &::before {
+
+            }
+            &.locked {
+              &::before {
+
+              }
+            }
+          }
+        }
+        &.no.wf {
+          &.scheduled {
+            &::before {
+
+            }
+            &.locked {
+              &::before {
+
+              }
+            }
+          }
+          &.unscheduled {
+            &::before {
+
+            }
+          }
+        }
+      }
+      &.publishing.failed {
+        &::before {
+
+        }
+      }
       &.deleted {
         &::before {
-          top: -3px;
-          left: 1px;
+
         }
       }
     }
@@ -725,90 +579,286 @@ mat-checkbox {
         &::before {
 
         }
+        &.locked {
+          &::before {
+
+          }
+        }
+        &.unlocked {
+          &::before {
+
+          }
+        }
       }
       &.edited {
+        color: $color-yellow;
         &::before {
-          top: -2px;
-          left: 1px;
+          @include fa(pencil)
+        }
+        &.locked {
+          &::before {
+
+          }
+        }
+        &.unlocked {
+          &::before {
+
+          }
+        }
+      }
+      &.submitted {
+        &.with.wf {
+          &.scheduled {
+            &::before {
+
+            }
+            &.locked {
+              &::before {
+
+              }
+            }
+          }
+          &.unscheduled {
+            &::before {
+
+            }
+            &.locked {
+              &::before {
+
+              }
+            }
+          }
+        }
+
+        &.no.wf {
+          .scheduled {
+            &::before {
+
+            }
+            &.locked {
+              &::before {
+
+              }
+            }
+          }
+          .unscheduled {
+            &::before {
+
+            }
+          }
+        }
+
+      }
+      &.publishing.failed {
+        &::before {
+
+        }
+      }
+      &.deleted {
+        &::before {
+
         }
       }
     }
 
-    &.publishing.failed,
-    &.new.publishing.failed,
-    &.existing.publishing.failed {
-      &::before {
-        right: .15em;
-        bottom: .2em;
-      }
-    }
-
   }
 
-  .lock {
-    text-align: right;
-    color: $color-orange;
-    @include tl-quadrant();
-    &::before {
-      top: -1px;
-      right: 1px;
-      @include fa(lock)
-    }
-    &.yourself {
-      &::before {
-        top: -3px;
-        right: -1px;
-        font-size: .7em;
-        @include fa(key)
-      }
-    }
-  }
-
-}
-
-.icon-showcase {
-
-  display: flex;
-  position: relative;
-  align-items: center;
-
-  .type,
-  .status {
-    width: 40px;
-    text-align: center;
+  .icons {
+    height: 100%;
+    font-size: 1.1em;
+    width: $icon-width;
+    min-width: $icon-width;
+    display: inline-block;
     position: relative;
-  }
-  .status {
-    &::before {
+    cursor: help;
 
-    }
-    &::after {
-      margin-left: .5em;
+    &:hover {
+      .type {
+        // opacity: .2;
+      }
+      .lock,
+      .status {
+        // opacity: 1;
+      }
+      .status {
+
+      }
     }
 
-    &.locked {
-      color: $color-orange;
+    .lock,
+    .type,
+    .status {
+      @include all-icons-common;
+    }
+
+    .type {
+      top: 0;
+      left: 0;
+      height: 1em;
+      max-height: 1em;
+      color: $color-teal-darkend;
+      // color: $color-teal;
+      // color: $color-dark;
+      text-align: center;
+      min-width: 100%;
+      width: 100%;
       &::before {
+        width: 100%;
+        min-width: 100%;
+        display: block;
+      }
+    }
+
+    .lock,
+    .status {
+      @include lock-n-status-common;
+    }
+
+    .status {
+      @include br-quadrant();
+      &::before {
+        text-align: left;
+      }
+
+      &.new,
+      &.existing {
+        &.submitted {
+          &::before {
+            top: -2px;
+            left: 1px;
+            font-size: .75em;
+          }
+          &.with.wf {
+            &::after {
+              top: -90%;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              max-width: 100%;
+              position: absolute;
+              text-align: center;
+              align-items: flex-end;
+              display: inline-flex;
+              font-size: .7em;
+            }
+          }
+          &.no.wf {
+            &.scheduled {
+              &::before {
+                top: -3px;
+                font-size: .7em;
+              }
+            }
+          }
+        }
+        &.deleted {
+          &::before {
+            right: -.1em;
+            bottom: .15em;
+          }
+        }
+      }
+
+      &.new {
+        &.deleted {
+          &::before {
+            top: -3px;
+            left: 1px;
+          }
+        }
+      }
+
+      &.existing {
+        &.unedited {
+          &::before {
+
+          }
+        }
+        &.edited {
+          &::before {
+            top: -2px;
+            left: 1px;
+          }
+        }
+      }
+
+      &.publishing.failed,
+      &.new.publishing.failed,
+      &.existing.publishing.failed {
+        &::before {
+          right: .15em;
+          bottom: .2em;
+        }
+      }
+
+    }
+
+    .lock {
+      text-align: right;
+      color: $color-orange;
+      @include tl-quadrant();
+      &::before {
+        top: -1px;
+        right: 1px;
         @include fa(lock)
       }
-      &.you,
       &.yourself {
         &::before {
+          top: -3px;
+          right: -1px;
+          font-size: .7em;
           @include fa(key)
         }
       }
     }
 
-    &.new,
-    &.existing {
-      &.no.wf.unscheduled {
-        animation: none;
+  }
+
+  .icon-showcase {
+
+    display: flex;
+    position: relative;
+    align-items: center;
+
+    .type,
+    .status {
+      width: 40px;
+      text-align: center;
+      position: relative;
+    }
+    .status {
+      &::before {
+
+      }
+      &::after {
+        margin-left: .5em;
+      }
+
+      &.locked {
+        color: $color-orange;
         &::before {
-          animation: fa-spin 4s infinite linear;
+          @include fa(lock)
+        }
+        &.you,
+        &.yourself {
+          &::before {
+            @include fa(key)
+          }
+        }
+      }
+
+      &.new,
+      &.existing {
+        &.no.wf.unscheduled {
+          animation: none;
+          &::before {
+            @include spinningAnimation;
+          }
         }
       }
     }
   }
+
 }
 
 // content: "\f1c9"; // file-code-o
@@ -851,3 +901,29 @@ mat-checkbox {
 // existing submitted no wf unscheduled
 // existing publishing failed
 // existing deleted
+
+// new-unpublished-locked
+// new-unpublished-unlocked
+// new-submitted-with-wf-scheduled
+// new-submitted-with-wf-scheduled-locked
+// new-submitted-with-wf-unscheduled
+// new-submitted-with-wf-unscheduled-locked
+// new-submitted-no-wf-scheduled
+// new-submitted-no-wf-scheduled-locked
+// new-submitted-no-wf-unscheduled
+// new-publishing-failed
+// new-deleted
+// existing-unedited-locked
+// existing-unedited-unlocked
+// existing-edited-locked
+// existing-edited-unlocked
+// existing-submitted-with-wf-scheduled
+// existing-submitted-with-wf-scheduled-locked
+// existing-submitted-with-wf-unscheduled
+// existing-submitted-with-wf-unscheduled-locked
+// existing-submitted-no-wf-scheduled
+// existing-submitted-no-wf-scheduled-locked
+// existing-submitted-no-wf-unscheduled
+// existing-publishing-failed
+// existing-deleted
+

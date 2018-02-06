@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy, ChangeDetectorRef,
   Component,
   EventEmitter,
   HostBinding,
@@ -11,7 +11,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppState, LookupTable } from '../../classes/app-state.interface';
+import { AppState, LookupTable, StateEntity } from '../../classes/app-state.interface';
 import { Asset } from '../../models/asset.model';
 import { StringUtils } from '../../utils/string.utils';
 import { AssetTypeEnum } from '../../enums/asset-type.enum';
@@ -25,7 +25,7 @@ import { createPreviewTabCore } from '../../utils/state.utils';
 import { SettingsEnum } from '../../enums/Settings.enum';
 import { AssetActions } from '../../actions/asset.actions';
 import { notNullOrUndefined } from '../../app.utils';
-import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { merge } from 'rxjs/observable/merge';
 import { isNullOrUndefined } from 'util';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
@@ -39,8 +39,8 @@ let count = 0;
 @Component({
   selector: 'std-asset-display',
   templateUrl: './asset-display.component.html',
-  styleUrls: ['./asset-display.component.scss']/*,
-  changeDetection: ChangeDetectionStrategy.OnPush*/
+  styleUrls: ['./asset-display.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnDestroy {
 
@@ -49,7 +49,8 @@ export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnD
               private communicationService: CommunicationService,
               private router: Router,
               private assetActions: AssetActions,
-              private previewTabsActions: PreviewTabsActions) {
+              private previewTabsActions: PreviewTabsActions,
+              private detector: ChangeDetectorRef) {
     // Init Store
     super(store);
   }
@@ -75,7 +76,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnD
   @Input() checkMode: 'state' | 'local' = 'state';
   @Input() labelFactory: LabelFactory;
 
-  @Input () checked = false;
+  @Input() checked = false;
   @Output() checkedChange = new EventEmitter();
 
   // https://stackoverflow.com/questions/45313939/data-binding-causes-expressionchangedafterithasbeencheckederror
@@ -84,8 +85,9 @@ export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnD
   // @Output() showIconsChange = new EventEmitter();
 
   label;
-  statusClass;
   typeClass;
+  lockClass;
+  statusClass;
   lockedByCurrent;
   iconDescription;
   @HostBinding('class.label-left-clear')
@@ -97,8 +99,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnD
   shouldShowMenu = false; // internal compiled value of the @input showMenu
 
   ngOnChanges(ngChanges: SimpleChanges) {
-    let { ngOnChanges$, ngOnDestroy$, asset$, id, state } = this;
-
+    let { ngOnChanges$, ngOnDestroy$, asset$, id, state, detector } = this;
     ngOnChanges$.next(ngChanges);
 
     this.setMenuVisibility();
@@ -106,44 +107,37 @@ export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnD
 
     if (notNullOrUndefined(id)) {
 
-      this.select<Asset>(['entities', 'assets', 'byId', id])
-        .pipe(
-          this.filterNulls(),
-          takeUntil(merge(ngOnChanges$, ngOnDestroy$))
-        )
-        .subscribe(asset => {
+      this.select<StateEntity<Asset>>(['entities', 'assets'])
+        .pipe(takeUntil(merge(ngOnChanges$, ngOnDestroy$)))
+        .subscribe((table) => {
+          let hasChanged = false;
+          if (notNullOrUndefined(table.error[id]) && (table.error[id] !== this.error)) {
+            this.error = table.error[id];
+            hasChanged = true;
+          }
+          if (notNullOrUndefined(table.loading[id]) && (table.loading[id] !== this.loading)) {
+            this.loading = table.loading[id];
+            hasChanged = true;
+          }
+          if (notNullOrUndefined(table.byId[id]) && (table.byId[id] !== this.asset)) {
+            this.asset = table.byId[id];
+            this.asset$.next(this.asset);
 
-          this.asset = asset;
-          this.asset$.next(asset);
+            this.setIsNavigable();
+            this.setIconDescription();
+            this.setLockedByCurrent();
+            this.setTypeClass();
+            this.setStatusClass();
+            this.setLabel();
 
-          this.setIsNavigable();
-          this.setIconDescription();
-          this.setLockedByCurrent();
-          this.setTypeClass();
-          this.setStatusClass();
-          this.setLabel();
-
-        });
-
-      this.select<boolean>(['entities', 'assets', 'error', id])
-        .pipe(
-          this.filterNulls(),
-          takeUntil(merge(ngOnChanges$, ngOnDestroy$))
-        )
-        .subscribe((x) => {
-          this.error = x;
-        });
-
-      this.select<boolean>(['entities', 'assets', 'loading', id])
-        .pipe(
-          takeUntil(merge(ngOnChanges$, ngOnDestroy$))
-        )
-        .subscribe((x) => {
-          this.loading = x;
+            hasChanged = true;
+          }
+          if (hasChanged) {
+            detector.detectChanges();
+          }
         });
 
       if (isNullOrUndefined(state.entities.assets.byId[id])) {
-        this.loading = true;
         this.dispatch(this.assetActions.get(id));
       }
 
@@ -254,20 +248,23 @@ export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnD
     this.lockedByCurrent = (notNullOrUndefined(this.asset.lockedBy)
       ? (this.state.user.username === this.asset.lockedBy.username)
       : false);
+    this.lockClass = `lock ${this.lockedByCurrent ? 'yourself' : ''}`;
   }
 
   private setTypeClass() {
-    this.typeClass = this.asset
+    let type = this.asset
       .type
       .toLowerCase()
       .replace(/_/g, ' ');
+    this.typeClass = `type ${type}`;
   }
 
   private setStatusClass() {
-    this.statusClass = this.asset
+    let status = this.asset
       .workflowStatus
       .toLowerCase()
       .replace(/_/g, ' ');
+    this.statusClass = `status ${status}`;
   }
 
   private setLabel() {
