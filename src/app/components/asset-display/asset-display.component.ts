@@ -6,7 +6,6 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  OnInit,
   Output,
   SimpleChanges
 } from '@angular/core';
@@ -15,8 +14,6 @@ import { AppState, LookupTable, StateEntity } from '../../classes/app-state.inte
 import { Asset } from '../../models/asset.model';
 import { StringUtils } from '../../utils/string.utils';
 import { AssetTypeEnum } from '../../enums/asset-type.enum';
-import { CommunicationService } from '../../services/communication.service';
-import { WorkflowService } from '../../services/workflow.service';
 import { SelectedItemsActions } from '../../actions/selected-items.actions';
 import { PreviewTabsActions } from '../../actions/preview-tabs.actions';
 import { dispatch, NgRedux } from '@angular-redux/store';
@@ -25,12 +22,11 @@ import { createPreviewTabCore } from '../../utils/state.utils';
 import { SettingsEnum } from '../../enums/Settings.enum';
 import { AssetActions } from '../../actions/asset.actions';
 import { notNullOrUndefined } from '../../app.utils';
-import { filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { takeUntil, withLatestFrom } from 'rxjs/operators';
 import { merge } from 'rxjs/observable/merge';
 import { isNullOrUndefined } from 'util';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 declare type LabelFactory = (asset: Asset) => string;
 
@@ -45,12 +41,10 @@ let count = 0;
 export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnDestroy {
 
   constructor(store: NgRedux<AppState>,
-              private workflowService: WorkflowService,
-              private communicationService: CommunicationService,
-              private router: Router,
-              private assetActions: AssetActions,
-              private previewTabsActions: PreviewTabsActions,
-              private detector: ChangeDetectorRef) {
+              protected router: Router,
+              protected assetActions: AssetActions,
+              protected previewTabsActions: PreviewTabsActions,
+              protected detector: ChangeDetectorRef) {
     // Init Store
     super(store);
   }
@@ -189,7 +183,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnD
     this.checkedChange.next(checked);
   }
 
-  private setIsNavigable() {
+  protected setIsNavigable() {
     if (!this.showLink) {
       this.navigable = false;
       return;
@@ -205,7 +199,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnD
     }
   }
 
-  private setMenuVisibility() {
+  protected setMenuVisibility() {
     this.hoverMenu = (this.showMenu === 'hover');
     this.shouldShowMenu = ((typeof this.showMenu === 'boolean')
       ? this.showMenu
@@ -216,12 +210,12 @@ export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnD
       }[this.showMenu]));
   }
 
-  private setLabelLeftClear() {
+  protected setLabelLeftClear() {
     this.labelLeftClear = (!this.showCheck && !this.showIcons);
   }
 
   // TODO: i18n
-  private setIconDescription() {
+  protected setIconDescription() {
     let
       type,
       status,
@@ -244,14 +238,14 @@ export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnD
     }
   }
 
-  private setLockedByCurrent() {
+  protected setLockedByCurrent() {
     this.lockedByCurrent = (notNullOrUndefined(this.asset.lockedBy)
       ? (this.state.user.username === this.asset.lockedBy.username)
       : false);
     this.lockClass = `lock ${this.lockedByCurrent ? 'yourself' : ''}`;
   }
 
-  private setTypeClass() {
+  protected setTypeClass() {
     let type = this.asset
       .type
       .toLowerCase()
@@ -259,7 +253,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnD
     this.typeClass = `type ${type}`;
   }
 
-  private setStatusClass() {
+  protected setStatusClass() {
     let status = this.asset
       .workflowStatus
       .toLowerCase()
@@ -267,7 +261,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnD
     this.statusClass = `status ${status}`;
   }
 
-  private setLabel() {
+  protected setLabel() {
 
     if (notNullOrUndefined(this.labelFactory)) {
       this.label = this.labelFactory(this.asset);
@@ -296,7 +290,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnD
 
   }
 
-  private selectedItemsStateChanged(selectedItems) {
+  protected selectedItemsStateChanged(selectedItems) {
     let checked = Object.keys(selectedItems);
     this.selected = checked.includes(this.asset.id);
   }
