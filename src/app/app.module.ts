@@ -95,6 +95,7 @@ import { ChangeLossDecisionViewComponent, EditComponent } from './components/edi
 import { EditorComponent } from './components/editor/editor.component';
 import { CodeEditorComponent } from './components/code-editor/code-editor.component';
 import { AssetDisplayComponent } from './components/asset-display/asset-display.component';
+import { SimpleAssetDisplayComponent } from './components/asset-display/simple-asset-display.component';
 import { WorkflowStatesComponent } from './components/workflow-states/workflow-states.component';
 import { FilterWithPipe } from './filter-with.pipe';
 import { IFrameComponent } from './components/iframe/iframe.component';
@@ -145,7 +146,6 @@ import { CollapsibleComponent } from './components/collapsible/collapsible.compo
 import { DirectoryViewComponent } from './components/directory-view/directory-view.component';
 import { ProjectsViewComponent } from './components/directory-view/projects-view.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
-import { SimpleAssetDisplayComponent } from "./components/asset-display/simple-asset-display.component";
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,

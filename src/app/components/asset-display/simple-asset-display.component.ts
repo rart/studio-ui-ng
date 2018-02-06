@@ -15,7 +15,7 @@ import { AssetDisplayComponent } from './asset-display.component';
 import { Asset } from '../../models/asset.model';
 
 @Component({
-  selector: 'std-asset-display',
+  selector: 'std-simple-asset-display',
   templateUrl: './asset-display.component.html',
   styleUrls: ['./asset-display.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
