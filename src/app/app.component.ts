@@ -115,7 +115,7 @@ export class AppComponent extends WithNgRedux {
         // Execute the session validation: if failed, the api will 401
         // and the logic above will handle the rest
         switchMap(() => authService.validateSession())
-      );
+      ).subscribe();
 
   }
 
