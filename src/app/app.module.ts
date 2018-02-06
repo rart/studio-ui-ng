@@ -145,6 +145,7 @@ import { CollapsibleComponent } from './components/collapsible/collapsible.compo
 import { DirectoryViewComponent } from './components/directory-view/directory-view.component';
 import { ProjectsViewComponent } from './components/directory-view/projects-view.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
+import { SimpleAssetDisplayComponent } from "./components/asset-display/simple-asset-display.component";
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
@@ -185,6 +186,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ProjectCrUDComponent,
     ItemListDashletComponent,
     AssetDisplayComponent,
+    SimpleAssetDisplayComponent,
     WorkflowStatesComponent,
     IFrameComponent,
     ImageViewerComponent,
