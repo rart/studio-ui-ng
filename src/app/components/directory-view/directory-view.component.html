@@ -25,10 +25,10 @@
 </ng-template>
 
 <ng-template #listing>
-  <ul class="listing" *ngIf="directory.children else empty">
-    <ng-container *ngIf="ASSETS$ | async as ASSETS">
+  <ul class="listing" *ngIf="directory.childrenIds as ids else empty">
+    <ng-container>
     <li class="is interactive entry"
-        *ngFor="let item of directory.children; last as last"
+        *ngFor="let item of ids; last as last"
         [ngClass]="{ border: !last, active: selection === item }"
         (click)="onSelection(item)">
       <std-asset-display

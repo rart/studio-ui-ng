@@ -18,7 +18,8 @@ export function flatten(array: Asset[]): Asset[] {
 export function normalize(model: Asset): Asset {
   if (notNullOrUndefined(model.children)) {
     let nextModel = Asset.deserialize(model);
-    nextModel.children = (<Asset[]>model.children).map(child => child.id);
+    nextModel.children = null;
+    // children ids already set by model class itself on childrenIds prop
     return nextModel;
   }
   return model;
@@ -27,7 +28,7 @@ export function normalize(model: Asset): Asset {
 export function denormalize(model: Asset, table: LookupTable<Asset>): Asset {
   if (notNullOrUndefined(model.children)) {
     let nextModel = Asset.deserialize(model);
-    nextModel.children = (<string[]>model.children).map(child => table[child]);
+    nextModel.children = model.childrenIds.map(child => table[child]);
     return nextModel;
   }
   return model;

@@ -28,6 +28,7 @@
 
 a.crumb.mat-button {
   min-width: 0;
+  @include ellipsis;
   padding: 0 $spacing-tiny;
 }
 

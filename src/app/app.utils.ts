@@ -55,6 +55,20 @@ export function createLocalPagination$<T>
     );
 }
 
+import { Asset } from './models/asset.model';
+import { AssetTypeEnum } from './enums/asset-type.enum';
+export function orderAssetsFoldersFirst(assets: Asset[]) {
+  return assets.sort((a, b) => {
+    if (a.type === AssetTypeEnum.FOLDER && b.type !== AssetTypeEnum.FOLDER) {
+      return -1;
+    } else if (a.type !== AssetTypeEnum.FOLDER && b.type === AssetTypeEnum.FOLDER) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+}
+
 export const asAnonymousSubscription = (unsubscribe: () => void): AnonymousSubscription => {
   return { unsubscribe: unsubscribe };
 };

@@ -1,6 +1,16 @@
-<h2 class="heading">
-  <std-asset-display [id]="id" [showMenu]="false" [showLink]="false" class="icons above"></std-asset-display>
-</h2>
+<header class="header">
+  <h2 class="heading">
+    <std-asset-display
+      [id]="id"
+      [showMenu]="false"
+      [showLink]="false"
+      [showIcons]="false">
+    </std-asset-display>
+  </h2>
+  <button mat-mini-fab color="default" class="options">
+    <mat-icon>more_horizontal</mat-icon>
+  </button>
+</header>
 
 <std-collapsible
   *ngIf="showGeneral"

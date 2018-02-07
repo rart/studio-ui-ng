@@ -49,6 +49,19 @@
   }
 }
 
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.heading {
+  margin: 0;
+}
+
+.options {
+  @include widths(40px);
+}
+
 std-collapsible {
   display: block;
   ::ng-deep {

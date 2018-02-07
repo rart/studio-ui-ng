@@ -27,9 +27,6 @@ export class DirectoryViewComponent extends WithNgRedux implements AfterViewInit
 
   @Output() selectionChange = new Subject();
 
-  @select(['entities', 'assets', 'byId'])
-  ASSETS$;
-
   selection: Asset;
   directory: Asset;
   entries = [];
@@ -99,11 +96,12 @@ export class DirectoryViewComponent extends WithNgRedux implements AfterViewInit
   }
 
   private filesDropped(files) {
+    let asset = this.state.entities.assets.byId[this.id];
     openDialog(this.dialog, UploaderComponent, {
       width: '80vw',
       height: '80vh',
       panelClass: ['no', 'pad', 'dialog', 'uploader'],
-      data: { files, site: '', path: '' }
+      data: { files, site: asset.projectCode, path: asset.url }
     });
   }
 

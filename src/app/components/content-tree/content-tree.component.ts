@@ -10,7 +10,7 @@ import { ExpandedPathsActions } from '../../actions/expanded-paths.actions';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { AssetActions } from '../../actions/asset.actions';
 import { Subject } from 'rxjs/Subject';
-import { notNullOrUndefined } from '../../app.utils';
+import { notNullOrUndefined, orderAssetsFoldersFirst } from '../../app.utils';
 import { denormalize } from '../../reducers/assets.entity.reducer';
 
 @Component({
@@ -64,7 +64,8 @@ export class ContentTreeComponent
       });
 
     this.ngOnChanges$.subscribe(() => {
-      this.fetch(`${this.project.code}:${this.rootPath}`)
+      this
+        .fetch(`${this.project.code}:${this.rootPath}`)
         .then(item => this.rootPathLoaded(item));
     });
 
@@ -138,7 +139,7 @@ export class ContentTreeComponent
       getChildren: (node: TreeNode) => {
         return this
           .fetch((<Asset>node.data).id)
-          .then(item => item.children);
+          .then(item => orderAssetsFoldersFirst(item.children));
       },
       actionMapping: {
         mouse: {
@@ -155,14 +156,21 @@ export class ContentTreeComponent
 
   private rootPathLoaded(asset: Asset) {
 
-    this.rootItem = asset;
+    let copy = Asset.deserialize(asset);
+    if (copy.hasChildren) {
+      copy.children = orderAssetsFoldersFirst(copy.children);
+    }
+
+    this.rootItem = copy;
 
     if (this.showRoot) {
-      this.nodes = [asset];
+      this.nodes = [copy];
     } else {
-      this.nodes = asset.children || [];
+      this.nodes = copy.children || [];
     }
-this.detector.detectChanges();
+
+    this.detector.detectChanges();
+
   }
 
 }
