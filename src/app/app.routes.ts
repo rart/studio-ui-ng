@@ -6,13 +6,13 @@ import { ProjectsResolver } from './services/projects.resolver';
 
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ProjectDashboardComponent } from './components/project/project-dashboard/project-dashboard.component';
-import { UserManagementComponent } from './components/user-management/user-management.component';
+import { UsersComponent } from './components/users/users.component';
 import { NotImplementedComponent } from './components/not-implemented/not-implemented.component';
-import { UserProfileComponent } from './components/user-management/user-profile/user-profile.component';
+import { UserProfileComponent } from './components/users/user-profile/user-profile.component';
 import { ProjectComponent } from './components/project/project.component';
 import { ProjectManagementComponent } from './components/project-management/project-management.component';
 import { PreviewComponent } from './components/preview/preview.component';
-import { UserCrUDComponent } from './components/user-management/user-crud/user-crud.component';
+import { UserFormComponent } from './components/users/user-form/user-form.component';
 import { WorkflowStatesComponent } from './components/workflow-states/workflow-states.component';
 import { EditComponent } from './components/edit/edit.component';
 import { EntryComponent } from './components/entry/entry.component';
@@ -24,6 +24,8 @@ import { PublishReviewComponent } from './components/asset-review/publish-review
 import { ScheduleReviewComponent } from './components/asset-review/schedule-review.component';
 import { DependencyReviewComponent } from './components/asset-review/dependency-review.component';
 import { AssetBrowserComponent } from './components/asset-browser/asset-browser.component';
+import { GroupsComponent } from './components/groups/groups.component';
+import { GroupFormComponent } from './components/groups/group-form/group-form.component';
 
 // Not having as a route requires for it to be added as entry component on AppModule
 // import {ProjectCrUDComponent} from './components/project-management/project-crud/project-crud.component';
@@ -45,7 +47,11 @@ export const routes: Routes = [
       },
       {
         path: 'users',
-        component: UserManagementComponent
+        component: UsersComponent
+      },
+      {
+        path: 'groups',
+        component: GroupsComponent
       },
       {
         path: 'assets',
@@ -53,11 +59,19 @@ export const routes: Routes = [
       },
       {
         path: 'users/create',
-        component: UserCrUDComponent
+        component: UserFormComponent
       },
       {
         path: 'users/edit/:username',
-        component: UserCrUDComponent
+        component: UserFormComponent
+      },
+      {
+        path: 'groups/create',
+        component: GroupFormComponent
+      },
+      {
+        path: 'groups/edit/:id',
+        component: GroupFormComponent
       },
       {
         path: 'organizations',

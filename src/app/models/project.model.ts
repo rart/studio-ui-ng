@@ -20,7 +20,7 @@ export class Project {
     }
     let model = new Project();
     Object.keys(json).forEach(prop => {
-      model[prop] = (prop === 'groups') ? Group.deserialize(json[prop]) : json[prop];
+      model[prop] = (prop === 'groups') ? /*Group.deserialize(json[prop])*/null : json[prop];
     });
     return model;
   }

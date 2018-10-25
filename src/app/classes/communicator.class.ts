@@ -8,6 +8,7 @@ import { WindowMessageScopeEnum } from '../enums/window-message-scope.enum';
 import { OperatorFunction } from 'rxjs/interfaces';
 import { AnySubscriber } from '../../@types/globals/AnyObserver.type';
 import { isNullOrUndefined } from 'util';
+import { fromEvent } from 'rxjs/observable/fromEvent';
 
 interface Msg {
   data: any;
@@ -26,7 +27,7 @@ export abstract class Communicator {
 
     let
       multiCaster = new Subject<WindowMessage>(),
-      messages = Observable.fromEvent(window, 'message')
+      messages = fromEvent(window, 'message')
         .pipe(
           tap((event: Msg) =>
             !this.originAllowed(event.origin) &&

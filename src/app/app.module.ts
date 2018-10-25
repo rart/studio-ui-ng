@@ -78,17 +78,17 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ProjectDashboardComponent } from './components/project/project-dashboard/project-dashboard.component';
 import { NotImplementedComponent } from './components/not-implemented/not-implemented.component';
-import { UserManagementComponent } from './components/user-management/user-management.component';
+import { UsersComponent } from './components/users/users.component';
 import { EmbeddedViewDialogComponent } from './components/embedded-view-dialog/embedded-view-dialog.component';
 import { ViewTitleBarComponent } from './components/view-title-bar/view-title-bar.component';
-import { UserGroupManagerComponent } from './components/user-management/user-group-manager/user-group-manager.component';
-import { UserProfileComponent } from './components/user-management/user-profile/user-profile.component';
+import { UserGroupManagerComponent } from './components/users/user-group-manager/user-group-manager.component';
+import { UserProfileComponent } from './components/users/user-profile/user-profile.component';
 import { ProjectComponent } from './components/project/project.component';
 import { PreviewComponent } from './components/preview/preview.component';
 import { ProjectManagementComponent } from './components/project-management/project-management.component';
-import { PasswordFieldComponent } from './components/user-management/password-field/password-field.component';
+import { PasswordFieldComponent } from './components/users/password-field/password-field.component';
 import { ContentTreeComponent } from './components/content-tree/content-tree.component';
-import { UserCrUDComponent } from './components/user-management/user-crud/user-crud.component';
+import { UserFormComponent } from './components/users/user-form/user-form.component';
 import { ProjectCrUDComponent } from './components/project-management/project-crud/project-crud.component';
 import { ItemListDashletComponent } from './components/project/project-dashboard/item-list-dashlet.component';
 import { ChangeLossDecisionViewComponent, EditComponent } from './components/edit/edit.component';
@@ -111,7 +111,7 @@ import { ProjectEpics } from './epics/project.epics';
 import { ProjectActions } from './actions/project.actions';
 import { AuthGuard } from './auth.guard';
 import { ProjectsResolver } from './services/projects.resolver';
-import { StoreActionsEnum } from './enums/actions.enum';
+import { Actions } from './enums/actions.enum';
 import { rootReducer } from './reducers/root.reducer';
 import { AssetActions } from './actions/asset.actions';
 import { PreviewTabsActions } from './actions/preview-tabs.actions';
@@ -146,6 +146,12 @@ import { CollapsibleComponent } from './components/collapsible/collapsible.compo
 import { DirectoryViewComponent } from './components/directory-view/directory-view.component';
 import { ProjectsViewComponent } from './components/directory-view/projects-view.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
+import { GroupsComponent } from './components/groups/groups.component';
+import { GroupEpics } from './epics/group.epics';
+import { GroupFormComponent } from './components/groups/group-form/group-form.component';
+import { UserListComponent } from './components/users/user-list/user-list.component';
+import { GroupListComponent } from './components/groups/group-list/group-list.component';
+import { UserListPaginatorComponent } from './components/users/user-list-paginator/user-list-paginator.component';
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
@@ -171,7 +177,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     DashboardComponent,
     ProjectDashboardComponent,
     NotImplementedComponent,
-    UserManagementComponent,
+    UsersComponent,
     EmbeddedViewDialogComponent,
     ViewTitleBarComponent,
     UserGroupManagerComponent,
@@ -182,7 +188,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ContentTreeComponent,
     ComponentHostDirective,
     PasswordFieldComponent,
-    UserCrUDComponent,
+    UserFormComponent,
     ProjectCrUDComponent,
     ItemListDashletComponent,
     AssetDisplayComponent,
@@ -223,7 +229,12 @@ export function HttpLoaderFactory(http: HttpClient) {
     CollapsibleComponent,
     DirectoryViewComponent,
     ProjectsViewComponent,
-    SearchBarComponent
+    SearchBarComponent,
+    GroupsComponent,
+    GroupFormComponent,
+    UserListComponent,
+    GroupListComponent,
+    UserListPaginatorComponent
 
   ],
   imports: [
@@ -299,6 +310,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     InterceptorEpics,
     AssetEpics,
     UserEpics,
+    GroupEpics,
 
     ProjectActions,
     AssetActions,
@@ -338,7 +350,7 @@ export class AppModule {
       enhancers);
 
     store.dispatch({
-      type: StoreActionsEnum.STUDIO_INIT
+      type: Actions.STUDIO_INIT
     });
 
   }

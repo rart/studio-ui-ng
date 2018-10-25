@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { StudioHttpService } from './http.service';
 
-const appUrl = environment.appUrl;
+const appUrl = environment.url.app;
 
 @Injectable()
 export class StudioService {

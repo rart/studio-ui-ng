@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { User } from '../../models/user.model';
 import { dispatch, NgRedux, select } from '@angular-redux/store';
-import { UserActions } from '../../actions/user.actions';
+import { login, logout, recover } from '../../actions/user.actions';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { AppState } from '../../classes/app-state.interface';
-import { notNullOrUndefined } from '../../app.utils';
+import { createEmptyUser, notNullOrUndefined } from '../../app.utils';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -20,7 +20,7 @@ export class LoginComponent extends WithNgRedux implements OnInit {
   showRecoverView = false;
 
   remember = false;
-  model: User = new User();
+  model: User = createEmptyUser();
 
   userNameFormControl = new FormControl('', [Validators.required]);
   passwordFormControl = new FormControl('', [Validators.required]);
@@ -49,17 +49,17 @@ export class LoginComponent extends WithNgRedux implements OnInit {
 
   @dispatch()
   login() {
-    return UserActions.login(this.model);
+    return login(this.model);
   }
 
   @dispatch()
   logout() {
-    return UserActions.logout();
+    return logout();
   }
 
   @dispatch()
   recover() {
-    return UserActions.recover(this.model);
+    return recover(this.model);
   }
 
 }

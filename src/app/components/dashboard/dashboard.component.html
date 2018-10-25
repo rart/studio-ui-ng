@@ -1,4 +1,4 @@
-<h1><img class="logo" src="/app/assets/img/logos/flat.png" alt="Crafter Studio"></h1>
+<h1><img class="logo" [src]="logoURL" alt="Crafter Studio"></h1>
 <section class="card layout">
   <mat-card *ngFor="let option of nav" [routerLink]="option.href">
     <i [class]="option.icon"></i>

@@ -1,17 +1,17 @@
 import { Reducer } from 'redux';
-import { StoreActionsEnum } from '../enums/actions.enum';
+import { Actions } from '../enums/actions.enum';
 
 export const auth: Reducer<string> = (state = 'void', action) => {
   switch (action.type) {
-    case StoreActionsEnum.LOGIN:
+    case Actions.LOGIN:
       return 'fetching';
-    case StoreActionsEnum.LOGGED_IN:
+    case Actions.LOGGED_IN:
       return 'validated';
-    case StoreActionsEnum.LOGOUT:
+    case Actions.LOGOUT:
       return 'fetching';
-    case StoreActionsEnum.LOGGED_OUT:
+    case Actions.LOGGED_OUT:
       return 'void';
-    case StoreActionsEnum.SESSION_TIMEOUT:
+    case Actions.SESSION_TIMEOUT:
       return 'timeout';
     default:
       return state;

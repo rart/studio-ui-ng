@@ -5,24 +5,23 @@ import { Asset } from '../models/asset.model';
 import { User } from '../models/user.model';
 import { Group } from '../models/group.model';
 import { Project } from '../models/project.model';
-import { AVATARS } from '../app.utils';
+import { getRandomAvatar } from '../app.utils';
 import { APIParser } from './api-parser.abstract';
 
-export class API3Parser extends APIParser {
+export class API1Parser extends APIParser {
 
   constructor() {
     super();
   }
 
-  protected asset(json: any): Asset {
+  static asset(json: any): Asset {
     let
-      user,
+      user: any = {},
       asset = new Asset(),
       hasLock = (json.lockOwner !== null && json.lockOwner !== undefined && json.lockOwner !== '');
 
     asset.lastEditedBy = null;
     if (json.user !== null && json.user !== undefined) {
-      user = new User();
       user.username = json.user || '';
       user.firstName = json.userFirstName || '';
       user.lastName = json.userLastName || '';
@@ -31,7 +30,6 @@ export class API3Parser extends APIParser {
 
     asset.lockedBy = null;
     if (hasLock) {
-      user = new User();
       user.username = json.lockOwner || '';
       user.firstName = '';
       user.lastName = '';
@@ -45,7 +43,7 @@ export class API3Parser extends APIParser {
       // Get rid of crafter-component.xml
         .filter(jsonItem => jsonItem.name !== 'crafter-component.xml')
         // Convert all children to Asset type
-        .map(itemJSON => this.asset(itemJSON))
+        .map(itemJSON => API1Parser.asset(itemJSON))
       : null;
 
     asset.id = `${json.site}:${json.uri || json.path}`;
@@ -229,57 +227,40 @@ export class API3Parser extends APIParser {
     return asset;
   }
 
-  protected user(json: any): User {
-    let user = new User();
-    user.username = json.username;
-    user.email = json.email;
-    user.firstName = json.first_name;
-    user.lastName = json.last_name;
-    user.managedExternally = json.externally_managed;
-    user.enabled = json.enabled || false;
-    user.projects = [];
-    user.groups = [];
+  static user(json: any): User {
 
-    user.avatarUrl = AVATARS[ Math.floor(Math.random() * AVATARS.length) ];
+    let user: User = {
+      id: json.id,
+      username: json.username,
+      email: json.email,
+      firstName: json.first_name,
+      lastName: json.last_name,
+      externallyManaged: json.externally_managed,
+      enabled: json.enabled || false,
+      avatarUrl: getRandomAvatar(),
+      authenticationType: json.authentication_type || json.authenticationType
+    };
 
     // When fetching a user model, the API returns the groups the
     // user belongs to inside of the project. Instead of the groups that
     // belong to the project. Here, project.groups are set to null and user.groups
     // are set to the project.groups that come from API
-    if (json.projects && json.projects.length) {
-
-      let userGroups = [];
-
-      user.projects = json.projects.map((projectJSON) => {
-        let project = this.project(projectJSON);
-        userGroups = userGroups.concat(
-          projectJSON.groups.map((groupJSON) => {
-            let group = this.group(groupJSON);
-            group.project = project;
-            return group;
-          })
-        );
-        project.groups = null;
-        return project;
-      });
-
-      user.groups = userGroups;
-
-    }
+    // json.projects.forEach((projectJSON) => {
+    //   user.groups.concat(projectJSON.groups.map((groupJSON) => API1Parser.group(groupJSON).id));
+    // });
 
     return user;
   }
 
-  protected group(json: any): Group {
-    let model = new Group();
-    model.id = json.group_id;
-    model.name = json.group_name;
-    model.project = (json.project) ? this.project(json) : undefined;
-    // model.projectCode = (json.project) ? model.project : undefined;
-    return model;
+  static group(json: any): Group {
+    return {
+      id: json.group_id,
+      name: json.group_name,
+      description: json.desc
+    };
   }
 
-  protected project(json: any): Project {
+  static project(json: any): Project {
     let project = new Project();
     project.id = json.id;
     project.code = json.siteId || json.site_id;
@@ -290,14 +271,31 @@ export class API3Parser extends APIParser {
     project.lastCommitId = json.lastCommitId;
     project.publishingEnabled = json.publishingEnabled;
     project.publishingStatusMessage = json.publishingStatusMessage;
-    project.groups = (json.groups && json.groups.length)
+    project.groups = /*(json.groups && json.groups.length)
       ? json.groups.map((groupJSON) => {
-        let group = this.group(groupJSON);
+        let group = API1Parser.group(groupJSON);
         group.project = project;
         return group;
       })
-      : undefined;
+      : */undefined;
     return project;
   }
+
+  protected asset(json: any): Asset {
+    return API1Parser.asset(json);
+  }
+
+  protected group(json: any): Group {
+    return API1Parser.group(json);
+  }
+
+  protected project(json: any): Project {
+    return API1Parser.project(json);
+  }
+
+  protected user(json: any): User {
+    return API1Parser.user(json);
+  }
+
 
 }

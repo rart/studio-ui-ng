@@ -14,6 +14,7 @@ import { Subject } from 'rxjs/Subject';
 import { CommunicationService } from '../../services/communication.service';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ComponentBase } from '../../classes/component-base.class';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'std-iframe',
@@ -80,8 +81,7 @@ export class IFrameComponent extends ComponentBase implements OnInit, OnDestroy,
   navigate(url: string) {
     this.loading$.next(true);
     this.beforeNav.next();
-    this.src = url;
-    this.element.src = url;
+    this.element.src = this.src = (('about:blank' === url) ? url : `${environment.url.preview}${url}`);
   }
 
   reload() {

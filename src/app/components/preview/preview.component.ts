@@ -46,8 +46,8 @@ const clearTimeout = window.clearTimeout;
 const COOKIE = environment.preview.cookie;
 const LANDING_PAGE_TITLE = '** Crafter Studio Preview **';
 const ERROR_PAGE_TITLE = '** Crafter Studio Preview ERROR **';
-const IFRAME_LANDING_URL = '/app/assets/guest.landing.html';
-const IFRAME_ERROR_URL = '/app/assets/guest.500.html';
+const IFRAME_LANDING_URL = '/assets/guest.landing.html';
+const IFRAME_ERROR_URL = '/assets/guest.500.html';
 const IFRAME_LOAD_CONTROL_TIMEOUT = 5000;
 const PROJECT_HOME_PAGE = '/';
 

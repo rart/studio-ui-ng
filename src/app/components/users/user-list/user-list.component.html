@@ -1,0 +1,16 @@
+<div class="ui link divided items">
+  <div
+    class="item"
+    *ngFor="let user of users"
+    (click)="!disabled[user.username] && selected.next(user)"
+    [attr.disabled]="disabled[user.username] ? true : undefined">
+    <div class="ui tiny image">
+      <img [src]="user.avatarUrl" alt="">
+    </div>
+    <div class="content">
+      <div class="header">{{user.firstName}} {{user.lastName}}</div>
+      <div class="meta">{{user.email}}</div>
+      <div class="description">{{user.username}}</div>
+    </div>
+  </div>
+</div>

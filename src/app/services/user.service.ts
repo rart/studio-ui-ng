@@ -3,100 +3,193 @@ import { User } from '../models/user.model';
 import { StudioHttpService } from './http.service';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs/Observable';
-import { combineLatest, map } from 'rxjs/operators';
-import { EntityService } from '../classes/entity-service.interface';
-import { PagedResponse } from '../classes/paged-response.interface';
+import { catchError, map } from 'rxjs/operators';
 import { PostResponse } from '../classes/post-response.interface';
-import { parseEntity } from '../utils/api.utils';
+import { API1Parser } from '../classes/api1-parser.class';
+import { BasicUsersPayload, BulkDeletePayload, DeletePayload } from '../models/service-payloads';
+import { CreateUserPayload, FetchUserPayload, FetchUsersPayload } from '../models/service-payloads';
+import { API2Parser } from '../classes/api2-parser.class';
+import { createEmptyUser } from '../app.utils';
+import { of } from 'rxjs/observable/of';
 
-const baseUrl = `${environment.apiUrl}/user`;
+const baseUrl = `/studio/api/2/users`;
 const security = `${environment.apiUrl}/security`;
 
+function cleanModel(user: User, deleteProps = []) {
+  const body = { ...user };
+  [
+    // Delete props the service doesn't accept.
+    'avatarUrl',
+    'authenticationType',
+    ...deleteProps
+  ].forEach(prop => delete body[prop]);
+  return body;
+}
+
 @Injectable()
-export class UserService implements EntityService<User> {
+export class UserService {
 
   constructor(private http: StudioHttpService) {
 
   }
 
-  all(query?): Observable<User[]> {
+  page(options = { limit: 1000, offset: 0 }): Observable<FetchUsersPayload> {
     return this.http
-      .get(`${baseUrl}/get-all.json`, query)
+      .get(baseUrl, options)
       .pipe(
-        map(data => data.users.map(pojo => <User>parseEntity(User, pojo)))
+        map(({ result: data }) => ({
+          limit: data.limit,
+          offset: data.offset,
+          total: data.total,
+          response: data.response,
+          users: data.entities.map(raw => API2Parser.user(raw))
+        }))
       );
   }
 
-  page(options?): Observable<PagedResponse<User>> {
+  byId(id: number): Observable<FetchUserPayload>;
+  byId(username: string): Observable<FetchUserPayload>;
+  byId(id: string | number): Observable<FetchUserPayload> {
     return this.http
-      .get(`${baseUrl}/get-all.json`, options)
-      .pipe(map(StudioHttpService.mapToPagedResponse('users', User)));
-  }
-
-  by(entityProperty: string, value): Observable<User> {
-    return undefined;
-  }
-
-  byId(username: string): Observable<User> {
-    return this.http
-      .get(`${baseUrl}/get.json`, { username: username })
+      .get(`${baseUrl}/${id}`)
       .pipe(
-        map((userJSON) => <User>parseEntity(User, userJSON)),
-        combineLatest(this.isEnabled(username), (user: User, enabled: boolean) => {
-          user.enabled = enabled;
-          return user;
+        map(({ result: data }) => ({
+          id,
+          user: API2Parser.user(data.entity),
+          response: data.response
+        })),
+        catchError(({ error }) => {
+          const { result: data } = error;
+          return of({
+            id,
+            user: createEmptyUser(typeof id === 'number' ? { id } : { username: id }),
+            response: data.response
+          });
         })
       );
   }
 
-  create(user: User): Observable<PostResponse<User>> {
+  create(user: User): Observable<CreateUserPayload> {
+    const body = cleanModel(user);
     return this.http
-      .post(`${baseUrl}/create.json`, user.export())
-      .pipe(map(StudioHttpService.mapToPostResponse(user)));
+      .post(baseUrl, body)
+      .pipe(
+        map(({ result: data }) => ({
+          user: API2Parser.user(data.entity),
+          response: data.response
+        }))
+      );
   }
 
-  update(user: User): Observable<PostResponse<User>> {
+  update(user: User): Observable<CreateUserPayload> {
+    const body = cleanModel(user);
     return this.http
-      .post(`${baseUrl}/update.json`, user.export())
-      .pipe(map(StudioHttpService.mapToPostResponse(user)));
+      .patch(baseUrl, body)
+      .pipe(
+        map(({ result: data }) => ({
+          user: API2Parser.user(data.entity),
+          response: data.response
+        }))
+      );
   }
 
-  delete(user: User): Observable<PostResponse<User>> {
-    return this.http.post(`${baseUrl}/delete.json`, user.export())
-      .pipe(map(StudioHttpService.mapToPostResponse(user)));
+  delete(id: number): Observable<DeletePayload>;
+  delete(ids: Array<number>): Observable<BulkDeletePayload>;
+  delete(username: string): Observable<DeletePayload>;
+  delete(usernames: Array<string>): Observable<BulkDeletePayload>;
+  delete(id: string | number | Array<string | number>): Observable<DeletePayload | BulkDeletePayload> {
+    let
+      bulk = false,
+      type = typeof id,
+      param: any = {};
+    switch (type) {
+      case 'number':
+        param.id = id;
+        break;
+      case 'string':
+        param.username = id;
+        break;
+      case 'object':
+      default:
+        bulk = true;
+        param = new URLSearchParams();
+        (<Array<any>>id)
+          .forEach((value) => param.append(
+            (typeof value === 'number') ? 'id' : 'username',
+            value)
+          );
+    }
+    return this.http
+      .delete(baseUrl, param)
+      .pipe(
+        map(({ result: data }) => ({
+          response: data.response,
+          ...(
+            bulk
+              ? { ids: (id as Array<string | number>) }
+              : { id: (id as (string | number)) }
+          )
+        }))
+      );
   }
 
-  isEnabled(username): Observable<boolean> {
+  setEnabled(id: number, enabled: boolean): Observable<CreateUserPayload>;
+  setEnabled(username: string, enabled: boolean): Observable<CreateUserPayload>;
+  setEnabled(ids: number[], enabled: boolean): Observable<BasicUsersPayload>;
+  setEnabled(usernames: string[], enabled: boolean): Observable<BasicUsersPayload>;
+  setEnabled(
+    identifiers: string | number | string[] | number[],
+    enabled: boolean
+  ): Observable<CreateUserPayload | BasicUsersPayload> {
+    let
+      type = typeof identifiers,
+      bulk = type === 'object',
+      param: any = {};
+    switch (type) {
+      case 'number':
+        param.userIds = [identifiers];
+        break;
+      case 'string':
+        param.usernames = [identifiers];
+        break;
+      case 'object':
+      default:
+        if (typeof identifiers[0] === 'string') {
+          param.usernames = identifiers;
+        } else {
+          param.userIds = identifiers;
+        }
+    }
     return this.http
-      .get(`${baseUrl}/status.json`, { username: username })
-      .pipe(map((json) => json.enabled));
+      .patch(`${baseUrl}/${enabled ? 'enable' : 'disable'}`, param)
+      .pipe(
+        map(({ result: data }) => {
+          return (bulk) ? {
+            response: data.response,
+            users: data.entities.map(raw => API2Parser.user(raw))
+          } : {
+            response: data.result.response,
+            user: API2Parser.user(data.result.entities[0])
+          };
+        })
+      );
   }
 
-  enable(user: User): Observable<PostResponse<User>> {
+  resetPassword(user: User): Observable<PostResponse<User>> {
     return this.http
-      .post(`${baseUrl}/enable.json`, { username: user.username })
-      .pipe(map(StudioHttpService.mapToPostResponse(user)));
-  }
-
-  disable(user: User): Observable<PostResponse<User>> {
-    return this.http
-      .post(`${baseUrl}/disable.json`, { username: user.username })
-      .pipe(map(StudioHttpService.mapToPostResponse(user)));
-  }
-
-  resetPassword(user: User) {
-    return this.http
-      .post(`${baseUrl}/reset-password.json`, {
+      .post(`/studio/api/1/services/api/1/user/reset-password.json`, {
         'username': user.username,
         'new': user.password
       })
       .pipe(map(StudioHttpService.mapToPostResponse(user)));
   }
 
-  login(user: User) {
+  login(user: User): Observable<User> {
     return this.http
       .post(`${security}/login.json`, user)
-      .pipe(map(response => <User>parseEntity(User, response)));
+      .pipe(
+        map(response => API1Parser.user(response))
+      );
   }
 
   logout() {

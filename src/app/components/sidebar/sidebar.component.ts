@@ -90,10 +90,10 @@ export class SidebarComponent extends WithNgRedux implements OnInit, AfterViewIn
         this.expandedPanels = workspace.expandedPanels;
       });
 
-    this.onProjectChanged$
-      .subscribe((project: Project) => {
-        this.project = project;
-      });
+    // this.onProjectChanged$
+    //   .subscribe((project: Project) => {
+    //     this.project = project;
+    //   });
 
     this.user = this.state.user;
 

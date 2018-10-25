@@ -2,14 +2,12 @@ import { Component, ContentChild, HostBinding, Input, OnChanges, OnInit, Output,
 import { AssetActionEnum, AssetMenuOption, WorkflowService } from '../../services/workflow.service';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { Asset } from '../../models/asset.model';
-import { NgRedux, select } from '@angular-redux/store';
+import { NgRedux } from '@angular-redux/store';
 import { AppState, LookupTable, Settings } from '../../classes/app-state.interface';
 import { AssetActions } from '../../actions/asset.actions';
 import { Router } from '@angular/router';
 import { notNullOrUndefined } from '../../app.utils';
-import { Subscription } from 'rxjs/Subscription';
 import { isNullOrUndefined } from 'util';
-import { SettingsEnum } from '../../enums/Settings.enum';
 import { createPreviewTabCore } from '../../utils/state.utils';
 import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';

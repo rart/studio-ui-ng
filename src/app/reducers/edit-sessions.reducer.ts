@@ -1,6 +1,6 @@
 import { Reducer } from 'redux';
 import { v4 } from 'uuid';
-import { StoreActionsEnum } from '../enums/actions.enum';
+import { Actions } from '../enums/actions.enum';
 import { EditSessions } from '../classes/app-state.interface';
 import { isNullOrUndefined } from 'util';
 
@@ -11,12 +11,12 @@ export const editSessions: Reducer<EditSessions> = (state = {
 }, action) => {
   switch (action.type) {
 
-    case StoreActionsEnum.EDIT_ASSETS: {
+    case Actions.EDIT_ASSETS: {
 
       break;
     }
 
-    case StoreActionsEnum.EDIT_ASSET: {
+    case Actions.EDIT_ASSET: {
       let assetId = action.payload.assetId;
       let projectCode = action.payload.projectCode;
       let existing = Object.values(state.byId).find(session => (
@@ -52,7 +52,7 @@ export const editSessions: Reducer<EditSessions> = (state = {
       }
     }
 
-    case StoreActionsEnum.FETCH_ASSET_FOR_EDIT: {
+    case Actions.FETCH_ASSET_FOR_EDIT: {
       let sessionUUID = action.payload.sessionUUID;
       if (isNullOrUndefined(sessionUUID)) {
         return state;
@@ -69,7 +69,7 @@ export const editSessions: Reducer<EditSessions> = (state = {
       };
     }
 
-    case StoreActionsEnum.ASSET_FETCHED_FOR_EDIT: {
+    case Actions.ASSET_FETCHED_FOR_EDIT: {
       let sessionUUID = action.payload.sessionUUID;
       return {
         ...state,
@@ -84,7 +84,7 @@ export const editSessions: Reducer<EditSessions> = (state = {
       };
     }
 
-    case StoreActionsEnum.UPDATE_EDIT_SESSION: {
+    case Actions.UPDATE_EDIT_SESSION: {
       let session = state.byId[action.payload.id];
       return updateOne(state, {
         ...session,
@@ -93,15 +93,15 @@ export const editSessions: Reducer<EditSessions> = (state = {
       });
     }
 
-    case StoreActionsEnum.PERSIST_SESSION_CHANGES: {
+    case Actions.PERSIST_SESSION_CHANGES: {
       return updateOne(state, { ...action.payload.session, status: 'saving' });
     }
 
-    case StoreActionsEnum.SESSION_CHANGES_PERSISTED: {
+    case Actions.SESSION_CHANGES_PERSISTED: {
       return updateOne(state, { ...action.payload.session, status: 'fetched' });
     }
 
-    case StoreActionsEnum.CHANGE_ACTIVE_EDIT_SESSION: {
+    case Actions.CHANGE_ACTIVE_EDIT_SESSION: {
       let next = action.payload.next;
       return {
         ...state,
@@ -109,7 +109,7 @@ export const editSessions: Reducer<EditSessions> = (state = {
       };
     }
 
-    case StoreActionsEnum.CLOSE_EDIT_SESSION: {
+    case Actions.CLOSE_EDIT_SESSION: {
       let id = action.payload.session.id;
       return {
         ...state,
@@ -123,7 +123,7 @@ export const editSessions: Reducer<EditSessions> = (state = {
       };
     }
 
-    case StoreActionsEnum.EDIT_SESSION_CLOSED: {
+    case Actions.EDIT_SESSION_CLOSED: {
       let id = action.payload.session.id;
       let index = state.order.findIndex(sid => sid === id);
       let nextOrder = state.order.slice(0, index).concat(state.order.slice(index + 1));

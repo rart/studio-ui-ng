@@ -1,0 +1,44 @@
+<div class="sticky header view layout">
+  <std-view-title-bar
+    class="pad all"
+    title="Groups"
+    icon="group"
+    childMax="comfort">
+    <div>
+      <button (click)="fetchGroups()" color="default" mat-fab
+              [attr.aria-label]="'Refresh Groups' | translate">
+        <mat-icon aria-hidden="true">refresh</mat-icon>
+      </button>
+      <button theme="green" hue="600" color="inherit" mat-fab
+              [routerLink]="['/groups/create']"
+              [attr.aria-label]="'Create Group' | translate">
+        <mat-icon aria-hidden="true">add</mat-icon>
+      </button>
+    </div>
+  </std-view-title-bar>
+  <section class="view body">
+
+    <div class="pad all">
+      <mat-card class="pad all" max="readability">
+        <div class="ui link divided items">
+          <div class="item" *ngFor="let group of groups" [routerLink]="['/groups/edit', group.id]">
+            <div class="content">
+              <div class="header">{{group.name}}</div>
+              <div class="meta">{{group.description}}</div>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+
+  </section>
+  <footer>
+    <mat-paginator class="responsive-tight"
+                   (page)="pageChanged($event)"
+                   [length]="numOfGroups"
+                   [pageIndex]="pageIndex"
+                   [pageSize]="pageSize"
+                   [pageSizeOptions]="pageSizeOptions">
+    </mat-paginator>
+  </footer>
+</div>

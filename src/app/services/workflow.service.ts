@@ -7,6 +7,7 @@ import { PostResponse } from '../classes/post-response.interface';
 import { ResponseCodesEnum } from '../enums/response-codes.enum';
 import { parseEntity } from '../utils/api.utils';
 import { isArray } from 'util';
+import { API1Parser } from '../classes/api1-parser.class';
 
 const workflow = `${environment.apiUrl}/workflow`;
 const deployment = `${environment.apiUrl}/deployment`;
@@ -23,13 +24,13 @@ const mappingFn = (data, categorized = true): WorkflowServiceResponse => {
     groups = (data.documents || []).map(group => ({
       label: group.internalName,
       ids: group.children.map(entry => {
-        let asset = <Asset>parseEntity(Asset, entry);
+        let asset = API1Parser.asset(entry);
         assets.push(asset);
         return asset.id;
       })
     }));
   } else {
-    assets = (data.documents || []).map((entry) => <Asset>parseEntity(Asset, entry));
+    assets = (data.documents || []).map((entry) => API1Parser.asset(entry));
   }
   return {
     total: data.total,
@@ -239,7 +240,7 @@ export class WorkflowService {
         map((resp: { result: string }) => {
           if (resp.result.toLowerCase() === 'success') {
             return <PostResponse<{ id, projectCode, processing, workflowStatus }>>{
-              responseCode: ResponseCodesEnum.OK,
+              response: { code: ResponseCodesEnum.OK },
               entity
             };
           } else {

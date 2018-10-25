@@ -9,6 +9,14 @@
       }
     },
     {
+      "iconClass": "fa fa-users",
+      "iconText": "",
+      "label": "Groups",
+      "config": {
+        "href": "/groups"
+      }
+    },
+    {
       "iconClass": "fa fa-briefcase",
       "iconText": "",
       "label": "Projects",

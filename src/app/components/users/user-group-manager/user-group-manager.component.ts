@@ -78,10 +78,10 @@ export class UserGroupManagerComponent implements OnInit, OnChanges {
   }
 
   hasProject(projectCode) {
-    if (this.user && this.user.projects) {
-      const result = this.user.projects.filter((project) => project.code === projectCode);
-      return result.length > 0;
-    }
+    // if (this.user && this.user.projects) {
+    //   const result = this.user.projects.filter((project) => project.code === projectCode);
+    //   return result.length > 0;
+    // }
     return false;
   }
 
@@ -91,7 +91,7 @@ export class UserGroupManagerComponent implements OnInit, OnChanges {
 
   findProjectInUser(project) {
     let user = this.user,
-      userProjects = user.projects;
+      userProjects = []; // user.projects;
     for (let i = 0, l = userProjects.length; i < l; ++i) {
       if (userProjects[i].code === project.code) {
         return userProjects[i];
@@ -105,7 +105,7 @@ export class UserGroupManagerComponent implements OnInit, OnChanges {
 
   getUserGroupsByProject(project) {
     let user = this.user,
-      userGroups = user.groups;
+      userGroups = []; // user.groups;
     if (!userGroups || userGroups.length === 0) {
       return [];
     } else {
@@ -117,7 +117,7 @@ export class UserGroupManagerComponent implements OnInit, OnChanges {
   getUserNotAMemberGroupsByProject(project) {
     let
       user = this.user,
-      userGroups = user.groups,
+      userGroups = [], // user.groups,
       projectGroups = project.groups;
     if (userGroups && projectGroups && userGroups.length && projectGroups.length) {
       let groupsNotMemeberOf = [],
@@ -143,8 +143,8 @@ export class UserGroupManagerComponent implements OnInit, OnChanges {
 
   addToGroup(project, group, silent = false) {
     let user = this.user;
-    user.groups.push(group);
-    user.projects.push(project);
+    // user.groups.push(group);
+    // user.projects.push(project);
     this.setNotAMemberGroupByProject();
     this.trackChange(ChangeType.Add, project.code, group.name, silent);
   }
@@ -152,12 +152,12 @@ export class UserGroupManagerComponent implements OnInit, OnChanges {
   removeFromGroup(project, group, silent = false) {
 
     let user = this.user,
-      userProjects = user.projects;
+      userProjects = []; // user.projects;
 
-    let newGroups = user.groups.filter((userGroup) => {
+    let newGroups = []; /*user.groups.filter((userGroup) => {
       return (userGroup.name !== group.name) ||
         (userGroup.project.code !== project.code);
-    });
+    });*/
 
     let stillBelongsToProject = false;
     for (let i = 0, l = newGroups.length; i < l; ++i) {
@@ -168,11 +168,11 @@ export class UserGroupManagerComponent implements OnInit, OnChanges {
     }
 
     if (!stillBelongsToProject) {
-      user.projects = user.projects.filter((userProject) =>
-        userProject.code !== project.code);
+      // user.projects = user.projects.filter((userProject) =>
+      //   userProject.code !== project.code);
     }
 
-    user.groups = newGroups;
+    // user.groups = newGroups;
     this.setNotAMemberGroupByProject();
     this.trackChange(ChangeType.Remove, project.code, group.name, silent);
 

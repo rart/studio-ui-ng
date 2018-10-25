@@ -2,7 +2,7 @@ import { isNullOrUndefined, isString } from 'util';
 import { v4 as uuid } from 'uuid';
 import {
   EntityLookupTable,
-  LookupTable,
+  LookupTable, ModelState,
   PreviewTab,
   PreviewTabCore,
   PreviewTabHistory,
@@ -10,6 +10,8 @@ import {
   Workspace
 } from '../classes/app-state.interface';
 import { notNullOrUndefined } from '../app.utils';
+import { APIResponse } from '../models/service-payloads';
+import { Actions } from '../enums/actions.enum';
 
 const DEFAULT_TAB_TITLE = '...';
 
@@ -154,3 +156,16 @@ export const createProjectState =
     expandedPanels,
     expandedPaths
   });
+
+export function popActionResult<T extends ModelState = ModelState>(state: T, key: string): T {
+  const results = { ...state.results };
+  delete results[key];
+  return {
+    ...(state as any),
+    results
+  };
+}
+
+export function createCompoundKey(actionType: string, ...modifiers: Array<string | number>): string {
+  return `${actionType}${modifiers.map(m => `[${m}]`).join('')}`;
+}

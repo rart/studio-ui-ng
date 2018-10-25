@@ -20,6 +20,7 @@ import { ProjectActions } from '../../../actions/project.actions';
 import { PreviewTabsActions } from '../../../actions/preview-tabs.actions';
 import { createPreviewTabCore } from '../../../utils/state.utils';
 import { AssetActions } from '../../../actions/asset.actions';
+import { of } from 'rxjs/observable/of';
 
 type Format = 'modern' | 'table';
 type ItemResponseFormat = 'categorized' | 'simple';
@@ -254,7 +255,7 @@ export class ItemListDashletComponent extends WithNgRedux implements OnInit, OnC
           values = assets.map(asset => asset.id);
         }
         this.dispatch(this.assetActions.fetchedMany(assets));
-        this.collection = Observable.of(values);
+        this.collection = of(values);
         this.afterItemsFetched(values);
         this.itemsFetching = false;
       });

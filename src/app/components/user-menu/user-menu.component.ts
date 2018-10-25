@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { dispatch, select } from '@angular-redux/store';
-import { UserActions } from '../../actions/user.actions';
+import { logout } from '../../actions/user.actions';
 import { User } from '../../models/user.model';
 import { Observable } from 'rxjs/Observable';
 import { TranslateService } from '@ngx-translate/core';
@@ -35,7 +35,7 @@ export class UserMenuComponent implements OnInit {
 
   @dispatch()
   logout() {
-    return UserActions.logout();
+    return logout();
   }
 
 }

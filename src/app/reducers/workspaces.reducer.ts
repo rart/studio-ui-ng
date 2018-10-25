@@ -1,6 +1,6 @@
 import { AnyAction, combineReducers, Reducer } from 'redux';
 
-import { StoreActionsEnum } from '../enums/actions.enum';
+import { Actions } from '../enums/actions.enum';
 import { Workspaces, Workspace } from '../classes/app-state.interface';
 import { previewTabs } from './preview-tabs.reducer';
 import { selectedItems } from './selected-items.reducer';
@@ -22,10 +22,10 @@ export const workspaces: Reducer<Workspaces> =
   (state = {}, action: AnyAction) => {
     switch (action.type) {
 
-      case StoreActionsEnum.SELECT_PROJECT:
+      case Actions.SELECT_PROJECT:
         return createProjectStateIfUndefined(state, action.code);
 
-      case StoreActionsEnum.STUDIO_INIT:
+      case Actions.STUDIO_INIT:
         let
           hasChanged = false,
           next = Object.keys(state)
@@ -84,7 +84,7 @@ function getUndefinedStateErrorMessage(key, action) {
 }
 
 // switch (action.type) {
-//   case StoreActionsEnum.SELECT_PROJECT:
+//   case Actions.SELECT_PROJECT:
 //     let
 //       nextState = state,
 //       projectCode = action.code;

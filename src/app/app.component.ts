@@ -2,7 +2,6 @@ import { Router } from '@angular/router';
 import { Component, HostBinding } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
-import { Subject } from 'rxjs/Subject';
 import { interval } from 'rxjs/observable/interval';
 import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
 

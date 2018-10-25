@@ -1,38 +1,108 @@
-import { AppState } from '../classes/app-state.interface';
-import { SignedAction } from '../classes/signed-action.interface';
-import { StoreActionsEnum } from '../enums/actions.enum';
+import { Actions } from '../enums/actions.enum';
 import { User } from '../models/user.model';
+import { AppAction } from '../models/app-action';
+import {
+BulkDeletePayload,
+CreateUserPayload,
+DeletePayload,
+FetchUserPayload,
+FetchUsersPayload
+} from '../models/service-payloads';
 
-const affects: Array<keyof AppState> = ['user', 'auth'];
+export function login(user: User): AppAction {
+  return { type: Actions.LOGIN, payload: { user } };
+}
 
-export class UserActions {
+export function loginComplete(user: User): AppAction {
+  return { type: Actions.LOGGED_IN, payload: { user } };
+}
 
-  static login(user: User): SignedAction {
-    return { affects, type: StoreActionsEnum.LOGIN, payload: { user } };
-  }
+export function logout(): AppAction {
+  return { type: Actions.LOGOUT };
+}
 
-  static loggedIn(user: User): SignedAction {
-    return { affects, type: StoreActionsEnum.LOGGED_IN, payload: { user } };
-  }
+export function logoutComplete(): AppAction {
+  return { type: Actions.LOGGED_OUT };
+}
 
-  static logout(): SignedAction {
-    return { affects, type: StoreActionsEnum.LOGOUT };
-  }
+export function timeout(): AppAction {
+  return { type: Actions.SESSION_TIMEOUT };
+}
 
-  static loggedOut(): SignedAction {
-    return { affects, type: StoreActionsEnum.LOGGED_OUT };
-  }
+export function recover(user: User): AppAction {
+  return { type: Actions.RECOVER_PASSWORD, payload: { user } };
+}
 
-  static timeout(): SignedAction {
-    return { affects, type: StoreActionsEnum.SESSION_TIMEOUT };
-  }
+export function recoverComplete(user: User): AppAction {
+  return { type: Actions.RECOVER_PASSWORD, payload: { user } };
+}
 
-  static recover(user: User) {
-    return { affects, type: StoreActionsEnum.RECOVER_PASSWORD, payload: { user } };
-  }
+export function createUser(user: User): AppAction {
+  return {
+    type: Actions.CREATE_USER,
+    payload: { user }
+  };
+}
 
-  static recovered(user: User) {
-    return { affects, type: StoreActionsEnum.RECOVER_PASSWORD, payload: { user } };
-  }
+export function createUserComplete(response: CreateUserPayload): AppAction<CreateUserPayload> {
+  return {
+    type: Actions.CREATE_USER_COMPLETE,
+    payload: response
+  };
+}
 
+export function updateUser(user: User): AppAction {
+  return {
+    type: Actions.UPDATE_USER,
+    payload: { user }
+  };
+}
+
+export function updateUserComplete(response: CreateUserPayload): AppAction<CreateUserPayload> {
+  return {
+    type: Actions.UPDATE_USER_COMPLETE,
+    payload: response
+  };
+}
+
+export function deleteUser(idOrUsername: string | number) {
+  return {
+    type: Actions.DELETE_USER,
+    payload: { id: idOrUsername }
+  };
+}
+
+export function deleteUserComplete(response: DeletePayload | BulkDeletePayload) {
+  return {
+    type: Actions.DELETE_USER_COMPLETE,
+    payload: response
+  };
+}
+
+export function fetchUser(idOrUsername: string | number): AppAction<{ id: string | number }> {
+  return {
+    type: Actions.FETCH_USER,
+    payload: { id: idOrUsername }
+  };
+}
+
+export function fetchUserComplete(response: FetchUserPayload): AppAction<FetchUserPayload> {
+  return {
+    type: Actions.FETCH_USER_COMPLETE,
+    payload: response
+  };
+}
+
+export function fetchUsers(query?: Object): AppAction<{ query }> {
+  return {
+    type: Actions.FETCH_USERS,
+    payload: { query }
+  };
+}
+
+export function fetchUsersComplete(response: FetchUsersPayload): AppAction<FetchUsersPayload> {
+  return {
+    type: Actions.FETCH_USERS_COMPLETE,
+    payload: response
+  };
 }

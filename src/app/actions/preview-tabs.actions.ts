@@ -1,6 +1,6 @@
 import { AnyAction } from 'redux';
 import { Injectable } from '@angular/core';
-import { StoreActionsEnum } from '../enums/actions.enum';
+import { Actions } from '../enums/actions.enum';
 import { AppState, PreviewTabCore } from '../classes/app-state.interface';
 import { Router } from '@angular/router';
 import { NgRedux } from '@angular-redux/store';
@@ -25,7 +25,7 @@ export class PreviewTabsActions {
 
   nav(tab: PreviewTabCore): AnyAction {
     return this.process({
-      type: StoreActionsEnum.NAVIGATE_ON_ACTIVE,
+      type: Actions.NAVIGATE_ON_ACTIVE,
       affects,
       tab
     });
@@ -33,7 +33,7 @@ export class PreviewTabsActions {
 
   open(tab: PreviewTabCore): AnyAction {
     return this.process({
-      type: StoreActionsEnum.OPEN_TAB,
+      type: Actions.OPEN_TAB,
       affects,
       tab
     });
@@ -41,7 +41,7 @@ export class PreviewTabsActions {
 
   openMany(tabs: PreviewTabCore[]): AnyAction {
     return this.process({
-      type: StoreActionsEnum.OPEN_TABS,
+      type: Actions.OPEN_TABS,
       payload: tabs,
       affects
     });
@@ -49,7 +49,7 @@ export class PreviewTabsActions {
 
   openInBackground(tab: PreviewTabCore): AnyAction {
     return this.process({
-      type: StoreActionsEnum.OPEN_TAB_BACKGROUND,
+      type: Actions.OPEN_TAB_BACKGROUND,
       affects,
       tab
     });
@@ -57,7 +57,7 @@ export class PreviewTabsActions {
 
   openManyInBackground(tabs: PreviewTabCore[]): AnyAction {
     return this.process({
-      type: StoreActionsEnum.OPEN_TABS_BACKGROUND,
+      type: Actions.OPEN_TABS_BACKGROUND,
       payload: tabs,
       affects
     });
@@ -65,7 +65,7 @@ export class PreviewTabsActions {
 
   close(id: string): AnyAction {
     return this.process({
-      type: StoreActionsEnum.CLOSE_TAB,
+      type: Actions.CLOSE_TAB,
       affects,
       id
     });
@@ -73,7 +73,7 @@ export class PreviewTabsActions {
 
   select(id: string): AnyAction {
     return this.process({
-      type: StoreActionsEnum.SELECT_TAB,
+      type: Actions.SELECT_TAB,
       affects,
       id
     });
@@ -81,21 +81,21 @@ export class PreviewTabsActions {
 
   checkIn(tab: PreviewTabCore): AnyAction {
     return this.process({
-      type: StoreActionsEnum.GUEST_CHECK_IN,
+      type: Actions.GUEST_CHECK_IN,
       tab
     });
   }
 
   back(id: string) {
     return this.process({
-      type: StoreActionsEnum.TAB_NAVIGATE_BACK,
+      type: Actions.TAB_NAVIGATE_BACK,
       id
     });
   }
 
   forward(id: string) {
     return this.process({
-      type: StoreActionsEnum.TAB_NAVIGATE_FORWARD,
+      type: Actions.TAB_NAVIGATE_FORWARD,
       id
     });
   }

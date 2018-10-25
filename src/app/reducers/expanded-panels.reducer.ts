@@ -1,5 +1,5 @@
 import { Reducer } from 'redux';
-import { StoreActionsEnum } from '../enums/actions.enum';
+import { Actions } from '../enums/actions.enum';
 import { isNullOrUndefined } from 'util';
 
 const addOne = (state, key) => {
@@ -20,19 +20,19 @@ const removeOne = (state, key) => {
 export const expandedPanels: Reducer<{ [key: string]: boolean }> = (state = {}, action) => {
   switch (action.type) {
 
-    case StoreActionsEnum.EXPAND_PANEL:
+    case Actions.EXPAND_PANEL:
       return addOne(state, action.key);
 
-    case StoreActionsEnum.COLLAPSE_PANEL:
+    case Actions.COLLAPSE_PANEL:
       return removeOne(state, action.key);
 
-    case StoreActionsEnum.EXPAND_PANELS:
+    case Actions.EXPAND_PANELS:
       return action.keys.reduce((nextState, key) => {
         nextState[key] = true;
         return nextState;
       }, { ...state });
 
-    case StoreActionsEnum.COLLAPSE_PANELS: {
+    case Actions.COLLAPSE_PANELS: {
       return action.keys.reduce((nextState, key) => {
         delete nextState[key];
         return nextState;

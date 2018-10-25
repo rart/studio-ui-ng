@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Inject, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/forkJoin';
+
 import { AppState, EditSession, EditSessions, LookupTable } from '../../classes/app-state.interface';
 import { dispatch, NgRedux, select } from '@angular-redux/store';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
@@ -16,6 +16,8 @@ import { Subject } from 'rxjs/Subject';
 import { AssetTypeEnum } from '../../enums/asset-type.enum';
 import { PluginHostComponent } from '../plugin-host/plugin-host.component';
 import { isNullOrUndefined } from 'util';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { merge } from 'rxjs/observable/merge';
 
 @Component({
   selector: 'std-edit',
@@ -96,8 +98,7 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
 
         // Find if any of these are already loaded and get them
         // out of the list assets to merge
-        Observable
-          .merge(...observables)
+        merge(...observables)
           .pipe(takeUntil(terminator))
           .subscribe((asset: Asset) => {
             query = query.filter(dataMap =>
@@ -109,8 +110,7 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
           // Only fetch the items that aren't already loaded
           terminator.next();
           terminator.complete();
-          Observable
-            .forkJoin(observables)
+          forkJoin(observables)
             .subscribe(assets => {
               this.assets = assets.reduce((oMap: any, asset: Asset) => {
                 oMap[asset.id] = asset;

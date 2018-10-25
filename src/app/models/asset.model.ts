@@ -1,9 +1,10 @@
-import { User, UserProps } from './user.model';
+import { User } from './user.model';
 import { WorkflowStatusEnum } from '../enums/workflow-status.enum';
 import { AssetTypeEnum } from '../enums/asset-type.enum';
 import { MimeTypeEnum } from '../enums/mime-type.enum';
 import { notNullOrUndefined } from '../app.utils';
 import { isNullOrUndefined } from 'util';
+import { API1Parser } from '../classes/api1-parser.class';
 
 interface RenderingTemplate {
   name: 'DEFAULT' | 'MOBILE';
@@ -67,12 +68,12 @@ export class Asset {
       });
     }
     model.numOfChildren = json.numOfChildren;
-    model.lockedBy = (json.lockedBy instanceof User)
+    model.lockedBy = ('externally_managed' in json.lockedBy)
       ? json.lockedBy
-      : User.deserialize(json.lockedBy);
-    model.lastEditedBy = (json.lastEditedBy instanceof User)
+      : API1Parser.user(json.lockedBy);
+    model.lastEditedBy = ('externally_managed' in json.lastEditedBy)
       ? json.lastEditedBy
-      : User.deserialize(json.lastEditedBy);
+      : API1Parser.user(json.lockedBy);
     model.lastEditedOn = json.lastEditedOn;
     model.publishedOn = json.publishedOn;
     model.type = json.type;

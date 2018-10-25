@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { delay, map, switchMap, combineLatest } from 'rxjs/operators';
+import { map, switchMap, combineLatest } from 'rxjs/operators';
 import { StudioHttpService } from './http.service';
 import { Asset } from '../models/asset.model';
 import { Observable } from 'rxjs/Observable';
-import { parseEntity } from '../utils/api.utils';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { LookupTable } from '../classes/app-state.interface';
-import { of } from 'rxjs/observable/of';
 import { PublishingChannel } from '../models/publishing-channel.model';
+import { API1Parser } from '../classes/api1-parser.class';
 
 const content = `${environment.apiUrl}/content`;
 const dependency = `${environment.apiUrl}/dependency`;
@@ -51,7 +50,7 @@ export class ContentService {
     return this.http
       .get(`${content}/get-items-tree.json`, { ...extract(uid), depth })
       .pipe(
-        map(response => <Asset>parseEntity(Asset, response.item))
+        map(response => API1Parser.asset(response.item))
       );
   }
 
@@ -79,7 +78,7 @@ export class ContentService {
           unlock: `${unlock}`
         }
       }).pipe(
-        map(data => <Asset>parseEntity(Asset, data.result.message))
+        map(data => API1Parser.asset(data.result.message))
       );
   }
 
@@ -127,7 +126,7 @@ export class ContentService {
       }
     }).pipe(switchMap((response: API3DependenciesResponse) => {
 
-      let parsedItems: Asset[] = response.items.map(item => <Asset>parseEntity(Asset, item));
+      let parsedItems: Asset[] = response.items.map(item => API1Parser.asset(item));
 
       let answer: DependantsResponse = {
         entries: parsedItems.map((asset) => ({
@@ -227,7 +226,7 @@ export class ContentService {
           let answer = { entries: [], assetLookup: {}, historyLookup: {} };
 
           histories.forEach(response => {
-            let asset = <Asset>parseEntity(Asset, response.item);
+            let asset = API1Parser.asset(response.item);
             let versions = <AssetHistoryItem[]>response.versions.map(v => ({
               comment: v.comment,
               modifiedOn: v.lastModifiedDate,

@@ -4,7 +4,7 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Asset } from '../../models/asset.model';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { AppState } from '../../classes/app-state.interface';
-import { notNullOrUndefined } from '../../app.utils';
+import { fullName, notNullOrUndefined } from '../../app.utils';
 import { filter, takeUntil } from 'rxjs/operators';
 import { merge } from 'rxjs/observable/merge';
 import { TranslateService } from '@ngx-translate/core';
@@ -54,7 +54,7 @@ export class InfoSheetComponent extends WithNgRedux implements OnChanges {
               { label: now('Url'), value: asset.url },
               { label: now('State'), value: asset.workflowStatus },
               asset.lastEditedOn ? { label: now('Last Edit On'), value: m(<any>asset.lastEditedOn).from(m()) } : null,
-              asset.lastEditedBy ? { label: now('Last Edit by'), value: asset.lastEditedBy.name } : null,
+              asset.lastEditedBy ? { label: now('Last Edit by'), value: fullName(asset.lastEditedBy) } : null,
               asset.contentModelId ? { label: now('Content Model'), value: asset.contentModelId } : null,
               asset.publishedOn ? { label: now('Published on'), value: m(<any>asset.publishedOn).from(m()) } : null
             ].filter(x => notNullOrUndefined(x));

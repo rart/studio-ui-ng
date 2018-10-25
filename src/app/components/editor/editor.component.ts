@@ -17,7 +17,6 @@ import {
   takeUntil,
   withLatestFrom
 } from 'rxjs/operators';
-import 'rxjs/add/observable/combineLatest';
 import { dispatch, NgRedux, select } from '@angular-redux/store';
 
 import { Asset } from '../../models/asset.model';
@@ -38,6 +37,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { CommunicationService } from '../../services/communication.service';
 import { notNullOrUndefined } from '../../app.utils';
 import { WindowMessageTopicEnum } from '../../enums/window-message-topic.enum';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 
 const COOKIE = environment.preview.cookie;
 
@@ -98,7 +98,7 @@ export class EditorComponent extends WithNgRedux implements OnInit, AfterViewIni
   // The code editor libs (monaco/ace) have finished loading successfully.
   editorLibsLoaded$ = new BehaviorSubject(false);
   // compile
-  loading$ = Observable.combineLatest(
+  loading$ = combineLatest(
     this.sessionLoaded$,
     this.contentLoaded$,
     this.assetLoaded$,
