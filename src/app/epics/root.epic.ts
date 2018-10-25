@@ -6,6 +6,7 @@ import { isArray } from 'util';
 import { InterceptorEpics } from './interceptor.epics';
 import { AssetEpics } from './asset.epics';
 import { UserEpics } from './user.epics';
+import { GroupEpics } from './group.epics';
 
 @Injectable()
 export class RootEpic {
@@ -23,7 +24,8 @@ export class RootEpic {
   constructor(private projectEpics: ProjectEpics,
               private interceptor: InterceptorEpics,
               private assetEpics: AssetEpics,
-              private userEpics: UserEpics) {
+              private userEpics: UserEpics,
+              private groupEpics: GroupEpics) {
 
   }
 
@@ -32,6 +34,7 @@ export class RootEpic {
       ...this.projectEpics.epics(),
       ...this.assetEpics.epics(),
       ...this.userEpics.epics(),
+      ...this.groupEpics.epics(),
       ...this.interceptor.epics()
     ]);
   }

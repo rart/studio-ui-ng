@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ignoreElements } from 'rxjs/operators';
-import { StoreActionsEnum } from '../enums/actions.enum';
+import { Actions } from '../enums/actions.enum';
 import { RootEpic } from './root.epic';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PreviewTabCore } from '../classes/app-state.interface';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { BaseEpic } from './base-epic';
+import { never } from 'rxjs/observable/never';
 
 @Injectable()
 export class InterceptorEpics extends BaseEpic {
@@ -22,30 +21,26 @@ export class InterceptorEpics extends BaseEpic {
 
   private navigation = RootEpic.createEpic(
     [
-      StoreActionsEnum.NAVIGATE_ON_ACTIVE,
-      StoreActionsEnum.OPEN_TAB,
-      StoreActionsEnum.OPEN_TABS
+      Actions.NAVIGATE_ON_ACTIVE,
+      Actions.OPEN_TAB,
+      Actions.OPEN_TABS
     ],
     (tab: PreviewTabCore) => {
       let router = this.router;
       if (!router.url.includes('/preview')) {
         router.navigate([`/preview`]);
       }
-      return EmptyObservable
-        .create()
-        .pipe(ignoreElements());
+      return never();
     });
 
   private editAsset = RootEpic.createEpic(
-    StoreActionsEnum.EDIT_ASSET,
+    Actions.EDIT_ASSET,
     () => {
       let router = this.router;
       if (!router.url.includes('/edit')) {
         router.navigate([`/edit`]);
       }
-      return EmptyObservable
-        .create()
-        .pipe(ignoreElements());
+      return never();
     });
 
 }

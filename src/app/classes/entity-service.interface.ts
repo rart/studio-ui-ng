@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Observable';
-import { PostResponse } from './post-response.interface';
+import { BulkPostResponse, PostResponse } from './post-response.interface';
 import { PagedResponse } from './paged-response.interface';
 
 export interface EntityService<T> {
@@ -9,5 +9,5 @@ export interface EntityService<T> {
   by(entityProperty: string, value): Observable<T>;
   create(entity: T): Observable<PostResponse<T>>;
   update(entity: T): Observable<PostResponse<T>>;
-  delete(entity: T): Observable<PostResponse<T>>;
+  delete(entity: T): Observable<PostResponse<T> | BulkPostResponse<T>>;
 }

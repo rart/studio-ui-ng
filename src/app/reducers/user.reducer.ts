@@ -1,23 +1,16 @@
 import { Reducer } from 'redux';
-import { StoreActionsEnum } from '../enums/actions.enum';
+import { Actions } from '../enums/actions.enum';
 import { User } from '../models/user.model';
 
 export const user: Reducer<User> = (state = null, action) => {
   switch (action.type) {
-    case StoreActionsEnum.STUDIO_INIT: {
-      return (state instanceof User)
-        ? state
-        : (state)
-          ? User.deserialize(state)
-          : state;
-    }
-    case StoreActionsEnum.LOGGED_IN:
+    case Actions.LOGGED_IN:
       return action.payload.user;
-    case StoreActionsEnum.LOGGED_OUT:
+    case Actions.LOGGED_OUT:
       return null;
-    // case StoreActionsEnum.LOGIN:
-    // case StoreActionsEnum.LOGOUT:
-    // case StoreActionsEnum.SESSION_TIMEOUT:
+    // case Actions.LOGIN:
+    // case Actions.LOGOUT:
+    // case Actions.SESSION_TIMEOUT:
     default:
       return state;
   }

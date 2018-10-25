@@ -1,5 +1,5 @@
 import { Reducer } from 'redux';
-import { StoreActionsEnum } from '../enums/actions.enum';
+import { Actions } from '../enums/actions.enum';
 
 const cleanse =
   (state) => Object.keys(state)
@@ -9,19 +9,19 @@ const cleanse =
 export const expandedPaths: Reducer<any> = (state: any = {}, action) => {
   let nextState = Object.assign({}, state);
   switch (action.type) {
-    case StoreActionsEnum.EXPAND_PATH: {
+    case Actions.EXPAND_PATH: {
       nextState[action.key] = true;
       break;
     }
-    case StoreActionsEnum.COLLAPSE_PATH: {
+    case Actions.COLLAPSE_PATH: {
       delete nextState[action.key];
       break;
     }
-    case StoreActionsEnum.EXPAND_PATHS: {
+    case Actions.EXPAND_PATHS: {
       action.keys.forEach(key => nextState[key] = true);
       break;
     }
-    case StoreActionsEnum.COLLAPSE_PATHS: {
+    case Actions.COLLAPSE_PATHS: {
       action.keys.forEach(key => delete nextState[key]);
       break;
     }

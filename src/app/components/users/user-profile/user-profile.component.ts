@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { dispatch, select } from '@angular-redux/store';
-import { UserActions } from '../../../actions/user.actions';
+import { logoutComplete } from '../../../actions/user.actions';
 import { ColorsEnum } from '../../../enums/colors.enum';
 import { Observable } from 'rxjs/Observable';
 import { Settings } from '../../../classes/app-state.interface';
@@ -54,7 +54,7 @@ export class UserProfileComponent extends ComponentBase implements OnInit {
 
   @dispatch()
   logout() {
-    return UserActions.loggedOut();
+    return logoutComplete();
   }
 
   @dispatch()

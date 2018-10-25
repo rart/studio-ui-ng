@@ -1,6 +1,6 @@
 import { Reducer } from 'redux';
 import { Settings } from '../classes/app-state.interface';
-import { StoreActionsEnum } from '../enums/actions.enum';
+import { Actions } from '../enums/actions.enum';
 
 // TODO: Should this really be in the state?
 const DEFAULTS: Settings = {
@@ -25,22 +25,22 @@ const DEFAULTS: Settings = {
 
 export const settings: Reducer<Settings> = (state = DEFAULTS, action) => {
   switch (action.type) {
-    case StoreActionsEnum.UPDATE_SETTINGS:
+    case Actions.UPDATE_SETTINGS:
       return {
         ...state,
         ...action.payload
       };
-    case StoreActionsEnum.UPDATE_SETTING:
+    case Actions.UPDATE_SETTING:
       return {
         ...state,
         [action.payload.key]: action.payload.value
       };
-    case StoreActionsEnum.TOGGLE_SIDEBAR:
+    case Actions.TOGGLE_SIDEBAR:
       return {
         ...state,
         navBarShown: !state.navBarShown
       };
-    case StoreActionsEnum.TOGGLE_SIDEBAR_FOLD:
+    case Actions.TOGGLE_SIDEBAR_FOLD:
       return {
         ...state,
         navBarMinimised: !state.navBarMinimised

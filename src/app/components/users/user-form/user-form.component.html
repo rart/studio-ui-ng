@@ -1,5 +1,5 @@
 <div class="sticky header view layout">
-  <std-view-title-bar class="pad all" back="/users" [title]="editMode ? (model.name) : 'Create User'">
+  <std-view-title-bar class="pad all" back="/users" [title]="editMode ? 'Edit User' : 'Create User'">
     <ng-container *ngIf="editMode">
       <button mat-fab color="warn" [matMenuTriggerFor]="deleteConfirm" [attr.aria-label]="'Delete User' | translate">
         <mat-icon class="white text">delete</mat-icon>
@@ -7,12 +7,15 @@
     </ng-container>
   </std-view-title-bar>
   <div class="view body pad all">
-    <mat-card class="stretch min height ensure pad none" max="comfort">
+    <std-spinner class="absolute position full with height cover" *ngIf="loading">
+      {{loadingMessage}}&hellip;
+    </std-spinner>
+    <mat-card *ngIf="!loading" class="stretch min height ensure pad none" max="comfort">
       <mat-tab-group [dynamicHeight]="true" [(selectedIndex)]="selectedTabIndex">
         <mat-tab i18n-label label="Basic Information">
 
           <!-- Read only user view -->
-          <div class="tab-content pad x" *ngIf="model.managedExternally">
+          <div class="tab-content pad x" *ngIf="model.externallyManaged">
 
             <div class="ui icon message">
               <i class="info icon"></i>
@@ -50,16 +53,15 @@
           </div>
 
           <!-- User edit form -->
-          <div class="tab-content pad x"  *ngIf="!model.managedExternally">
+          <div class="tab-content pad x"  *ngIf="!model.externallyManaged">
 
             <div class="mat-form-fields">
 
               <div class="two">
-                <div *ngIf="editMode">
-                  <div><strong translate>Username</strong></div> <span>{{model.username}}</span>
-                </div>
-                <mat-form-field *ngIf="!editMode">
-                  <input matInput i18n-placeholder placeholder="Username"
+                <mat-form-field>
+                  <input matInput
+                         i18n-placeholder
+                         placeholder="Username"
                          [(ngModel)]="model.username"
                          [formControl]="userNameFormControl">
                   <mat-error translate *ngIf="userNameFormControl.hasError('required')">
@@ -124,7 +126,7 @@
               </div>
 
               <div *ngIf="editMode" class="two">
-                <div><mat-checkbox translate [(ngModel)]="model.enabled" (change)="enabledChanged($event.checked)">Enabled</mat-checkbox></div>
+                <div><mat-checkbox translate [(ngModel)]="model.enabled">Enabled</mat-checkbox></div>
                 <div></div>
               </div>
 
@@ -133,7 +135,7 @@
           </div>
 
         </mat-tab>
-        <mat-tab i18n-label label="Password Management" [disabled]="!editMode" *ngIf="!model.managedExternally">
+        <mat-tab i18n-label label="Password Management" [disabled]="!editMode" *ngIf="!model.externallyManaged">
           <div class="tab-content pad x" *ngIf="editMode" max="readability">
 
             <div class="mat-form-fields">
@@ -163,7 +165,7 @@
   <footer class="view footer pad all">
     <div fxLayout="row" fxLayoutAlign="space-between center">
       <div>
-        <ng-container *ngIf="!model.managedExternally">
+        <ng-container *ngIf="!model.externallyManaged">
           <button mat-raised-button
                   color="warn"
                   *ngIf="selectedTabIndex === 1"
@@ -175,7 +177,7 @@
                   class="blue background"
                   (click)="update()"
                   [disabled]="!updateBasicInfoFormGroup.valid"
-                  *ngIf="editMode && !model.managedExternally && (selectedTabIndex === 0)">
+                  *ngIf="editMode && !model.externallyManaged && (selectedTabIndex === 0)">
             <span translate class="white text">Update</span>
           </button>
         </ng-container>

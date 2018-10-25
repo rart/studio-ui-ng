@@ -21,7 +21,7 @@ import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { createPreviewTabCore } from '../../utils/state.utils';
 import { SettingsEnum } from '../../enums/Settings.enum';
 import { AssetActions } from '../../actions/asset.actions';
-import { notNullOrUndefined } from '../../app.utils';
+import { fullName, notNullOrUndefined } from '../../app.utils';
 import { takeUntil, withLatestFrom } from 'rxjs/operators';
 import { merge } from 'rxjs/observable/merge';
 import { isNullOrUndefined } from 'util';
@@ -232,7 +232,7 @@ export class AssetDisplayComponent extends WithNgRedux implements OnChanges, OnD
         .replace(/_/g, ', ')
         .toLowerCase());
     if (asset.locked) {
-      this.iconDescription = `${type}. ${status} by ${this.lockedByCurrent ? 'you' : asset.lockedBy.name}.`;
+      this.iconDescription = `${type}. ${status} by ${this.lockedByCurrent ? 'you' : fullName(asset.lockedBy)}.`;
     } else {
       this.iconDescription = `${type}. ${status}.`;
     }

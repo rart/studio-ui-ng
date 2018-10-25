@@ -1,5 +1,5 @@
 import { Reducer } from 'redux';
-import { StoreActionsEnum } from '../enums/actions.enum';
+import { Actions } from '../enums/actions.enum';
 import { isFunction, isNullOrUndefined, isNumber } from 'util';
 import {
   createLookupTable,
@@ -33,10 +33,10 @@ export const previewTabs: Reducer<PreviewTabStateContainer> =
 
     switch (action.type) {
 
-      case StoreActionsEnum.STUDIO_INIT:
+      case Actions.STUDIO_INIT:
         return createPreviewTabStateContainer(state);
 
-      case StoreActionsEnum.GUEST_CHECK_IN: {
+      case Actions.GUEST_CHECK_IN: {
         nextState = (active.pending) ? state : trackHistoryEntry(state, active, core);
         active = nextState.byId[nextState.activeId];
         return replaceWithNewVersion(
@@ -61,11 +61,11 @@ export const previewTabs: Reducer<PreviewTabStateContainer> =
           });
       }
 
-      case StoreActionsEnum.OPEN_TAB:
+      case Actions.OPEN_TAB:
         tab = createPreviewTab(core);
         return setActive(addTab(state, tab), tab);
 
-      case StoreActionsEnum.OPEN_TABS: {
+      case Actions.OPEN_TABS: {
         let tabs = action.payload;
         tabs.forEach(tabCore => {
           tab = createPreviewTab(tabCore);
@@ -74,7 +74,7 @@ export const previewTabs: Reducer<PreviewTabStateContainer> =
         return setActive(nextState, tab);
       }
 
-      case StoreActionsEnum.NAVIGATE_ON_ACTIVE:
+      case Actions.NAVIGATE_ON_ACTIVE:
         nextState = trackHistoryEntry(state, active, core);
         if (nextState === state) {
           // same URL as it is current was request; no action taken.
@@ -87,15 +87,15 @@ export const previewTabs: Reducer<PreviewTabStateContainer> =
           active,
           tab);
 
-      case StoreActionsEnum.TAB_NAVIGATE_BACK:
-      case StoreActionsEnum.TAB_NAVIGATE_FORWARD:
+      case Actions.TAB_NAVIGATE_BACK:
+      case Actions.TAB_NAVIGATE_FORWARD:
         tab = state.byId[id];
         history = tab.history;
         if (
-          (action.type === StoreActionsEnum.TAB_NAVIGATE_BACK && history.hasBack) ||
+          (action.type === Actions.TAB_NAVIGATE_BACK && history.hasBack) ||
           (history.hasForward)) {
 
-          let newIndex = (action.type === StoreActionsEnum.TAB_NAVIGATE_BACK)
+          let newIndex = (action.type === Actions.TAB_NAVIGATE_BACK)
             ? (history.index - 1)
             : (history.index + 1);
 
@@ -113,7 +113,7 @@ export const previewTabs: Reducer<PreviewTabStateContainer> =
           return state;
         }
 
-      case StoreActionsEnum.CLOSE_TAB:
+      case Actions.CLOSE_TAB:
         if ((state.order.length > 1) && (activeId === id)) {
           // If closed was the active one, assign
           // the nearest anterior tabToClose as active
@@ -123,10 +123,10 @@ export const previewTabs: Reducer<PreviewTabStateContainer> =
         }
         return deleteTab(nextState, id);
 
-      case StoreActionsEnum.OPEN_TAB_BACKGROUND:
+      case Actions.OPEN_TAB_BACKGROUND:
         return addTab(state, createPreviewTab(core));
 
-      case StoreActionsEnum.OPEN_TABS_BACKGROUND: {
+      case Actions.OPEN_TABS_BACKGROUND: {
         let tabs = action.payload;
         tabs.forEach(tabCore => {
           tab = createPreviewTab(tabCore);
@@ -135,7 +135,7 @@ export const previewTabs: Reducer<PreviewTabStateContainer> =
         return nextState;
       }
 
-      case StoreActionsEnum.SELECT_TAB:
+      case Actions.SELECT_TAB:
         return setActive(nextState, nextState.byId[id]);
 
       default:

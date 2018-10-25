@@ -1,5 +1,5 @@
 import { AnyAction, Reducer } from 'redux';
-import { StoreActionsEnum } from '../enums/actions.enum';
+import { Actions } from '../enums/actions.enum';
 import { ExplorerState } from '../classes/app-state.interface';
 import { Project } from '../models/project.model';
 import { Asset } from '../models/asset.model';
@@ -12,7 +12,7 @@ export const explorer: Reducer<ExplorerState> = (state = {
 }, action: AnyAction) => {
   switch (action.type) {
 
-    case StoreActionsEnum.EXPLORER_SELECT_PROJECT: {
+    case Actions.EXPLORER_SELECT_PROJECT: {
       let code = action.payload.projectCode;
       let container = state.byProject[code] || {};
       return {
@@ -29,8 +29,8 @@ export const explorer: Reducer<ExplorerState> = (state = {
       };
     }
 
-    case StoreActionsEnum.EXPLORER_SELECT_PATH:
-    case StoreActionsEnum.EXPLORER_SELECT_ASSET: {
+    case Actions.EXPLORER_SELECT_PATH:
+    case Actions.EXPLORER_SELECT_ASSET: {
 
       let asset: Asset = action.payload.asset;
       let code = state.activeProjectCode;

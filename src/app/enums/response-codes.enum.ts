@@ -1,3 +1,3 @@
 export enum ResponseCodesEnum {
-  OK = 'OK'
+  OK = 0
 }

@@ -1,13 +1,13 @@
 import { environment } from '../../environments/environment';
 import { APIParser } from '../classes/api-parser.abstract';
-import { API3Parser } from '../classes/api3-parser.class';
-import { StudioModel, StudioModelType } from './type.utils';
+import { API1Parser } from '../classes/api1-parser.class';
+import { StudioModel, StudioModels } from './type.utils';
 
 export function parserFactory(apiVersion?) {
   return APIParserHelper.parserFactory(apiVersion);
 }
 
-export function parseEntity(classType: StudioModelType,
+export function parseEntity(classType: StudioModels,
                             JSONObject: any): StudioModel {
   return APIParserHelper.parse(classType, JSONObject);
 }
@@ -19,11 +19,11 @@ export class APIParserHelper {
   static parserFactory(apiVersion: StudioAPIVersion = environment.apiVersion): APIParser {
     switch (apiVersion) {
       case 'v3':
-        return new API3Parser();
+        return new API1Parser();
     }
   }
 
-  static parse(classType: StudioModelType,
+  static parse(classType: StudioModels,
                JSONObject: any): StudioModel {
     let parser = this.instance || (this.instance = parserFactory());
     return parser.parseEntity(classType, JSONObject);

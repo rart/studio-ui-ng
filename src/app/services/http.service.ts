@@ -3,8 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { RequestOptionsArgs } from '../classes/request-options-args.interface';
 import { isNullOrUndefined } from 'util';
-import { parseEntity} from '../utils/api.utils';
-import { StudioModelType } from '../utils/type.utils';
 
 function params(options: RequestOptionsArgs, paramMap: any): RequestOptionsArgs {
   if (!isNullOrUndefined(paramMap)) {
@@ -20,17 +18,23 @@ function params(options: RequestOptionsArgs, paramMap: any): RequestOptionsArgs 
 export class StudioHttpService /* extends HttpClient */ {
 
   static mapToPostResponse(entity) {
-    return (res: any) => ({ entity: entity, responseCode: res.message });
+    return (data: any) => ({ entity: data.entity || entity, response: data.response });
   }
 
-  static mapToPagedResponse(entriesPropName: string, EntityClass: StudioModelType) {
-    return (data: any) => ({
-      total: data.total,
-      entries: data[entriesPropName].map(entityJSON => parseEntity(EntityClass, entityJSON))
-    });
+  static mapToPagedResponse(entriesPropName: string) {
+    return (data: any) => {
+      if ('result' in data) {
+        data = data.result;
+      }
+      return {
+        total: data.total,
+        entries: data[entriesPropName]
+      };
+    };
   }
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   get(url: string, paramMap?, options?: RequestOptionsArgs): Observable<any> {
     return this.http.get(url, params(options, paramMap));
@@ -46,6 +50,10 @@ export class StudioHttpService /* extends HttpClient */ {
 
   delete(url: string, paramMap?, options?: RequestOptionsArgs): Observable<any> {
     return this.http.delete(url, params(options, paramMap));
+  }
+
+  patch(url: string, body: any = null, options?: RequestOptionsArgs): Observable<any> {
+    return this.http.patch(url, body, options);
   }
 
 }

@@ -3,7 +3,7 @@ import { AVATARS } from '../app.utils';
 
 export const initialState: AppState = {
   explorer: undefined,
-  activeProjectCode: 'canvas',
+  activeProjectCode: 'project-a',
   auth: 'validated',
   user: {
     avatarUrl: AVATARS[9],
@@ -11,14 +11,14 @@ export const initialState: AppState = {
     email: 'roy.art@craftersoftware.com',
     firstName: 'Roy',
     lastName: 'Art',
-    managedExternally: false,
+    externallyManaged: false,
     enabled: true,
     projects: null,
     groups: []
   },
   previewTabs: undefined,
   workspaces: {
-    'launcher': {
+    'project-a': {
       previewTabs: {
         activeId: 'TEST_TAB_ID',
         order: ['TEST_TAB_ID'],
@@ -35,62 +35,20 @@ export const initialState: AppState = {
         }
       },
       selectedItems: {
-        'launcher:/site/website/index.xml': true,
-        'launcher:/site/website/movies/index.xml': true
+        'launcher:/site/website/index.xml': true
       },
       expandedPanels: {
         'pending.panel.pages': true,
-        'scheduled.panel.02/16 02:30am': true,
         'sidebar.projectnav.pages': true,
-        // 'sidebar.projectnav.assets': true,
+        'sidebar.projectnav.assets': true,
         'sidebar.appnav.panel': true,
         'pending.panel.assets': true,
         'pending.panel.templates': true
       },
       expandedPaths: {
         '/site/website/index.xml': true,
-        // '/static-assets/js': true
+        '/static-assets/js': true
       }
-    },
-    'canvas': {
-      previewTabs: undefined,
-      selectedItems: undefined,
-      expandedPanels: {
-        'pending.panel.pages': true,
-        'sidebar.projectnav.assets': true,
-        'sidebar.appnav.panel': true
-      },
-      expandedPaths: undefined
-    },
-    'craftersoftwarecom': {
-      previewTabs: undefined,
-      selectedItems: undefined,
-      expandedPanels: {
-        'pending.panel.pages': true,
-        'sidebar.projectnav.assets': true,
-        'sidebar.appnav.panel': true
-      },
-      expandedPaths: undefined
-    },
-    'iot': {
-      previewTabs: undefined,
-      selectedItems: undefined,
-      expandedPanels: {
-        'pending.panel.pages': true,
-        'sidebar.projectnav.assets': true,
-        'sidebar.appnav.panel': true
-      },
-      expandedPaths: undefined
-    },
-    'sumer': {
-      previewTabs: undefined,
-      selectedItems: undefined,
-      expandedPanels: {
-        'pending.panel.pages': true,
-        'sidebar.projectnav.assets': true,
-        'sidebar.appnav.panel': true
-      },
-      expandedPaths: undefined
     }
   },
   editSessions: {
@@ -101,18 +59,24 @@ export const initialState: AppState = {
         id: 'TEST_SESSION_ID_3',
         status: 'void',
         data: null,
-        assetId: 'launcher:/site/website/index.xml',
-        projectCode: 'launcher',
+        assetId: 'editorial:/site/website/index.xml',
+        projectCode: 'project-a',
         fetchPayload: null
       },
       'TEST_SESSION_ID_5': {
         id: 'TEST_SESSION_ID_5',
         status: 'void',
         data: { split: 'vertical' },
-        assetId: 'launcher:/static-assets/js/main.js',
-        projectCode: 'launcher',
+        assetId: 'editorial:/static-assets/js/main.js',
+        projectCode: 'project-a',
         fetchPayload: null
       }
     }
+  },
+  usersList: {
+    order: [],
+    page: {},
+    query: {},
+    total: null
   }
 };

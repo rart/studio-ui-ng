@@ -3,6 +3,7 @@ import { User } from '../models/user.model';
 import { Project } from '../models/project.model';
 import { Group } from '../models/group.model';
 import { StudioModel } from '../utils/type.utils';
+import { APIResponse } from '../models/service-payloads';
 
 export interface AppState {
   explorer: ExplorerState;
@@ -17,6 +18,9 @@ export interface AppState {
   settings?: Settings;
   deliveryTable?: { [uuid: string]: any }; // This feels like a terrible practice. Need to figure out something...
   editSessions?: EditSessions;
+  // users: ModelState<User>;
+  // groups: ModelState<Group>;
+  usersList: ListingViewState;
 }
 
 export interface ExplorerState {
@@ -72,19 +76,38 @@ export interface ProjectSettings {
 
 export interface Entities {
   projects?: StateEntity<Project>;
-  users?: StateEntity<User>;
-  groups?: StateEntity<Group>;
+  users: ModelState<User>;
+  groups: ModelState<Group>;
   assets?: StateEntity<Asset>;
-  // roles?: StateEntity<StudioModel>;
-  // permissions?: StateEntity<StudioModel>;
-  [pluralEntityName: string]: StateEntity<StudioModel>;
 }
 
 export interface StateEntity<T> {
-  error: { [key: string]: any; };
   order?: string[];
-  loading: { [key: string]: boolean; };
+  error: LookupTable<any>;
+  loading: LookupTable<boolean>;
   byId: LookupTable<T>;
+}
+
+export interface ListingViewState {
+  order: Array<string | number>;
+  page?: LookupTable<Array<number | string>>;
+  total?: number;
+  query?: any;
+}
+
+export interface ResultEntry {
+  [prop: string]: any;
+  response: APIResponse;
+}
+
+export interface ModelState<T = any> {
+  byId: LookupTable<T>;
+  loading: LookupTable<boolean>;
+  results: LookupTable<ResultEntry>;
+}
+
+export interface GroupState extends ModelState<Group> {
+  members: LookupTable<string[]>;
 }
 
 export interface PreviewTabHistory {

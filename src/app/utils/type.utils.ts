@@ -5,12 +5,12 @@ import { Group } from '../models/group.model';
 
 export type StudioModelType =
   typeof Asset |
-  typeof User |
-  typeof Project |
-  typeof Group;
+  typeof Project;
 
 export type StudioModel =
   Asset |
   User |
   Project |
   Group;
+
+export type StudioModels = 'Asset' | 'User' | 'Project' | 'Project' | 'Group';

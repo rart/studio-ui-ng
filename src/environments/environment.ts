@@ -9,9 +9,10 @@ export const environment: Environment = {
   production: false,
 
   url: {
-    app: '/app',
+    app: '',
     api: '/studio/api/1/services/api/1',
-    assets: '/app/assets',
+    assets: '/assets',
+    preview: 'http://35.171.38.46:8080'
   },
 
   cfg: {
@@ -20,7 +21,7 @@ export const environment: Environment = {
 
   // TODO: change all references to use environment.url
   appUrl: '/app',
-  assetsUrl: '/app/assets',
+  assetsUrl: '/assets',
   // http://docs.craftercms.org/en/latest/developers/projects/studio/api/index.html
   apiUrl: '/studio/api/1/services/api/1',
 

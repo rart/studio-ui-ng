@@ -8,7 +8,7 @@ import { Observable } from 'rxjs/Observable';
 import { EntityService } from '../classes/entity-service.interface';
 import { PagedResponse } from '../classes/paged-response.interface';
 import { PostResponse } from '../classes/post-response.interface';
-import { parseEntity } from '../utils/api.utils';
+import { API1Parser } from '../classes/api1-parser.class';
 
 const baseUrl = `${environment.apiUrl}/site`;
 
@@ -22,7 +22,7 @@ export class ProjectService implements EntityService<Project> {
   all(query?): Observable<Project[]> {
     return this.http.get(`${baseUrl}/get-per-user.json`, Object.assign({ username: 'admin' }, query || {}))
       .pipe(map((data) => {
-        return data.sites.map((item) => parseEntity(Project, item));
+        return data.sites.map((item) => API1Parser.project(item));
       }));
   }
 
@@ -30,7 +30,7 @@ export class ProjectService implements EntityService<Project> {
     return this.http.get(`${baseUrl}/get-per-user.json`, Object.assign({ username: 'admin' }, query || {}))
       .pipe(map((data) => ({
         total: data.total,
-        entries: data.sites.map((item) => parseEntity(Project, item))
+        entries: data.sites.map((item) => API1Parser.project(item))
       })));
   }
 
@@ -40,7 +40,7 @@ export class ProjectService implements EntityService<Project> {
 
   byId(sideCode): Observable<Project> {
     return this.http.get(`${baseUrl}/get.json`, { site_id: sideCode })
-      .pipe(map((data) => <Project>parseEntity(Project, data)));
+      .pipe(map((data) => API1Parser.project(data)));
   }
 
   by(entityProperty: string, value): Observable<Project> {

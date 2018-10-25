@@ -14,9 +14,9 @@ export function createLocalPagination$<T>
 ({
    source$,
    pager$,
-   filter$ = Observable.of(''),
+   filter$ = of(''),
    filterFn = (item, query) => true,
-   takeUntilOp = takeUntil(Observable.never()),
+   takeUntilOp = takeUntil(never()),
 
    // can't filter directly on the filter$ since it wouldn't
    // clear the search filter when e.g. deleting the whole query
@@ -55,8 +55,29 @@ export function createLocalPagination$<T>
     );
 }
 
+export function isSuccessResponse(response: APIResponse) {
+  return ([0, 1, 2].includes(response.code));
+}
+
+export function getDefaultModelState(mixin = {}): ModelState<any> {
+  return {
+    byId: {},
+    loading: {},
+    results: {},
+    ...mixin
+  };
+}
+
 import { Asset } from './models/asset.model';
 import { AssetTypeEnum } from './enums/asset-type.enum';
+import { User } from './models/user.model';
+import { Group } from './models/group.model';
+import { of } from 'rxjs/observable/of';
+import { never } from 'rxjs/observable/never';
+import { APIResponse } from './models/service-payloads';
+import { ResponseCodesEnum } from './enums/response-codes.enum';
+import { ModelState } from './classes/app-state.interface';
+
 export function orderAssetsFoldersFirst(assets: Asset[]) {
   return assets.sort((a, b) => {
     if (a.type === AssetTypeEnum.FOLDER && b.type !== AssetTypeEnum.FOLDER) {
@@ -73,19 +94,34 @@ export const asAnonymousSubscription = (unsubscribe: () => void): AnonymousSubsc
   return { unsubscribe: unsubscribe };
 };
 
-// Avatars from semantic-ui.com
-// https://semantic-ui.com/images/avatar2/large/kristy.png
-// https://semantic-ui.com/images/avatar/large/elliot.jpg
-// https://semantic-ui.com/images/avatar/large/jenny.jpg
-// https://semantic-ui.com/images/avatar2/large/matthew.png
-// https://semantic-ui.com/images/avatar2/large/molly.png
-// https://semantic-ui.com/images/avatar2/large/elyse.png
-// https://semantic-ui.com/images/avatar/large/steve.jpg
-// https://semantic-ui.com/images/avatar/large/daniel.jpg
-// https://semantic-ui.com/images/avatar/large/helen.jpg
-// https://semantic-ui.com/images/avatar/large/matt.jpg
-// https://semantic-ui.com/images/avatar/large/veronika.jpg
-// https://semantic-ui.com/images/avatar/large/stevie.jpg
+export function fullName(user: User) {
+  return `${user.firstName} ${user.lastName}`;
+}
+
+export function createEmptyUser(mixin: Partial<User> = {}): User {
+  return {
+    id: null,
+    email: '',
+    username: '',
+    firstName: '',
+    lastName: '',
+    enabled: true,
+    password: null,
+    externallyManaged: false,
+    authenticationType: '',
+    avatarUrl: null,
+    ...mixin
+  };
+}
+
+export function createEmptyGroup(mixin: Partial<Group> = {}): Group {
+  return {
+    id: null,
+    name: '',
+    description: '',
+    ...mixin
+  };
+}
 
 const avatarsURL = `${environment.assetsUrl}/img/avatars`;
 
@@ -122,3 +158,6 @@ export const FEMALE_AVATARS = [
   `${avatarsURL}/veronika.jpg`
 ];
 
+export function getRandomAvatar() {
+  return AVATARS[Math.floor(Math.random() * AVATARS.length)];
+}

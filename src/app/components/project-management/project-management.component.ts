@@ -10,7 +10,6 @@ import { debounceTime, distinctUntilChanged, filter, startWith } from 'rxjs/oper
 import { FormControl } from '@angular/forms';
 import { PagedResponse } from '../../classes/paged-response.interface';
 import { Project } from '../../models/project.model';
-import 'rxjs/add/observable/never';
 import { PagerConfig } from '../../classes/pager-config.interface';
 import { dispatch, NgRedux, select } from '@angular-redux/store';
 import { Observable } from 'rxjs/Observable';

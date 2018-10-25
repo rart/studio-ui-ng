@@ -2,25 +2,26 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../../services/user.service';
 import { User } from '../../../models/user.model';
 import { showSnackBar } from '../../../utils/material.utils';
 import { Change, ChangeType } from '../../../classes/change-tracker.class';
 import { GroupService } from '../../../services/group.service';
-import { AVATARS } from '../../../app.utils';
-import { ResponseCodesEnum } from '../../../enums/response-codes.enum';
+import { AVATARS, createEmptyUser, fullName } from '../../../app.utils';
 import { Observable } from 'rxjs/Observable';
-import { select } from '@angular-redux/store';
-import { Settings } from '../../../classes/app-state.interface';
+import { dispatch, NgRedux, select } from '@angular-redux/store';
+import { AppState, LookupTable, Settings } from '../../../classes/app-state.interface';
+import { createUser, deleteUser, fetchUser, updateUser } from '../../../actions/user.actions';
+import { WithNgRedux } from '../../../classes/with-ng-redux.class';
+import { Actions } from '../../../enums/actions.enum';
 
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 @Component({
   selector: 'std-user-crud',
-  templateUrl: './user-crud.component.html',
-  styleUrls: ['./user-crud.component.scss']
+  templateUrl: './user-form.component.html',
+  styleUrls: ['./user-form.component.scss']
 })
-export class UserCrUDComponent implements OnInit {
+export class UserFormComponent extends WithNgRedux implements OnInit {
 
   @Output() finished = new EventEmitter();
 
@@ -32,8 +33,11 @@ export class UserCrUDComponent implements OnInit {
   userGroupsHasChanges = false;
   groupChangeRollback: Change;
 
-  model: User = new User();
+  loading: boolean = false;
+  loadingMessage: string = '';
+  model: User = createEmptyUser();
   editMode = false;
+  editModeId: string;
   selectedTabIndex = 0;
   notifyPasswordReset = true;
 
@@ -54,21 +58,59 @@ export class UserCrUDComponent implements OnInit {
   constructor(public snackBar: MatSnackBar,
               private router: Router,
               private route: ActivatedRoute,
-              public userService: UserService,
-              public groupService: GroupService) {
+              public groupService: GroupService,
+              store: NgRedux<AppState>) {
+    super(store);
   }
 
   ngOnInit() {
-    const subscription = (params) => {
-      if (params.username || params.edit) {
-        this.model.username = params.username || params.edit;
-        this.loadUser();
-      }
-    };
-    this.route.params
-      .subscribe(subscription);
-    this.route.queryParams
-      .subscribe(subscription);
+
+    const
+      { route, store } = this,
+      subscription = (params) => {
+        if (params.username || params.edit) {
+          this.editMode = true;
+          this.editModeId = params.username || params.edit;
+          this.userNameFormControl.disable();
+          this.loadUser();
+        }
+      };
+
+    route.params.subscribe(subscription);
+    route.queryParams.subscribe(subscription);
+
+    store.select(['entities', 'users', 'loading'])
+      .pipe(this.untilDestroyed())
+      .subscribe((loading: any) => {
+        const
+          { model, editModeId: id } = this,
+          fetching = !!loading[id],
+          creating = !!loading[`${Actions.CREATE_USER}[${model.username}]`],
+          updating = !!loading[`${Actions.UPDATE_USER}[${id}]`],
+          deleting = !!loading[`${Actions.DELETE_USER}[${id}]`];
+        this.loading = (fetching || creating || updating || deleting);
+        if (fetching) {
+          this.loadingMessage = 'RETRIEVING_USER_INFORMATION';
+        } else if (creating) {
+          this.loadingMessage = 'CREATING_USER';
+        } else if (updating) {
+          this.loadingMessage = 'UPDATING_USER';
+        } else if (deleting) {
+          this.loadingMessage = 'DELETING_USER';
+        } else {
+          this.loadingMessage = '';
+        }
+      });
+
+    store.select(['entities', 'users', 'byId'])
+      .pipe(this.untilDestroyed())
+      .subscribe((users) => {
+        const { editMode, editModeId } = this;
+        if (editMode && editModeId && users[editModeId]) {
+          this.model = users[editModeId];
+        }
+      });
+
   }
 
   done(snackBarMessage?) {
@@ -88,103 +130,30 @@ export class UserCrUDComponent implements OnInit {
 
   }
 
+  @dispatch()
   loadUser() {
-    const username = this.model.username;
-    return this.userService.byId(username)
-      .subscribe((response) => {
-        this.model = response;
-        this.editMode = true;
-      });
+    return fetchUser(this.editModeId);
   }
 
+  @dispatch()
   create() {
-    this.userService
-      .create(this.model)
-      .subscribe((data) => {
-        if (data.responseCode === ResponseCodesEnum.OK) {
-          this.model.password = '';
-          showSnackBar(this.snackBar, `${this.fullName()} registered successfully. Edit mode enabled.`);
-          this.loadUser();
-        }
-      });
+    return createUser(this.model);
+    // showSnackBar(this.snackBar, `${fullName(this.model)} registered successfully. Edit mode enabled.`);
   }
 
+  @dispatch()
   update() {
-    this.userService
-      .update(this.model)
-      .subscribe((data) => {
-        this.done(`${this.fullName()} updated successfully.`);
-      });
+    return updateUser(this.model);
+    // this.done(`${this.fullName()} updated successfully.`);
   }
 
-  enable() {
-    this.userService
-      .enable(this.model)
-      .subscribe({
-        next: (result) => {
-          // TODO: See sample error handling here...
-          // Not quite working though. When would result not be "OK"?
-          if (result.responseCode === ResponseCodesEnum.OK) {
-            showSnackBar(this.snackBar, `${this.fullName()} set as enabled.`, 'Undo')
-              .onAction()
-              .subscribe(() => {
-                this.model.enabled = false;
-                this.disable();
-              });
-          } else {
-            this.model.enabled = false;
-            showSnackBar(this.snackBar, `Unable to set ${this.fullName()} as required.`, 'Retry')
-              .onAction()
-              .subscribe(() => {
-                this.enable();
-              });
-          }
-        },
-        error: (error) => {
-          console.log(error);
-        }
-      });
-  }
-
-  disable() {
-    this.userService
-      .disable(this.model)
-      .subscribe((result) => {
-        showSnackBar(this.snackBar, `${this.fullName()} set as disabled.`, 'Undo')
-          .onAction()
-          .subscribe(() => {
-            this.model.enabled = true;
-            this.enable();
-          });
-      });
-  }
-
-  enabledChanged(enabled) {
-    if (enabled) {
-      this.enable();
-    } else {
-      this.disable();
-    }
-  }
-
+  @dispatch()
   eliminate() {
-    this.userService
-      .delete(this.model)
-      .subscribe(() => {
-        this.done(`${this.fullName()} deleted successfully.`);
-      });
+    return deleteUser(this.model.username);
   }
 
   resetPassword() {
-    this.userService
-      .resetPassword(this.model)
-      .subscribe(() => {
-        this.done('Password successfully reset.');
-      });
-  }
-
-  fullName() {
-    return `${this.model.firstName} ${this.model.lastName}`;
+    console.log('TODO...');
   }
 
   userGroupsChanged(data) {
@@ -201,7 +170,7 @@ export class UserCrUDComponent implements OnInit {
     this.groupService
       .addUser({ username: this.model.username, projectCode, groupName })
       .subscribe(() =>
-        showSnackBar(this.snackBar, `${this.fullName()} added to ${groupName}`, 'Undo', { duration: 10000 })
+        showSnackBar(this.snackBar, `${fullName(this.model)} added to ${groupName}`, 'Undo', { duration: 10000 })
           .onAction()
           .subscribe(() => {
             this.groupChangeRollback = { type: ChangeType.Add, value: { projectCode, groupName } };
@@ -213,7 +182,7 @@ export class UserCrUDComponent implements OnInit {
     this.groupService
       .removeUser({ username: this.model.username, projectCode, groupName })
       .subscribe(() =>
-        showSnackBar(this.snackBar, `${this.fullName()} removed from ${groupName}`, 'Undo', { duration: 10000 })
+        showSnackBar(this.snackBar, `${fullName(this.model)} removed from ${groupName}`, 'Undo', { duration: 10000 })
           .onAction()
           .subscribe(() => {
             this.groupChangeRollback = { type: ChangeType.Remove, value: { projectCode, groupName } };

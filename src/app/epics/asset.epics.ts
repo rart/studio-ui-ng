@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { map, catchError, switchMap } from 'rxjs/operators';
-import { StoreActionsEnum } from '../enums/actions.enum';
+import { Actions } from '../enums/actions.enum';
 import { WorkflowService } from '../services/workflow.service';
 import { AssetActions } from '../actions/asset.actions';
 import { RootEpic } from './root.epic';
@@ -29,7 +29,7 @@ export class AssetEpics extends BaseEpic {
   }
 
   private get = RootEpic.createEpic(
-    StoreActionsEnum.FETCH_ASSET,
+    Actions.FETCH_ASSET,
     ({ payload }) => {
       return this.content
         .byId(payload.id)
@@ -40,7 +40,7 @@ export class AssetEpics extends BaseEpic {
     }, false);
 
   private recallForEdit = RootEpic.createEpic(
-    StoreActionsEnum.FETCH_ASSET_FOR_EDIT,
+    Actions.FETCH_ASSET_FOR_EDIT,
     ({ payload }) => {
       let { assetId, sessionUUID } = payload;
       return forkJoin([
@@ -60,7 +60,7 @@ export class AssetEpics extends BaseEpic {
     });
 
   private closeEditSession = RootEpic.createEpic(
-    StoreActionsEnum.CLOSE_EDIT_SESSION,
+    Actions.CLOSE_EDIT_SESSION,
     ({ payload }) => {
       if (payload.content) {
         return this.content
@@ -77,7 +77,7 @@ export class AssetEpics extends BaseEpic {
     });
 
   private some = RootEpic.createEpic(
-    StoreActionsEnum.FETCH_SOME_ASSETS,
+    Actions.FETCH_SOME_ASSETS,
     ({ payload }) => {
       if (isArray(payload)) {
         return forkJoin(payload.map(obj => this.content.byId(obj.assetId)))
@@ -86,7 +86,7 @@ export class AssetEpics extends BaseEpic {
     });
 
   private persistSessionChanges = RootEpic.createEpic(
-    StoreActionsEnum.PERSIST_SESSION_CHANGES,
+    Actions.PERSIST_SESSION_CHANGES,
     ({ payload }) => {
       return this.content
         .write(payload.asset, payload.content)

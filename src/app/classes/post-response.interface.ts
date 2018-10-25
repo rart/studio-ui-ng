@@ -1,6 +1,12 @@
-import { ResponseCodesEnum } from '../enums/response-codes.enum';
+import { LookupTable } from './app-state.interface';
+import { APIResponse } from '../models/service-payloads';
 
 export interface PostResponse<T> {
-  responseCode: ResponseCodesEnum;
+  response: Partial<APIResponse>;
   entity: T;
+}
+
+export interface BulkPostResponse<T> {
+  response: Partial<APIResponse>;
+  entities: LookupTable<T>;
 }

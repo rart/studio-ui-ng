@@ -1,0 +1,97 @@
+<div class="sticky header view layout">
+  <std-view-title-bar class="pad all" back="/groups" [title]="editMode ? 'Edit Group' : 'Create Group'">
+    <ng-container *ngIf="editMode">
+      <button mat-fab color="warn" [matMenuTriggerFor]="deleteConfirm" [attr.aria-label]="'Delete Group' | translate">
+        <mat-icon class="white text">delete</mat-icon>
+      </button>
+    </ng-container>
+  </std-view-title-bar>
+  <div class="view body pad all">
+
+    <std-spinner class="absolute position full with height cover" *ngIf="loading">
+      {{loadingMessage}}&hellip;
+    </std-spinner>
+
+    <mat-card *ngIf="!loading" class="stretch min height ensure pad none" max="comfort">
+
+      <mat-tab-group *ngIf="editMode" (selectedIndexChange)="selectedTabChange($event)">
+        <mat-tab i18n-label label="GROUP_FORM.TAB_BASIC">
+          <ng-container
+            [ngTemplateOutlet]="formFields">
+          </ng-container>
+        </mat-tab>
+        <mat-tab i18n-label label="GROUP_FORM.MEMBERS">
+          <div class="ui two column grid reset">
+            <div class="column">
+              USERS
+              <std-user-list (selected)="addMember($event)" [users]="users" [disabled]="addingMembers"></std-user-list>
+            </div>
+            <div class="column">
+              SELECTED
+              <std-user-list (selected)="deleteMember($event)" [users]="members" [disabled]="deletingMembers"></std-user-list>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+
+      <ng-container
+        *ngIf="!editMode"
+        [ngTemplateOutlet]="formFields">
+      </ng-container>
+
+    </mat-card>
+
+  </div>
+  <footer class="view footer pad all">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div>
+        <button mat-raised-button
+                class="blue background"
+                (click)="update()"
+                [disabled]="!groupForm.valid"
+                *ngIf="editMode">
+          <span translate class="white text">Update</span>
+        </button>
+        <button mat-raised-button class="green background"
+                (click)="create()"
+                [disabled]="!groupForm.valid"
+                *ngIf="!editMode">
+          <span translate class="white text">Create</span>
+        </button>
+      </div>
+    </div>
+    <mat-menu #deleteConfirm="matMenu">
+      <button mat-menu-item>Cancel</button>
+      <button mat-menu-item [matMenuTriggerFor]="deleteOptions"><i class="warning icon"></i> Confirm Deletion?</button>
+    </mat-menu>
+    <mat-menu #deleteOptions="matMenu">
+      <button mat-menu-item (click)="eliminate()">Yes, permanently delete group.</button>
+    </mat-menu>
+  </footer>
+</div>
+
+<ng-template #formFields>
+  <form [formGroup]="groupForm" class="pad x y">
+
+    <mat-form-field>
+      <input matInput
+             i18n-placeholder
+             placeholder="Name"
+             formControlName="name">
+      <mat-error translate *ngIf="!groupForm.controls.name.valid">
+        Required field
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput
+             i18n-placeholder
+             placeholder="Description"
+             formControlName="description">
+      <mat-error translate *ngIf="!groupForm.controls.description.valid">
+        Required field
+      </mat-error>
+    </mat-form-field>
+
+  </form>
+</ng-template>

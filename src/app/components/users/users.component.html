@@ -5,9 +5,9 @@
     icon="people"
     childMax="comfort">
     <div>
-      <button color="default" mat-fab
-              [attr.aria-label]="'Refresh Projects' | translate">
-        <mat-icon class="" aria-hidden="true">refresh</mat-icon>
+      <button (click)="fetchUsers()" color="default" mat-fab
+              [attr.aria-label]="'Refresh Users' | translate">
+        <mat-icon aria-hidden="true">refresh</mat-icon>
       </button>
       <button theme="green" hue="600" color="inherit" mat-fab
               [routerLink]="['/users/create']"
@@ -20,18 +20,7 @@
 
     <div class="pad all">
       <mat-card class="pad all" max="readability">
-        <div class="ui link divided items">
-          <div class="item" *ngFor="let user of users" [routerLink]="['/users/edit', user.username]">
-            <div class="ui tiny image">
-              <img [src]="user.avatarUrl" alt="">
-            </div>
-            <div class="content">
-              <div class="header">{{user.firstName}} {{user.lastName}}</div>
-              <div class="meta">{{user.email}}</div>
-              <div class="description">{{user.username}}</div>
-            </div>
-          </div>
-        </div>
+        <std-user-list (selected)="userSelected($event)" [users]="users"></std-user-list>
       </mat-card>
     </div>
 

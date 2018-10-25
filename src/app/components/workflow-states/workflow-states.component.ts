@@ -5,7 +5,6 @@ import {
   debounceTime, map, scan, startWith, tap,
   distinctUntilChanged, shareReplay
 } from 'rxjs/operators';
-import 'rxjs/add/observable/merge';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { WorkflowService } from '../../services/workflow.service';
@@ -16,6 +15,8 @@ import { createLocalPagination$ } from '../../app.utils';
 import { ComponentBase } from '../../classes/component-base.class';
 import { PagerConfig } from '../../classes/pager-config.interface';
 import { showSnackBar } from '../../utils/material.utils';
+import { merge } from 'rxjs/observable/merge';
+import { of } from 'rxjs/observable/of';
 
 @Component({
   selector: 'std-workflow-states',
@@ -151,9 +152,9 @@ export class WorkflowStatesComponent extends ComponentBase implements OnInit, On
           });
 
         // An observable to fire immediately and show all as "processing..."
-        processes.unshift(Observable.of({ entity: accumulator[0] }));
+        processes.unshift(of({ entity: accumulator[0] }));
 
-        this.bulkProcessingItems = Observable.merge
+        this.bulkProcessingItems = merge
           .apply(Observable, processes)
           .pipe(
             map((value: any) => ({ id: value.entity.id, done: value.entity.done })),
@@ -164,6 +165,7 @@ export class WorkflowStatesComponent extends ComponentBase implements OnInit, On
 
         this.bulkProcessingItems.subscribe({
           next(completionReport) {
+
           },
           error: (e) => console.error('An error has occurred', e),
           complete: () => {

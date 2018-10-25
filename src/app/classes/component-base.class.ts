@@ -21,6 +21,7 @@ export class ComponentBase {
   ngOnDestroy() {
     this.ngOnDestroy$.next();
     this.ngOnDestroy$.complete();
+    this.ngOnDestroy$.unsubscribe();
   }
 
   protected addTearDown(tearDownLogic: () => void) {
