@@ -73,10 +73,5 @@ export const initialState: AppState = {
       }
     }
   },
-  usersList: {
-    order: [],
-    page: {},
-    query: {},
-    total: null
-  }
+  usersList: undefined
 };

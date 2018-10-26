@@ -7,10 +7,17 @@ import {
   createUserComplete,
   deleteUserComplete,
   fetchUserComplete,
-  fetchUsersComplete, loginComplete, logoutComplete, recoverComplete,
+  fetchUsersComplete,
+  loginComplete,
+  logoutComplete,
+  recoverComplete,
   updateUserComplete
 } from '../actions/user.actions';
 import { BaseEpic } from './base-epic';
+import { AppState } from '../classes/app-state.interface';
+import { Store } from 'redux';
+import { never } from 'rxjs/observable/never';
+import { isNullOrUndefined } from 'util';
 
 @Injectable()
 export class UserEpics extends BaseEpic {
@@ -49,10 +56,14 @@ export class UserEpics extends BaseEpic {
 
   private fetchUsers = RootEpic.createEpic(
     Actions.FETCH_USERS,
-    (action) => this.service.page(action.payload.query)
-      .pipe(
-        map(fetchUsersComplete)
-      )
+    ({ payload }, store: Store<AppState>) => {
+      const state = store.getState();
+      return (
+        (payload.forceUpdate || isNullOrUndefined(state.usersList.page[payload.query.pageIndex]))
+          ? this.service.page(payload.query).pipe(map(fetchUsersComplete))
+          : never()
+      );
+    }
   );
 
   private fetchUser = RootEpic.createEpic(

@@ -8,6 +8,8 @@ DeletePayload,
 FetchUserPayload,
 FetchUsersPayload
 } from '../models/service-payloads';
+import { Query } from '../models/query';
+import { getDefaultQuery } from '../app.utils';
 
 export function login(user: User): AppAction {
   return { type: Actions.LOGIN, payload: { user } };
@@ -93,10 +95,10 @@ export function fetchUserComplete(response: FetchUserPayload): AppAction<FetchUs
   };
 }
 
-export function fetchUsers(query?: Object): AppAction<{ query }> {
+export function fetchUsers(query: Query = getDefaultQuery(), forceUpdate: boolean = false): AppAction {
   return {
     type: Actions.FETCH_USERS,
-    payload: { query }
+    payload: { query, forceUpdate }
   };
 }
 

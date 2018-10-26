@@ -45,10 +45,7 @@ export class GroupsComponent extends WithNgRedux implements OnInit {
 
   @dispatch()
   fetchGroups() {
-    return fetchGroups({
-      offset: 0,
-      limit: 10
-    });
+    return fetchGroups();
   }
 
 }

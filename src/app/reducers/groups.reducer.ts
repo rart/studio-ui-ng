@@ -2,7 +2,7 @@ import { AppAction } from '../models/app-action';
 import { Reducer } from 'redux';
 import { GroupState } from '../classes/app-state.interface';
 import { FetchGroupPayload, FetchGroupsPayload, FetchGroupUsersPayload } from '../models/service-payloads';
-import { createCompoundKey, createLookupTable, popActionResult } from '../utils/state.utils';
+import { createKey, createLookupTable, popActionResult } from '../utils/state.utils';
 import { Actions } from '../enums/actions.enum';
 import { Group } from '../models/group.model';
 import { getDefaultModelState } from '../app.utils';
@@ -19,7 +19,7 @@ export const groups: Reducer<GroupState> = (
     case Actions.UPDATE_GROUP: {
       const
         { group } = payload,
-        operation = createCompoundKey(
+        operation = createKey(
           type,
           (type === Actions.CREATE_GROUP)
             ? group.name
@@ -36,7 +36,7 @@ export const groups: Reducer<GroupState> = (
     case Actions.UPDATE_GROUP_COMPLETE: {
       const
         { group } = payload,
-        operation = createCompoundKey(
+        operation = createKey(
           type.replace('_COMPLETE', ''),
           (type === Actions.CREATE_GROUP_COMPLETE)
             ? group.name
@@ -60,7 +60,7 @@ export const groups: Reducer<GroupState> = (
     case Actions.DELETE_GROUP_COMPLETE: {
       const
         nextById = { ...state.byId },
-        operation = createCompoundKey(Actions.DELETE_GROUP, payload.id);
+        operation = createKey(Actions.DELETE_GROUP, payload.id);
       delete nextById[payload.id];
       return {
         ...state,
@@ -124,7 +124,7 @@ export const groups: Reducer<GroupState> = (
         ...state,
         loading: {
           ...state.loading,
-          [createCompoundKey(Actions.FETCH_GROUP_MEMBERS, data.id)]: false
+          [createKey(Actions.FETCH_GROUP_MEMBERS, data.id)]: false
         },
         members: {
           ...state.members,
@@ -142,7 +142,7 @@ export const groups: Reducer<GroupState> = (
         ...state,
         loading: {
           ...state.loading,
-          [createCompoundKey(type, payload.id, payload.username)]: true
+          [createKey(type, payload.id, payload.username)]: true
         }
       };
     case Actions.DELETE_GROUP:
@@ -151,7 +151,7 @@ export const groups: Reducer<GroupState> = (
         ...state,
         loading: {
           ...state.loading,
-          [createCompoundKey(type, payload.id)]: true
+          [createKey(type, payload.id)]: true
         }
       };
     case Actions.FETCH_GROUP_MEMBERS:
@@ -160,7 +160,7 @@ export const groups: Reducer<GroupState> = (
         ...state,
         loading: {
           ...state.loading,
-          [createCompoundKey(type, payload.id)]: true
+          [createKey(type, payload.id)]: true
         }
       };
     case Actions.ADD_GROUP_MEMBER_COMPLETE:
@@ -168,8 +168,8 @@ export const groups: Reducer<GroupState> = (
       const
         data = <FetchGroupUsersPayload>payload,
         operation = (Actions.ADD_GROUP_MEMBER_COMPLETE === type)
-            ? createCompoundKey(type.replace('_COMPLETE', ''), payload.id, payload.users[0].username)
-            : createCompoundKey(type.replace('_COMPLETE', ''), payload.id);
+            ? createKey(type.replace('_COMPLETE', ''), payload.id, payload.users[0].username)
+            : createKey(type.replace('_COMPLETE', ''), payload.id);
       return {
         ...state,
         loading: {
@@ -191,8 +191,8 @@ export const groups: Reducer<GroupState> = (
       const
         data = <FetchGroupUsersPayload>payload,
         operation = (Actions.DELETE_GROUP_MEMBER_COMPLETE === type)
-          ? createCompoundKey(type.replace('_COMPLETE', ''), payload.id, payload.users[0].username)
-          : createCompoundKey(type.replace('_COMPLETE', ''), payload.id),
+          ? createKey(type.replace('_COMPLETE', ''), payload.id, payload.users[0].username)
+          : createKey(type.replace('_COMPLETE', ''), payload.id),
         deletedUsers = data.users.map(u => u.username);
       return {
         ...state,

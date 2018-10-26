@@ -13,12 +13,12 @@ export class RootEpic {
 
   static createEpic(type, mapProject, useSwitchMap = true) {
     type = isArray(type) ? type : [type];
-    return (action$, store, dependencies) => {
-      return action$.pipe(
-        ofType(...type),
-        useSwitchMap ? switchMap(mapProject) : mergeMap(mapProject)
-      );
-    };
+    return (action$, store, dependencies) => action$.pipe(
+      ofType(...type),
+      useSwitchMap
+        ? switchMap((action) => mapProject(action, store, dependencies, action$))
+        : mergeMap((action) => mapProject(action, store, dependencies, action$))
+    );
   }
 
   constructor(private projectEpics: ProjectEpics,
@@ -30,13 +30,13 @@ export class RootEpic {
   }
 
   epic() {
-    return combineEpics(...[
-      ...this.projectEpics.epics(),
-      ...this.assetEpics.epics(),
-      ...this.userEpics.epics(),
-      ...this.groupEpics.epics(),
-      ...this.interceptor.epics()
-    ]);
+    return combineEpics(...[].concat(
+      this.projectEpics.epics(),
+      this.assetEpics.epics(),
+      this.userEpics.epics(),
+      this.groupEpics.epics(),
+      this.interceptor.epics()
+    ));
   }
 
 }

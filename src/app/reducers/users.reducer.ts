@@ -4,7 +4,7 @@ import { User } from '../models/user.model';
 import { ModelState } from '../classes/app-state.interface';
 import { FetchUserPayload, FetchUsersPayload } from '../models/service-payloads';
 import { AppAction } from '../models/app-action';
-import { popActionResult, createLookupTable, createCompoundKey } from '../utils/state.utils';
+import { popActionResult, createLookupTable, createKey } from '../utils/state.utils';
 import { getDefaultModelState, isSuccessResponse } from '../app.utils';
 
 export const users: Reducer<ModelState<User>> = (state = getDefaultModelState(), action: AppAction) => {
@@ -16,7 +16,7 @@ export const users: Reducer<ModelState<User>> = (state = getDefaultModelState(),
     case Actions.CREATE_USER: {
       const
         { user } = payload,
-        operation = createCompoundKey(action.type, user.username);
+        operation = createKey(action.type, user.username);
       return {
         ...state,
         loading: {
@@ -29,7 +29,7 @@ export const users: Reducer<ModelState<User>> = (state = getDefaultModelState(),
     case Actions.UPDATE_USER_COMPLETE: {
       const
         { user } = payload,
-        operation = createCompoundKey(action.type.replace('_COMPLETE', ''), user.username);
+        operation = createKey(action.type.replace('_COMPLETE', ''), user.username);
       return {
         ...state,
         byId: {
@@ -47,7 +47,7 @@ export const users: Reducer<ModelState<User>> = (state = getDefaultModelState(),
       };
     }
     case Actions.DELETE_USER: {
-      const operation = createCompoundKey(action.type, payload.id);
+      const operation = createKey(action.type, payload.id);
       return {
         ...state,
         loading: {
@@ -58,7 +58,7 @@ export const users: Reducer<ModelState<User>> = (state = getDefaultModelState(),
     }
     case Actions.DELETE_USER_COMPLETE: {
       const nextById = { ...state.byId };
-      const operation = createCompoundKey(Actions.DELETE_USER, payload.id);
+      const operation = createKey(Actions.DELETE_USER, payload.id);
       delete nextById[payload.id];
       return {
         ...state,
@@ -99,22 +99,26 @@ export const users: Reducer<ModelState<User>> = (state = getDefaultModelState(),
         }
       };
     }
-    case Actions.FETCH_USERS:
-      return {
-        ...state,
-        loading: {
-          ...state.loading,
-          PAGE: true
-        }
-      };
+    // case Actions.FETCH_USERS:
+    //   When a page has been preloaded the FETCH_USERS_COMPLETE
+    //   wouldn't get dispatched. Getting rid of this action handler since
+    //   wouldn't have means of setting the loading to false.
+    //   return {
+    //       ...state,
+    //       loading: {
+    //         ...state.loading,
+    //         PAGE: true
+    //       }
+    //     };
     case Actions.FETCH_USERS_COMPLETE: {
       const data: FetchUsersPayload = payload;
       return {
         ...state,
-        loading: {
-          ...state.loading,
-          PAGE: false
-        },
+        // See explanation above
+        // loading: {
+        //   ...state.loading,
+        //   PAGE: false
+        // },
         byId: {
           ...state.byId,
           ...createLookupTable<User>(data.users, 'username')

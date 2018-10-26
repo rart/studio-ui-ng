@@ -15,7 +15,8 @@ import {
 } from '../models/service-payloads';
 import { Group } from '../models/group.model';
 import { API2Parser, API2Serializer } from '../classes/api2-parser.class';
-import { createEmptyUser } from '../app.utils';
+import { createEmptyUser, notNullOrUndefined } from '../app.utils';
+import { Query } from '../models/query';
 
 const baseUrl = '/studio/api/2/groups';
 const api1BaseUrl = `${environment.apiUrl}/group`;
@@ -27,11 +28,17 @@ export class GroupService {
 
   }
 
-  page(options?: Object): Observable<FetchGroupsPayload> {
-    return this.http.get(baseUrl, options).pipe(
+  page(options?: Query): Observable<FetchGroupsPayload> {
+    const params: any = {};
+    if (notNullOrUndefined(options)) {
+      const { pageIndex, pageSize } = options;
+      params.offset = pageIndex * pageSize;
+      params.limit = pageSize;
+    }
+    return this.http.get(baseUrl, params).pipe(
       map(({ result: data }) => ({
-        limit: data.limit,
-        offset: data.offset,
+        pageSize: data.limit,
+        pageIndex: data.offset / data.limit,
         total: data.total,
         response: data.response,
         groups: data.entities.map(raw => API2Parser.group(raw))

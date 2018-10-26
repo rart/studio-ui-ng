@@ -12,7 +12,6 @@ export class UserListComponent implements OnInit {
 
   @Input() users: User[] = [];
   @Input() disabled: LookupTable<string> = {};
-  @Input() selected: LookupTable<string> = {};
 
   @Output() selected = new Subject<User>();
 

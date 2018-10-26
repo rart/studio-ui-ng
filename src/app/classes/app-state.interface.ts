@@ -2,8 +2,8 @@ import { Asset } from '../models/asset.model';
 import { User } from '../models/user.model';
 import { Project } from '../models/project.model';
 import { Group } from '../models/group.model';
-import { StudioModel } from '../utils/type.utils';
 import { APIResponse } from '../models/service-payloads';
+import { Query } from '../models/query';
 
 export interface AppState {
   explorer: ExplorerState;
@@ -92,7 +92,8 @@ export interface ListingViewState {
   order: Array<string | number>;
   page?: LookupTable<Array<number | string>>;
   total?: number;
-  query?: any;
+  query?: Query;
+  loading: LookupTable<boolean>;
 }
 
 export interface ResultEntry {

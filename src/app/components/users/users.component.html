@@ -5,12 +5,12 @@
     icon="people"
     childMax="comfort">
     <div>
-      <button (click)="fetchUsers()" color="default" mat-fab
+      <button (click)="fetchUsers(undefined, true)" color="default" mat-fab
               [attr.aria-label]="'Refresh Users' | translate">
         <mat-icon aria-hidden="true">refresh</mat-icon>
       </button>
       <button theme="green" hue="600" color="inherit" mat-fab
-              [routerLink]="['/users/create']"
+              (click)="createUser()"
               [attr.aria-label]="'Create User' | translate">
         <mat-icon aria-hidden="true">add</mat-icon>
       </button>
@@ -19,8 +19,11 @@
   <section class="view body">
 
     <div class="pad all">
-      <mat-card class="pad all" max="readability">
-        <std-user-list (selected)="userSelected($event)" [users]="users"></std-user-list>
+      <std-spinner class="absolute position full with height cover" *ngIf="loading">
+        Retrieving Users&hellip;
+      </std-spinner>
+      <mat-card class="pad all" max="readability" *ngIf="!loading">
+        <std-user-list (selected)="editUser($event)" [users]="users"></std-user-list>
       </mat-card>
     </div>
 
@@ -29,8 +32,8 @@
     <mat-paginator class="responsive-tight"
                    (page)="pageChanged($event)"
                    [length]="totalNumOfUsers"
-                   [pageIndex]="pageIndex"
-                   [pageSize]="pageSize"
+                   [pageIndex]="query.pageIndex"
+                   [pageSize]="query.pageSize"
                    [pageSizeOptions]="pageSizeOptions">
     </mat-paginator>
   </footer>
