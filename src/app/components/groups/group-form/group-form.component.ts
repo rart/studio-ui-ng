@@ -9,7 +9,7 @@ import {
   fetchGroupMembers,
   updateGroup
 } from '../../../actions/group.actions';
-import { AppState, GroupState, LookupTable, ModelState, ResultEntry } from '../../../classes/app-state.interface';
+import { AppState, GroupState, ListingViewState, LookupTable, ModelState, ResultEntry } from '../../../classes/app-state.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { WithNgRedux } from '../../../classes/with-ng-redux.class';
@@ -19,7 +19,7 @@ import { clearActionResult } from '../../../actions/app.actions';
 import { Group } from '../../../models/group.model';
 import { APIResponse } from '../../../models/service-payloads';
 import { isSuccessResponse, notNullOrUndefined } from '../../../app.utils';
-import { createCompoundKey } from '../../../utils/state.utils';
+import { createKey } from '../../../utils/state.utils';
 import { MatSnackBar } from '@angular/material';
 import { showSnackBar } from '../../../utils/material.utils';
 import { User } from '../../../models/user.model';
@@ -85,9 +85,9 @@ export class GroupFormComponent extends WithNgRedux implements OnInit {
       { groupForm, editModeId: id } = this,
       name = groupForm.controls.name.value,
       fetching = !!loading[id],
-      creating = !!loading[createCompoundKey(Actions.CREATE_GROUP, name)],
-      updating = !!loading[createCompoundKey(Actions.UPDATE_GROUP, id)],
-      deleting = !!loading[createCompoundKey(Actions.DELETE_GROUP, id)];
+      creating = !!loading[createKey(Actions.CREATE_GROUP, name)],
+      updating = !!loading[createKey(Actions.UPDATE_GROUP, id)],
+      deleting = !!loading[createKey(Actions.DELETE_GROUP, id)];
     this.loading = (fetching || creating || updating || deleting);
     if (fetching) {
       this.loadingMessage = 'RETRIEVING_GROUP_INFORMATION';
@@ -120,20 +120,20 @@ export class GroupFormComponent extends WithNgRedux implements OnInit {
       response: APIResponse,
       isCreate = false;
 
-    if (notNullOrUndefined(results[key = createCompoundKey(Actions.CREATE_GROUP, name)])) {
+    if (notNullOrUndefined(results[key = createKey(Actions.CREATE_GROUP, name)])) {
       isCreate = true;
       this.editMode = true;
       this.editModeId = results[key].group.id;
     }
 
-    if (notNullOrUndefined(results[key = createCompoundKey(Actions.DELETE_GROUP, id)])) {
+    if (notNullOrUndefined(results[key = createKey(Actions.DELETE_GROUP, id)])) {
       this.router.navigate(['/groups']);
     }
 
     if (
-      notNullOrUndefined(results[key = createCompoundKey(Actions.CREATE_GROUP, name)]) ||
-      notNullOrUndefined(results[key = createCompoundKey(Actions.UPDATE_GROUP, id)]) ||
-      notNullOrUndefined(results[key = createCompoundKey(Actions.DELETE_GROUP, id)])
+      notNullOrUndefined(results[key = createKey(Actions.CREATE_GROUP, name)]) ||
+      notNullOrUndefined(results[key = createKey(Actions.UPDATE_GROUP, id)]) ||
+      notNullOrUndefined(results[key = createKey(Actions.DELETE_GROUP, id)])
     ) {
       response = results[key].response;
       if (isSuccessResponse(response)) {
@@ -151,7 +151,8 @@ export class GroupFormComponent extends WithNgRedux implements OnInit {
       this.fetchGroupMembers();
       combineLatest(
         store.select(['entities', 'groups']),
-        store.select(['entities', 'users']))
+        store.select(['entities', 'users']),
+        store.select('userList'))
         .pipe(this.untilDestroyed())
         .subscribe((values: any[]) => {
 
@@ -159,23 +160,24 @@ export class GroupFormComponent extends WithNgRedux implements OnInit {
             { editModeId: id, addingMembers, deletingMembers } = this,
             groups: GroupState = values[0],
             users: ModelState<User> = values[1],
+            userList: ListingViewState = values[2],
             members = (groups.members[id] || []).concat();
 
           this.users = Object.values(users.byId).filter(u => !members.includes(u.username));
           this.members = members.filter(i => i in users.byId).map(i => users.byId[i]);
           this.memberIds = members;
 
-          this.loadingMembers = !!groups.loading[createCompoundKey(Actions.FETCH_GROUP_MEMBERS, id)];
-          this.loadingUsers = !!users.loading.PAGE;
+          this.loadingMembers = !!groups.loading[createKey(Actions.FETCH_GROUP_MEMBERS, id)];
+          this.loadingUsers = !!userList.loading.PAGE;
 
           Object.keys(addingMembers)
             .forEach((username) => {
-              addingMembers[username] = !!groups.loading[createCompoundKey(Actions.ADD_GROUP_MEMBER, id, username)];
+              addingMembers[username] = !!groups.loading[createKey(Actions.ADD_GROUP_MEMBER, id, username)];
             });
 
           Object.keys(deletingMembers)
             .forEach((username) => {
-              deletingMembers[username] = !!groups.loading[createCompoundKey(Actions.DELETE_GROUP_MEMBER, id, username)];
+              deletingMembers[username] = !!groups.loading[createKey(Actions.DELETE_GROUP_MEMBER, id, username)];
             });
 
         });

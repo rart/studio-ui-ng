@@ -23,9 +23,9 @@ export interface BulkDeletePayload {
 }
 
 export interface PagedPayload {
-  limit: number;
   total: number;
-  offset: number;
+  pageSize: number;
+  pageIndex: number;
 }
 
 export interface BasicUsersPayload {

@@ -75,8 +75,8 @@ import { Group } from './models/group.model';
 import { of } from 'rxjs/observable/of';
 import { never } from 'rxjs/observable/never';
 import { APIResponse } from './models/service-payloads';
-import { ResponseCodesEnum } from './enums/response-codes.enum';
 import { ModelState } from './classes/app-state.interface';
+import { Query } from './models/query';
 
 export function orderAssetsFoldersFirst(assets: Asset[]) {
   return assets.sort((a, b) => {
@@ -161,3 +161,9 @@ export const FEMALE_AVATARS = [
 export function getRandomAvatar() {
   return AVATARS[Math.floor(Math.random() * AVATARS.length)];
 }
+
+export function getDefaultQuery(mixin: Partial<Query> = {}): Query {
+  return { pageIndex: 0, pageSize: 5, ...mixin };
+}
+
+export const PAGE_SIZE_OPTIONS = [5, 10, 25, 100];

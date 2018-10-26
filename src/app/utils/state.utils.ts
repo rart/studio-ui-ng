@@ -166,6 +166,6 @@ export function popActionResult<T extends ModelState = ModelState>(state: T, key
   };
 }
 
-export function createCompoundKey(actionType: string, ...modifiers: Array<string | number>): string {
+export function createKey(actionType: string, ...modifiers: Array<string | number>): string {
   return `${actionType}${modifiers.map(m => `[${m}]`).join('')}`;
 }

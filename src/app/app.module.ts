@@ -151,7 +151,6 @@ import { GroupEpics } from './epics/group.epics';
 import { GroupFormComponent } from './components/groups/group-form/group-form.component';
 import { UserListComponent } from './components/users/user-list/user-list.component';
 import { GroupListComponent } from './components/groups/group-list/group-list.component';
-import { UserListPaginatorComponent } from './components/users/user-list-paginator/user-list-paginator.component';
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
@@ -233,8 +232,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     GroupsComponent,
     GroupFormComponent,
     UserListComponent,
-    GroupListComponent,
-    UserListPaginatorComponent
+    GroupListComponent
 
   ],
   imports: [

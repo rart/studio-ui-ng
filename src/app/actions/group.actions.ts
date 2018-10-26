@@ -8,6 +8,8 @@ import {
   FetchGroupsPayload,
   FetchGroupUsersPayload
 } from '../models/service-payloads';
+import { Query } from '../models/query';
+import { getDefaultQuery } from '../app.utils';
 
 export function createGroup(group: Group): AppAction {
   return {
@@ -65,7 +67,7 @@ export function fetchGroupComplete(response: FetchGroupPayload): AppAction {
   };
 }
 
-export function fetchGroups(query: Object): AppAction {
+export function fetchGroups(query: Query = getDefaultQuery()): AppAction {
   return {
     type: Actions.FETCH_GROUPS,
     payload: { query }

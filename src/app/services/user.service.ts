@@ -9,8 +9,9 @@ import { API1Parser } from '../classes/api1-parser.class';
 import { BasicUsersPayload, BulkDeletePayload, DeletePayload } from '../models/service-payloads';
 import { CreateUserPayload, FetchUserPayload, FetchUsersPayload } from '../models/service-payloads';
 import { API2Parser } from '../classes/api2-parser.class';
-import { createEmptyUser } from '../app.utils';
+import { createEmptyUser, getDefaultQuery, notNullOrUndefined } from '../app.utils';
 import { of } from 'rxjs/observable/of';
+import { Query } from '../models/query';
 
 const baseUrl = `/studio/api/2/users`;
 const security = `${environment.apiUrl}/security`;
@@ -33,13 +34,20 @@ export class UserService {
 
   }
 
-  page(options = { limit: 1000, offset: 0 }): Observable<FetchUsersPayload> {
+  page(options: Query = getDefaultQuery()): Observable<FetchUsersPayload> {
+    const { pageIndex, pageSize } = options;
+    const params = {
+      offset: pageIndex * pageSize,
+      limit: pageSize
+    };
     return this.http
-      .get(baseUrl, options)
+      .get(baseUrl, params)
       .pipe(
         map(({ result: data }) => ({
-          limit: data.limit,
-          offset: data.offset,
+          pageSize: data.limit,
+          // Bug in the service is not reliably returning the requested limit
+          // but rather the number of results from the requested page.
+          pageIndex: data.offset / (notNullOrUndefined(pageSize) ? pageSize : data.limit),
           total: data.total,
           response: data.response,
           users: data.entities.map(raw => API2Parser.user(raw))
