@@ -28,10 +28,10 @@ const anonym = (state: AppState) => {
 
 @Component({
   selector: 'std-project-management',
-  templateUrl: './project-management.component.html',
-  styleUrls: ['./project-management.component.scss']
+  templateUrl: './projects.component.html',
+  styleUrls: ['./projects.component.scss']
 })
-export class ProjectManagementComponent extends WithNgRedux implements OnInit {
+export class ProjectsComponent extends WithNgRedux implements OnInit {
 
   projects;
   dialogRef = null;

@@ -5,12 +5,12 @@ import { ProjectResolver } from './services/project.resolver';
 import { ProjectsResolver } from './services/projects.resolver';
 
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { ProjectDashboardComponent } from './components/project/project-dashboard/project-dashboard.component';
+import { ProjectDashboardComponent } from './components/projects/project-dashboard/project-dashboard.component';
 import { UsersComponent } from './components/users/users.component';
 import { NotImplementedComponent } from './components/not-implemented/not-implemented.component';
 import { UserProfileComponent } from './components/users/user-profile/user-profile.component';
-import { ProjectComponent } from './components/project/project.component';
-import { ProjectManagementComponent } from './components/project-management/project-management.component';
+import { ProjectComponent } from './components/projects/project/project.component';
+import { ProjectsComponent } from './components/projects/projects.component';
 import { PreviewComponent } from './components/preview/preview.component';
 import { UserFormComponent } from './components/users/user-form/user-form.component';
 import { WorkflowStatesComponent } from './components/workflow-states/workflow-states.component';
@@ -54,6 +54,14 @@ export const routes: Routes = [
         component: GroupsComponent
       },
       {
+        path: 'settings',
+        component: NotImplementedComponent
+      },
+      {
+        path: 'about',
+        component: NotImplementedComponent
+      },
+      {
         path: 'assets',
         component: AssetBrowserComponent,
       },
@@ -79,33 +87,18 @@ export const routes: Routes = [
       },
       {
         path: 'projects',
-        component: ProjectManagementComponent,
+        component: ProjectsComponent,
+        resolve: { projects: ProjectsResolver },
         children: [
           {
             path: 'create',
-            component: ProjectManagementComponent
+            component: ProjectsComponent
           },
           {
             path: ':projectCode',
-            component: ProjectManagementComponent
+            component: ProjectsComponent
           }
         ]
-      },
-      {
-        path: 'config',
-        component: NotImplementedComponent
-      },
-      {
-        path: 'help',
-        component: NotImplementedComponent
-      },
-      {
-        path: 'market',
-        component: NotImplementedComponent
-      },
-      {
-        path: 'profile',
-        component: UserProfileComponent
       },
       {
         path: 'project/:project',
@@ -170,6 +163,13 @@ export const routes: Routes = [
             component: PreviewComponent
           },
           {
+            path: 'edit',
+            component: EditComponent
+          },{
+            path: 'search',
+            component: NotImplementedComponent
+          },
+          {
             path: 'server-log',
             component: NotImplementedComponent
           },
@@ -206,6 +206,22 @@ export const routes: Routes = [
             component: NotImplementedComponent
           }
         ]
+      },
+      {
+        path: 'config',
+        component: NotImplementedComponent
+      },
+      {
+        path: 'help',
+        component: NotImplementedComponent
+      },
+      {
+        path: 'market',
+        component: NotImplementedComponent
+      },
+      {
+        path: 'profile',
+        component: UserProfileComponent
       },
       {
         path: 'preview',

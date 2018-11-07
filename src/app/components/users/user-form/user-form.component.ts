@@ -9,7 +9,7 @@ import { GroupService } from '../../../services/group.service';
 import { AVATARS, createEmptyUser, fullName } from '../../../app.utils';
 import { Observable } from 'rxjs/Observable';
 import { dispatch, NgRedux, select } from '@angular-redux/store';
-import { AppState, LookupTable, Settings } from '../../../classes/app-state.interface';
+import { AppState, Settings } from '../../../classes/app-state.interface';
 import { createUser, deleteUser, fetchUser, updateUser } from '../../../actions/user.actions';
 import { WithNgRedux } from '../../../classes/with-ng-redux.class';
 import { Actions } from '../../../enums/actions.enum';
@@ -41,18 +41,15 @@ export class UserFormComponent extends WithNgRedux implements OnInit {
   selectedTabIndex = 0;
   notifyPasswordReset = true;
 
-  firstNameFormControl = new FormControl('', [Validators.required]);
-  lastNameFormControl = new FormControl('', [Validators.required]);
-  emailFormControl = new FormControl('', [Validators.required, Validators.pattern(EMAIL_REGEX)]);
-  userNameFormControl = new FormControl('', [Validators.required]);
-  passwordFormControl = new FormControl('', [Validators.required]);
-  resetPasswordFormControl = new FormControl('', [Validators.required]);
+  resetPasswordControl = new FormControl('', [Validators.required]);
 
-  updateBasicInfoFormGroup = new FormGroup({
-    firstName: this.firstNameFormControl,
-    lastName: this.lastNameFormControl,
-    email: this.emailFormControl,
-    userName: this.userNameFormControl
+  userForm = new FormGroup({
+    firstName: new FormControl('', [Validators.required]),
+    lastName: new FormControl('', [Validators.required]),
+    email: new FormControl('', [Validators.required, Validators.pattern(EMAIL_REGEX)]),
+    username: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required]),
+    enabled: new FormControl(true)
   });
 
   constructor(public snackBar: MatSnackBar,
@@ -71,7 +68,7 @@ export class UserFormComponent extends WithNgRedux implements OnInit {
         if (params.username || params.edit) {
           this.editMode = true;
           this.editModeId = params.username || params.edit;
-          this.userNameFormControl.disable();
+          this.userForm.controls.username.disable();
           this.loadUser();
         }
       };
@@ -108,6 +105,10 @@ export class UserFormComponent extends WithNgRedux implements OnInit {
         const { editMode, editModeId } = this;
         if (editMode && editModeId && users[editModeId]) {
           this.model = users[editModeId];
+          this.userForm.patchValue(users[editModeId]);
+          this.userForm.controls.password.setValidators([]);
+        } else {
+          this.userForm.controls.password.setValidators([Validators.required]);
         }
       });
 
@@ -135,9 +136,10 @@ export class UserFormComponent extends WithNgRedux implements OnInit {
     return fetchUser(this.editModeId);
   }
 
-  @dispatch()
+  // @dispatch()
   create() {
-    return createUser(this.model);
+    console.log(this.userForm.getRawValue());
+    // return createUser(this.model);
     // showSnackBar(this.snackBar, `${fullName(this.model)} registered successfully. Edit mode enabled.`);
   }
 

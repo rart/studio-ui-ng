@@ -1,0 +1,29 @@
+<ul class="global-nav__items">
+  <li class="global-nav__item logo">
+    <a class="global-nav__link"
+       routerLink="/"
+       routerLinkActive="active"
+       [routerLinkActiveOptions]="{ exact: true }">
+      <img class="global-nav__link__logo" src="/assets/img/icon/favicon-96x96.png" alt="Home">
+    </a>
+  </li>
+  <li class="global-nav__item" *ngFor="let item of items">
+    <a class="global-nav__link"
+       routerLink="{{item.config.href}}"
+       routerLinkActive="active"
+       [routerLinkActiveOptions]="{ exact: true }">
+      <i class="global-nav__link__icon {{item.iconClass}}" aria-hidden="true">{{item.iconText}}</i>
+      <span class="global-nav__link__label">{{'STUDIO_NAV.' + item.label | translate}}</span>
+    </a>
+  </li>
+</ul>
+
+<div class="ui divider"></div>
+
+<ul class="global-nav__items">
+  <li class="global-nav__item">
+    <a class="global-nav__link" [routerLink]="['/project', 'editorial']" routerLinkActive="active">
+      <mat-icon class="global-nav__link__icon">devices_other</mat-icon>
+    </a>
+  </li>
+</ul>

@@ -1,51 +1,50 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { dispatch, NgRedux } from '@angular-redux/store';
 import { fetchGroups } from '../../actions/group.actions';
 import { Group } from '../../models/group.model';
 import { AppState } from '../../classes/app-state.interface';
-import { WithNgRedux } from '../../classes/with-ng-redux.class';
-import { withLatestFrom } from 'rxjs/operators';
+import { Query } from '../../models/query';
+import { ListingView } from '../../classes/listing-view.class';
 
 @Component({
   selector: 'std-groups',
-  templateUrl: './groups.component.html',
-  styleUrls: ['./groups.component.scss']
+  styleUrls: ['./groups.component.scss'],
+  template: ListingView.createTemplate({
+    listTemplate: `
+      <mat-card class="pad all" max="readability">
+        <div class="ui link divided items">
+          <div class="item" *ngFor="let group of entities" (click)="edit(group)">
+            <div class="content">
+              <div class="header">{{group.name}}</div>
+              <div class="meta">{{group.description}}</div>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    `
+  })
 })
-export class GroupsComponent extends WithNgRedux implements OnInit {
+export class GroupsComponent extends ListingView<Group> {
 
-  groups: Group[] = [];
+  titleBarIcon: string = 'group';
+  titleBarTitle: string = 'Groups';
 
-  pageSize = 5;
-  pageIndex = 0;
-  numOfGroups = 0;
-  pageSizeOptions = [5, 10, 25, 100];
-
-  constructor(store: NgRedux<AppState>) {
-    super(store);
-  }
-
-  ngOnInit() {
-
-    const { store } = this;
-
-    store.select(['entities', 'groups', 'byId'])
-      .pipe(
-        // withLatestFrom(
-        //   store.select('groupsList'),
-        //   (a, b) => ({ byId: a, state: b })
-        // ),
-        this.untilDestroyed()
-      )
-      .subscribe((byId) => {
-        this.groups = Object.values(byId);
-      });
-
-    this.fetchGroups();
+  constructor(store: NgRedux<AppState>, private router: Router) {
+    super(store, 'groups', 'groupsList');
   }
 
   @dispatch()
-  fetchGroups() {
-    return fetchGroups();
+  fetch(query: Query = this.query, forceUpdate = false) {
+    return fetchGroups(query, forceUpdate);
+  }
+
+  create(): void {
+    this.router.navigate(['/groups/create']);
+  }
+
+  edit(group: Group): void {
+    this.router.navigate(['/groups/edit', group.id]);
   }
 
 }

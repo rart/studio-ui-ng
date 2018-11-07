@@ -3,7 +3,7 @@ import { User } from '../models/user.model';
 import { StudioHttpService } from './http.service';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs/Observable';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, onErrorResumeNext } from 'rxjs/operators';
 import { PostResponse } from '../classes/post-response.interface';
 import { API1Parser } from '../classes/api1-parser.class';
 import { BasicUsersPayload, BulkDeletePayload, DeletePayload } from '../models/service-payloads';
@@ -217,7 +217,9 @@ export class UserService {
   }
 
   validateSession() {
-    return this.http.get(`${security}/validate-session.json`);
+    return this.http.get(`${security}/validate-session.json`).pipe(
+      onErrorResumeNext(of({}))
+    );
   }
 
 }

@@ -1,0 +1,3 @@
+<iframe *ngIf="asset" [src]="source" (load)="loading = false"></iframe>
+<std-spinner *ngIf="loading"
+  class="absolute position take over opaque"></std-spinner>

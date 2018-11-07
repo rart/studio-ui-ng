@@ -7,6 +7,7 @@ import { Group } from '../models/group.model';
 import { Project } from '../models/project.model';
 import { getRandomAvatar } from '../app.utils';
 import { APIParser } from './api-parser.abstract';
+import { isNullOrUndefined } from 'util';
 
 export class API1Parser extends APIParser {
 
@@ -228,6 +229,9 @@ export class API1Parser extends APIParser {
   }
 
   static user(json: any): User {
+    if (isNullOrUndefined(json)) {
+      return null;
+    }
 
     let user: User = {
       id: json.id,

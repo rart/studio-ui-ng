@@ -12,6 +12,10 @@ import {
   fetchGroupsComplete,
   updateGroupComplete
 } from '../actions/group.actions';
+import { AppState } from '../classes/app-state.interface';
+import { Store } from 'redux';
+import { isNullOrUndefined } from 'util';
+import { never } from 'rxjs/observable/never';
 
 @Injectable()
 export class GroupEpics extends BaseEpic {
@@ -46,10 +50,15 @@ export class GroupEpics extends BaseEpic {
 
   private fetchGroups = RootEpic.createEpic(
     Actions.FETCH_GROUPS,
-    ({ payload }) => this.service.page(payload.query).pipe(
-      map(fetchGroupsComplete)
-    ));
-  
+    ({ payload }, store: Store<AppState>) => {
+      const state = store.getState();
+      return (
+        (payload.forceUpdate || isNullOrUndefined(state.groupsList.page[payload.query.pageIndex]))
+          ? this.service.page(payload.query).pipe(map(fetchGroupsComplete))
+          : never()
+      );
+    });
+
   private fetchGroupMembers = RootEpic.createEpic(
     Actions.FETCH_GROUP_MEMBERS,
     ({ payload }) => this.service.members(payload.id).pipe(

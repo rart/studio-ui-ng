@@ -18,9 +18,8 @@ export interface AppState {
   settings?: Settings;
   deliveryTable?: { [uuid: string]: any }; // This feels like a terrible practice. Need to figure out something...
   editSessions?: EditSessions;
-  // users: ModelState<User>;
-  // groups: ModelState<Group>;
   usersList: ListingViewState;
+  groupsList: ListingViewState;
 }
 
 export interface ExplorerState {

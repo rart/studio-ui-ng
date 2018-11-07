@@ -14,7 +14,6 @@ import { openDialog } from '../../utils/material.utils';
 import { EditorComponent } from '../editor/editor.component';
 import { Subject } from 'rxjs/Subject';
 import { AssetTypeEnum } from '../../enums/asset-type.enum';
-import { PluginHostComponent } from '../plugin-host/plugin-host.component';
 import { isNullOrUndefined } from 'util';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { merge } from 'rxjs/observable/merge';
@@ -152,7 +151,7 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
 
   assetChanged(assetId) {
     if (isNullOrUndefined(assetId)) {
-      this.renderer = 'none';
+      this.renderer = 'empty';
     } else {
       this.renderer = 'determining';
       this.select<Asset>(['entities', 'assets', 'byId', assetId])
@@ -162,10 +161,22 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
         .subscribe((asset) => {
           switch (asset.type) {
             case AssetTypeEnum.PAGE:
+              this.renderer = 'FormEditorComponent';
+              break;
+            case AssetTypeEnum.CSS:
+            case AssetTypeEnum.SASS:
+            case AssetTypeEnum.SCSS:
+            case AssetTypeEnum.HTML:
+            case AssetTypeEnum.GROOVY:
+            case AssetTypeEnum.FREEMARKER:
+            case AssetTypeEnum.JAVASCRIPT:
+              this.renderer = 'CodeEditorComponent';
+              break;
+            case AssetTypeEnum.JPEG:
               this.renderer = 'PluginHostComponent';
               break;
             default:
-              this.renderer = 'CodeEditorComponent';
+              this.renderer = 'none';
           }
         });
     }
@@ -182,6 +193,7 @@ export class EditComponent extends WithNgRedux implements OnInit, AfterViewInit 
       this.active = nextActive;
     } else {
       this.active = null;
+      this.assetChanged(null);
     }
   }
 

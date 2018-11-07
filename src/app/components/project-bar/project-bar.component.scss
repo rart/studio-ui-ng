@@ -1,0 +1,128 @@
+@import "~app/styles/settings";
+
+/* Structure */
+:host {
+  z-index: 2;
+  width: 100%;
+  height: 100vh;
+  display: block;
+  grid-area: Sidebar;
+  position: relative;
+}
+
+/* Theme */
+:host {
+  @include open-sans-light;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+}
+
+.project-bar__header {
+  display: grid;
+  padding: 10px 10px 0;
+  grid-template-columns: auto 30px;
+  grid-template-areas: "header header" "title close" "desc desc";
+}
+
+.project-bar__header__title {
+  font-size: .75rem;
+  grid-area: header;
+  font-style: normal;
+  @include open-sans-light;
+  text-transform: uppercase;
+}
+
+.project-bar__header__project-name {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  grid-area: title;
+  font-size: 1.25rem;
+  align-items: center;
+}
+
+.project-bar__header__close {
+  width: 100%;
+  height: 100%;
+  grid-area: close;
+  font-size: 1.25rem;
+  transform: rotate(180deg);
+}
+
+.project-bar__header__description {
+  margin: 0;
+  padding: 0;
+  grid-area: desc;
+  font-size: .75rem;
+}
+
+.project-bar__nav {
+  margin: 20px 0;
+  padding: 0 0;
+  list-style-type: none;
+}
+
+.project-bar__nav_item {
+  margin: 0 0;
+  padding: 0 0;
+}
+
+.project-bar__link {
+  margin: 0 0;
+  display: flex;
+  height: 1.8rem;
+  align-items: center;
+  padding: 0 0.625rem;
+  place-content: space-evenly;
+  &.active {
+    color: unset;
+  }
+}
+
+.project-bar__link__icon {
+  font-size: 1rem;
+  margin: 0 .625rem 0 0;
+}
+
+.project-bar__link__label {
+  flex: 1;
+}
+
+.project-bar__link__children-indicator {
+  width: auto;
+  height: auto;
+  font-size: 1rem;
+}
+
+.project-bar__tree {
+  background: none;
+}
+
+
+.project-bar__tree {
+  margin: 0 0 5px 0;
+  ::ng-deep {
+    .mat-expansion-indicator {
+      display: none;
+    }
+    .mat-expansion-panel-body {
+      padding: 0 0 0 1rem !important;
+    }
+  }
+}
+
+.project-bar__tree__panel-header {
+  padding: 0 10px 0 5px !important;
+  &.mat-expanded, &.mat-expanded:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.project-bar__tree__panel-title {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  font-size: 0.875rem;
+  align-items: center;
+  text-transform: uppercase;
+  min-height: 25px !important;
+}

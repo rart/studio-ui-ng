@@ -1,0 +1,63 @@
+@import "~app/styles/settings";
+
+::ng-deep {
+  std-global-nav {
+    grid-area: GlobalNav;
+  }
+}
+
+/* Structure */
+:host {
+  z-index: 3;
+  height: 100vh;
+  position: relative;
+}
+
+/* Theme */
+:host {
+  background: #FFFFFF;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+}
+
+.global-nav__items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.global-nav__item {
+  padding: 0;
+  margin: 0 0 0.625rem;
+  &.logo .global-nav__link {
+    padding: 1rem 0;
+  }
+}
+
+.global-nav__link {
+  display: flex;
+  padding: .5rem 0;
+  color: $color-grey;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    color: $color-blue;
+  }
+  &.active {
+    //background-color: #EDEFFF;
+    color: $color-blue;
+    background-color: lighten($color-blue, 40%);
+  }
+}
+
+.global-nav__link__icon {
+  font-size: 2rem;
+}
+
+.global-nav__link__label {
+  display: none;
+  /* TODO: Hide accessibly! */
+}
+
+.global-nav__link__logo {
+  width: 2.5rem;
+}

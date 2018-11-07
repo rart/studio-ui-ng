@@ -3,7 +3,7 @@ import { AVATARS } from '../app.utils';
 
 export const initialState: AppState = {
   explorer: undefined,
-  activeProjectCode: 'project-a',
+  activeProjectCode: 'editorial',
   auth: 'validated',
   user: {
     avatarUrl: AVATARS[9],
@@ -18,7 +18,7 @@ export const initialState: AppState = {
   },
   previewTabs: undefined,
   workspaces: {
-    'project-a': {
+    'editorial': {
       previewTabs: {
         activeId: 'TEST_TAB_ID',
         order: ['TEST_TAB_ID'],
@@ -35,7 +35,7 @@ export const initialState: AppState = {
         }
       },
       selectedItems: {
-        'launcher:/site/website/index.xml': true
+        'editorial:/site/website/index.xml': true
       },
       expandedPanels: {
         'pending.panel.pages': true,
@@ -60,18 +60,19 @@ export const initialState: AppState = {
         status: 'void',
         data: null,
         assetId: 'editorial:/site/website/index.xml',
-        projectCode: 'project-a',
+        projectCode: 'editorial',
         fetchPayload: null
       },
       'TEST_SESSION_ID_5': {
         id: 'TEST_SESSION_ID_5',
         status: 'void',
-        data: { split: 'vertical' },
+        data: {  },
         assetId: 'editorial:/static-assets/js/main.js',
-        projectCode: 'project-a',
+        projectCode: 'editorial',
         fetchPayload: null
       }
     }
   },
-  usersList: undefined
+  usersList: undefined,
+  groupsList: undefined,
 };

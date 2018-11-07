@@ -56,9 +56,9 @@ export class AppComponent extends WithNgRedux {
 
     // - - - - - - - - - - - - - - - -
 
-    this.select('auth')
-      .pipe(filter(state => state !== 'fetching'))
-      .subscribe((value: string) => {
+    this.select<string>('auth')
+      .pipe(filter((state) => !['fetching'].includes(state)))
+      .subscribe((value) => {
         this.auth = value;
         if (value === 'void') {
           this.router.navigate(['/login']);
@@ -80,20 +80,21 @@ export class AppComponent extends WithNgRedux {
             this.router.navigate(['/']);
           }
           this.startSessionTimeoutInterval();
+          this.preRequisitesPassed = true;
         }
       });
 
     this.sidebarVisibility$
       .subscribe((visible: boolean) => this.sidebarCollapsed = !visible);
 
-    this.select<StateEntity<Project>>(['entities', 'projects'])
-      .pipe(
-        filter(data => data.loading.all === false),
-        take(1)
-      )
-      .subscribe(() => {
-        this.preRequisitesPassed = true;
-      });
+    // this.select<StateEntity<Project>>(['entities', 'projects'])
+    //   .pipe(
+    //     filter(data => data.loading.all === false),
+    //     take(1)
+    //   )
+    //   .subscribe(() => {
+    //     this.preRequisitesPassed = true;
+    //   });
 
   }
 
@@ -109,8 +110,9 @@ export class AppComponent extends WithNgRedux {
       .pipe(
         // Stop the interval when the session times out or log out occurs
         takeUntil(
-          this.select('auth').pipe(
-            filter(x => (x === 'void') || (x === 'timeout')))),
+          this.select('auth')
+            .pipe(filter((x: string) => ['void', 'timeout'].includes(x)))
+        ),
         // Execute the session validation: if failed, the api will 401
         // and the logic above will handle the rest
         switchMap(() => authService.validateSession())

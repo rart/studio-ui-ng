@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AnyAction } from 'redux';
 import { Actions } from '../enums/actions.enum';
 import { Project } from '../models/project.model';
+import { FetchProjectPayload } from '../models/service-payloads';
 
 @Injectable()
 export class ProjectActions {
@@ -76,4 +77,17 @@ export class ProjectActions {
     };
   }
 
+}
+
+export function fetchProject(code: string) {
+  return {
+    type: Actions.FETCH_PROJECT
+  };
+}
+
+export function fetchProjectComplete(data: FetchProjectPayload) {
+  return {
+    type: Actions.PROJECT_FETCHED,
+    payload: data
+  };
 }

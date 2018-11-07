@@ -45,9 +45,13 @@
   <div class="edit content">
     <ng-container [ngSwitch]="renderer">
       <std-editor (data$)="updateSession($event)" *ngSwitchCase="'CodeEditorComponent'"></std-editor>
-      <std-plugin-host *ngSwitchCase="'PluginHostComponent'"></std-plugin-host>
+      <std-plugin-host *ngSwitchCase="'PluginHostComponent'" plugin="hello-plugin/index"></std-plugin-host>
+      <std-form-editor-container *ngSwitchCase="'FormEditorComponent'" [assetId]="active.assetId"></std-form-editor-container>
       <std-spinner class="take over" *ngSwitchCase="'determining'"></std-spinner>
       <div *ngSwitchCase="'none'">
+        <div class="center muted text pad lg all" translate>An editor for this type of file is not available.</div>
+      </div>
+      <div *ngSwitchCase="'empty'">
         <div class="center muted text pad lg all" translate>Nothing is selected for editing right now.</div>
       </div>
     </ng-container>
