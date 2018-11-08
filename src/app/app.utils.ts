@@ -75,7 +75,7 @@ import { Group } from './models/group.model';
 import { of } from 'rxjs/observable/of';
 import { never } from 'rxjs/observable/never';
 import { APIResponse } from './models/service-payloads';
-import { ModelState } from './classes/app-state.interface';
+import { ListingViewState, ModelState } from './classes/app-state.interface';
 import { Query } from './models/query';
 
 export function orderAssetsFoldersFirst(assets: Asset[]) {
@@ -164,6 +164,17 @@ export function getRandomAvatar() {
 
 export function getDefaultQuery(mixin: Partial<Query> = {}): Query {
   return { pageIndex: 0, pageSize: 5, ...mixin };
+}
+
+export function getDefaultListingViewState(mixin: Partial<ListingViewState> = {}): ListingViewState {
+  return {
+    total: 0,
+    order: [],
+    page: {},
+    loading: {},
+    query: getDefaultQuery(),
+    ...mixin
+  };
 }
 
 export const PAGE_SIZE_OPTIONS = [5, 10, 25, 100];

@@ -23,7 +23,7 @@ export class StudioService {
       });
   }
 
-  getSidebarItems(): Observable<any> {
+  getGlobalNav(): Observable<any> {
     return this.http
       .get(`${appUrl}/fixtures/get-sidebar-items.json`, { 'project': 'my-project-name' });
   }

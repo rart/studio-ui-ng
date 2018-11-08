@@ -1,68 +1,25 @@
 <mat-sidenav-container>
 
-  <div class="main content">
+  <div class="studio-content-wrapper" [ngClass]="{ 'has-sidebar': showProjectSidebar }">
 
-    <!-- TOPBAR: Above -->
-    <ng-container *ngIf="settings.topBarShown && settings.topBarPosition === 'top'">
-      <std-topbar class="above"></std-topbar>
-    </ng-container>
-    <!-- / TOPBAR: Above -->
+    <std-global-nav
+      [items]="globalNavItems">
+    </std-global-nav>
 
-    <!-- NAVBAR: Top -->
-    <std-horizontal-navbar class="top-navbar" fxHide fxShow.gt-md
-                           *ngIf="settings.navBarShown && settings.navBarPosition === 'top'">
-    </std-horizontal-navbar>
-    <!-- / NAVBAR: Top -->
+    <std-project-bar
+      *ngIf="showProjectBadge"
+      [links]="projectNavItems"
+      [trees]="projectTreeItems"
+      [attr.hidden]="showProjectSidebar ? null : true">
+    </std-project-bar>
 
-    <div class="wrapper">
+    <std-topbar class="above" *ngIf="settings.topBarShown"></std-topbar>
 
-      <!-- NAVBAR: Left -->
-      <std-vertical-navbar class="left-navbar"
-                           *ngIf="(settings.navBarPosition === 'left' || settings.navBarPosition === 'top')">
-      </std-vertical-navbar>
-      <!-- / NAVBAR: Left -->
-
-      <div class="content wrapper">
-
-        <!-- TOPBAR: Below -->
-        <ng-container *ngIf="settings.topBarShown && settings.topBarPosition === 'inline'">
-          <std-topbar class="below"></std-topbar>
-        </ng-container>
-        <!-- / TOPBAR: Below -->
-
-
-        <!--
-        @HostBinding('@routerTransitionUp') routeAnimationUp = false;
-        @HostBinding('@routerTransitionDown') routeAnimationDown = false;
-        @HostBinding('@routerTransitionRight') routeAnimationRight = false;
-        @HostBinding('@routerTransitionLeft') routeAnimationLeft = false;
-        @HostBinding('@routerTransitionFade') routeAnimationFade = false;
-        -->
-        <div class="main router wrapper" [@navigation]="navState">
-          <router-outlet></router-outlet>
-        </div>
-
-        <!-- FOOTER: Inline -->
-        <ng-container *ngIf="settings.footerShown && settings.footerPosition === 'inline'">
-          <std-footer class="below"></std-footer>
-        </ng-container>
-        <!-- / FOOTER: Inline -->
-
-      </div>
-
-      <!-- NAVBAR: Right -->
-      <std-vertical-navbar class="right-navbar"
-                           *ngIf="settings.navBarPosition === 'right'">
-      </std-vertical-navbar>
-      <!-- / NAVBAR: Right -->
-
+    <div class="main-router-wrapper" [@navigation]="navState">
+      <router-outlet></router-outlet>
     </div>
 
-    <!-- FOOTER: Below -->
-    <ng-container *ngIf="settings.footerShown && settings.footerPosition === 'below'">
-      <std-footer class="above"></std-footer>
-    </ng-container>
-    <!-- FOOTER: Below -->
+    <std-footer class="below" *ngIf="settings.footerShown"></std-footer>
 
   </div>
 

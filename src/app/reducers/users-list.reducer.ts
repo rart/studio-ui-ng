@@ -4,18 +4,13 @@ import { ListingViewState } from '../classes/app-state.interface';
 import { FetchUsersPayload } from '../models/service-payloads';
 import { AppAction } from '../models/app-action';
 import { createKey } from '../utils/state.utils';
-import { getDefaultQuery } from '../app.utils';
 import { isNullOrUndefined } from 'util';
+import { getDefaultListingViewState } from '../app.utils';
 
-const DEFAULT_STATE: ListingViewState = {
-  total: 0,
-  order: [],
-  page: {},
-  loading: {},
-  query: getDefaultQuery()
-};
-
-export const usersList: Reducer<ListingViewState> = (state = DEFAULT_STATE, action: AppAction<any>) => {
+export const usersList: Reducer<ListingViewState> = (
+  state = getDefaultListingViewState(),
+  action: AppAction<any>
+) => {
   const payload = action.payload;
   switch (action.type) {
     case Actions.FETCH_USERS: {

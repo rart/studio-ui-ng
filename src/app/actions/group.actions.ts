@@ -67,10 +67,10 @@ export function fetchGroupComplete(response: FetchGroupPayload): AppAction {
   };
 }
 
-export function fetchGroups(query: Query = getDefaultQuery()): AppAction {
+export function fetchGroups(query: Query = getDefaultQuery(), forceUpdate: boolean = false): AppAction {
   return {
     type: Actions.FETCH_GROUPS,
-    payload: { query }
+    payload: { query, forceUpdate }
   };
 }
 

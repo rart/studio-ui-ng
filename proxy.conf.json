@@ -1,0 +1,11 @@
+{
+  "/api/*": {
+    "target": "http://localhost:8080/"
+  },
+  "/static-assets/*": {
+    "target": "http://localhost:8080/"
+  },
+  "/studio/*": {
+    "target": "http://localhost:8080/"
+  }
+}

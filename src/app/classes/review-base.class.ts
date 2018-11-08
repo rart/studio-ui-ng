@@ -25,7 +25,7 @@ export class ReviewBase extends ComponentBase {
               this.ids$.next(Object.keys(selected));
             });
         } else {
-          this.ids$.next(['launcher:/site/website/index.xml']); // [params.asset];
+          this.ids$.next(['editorial:/site/website/index.xml']); // [params.asset];
         }
       });
 

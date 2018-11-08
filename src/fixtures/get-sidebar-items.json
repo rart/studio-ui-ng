@@ -1,63 +1,164 @@
 {
   "studio": [
     {
-      "iconClass": "fa fa-address-card-o",
-      "iconText": "",
+      "iconClass": "material-icons",
+      "iconText": "perm_contact_calendar",
       "label": "Users",
       "config": {
-        "href": "/users"
+        "href": "users"
       }
     },
     {
-      "iconClass": "fa fa-users",
-      "iconText": "",
+      "iconClass": "material-icons",
+      "iconText": "supervised_user_circle",
       "label": "Groups",
       "config": {
-        "href": "/groups"
+        "href": "groups"
       }
     },
     {
-      "iconClass": "fa fa-briefcase",
-      "iconText": "",
+      "iconClass": "material-icons",
+      "iconText": "important_devices",
       "label": "Projects",
       "config": {
-        "href": "/projects"
+        "href": "projects"
       }
     },
     {
-      "iconClass": "fa fa-question-circle-o",
-      "iconText": "",
+      "iconClass": "material-icons",
+      "iconText": "settings",
+      "label": "Settings",
+      "config": {
+        "href": "settings"
+      }
+    },
+    {
+      "iconClass": "material-icons",
+      "iconText": "help_outline",
       "label": "Help",
       "config": {
-        "href": "/help"
+        "href": "help"
       }
     }
   ],
   "project": {
     "nav": [
       {
-        "type": "link",
+        "iconClass": "material-icons",
+        "iconText": "dashboard",
         "label": "Dashboard",
-        "iconClass": "fa fa-tachometer",
         "config": {
           "href": "dashboard"
         }
       },
       {
-        "type": "link",
-        "label": "Server Log",
-        "iconClass": "fa fa-align-left",
+        "iconClass": "material-icons",
+        "iconText": "settings",
+        "label": "Configuration",
         "config": {
-          "href": "server-log"
-        },
-        "roles": []
+          "children": [
+            {
+              "iconClass": "",
+              "iconText": "",
+              "label": "Content Types",
+              "config": {
+                "href": "configuration/content-types"
+              }
+            },
+            {
+              "iconClass": "",
+              "iconText": "",
+              "label": "User Groups",
+              "config": {
+                "href": "configuration/user-groups"
+              }
+            },
+            {
+              "iconClass": "",
+              "iconText": "",
+              "label": "Configuration Files",
+              "config": {
+                "href": "configuration/configuration-files"
+              }
+            },
+            {
+              "iconClass": "",
+              "iconText": "",
+              "label": "Audit",
+              "config": {
+                "href": "configuration/audit"
+              }
+            },
+            {
+              "iconClass": "",
+              "iconText": "",
+              "label": "Workflow States",
+              "config": {
+                "href": "configuration/workflow-states"
+              }
+            },
+            {
+              "iconClass": "",
+              "iconText": "",
+              "label": "Logs",
+              "config": {
+                "href": "configuration/logs"
+              }
+            },
+            {
+              "iconClass": "",
+              "iconText": "",
+              "label": "Log Console",
+              "config": {
+                "href": "configuration/console"
+              }
+            },
+            {
+              "iconClass": "",
+              "iconText": "",
+              "label": "Publishing",
+              "config": {
+                "href": "configuration/publishing"
+              }
+            },
+            {
+              "iconClass": "",
+              "iconText": "",
+              "label": "Remote Repositories",
+              "config": {
+                "href": "configuration/remote-repos"
+              }
+            }
+          ]
+        }
       },
       {
-        "type": "heading",
-        "label": "Content"
+        "iconClass": "material-icons",
+        "iconText": "explore",
+        "label": "Preview",
+        "config": {
+          "href": "preview"
+        }
       },
       {
-        "type": "container",
+        "iconClass": "material-icons",
+        "iconText": "edit",
+        "label": "Editor",
+        "config": {
+          "href": "edit"
+        }
+      },
+      {
+        "iconClass": "material-icons",
+        "iconText": "search",
+        "label": "Search",
+        "config": {
+          "href": "search"
+        }
+      }
+    ],
+    "trees": [
+      {
         "label": "Pages",
         "iconClass": "fa fa-file-text-o",
         "iconText": null,
@@ -68,7 +169,6 @@
         }
       },
       {
-        "type": "container",
         "label": "Taxonomy",
         "iconClass": "fa fa-tags",
         "component": "wcm-root-folder",
@@ -78,7 +178,6 @@
         }
       },
       {
-        "type": "container",
         "label": "Assets",
         "iconClass": "fa fa-file-text-o",
         "component": "wcm-root-folder",
@@ -88,7 +187,6 @@
         }
       },
       {
-        "type": "container",
         "label": "Components",
         "iconClass": "fa fa-puzzle-piece",
         "component": "wcm-root-folder",
@@ -98,27 +196,6 @@
         }
       },
       {
-        "type": "link",
-        "label": "Content Models",
-        "iconClass": "fa fa-database",
-        "iconText": "",
-        "component": "",
-        "config": {
-          "href": "content-models"
-        }
-      },
-      {
-        "type": "heading",
-        "label": "Code",
-        "iconClass": "",
-        "iconText": "",
-        "component": "",
-        "config": {
-          "": ""
-        }
-      },
-      {
-        "type": "container",
         "label": "Templates",
         "iconClass": "fa fa-file-code-o",
         "component": "wcm-root-folder",
@@ -128,7 +205,6 @@
         }
       },
       {
-        "type": "container",
         "label": "Scripts",
         "iconClass": "fa fa-code",
         "component": "wcm-root-folder",
@@ -136,86 +212,6 @@
           "showRoot": false,
           "path": "/scripts"
         }
-      },
-      {
-        "type": "heading",
-        "label": "Configuration",
-        "iconClass": "",
-        "iconText": "",
-        "component": "",
-        "config": {
-          "": ""
-        }
-      },
-      {
-        "type": "link",
-        "label": "Configuration Files",
-        "iconClass": "fa fa-cogs",
-        "iconText": "",
-        "component": "",
-        "config": {
-          "href": "configuration-files"
-        }
-      },
-      {
-        "type": "link",
-        "label": "User Groups",
-        "iconClass": "fa fa-users",
-        "iconText": "",
-        "component": "",
-        "config": {
-          "href": "user-groups"
-        }
-      },
-      {
-        "type": "link",
-        "label": "Workflow States",
-        "iconClass": "fa fa-fast-forward",
-        "iconText": "",
-        "component": "",
-        "config": {
-          "href": "workflow-states"
-        }
-      },
-      {
-        "type": "link",
-        "label": "Bulk Publishing",
-        "iconClass": "fa fa-cubes",
-        "iconText": "",
-        "component": "",
-        "config": {
-          "href": "bulk-publishing"
-        }
-      },
-      {
-        "type": "link",
-        "label": "Audit",
-        "iconClass": "fa fa-eye",
-        "iconText": "",
-        "component": "",
-        "config": {
-          "href": "audit"
-        }
-      },
-      {
-        "type": "link",
-        "label": "Logging Levels",
-        "iconClass": "fa fa-align-right",
-        "iconText": "",
-        "component": "",
-        "config": {
-          "href": "logging-levels"
-        }
-      }
-    ],
-    "commands": [
-      {
-        "label": "Preview Sync",
-        "command": "start.preview.sync"
-      },
-      {
-        "label": "Sync From Repo",
-        "command": "start.repo.sync"
       }
     ]
   }

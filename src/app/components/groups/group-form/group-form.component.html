@@ -15,12 +15,12 @@
     <mat-card *ngIf="!loading" class="stretch min height ensure pad none" max="comfort">
 
       <mat-tab-group *ngIf="editMode" (selectedIndexChange)="selectedTabChange($event)">
-        <mat-tab i18n-label label="GROUP_FORM.TAB_BASIC">
+        <mat-tab i18n-label label="GroupForm.Tab.Basic">
           <ng-container
             [ngTemplateOutlet]="formFields">
           </ng-container>
         </mat-tab>
-        <mat-tab i18n-label label="GROUP_FORM.MEMBERS">
+        <mat-tab i18n-label label="GroupForm.Tab.Members">
           <div class="ui two column grid reset">
             <div class="column">
               USERS

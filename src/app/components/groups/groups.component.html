@@ -5,7 +5,7 @@
     icon="group"
     childMax="comfort">
     <div>
-      <button (click)="fetchGroups()" color="default" mat-fab
+      <button (click)="fetch(undefined, true)" color="default" mat-fab
               [attr.aria-label]="'Refresh Groups' | translate">
         <mat-icon aria-hidden="true">refresh</mat-icon>
       </button>
@@ -19,9 +19,12 @@
   <section class="view body">
 
     <div class="pad all">
-      <mat-card class="pad all" max="readability">
+      <std-spinner class="absolute position full with height cover" *ngIf="loading">
+        Retrieving Groups&hellip;
+      </std-spinner>
+      <mat-card class="pad all" max="readability" *ngIf="!loading">
         <div class="ui link divided items">
-          <div class="item" *ngFor="let group of groups" [routerLink]="['/groups/edit', group.id]">
+          <div class="item" *ngFor="let group of entities" [routerLink]="['/groups/edit', group.id]">
             <div class="content">
               <div class="header">{{group.name}}</div>
               <div class="meta">{{group.description}}</div>
@@ -34,10 +37,10 @@
   </section>
   <footer>
     <mat-paginator class="responsive-tight"
-                   (page)="pageChanged($event)"
-                   [length]="numOfGroups"
-                   [pageIndex]="pageIndex"
-                   [pageSize]="pageSize"
+                   (page)="fetch($event)"
+                   [length]="totalRecords"
+                   [pageIndex]="query.pageIndex"
+                   [pageSize]="query.pageSize"
                    [pageSizeOptions]="pageSizeOptions">
     </mat-paginator>
   </footer>

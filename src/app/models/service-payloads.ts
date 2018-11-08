@@ -1,5 +1,6 @@
 import { User } from './user.model';
 import { Group } from './group.model';
+import { Project } from './project.model';
 
 export interface APIResponse {
   code: number;
@@ -71,4 +72,10 @@ export interface FetchGroupPayload {
 export interface FetchGroupUsersPayload extends APIResponsePayload {
   id: number;
   users: User[];
+}
+
+export interface FetchProjectPayload {
+  code: string;
+  project: Project;
+  response: APIResponse;
 }

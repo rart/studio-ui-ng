@@ -68,10 +68,10 @@ export class Asset {
       });
     }
     model.numOfChildren = json.numOfChildren;
-    model.lockedBy = ('externally_managed' in json.lockedBy)
+    model.lockedBy = (json.lockedBy && 'externally_managed' in json.lockedBy)
       ? json.lockedBy
       : API1Parser.user(json.lockedBy);
-    model.lastEditedBy = ('externally_managed' in json.lastEditedBy)
+    model.lastEditedBy = (json.lastEditedBy && 'externally_managed' in json.lastEditedBy)
       ? json.lastEditedBy
       : API1Parser.user(json.lockedBy);
     model.lastEditedOn = json.lastEditedOn;

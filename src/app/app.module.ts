@@ -36,7 +36,10 @@ import {
   MatTabsModule,
   MatToolbarModule,
   MatTooltipModule,
-  MatStepperModule, MAT_DATE_LOCALE, DateAdapter, MAT_DATE_FORMATS
+  MatStepperModule,
+  MAT_DATE_LOCALE,
+  DateAdapter,
+  MAT_DATE_FORMATS
 } from '@angular/material';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
@@ -76,21 +79,21 @@ global();
 import { AppComponent } from './app.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { ProjectDashboardComponent } from './components/project/project-dashboard/project-dashboard.component';
+import { ProjectDashboardComponent } from './components/projects/project-dashboard/project-dashboard.component';
 import { NotImplementedComponent } from './components/not-implemented/not-implemented.component';
 import { UsersComponent } from './components/users/users.component';
 import { EmbeddedViewDialogComponent } from './components/embedded-view-dialog/embedded-view-dialog.component';
 import { ViewTitleBarComponent } from './components/view-title-bar/view-title-bar.component';
 import { UserGroupManagerComponent } from './components/users/user-group-manager/user-group-manager.component';
 import { UserProfileComponent } from './components/users/user-profile/user-profile.component';
-import { ProjectComponent } from './components/project/project.component';
+import { ProjectComponent } from './components/projects/project/project.component';
 import { PreviewComponent } from './components/preview/preview.component';
-import { ProjectManagementComponent } from './components/project-management/project-management.component';
+import { ProjectsComponent } from './components/projects/projects.component';
 import { PasswordFieldComponent } from './components/users/password-field/password-field.component';
 import { ContentTreeComponent } from './components/content-tree/content-tree.component';
 import { UserFormComponent } from './components/users/user-form/user-form.component';
-import { ProjectCrUDComponent } from './components/project-management/project-crud/project-crud.component';
-import { ItemListDashletComponent } from './components/project/project-dashboard/item-list-dashlet.component';
+import { ProjectCrUDComponent } from './components/projects/project-crud/project-crud.component';
+import { ItemListDashletComponent } from './components/projects/project-dashboard/item-list-dashlet.component';
 import { ChangeLossDecisionViewComponent, EditComponent } from './components/edit/edit.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { CodeEditorComponent } from './components/code-editor/code-editor.component';
@@ -151,12 +154,17 @@ import { GroupEpics } from './epics/group.epics';
 import { GroupFormComponent } from './components/groups/group-form/group-form.component';
 import { UserListComponent } from './components/users/user-list/user-list.component';
 import { GroupListComponent } from './components/groups/group-list/group-list.component';
+import { FormEditorComponent } from './components/form-editor/form-editor.component';
+import { FormEditorContainerComponent } from './components/form-editor/form-editor-container.component';
+import { GlobalNavComponent } from './components/global-nav/global-nav.component';
+import { ProjectBarComponent } from './components/project-bar/project-bar.component';
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
   paths: {
     'vs': `${environment.assetsUrl}/js/vendor/vs`,
-    'ace': `${environment.assetsUrl}/js/vendor/ace`
+    'ace': `${environment.assetsUrl}/js/vendor/ace`,
+    'plugins': `${environment.assetsUrl}/plugins`
   }
 });
 
@@ -183,7 +191,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     UserProfileComponent,
     ProjectComponent,
     PreviewComponent,
-    ProjectManagementComponent,
+    ProjectsComponent,
     ContentTreeComponent,
     ComponentHostDirective,
     PasswordFieldComponent,
@@ -232,8 +240,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     GroupsComponent,
     GroupFormComponent,
     UserListComponent,
-    GroupListComponent
-
+    GroupListComponent,
+    FormEditorComponent,
+    FormEditorContainerComponent,
+    GlobalNavComponent,
+    ProjectBarComponent
   ],
   imports: [
     studioRoutes,

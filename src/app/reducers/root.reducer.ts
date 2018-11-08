@@ -14,6 +14,7 @@ import { isNullOrUndefined } from 'util';
 import { uppy } from './uppy.reducer';
 import { explorer } from './explorer.reducer';
 import { usersList } from './users-list.reducer';
+import { groupsList } from './groups-list.reducer';
 
 const foo = (state = null) => state;
 
@@ -41,7 +42,8 @@ export const reducerMap = {
   // to whether there is a active project or not
   previewTabs: foo,
 
-  usersList
+  usersList,
+  groupsList
 
 };
 

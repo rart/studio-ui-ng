@@ -1,7 +1,7 @@
 <ng-container *ngIf="preRequisitesPassed else loading">
   <ng-container [ngSwitch]="auth">
 
-    <!--  -->
+    <!-- Router Outlet: Used for the login view when user is not authenticated. -->
     <router-outlet *ngSwitchCase="'void'"></router-outlet>
 
     <!-- Show the app until user is logged in -->

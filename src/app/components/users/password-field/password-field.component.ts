@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import { StringUtils } from '../../../utils/string.utils';
+import { User } from '../../../models/user.model';
 
 const TYPE_TEXT = 'text';
 const TYPE_PASSWORD = 'password';
@@ -30,14 +31,14 @@ const TYPE_PASSWORD = 'password';
               (click)="revealed = !revealed"
               [attr.aria-label]="'Show/Hide Password' | translate"
               [title]="'Show/Hide Password' | translate">
-        <mat-icon>{{inputType === 'text' ? 'visibility_off' : 'visibilty'}}</mat-icon>
+        <mat-icon>{{inputType === 'text' ? 'visibility_off' : 'visibility'}}</mat-icon>
       </button>
       <button translate mat-button *ngIf="allowGeneration" (click)="generatePassword()">
         Generate
       </button>
     </div>`
 }) export class PasswordFieldComponent implements OnInit {
-  @Input() model;
+  @Input() model: { [key: string]: any; password?: string; } = {  };
   @Input() autoGenerate = false;
   @Input() allowVisibilityControl = true;
   @Input() allowGeneration = true;
@@ -52,8 +53,8 @@ const TYPE_PASSWORD = 'password';
     }
   }
   generatePassword() {
-    const passwd: string = StringUtils.password();
-    this.formControlRef.setValue(passwd);
-    this.model.password = passwd;
+    const password: string = StringUtils.password();
+    this.formControlRef.setValue(password);
+    this.model.password = password;
   }
 }
