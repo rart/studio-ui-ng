@@ -13,6 +13,7 @@
     "start": "ng serve --host 0.0.0.0 --deploy-url /app/ --base-href /app --public-host http://localhost:4200/sockjs-node --aot",
     "begin": "npm run start",
     "build": "ng build",
+    "build-studio": "ng build --base-href /studio/alpha/ --deploy-url /studio/static-assets/alpha/ --environment studio",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
