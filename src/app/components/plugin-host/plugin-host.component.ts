@@ -1,11 +1,10 @@
 import { AfterContentInit, AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from '../../classes/app-state.interface';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject ,  Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { StudioPluginHost } from '../../classes/studio-plugin';
 import { StudioPlugin } from '../../models/studio-plugin';
-import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'std-plugin-host',

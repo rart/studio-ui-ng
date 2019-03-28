@@ -1,80 +1,163 @@
-// import { Subject } from 'rxjs/Subject';
-// import { Subscription } from 'rxjs/Subscription';
-// import { Communicator } from './communicator.class';
-// import { WindowMessageTopicEnum } from '../enums/window-message-topic.enum';
-// import { WindowMessageScopeEnum } from '../enums/window-message-scope.enum';
-// import { WindowMessage } from './window-message.class';
+// import { Subject, Observable, Subscription, fromEvent, OperatorFunction } from 'rxjs';
+// import { filter, map, multicast, tap, refCount } from 'rxjs/operators';
+// import { notNullOrUndefined, ObserverOrNext } from '@craftercms/utils';
+// import { Message, MessageScope, MessageTopic } from '@craftercms/models';
 //
-// const SCOPED_SUBJECTS = 'SCOPED_SUBJECTS';
+// export abstract class Messenger {
 //
-// export class Messenger extends Communicator {
+//   protected multiCaster$: Subject<Message>;
+//   protected messages$: Observable<Message>;
 //
-//   private messages: Subject<WindowMessage>;
-//   private subjects: { /* topic(WindowMessageTopicEnum): Subject<WindowMessage> */ };
+//   protected targets: Array<any> = [];
+//   protected origins: Array<any> = [];
 //
 //   constructor() {
-//     super();
-//     this.messages = new Subject<WindowMessage>();
-//   }
-//
-//   protected processReceivedMessage(message: WindowMessage) {
-//     if (this.subjects) {
-//       if (this.subjects[message.scope] && this.subjects[message.scope][message.topic]) {
-//         this.subjects[message.scope][message.topic].next(message);
-//       }
-//       if (this.subjects[message.topic]) {
-//         this.subjects[message.topic].next(message);
-//       }
-//     }
-//     this.messages.next(message);
-//   }
-//
-//   subscribeTo(topic: WindowMessageTopicEnum, subscriber: (value) => void, scope?: WindowMessageScopeEnum): Subscription {
-//     if (!this.subjects) {
-//       this.subjects = {};
-//     }
 //
 //     let
-//       subject,
-//       subjects = this.subjects;
+//       multiCaster = new Subject<Message>(),
+//       messages = fromEvent(window, 'message')
+//         .pipe(
+//           tap((event: MessageEvent) =>
+//             !this.originAllowed(event.origin) &&
+//             console.log('Messenger: Message received from a disallowed origin.', event)
+//           ),
+//           filter((event: MessageEvent) =>
+//             this.originAllowed(event.origin) &&
+//             (typeof event.data === 'object') &&
+//             ('topic' in event.data) &&
+//             ('data' in event.data) &&
+//             ('scope' in event.data)
+//           ),
+//           map((event: MessageEvent) => ({
+//             topic: event.data.topic,
+//             data: event.data.data,
+//             scope: event.data.scope || MessageScope.Broadcast
+//           })),
+//           multicast(multiCaster),
+//           refCount()
+//         );
 //
-//     if (scope) {
-//       if (!subjects[SCOPED_SUBJECTS]) {
-//         subjects[SCOPED_SUBJECTS] = {};
+//     this.messages$ = messages;
+//     this.multiCaster$ = multiCaster;
+//
+//   }
+//
+//   subscribe(observerOrNext: ObserverOrNext<Message>): Subscription;
+//   subscribe<T extends Message, R>(
+//     observerOrNext: ObserverOrNext<R>,
+//     ...operators: OperatorFunction<T, R>[]): Subscription;
+//   subscribe<T extends Message, R>(
+//     observerOrNext: ObserverOrNext<R>,
+//     ...operators: OperatorFunction<T, R>[]): Subscription {
+//     return this.messages$
+//       .pipe(...operators)
+//       .subscribe(observerOrNext);
+//   }
+//
+//   subscribeTo<T, R>(topic: MessageTopic,
+//                     subscriber: (value: Message) => void,
+//                     scope?: MessageScope,
+//                     ...operations): Subscription {
+//     let ops = [];
+//     // operations = operations || [];
+//     if (!notNullOrUndefined(scope)) {
+//       ops.push(
+//         filter((message: Message) =>
+//           message.scope === scope && message.topic === topic));
+//     } else {
+//       ops.push(
+//         filter((message: Message) => message.topic === topic));
+//     }
+//     return this.messages$
+//       .pipe(...ops.concat(operations))
+//       .subscribe(subscriber);
+//   }
+//
+//   addTarget(target: any): void {
+//     this.removeTarget(target);
+//     this.targets.push(target);
+//   }
+//
+//   resetTargets(): void {
+//     this.targets = [];
+//   }
+//
+//   removeTarget(target: Window): void {
+//     this.targets = this.targets.filter(function (item) {
+//       return item !== target;
+//     });
+//   }
+//
+//   addOrigin(origin: string): void {
+//     this.removeOrigin(origin);
+//     this.origins.push(origin);
+//   }
+//
+//   resetOrigins(): void {
+//     this.origins = [];
+//   }
+//
+//   removeOrigin(origin: string): void {
+//     this.origins = this.origins.filter(function (item) {
+//       return item !== origin;
+//     });
+//   }
+//
+//   publish(message: Message): void;
+//
+//   publish(topic: MessageTopic,
+//           data: any,
+//           scope: MessageScope): void;
+//
+//   publish(topicOrMessage: Message | MessageTopic,
+//           data: any = null,
+//           scope: MessageScope = MessageScope.Broadcast): void {
+//     let message: Message;
+//     if (topicOrMessage in MessageTopic) {
+//       message = {
+//         topic: <MessageTopic>topicOrMessage,
+//         data,
+//         scope
+//       };
+//     } else {
+//       message = <Message>topicOrMessage;
+//     }
+//     switch (scope) {
+//       case MessageScope.Local:
+//         this.multiCaster$.next(message);
+//         break;
+//       case MessageScope.External:
+//         this.sendMessage(message);
+//         break;
+//       case MessageScope.Broadcast:
+//         this.multiCaster$.next(message);
+//         this.sendMessage(message);
+//         break;
+//     }
+//   }
+//
+//   sendMessage(message: Message, targetOrigin: string = '*'): void {
+//     this.targets.forEach((target) => {
+//       // TODO need to determine where to get the origin
+//       if (!target.postMessage) {
+//         target = target.contentWindow;
 //       }
-//       subjects = subjects[SCOPED_SUBJECTS];
-//     }
-//
-//     if (!subjects[topic]) {
-//       subjects[topic] = new Subject<WindowMessage>();
-//     }
-//
-//     subject = <Subject<WindowMessage>>subjects[topic];
-//     return subject.subscribe(subscriber);
+//       if (!target || !target.postMessage) {
+//         // Garbage collection: get rid of any windows that no longer exist.
+//         this.removeTarget(target);
+//       } else {
+//         (<Window>target).postMessage(message, targetOrigin);
+//       }
+//     });
 //   }
 //
-//   subscribe(subscriber: (value) => void): Subscription {
-//     return this.messages.subscribe(subscriber);
-//   }
-//
-//   unsubscribe(): void {
-//     this.messages.unsubscribe();
-//   }
-//
-//   publish(topic: WindowMessageTopicEnum, data: any = null, scope: WindowMessageScopeEnum = WindowMessageScopeEnum.Broadcast) {
-//     let message = new WindowMessage(topic, data, scope);
-//     switch (message.scope) {
-//       case WindowMessageScopeEnum.Local:
-//         this.messages.next(message);
-//         break;
-//       case WindowMessageScopeEnum.External:
-//         super.publish(topic, data, scope);
-//         break;
-//       case WindowMessageScopeEnum.Broadcast:
-//         this.messages.next(message);
-//         super.publish(topic, data, scope);
-//         break;
+//   originAllowed(origin: string): boolean {
+//     for (let origins = this.origins, i = 0, l = origins.length; i < l; ++i) {
+//       if (origins[i] === origin) {
+//         return true;
+//       }
 //     }
+//     return false;
 //   }
 //
 // }

@@ -1,14 +1,10 @@
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable ,  Subscription ,  Subject ,  OperatorFunction ,  fromEvent } from 'rxjs';
 import { filter, map, multicast, tap, refCount } from 'rxjs/operators';
 import { WindowMessageTopicEnum } from '../enums/window-message-topic.enum';
 import { WindowMessage } from './window-message.class';
-import { Subject } from 'rxjs/Subject';
 import { WindowMessageScopeEnum } from '../enums/window-message-scope.enum';
-import { OperatorFunction } from 'rxjs/interfaces';
 import { AnySubscriber } from '../../@types/globals/AnyObserver.type';
 import { isNullOrUndefined } from 'util';
-import { fromEvent } from 'rxjs/observable/fromEvent';
 
 interface Msg {
   data: any;
@@ -27,13 +23,13 @@ export abstract class Communicator {
 
     let
       multiCaster = new Subject<WindowMessage>(),
-      messages = fromEvent(window, 'message')
+      messages = fromEvent<MessageEvent>(window, 'message')
         .pipe(
-          tap((event: Msg) =>
+          tap((event) =>
             !this.originAllowed(event.origin) &&
             console.log('Communicator: Message received from a disallowed origin.', event)
           ),
-          filter((event: Msg) =>
+          filter((event) =>
             this.originAllowed(event.origin) &&
             (typeof event.data === 'object') &&
             ('topic' in event.data) &&
@@ -56,7 +52,7 @@ export abstract class Communicator {
 
   subscribe<T, R>(observer: AnySubscriber, ...operators: OperatorFunction<T, R>[]): Subscription {
     return this.messages
-      .pipe(...operators)
+      .pipe.apply(this.messages, operators)
       .subscribe(observer);
   }
 
@@ -75,7 +71,7 @@ export abstract class Communicator {
         filter((message: WindowMessage) => message.topic === topic));
     }
     return this.messages
-      .pipe(...ops.concat(operations))
+      .pipe.apply(this.messages, ops.concat(operations))
       .subscribe(subscriber);
   }
 

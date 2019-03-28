@@ -1,11 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  BehaviorSubject ,  merge ,  of } from 'rxjs';
 import {
   debounceTime, map, scan, startWith, tap,
   distinctUntilChanged, shareReplay
 } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { WorkflowService } from '../../services/workflow.service';
 import { ActivatedRoute } from '@angular/router';
@@ -15,8 +14,6 @@ import { createLocalPagination$ } from '../../app.utils';
 import { ComponentBase } from '../../classes/component-base.class';
 import { PagerConfig } from '../../classes/pager-config.interface';
 import { showSnackBar } from '../../utils/material.utils';
-import { merge } from 'rxjs/observable/merge';
-import { of } from 'rxjs/observable/of';
 
 @Component({
   selector: 'std-workflow-states',

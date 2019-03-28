@@ -228,7 +228,7 @@ export function collapseInOut(defaultState: string, collapsedState: string, anim
   ]);
 };
 
-const ROUTER_WRAPPER = '.router.wrapper';
+const ROUTER_WRAPPER = '.main-router-wrapper';
 
 export const routerAnimations = [
   trigger('navigation', [
@@ -245,9 +245,8 @@ export const navBarAnimations = [
     state('minimised', style({
       transform: 'translateX(-100%)',
       display: 'none',
-      opacity: 0,
-      width: 0
+      opacity: 0
     })),
-    transition('* => *', animate(250))
+    transition('* => *', animate(200))
   ])
 ];

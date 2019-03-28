@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Inject, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  BehaviorSubject ,  Subject ,  forkJoin ,  merge } from 'rxjs';
 
 import { AppState, EditSession, EditSessions, LookupTable } from '../../classes/app-state.interface';
 import { dispatch, NgRedux, select } from '@angular-redux/store';
@@ -7,16 +7,12 @@ import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { Asset } from '../../models/asset.model';
 import { filter, skip, switchMap, take, takeUntil } from 'rxjs/operators';
 import { AssetActions } from '../../actions/asset.actions';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { notNullOrUndefined } from '../../app.utils';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { openDialog } from '../../utils/material.utils';
 import { EditorComponent } from '../editor/editor.component';
-import { Subject } from 'rxjs/Subject';
 import { AssetTypeEnum } from '../../enums/asset-type.enum';
 import { isNullOrUndefined } from 'util';
-import { forkJoin } from 'rxjs/observable/forkJoin';
-import { merge } from 'rxjs/observable/merge';
 
 @Component({
   selector: 'std-edit',

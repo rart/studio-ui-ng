@@ -1,6 +1,6 @@
 <mat-sidenav-container>
 
-  <div class="studio-content-wrapper" [ngClass]="{ 'has-sidebar': showProjectSidebar }">
+  <div class="studio-content-wrapper" [ngClass]="{ 'has-sidebar': showProjectSidebar, 'no-sidebar': !showProjectSidebar }">
 
     <std-global-nav
       [items]="globalNavItems">
@@ -10,7 +10,7 @@
       *ngIf="showProjectBadge"
       [links]="projectNavItems"
       [trees]="projectTreeItems"
-      [attr.hidden]="showProjectSidebar ? null : true">
+      [@visibility]="showProjectSidebar ? 'expanded' : 'minimised'">
     </std-project-bar>
 
     <std-topbar class="above" *ngIf="settings.topBarShown"></std-topbar>

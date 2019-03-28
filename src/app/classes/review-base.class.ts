@@ -2,7 +2,7 @@ import { ComponentBase } from './component-base.class';
 import { ActivatedRoute } from '@angular/router';
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from './app-state.interface';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 
 export class ReviewBase extends ComponentBase {
 

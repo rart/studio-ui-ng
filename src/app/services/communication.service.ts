@@ -1,9 +1,8 @@
 import { Injectable, OnInit } from '@angular/core';
 import { Communicator } from '../classes/communicator.class';
 import { debounceTime, share } from 'rxjs/operators';
-import { OperatorFunction } from 'rxjs/interfaces';
+import { OperatorFunction ,  fromEvent } from 'rxjs';
 import { AnyObserver } from '../../@types/globals/AnyObserver.type';
-import { fromEvent } from 'rxjs/observable/fromEvent';
 
 @Injectable()
 export class CommunicationService extends Communicator implements OnInit {
@@ -24,7 +23,7 @@ export class CommunicationService extends Communicator implements OnInit {
 
   resize<T, R>(subscriber: AnyObserver<T>, ...operators: OperatorFunction<T, R>[]) {
     return this.$resize
-      .pipe(...operators)
+      .pipe.apply(this.$resize, operators)
       .subscribe(subscriber);
   }
 

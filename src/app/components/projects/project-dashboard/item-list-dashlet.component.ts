@@ -3,7 +3,7 @@ import {
   OnChanges
 } from '@angular/core';
 import { Asset } from '../../../models/asset.model';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  of } from 'rxjs';
 import { WorkflowService } from '../../../services/workflow.service';
 import { Project } from '../../../models/project.model';
 import { Router } from '@angular/router';
@@ -20,7 +20,6 @@ import { ProjectActions } from '../../../actions/project.actions';
 import { PreviewTabsActions } from '../../../actions/preview-tabs.actions';
 import { createPreviewTabCore } from '../../../utils/state.utils';
 import { AssetActions } from '../../../actions/asset.actions';
-import { of } from 'rxjs/observable/of';
 
 type Format = 'modern' | 'table';
 type ItemResponseFormat = 'categorized' | 'simple';

@@ -16,8 +16,9 @@ import {
 import { BaseEpic } from './base-epic';
 import { AppState } from '../classes/app-state.interface';
 import { Store } from 'redux';
-import { never } from 'rxjs/observable/never';
+import { NEVER } from 'rxjs';
 import { isNullOrUndefined } from 'util';
+import { StateObservable } from 'redux-observable';
 
 @Injectable()
 export class UserEpics extends BaseEpic {
@@ -56,12 +57,12 @@ export class UserEpics extends BaseEpic {
 
   private fetchUsers = RootEpic.createEpic(
     Actions.FETCH_USERS,
-    ({ payload }, store: Store<AppState>) => {
-      const state = store.getState();
+    ({ payload }, state$: StateObservable<AppState>) => {
+      const state = state$.value;
       return (
         (payload.forceUpdate || isNullOrUndefined(state.usersList.page[payload.query.pageIndex]))
           ? this.service.page(payload.query).pipe(map(fetchUsersComplete))
-          : never()
+          : NEVER
       );
     }
   );

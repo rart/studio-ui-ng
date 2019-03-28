@@ -10,17 +10,14 @@ import {
 } from '@angular/core';
 import { CodeEditor, CodeEditorChange, CodeEditorChoiceEnum } from '../../classes/code-editor.abstract';
 import { CodeEditorFactory } from '../../classes/code-editor-factory.class';
-import { Subject } from 'rxjs/Subject';
+import { Subject, BehaviorSubject, NEVER, of } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { CommunicationService } from '../../services/communication.service';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { AppState } from '../../classes/app-state.interface';
 import { NgRedux } from '@angular-redux/store';
 import { isNullOrUndefined } from 'util';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { notNullOrUndefined } from '../../app.utils';
-import { never } from 'rxjs/observable/never';
-import { of } from 'rxjs/observable/of';
 
 // TODO: how to avoid navigation when code has been entered and not saved? — also, is auto save viable?
 
@@ -188,7 +185,7 @@ export class CodeEditorComponent extends WithNgRedux implements OnInit, OnChange
           if (initialized) {
             return of(true);
           } else {
-            return never();
+            return NEVER;
           }
         }),
         take(1)

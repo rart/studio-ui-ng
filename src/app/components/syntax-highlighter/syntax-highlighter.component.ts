@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { ContentService } from '../../services/content.service';
 import { Asset } from '../../models/asset.model';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { filter, zip } from 'rxjs/operators';
 import { ComponentBase } from '../../classes/component-base.class';
 import { isNullOrUndefined } from 'util';

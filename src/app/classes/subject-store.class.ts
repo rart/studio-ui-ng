@@ -1,9 +1,5 @@
 import {Reducer, Store, Unsubscribe} from 'redux';
-import {Subject} from 'rxjs/Subject';
-import { Subscription, TeardownLogic } from 'rxjs/Subscription';
-import { OperatorFunction } from 'rxjs/interfaces';
-import { Observable } from 'rxjs/Observable';
-import { Subscriber } from 'rxjs/Subscriber';
+import {Subject,  Subscription, TeardownLogic ,  OperatorFunction ,  Observable ,  Subscriber } from 'rxjs';
 import { AppState } from './app-state.interface';
 import { filter, map } from 'rxjs/operators';
 
@@ -52,10 +48,13 @@ export class SubjectStore<T> implements Store<T> {
                  subscriber: (branch) => void,
                  ...operators: OperatorFunction<T, R>[]): Subscription {
     return this.branchStream
-      .pipe(
-        filter(key => key === stateBranchKey),
-        map((key: string) => this.getState()[key]),
-        ...(operators || [])
+      .pipe.apply(
+        this.branchStream,
+        [
+          filter(key => key === stateBranchKey),
+          map((key: string) => this.getState()[key]),
+          ...(operators || [])
+        ]
       )
       .subscribe(subscriber);
   }

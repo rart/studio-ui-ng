@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, Output } from '@angular/core';
 import { User } from '../../../models/user.model';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { LookupTable } from '../../../classes/app-state.interface';
 
 @Component({

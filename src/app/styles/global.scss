@@ -697,10 +697,10 @@ thead.uppercase {
     color: #ffffff;
     background: rgba(0, 0, 0, .5);
 
-    //.mat-form-field-can-float .mat-form-field-autofill-control:-webkit-autofill + .mat-form-field-placeholder-wrapper .mat-form-field-placeholder {}
+    //.mat-form-field-can-float .mat-form-field-autofill-control:-webkit-autofill + .mat-form-field-label-wrapper .mat-form-field-label {}
     //mat-input-placeholder mat-form-field-placeholder ng-tns-c5-1 {}
 
-    .mat-form-field-placeholder {
+    .mat-form-field-label {
       color: #ffffff;
     }
 

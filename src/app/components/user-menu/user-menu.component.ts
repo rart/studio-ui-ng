@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { dispatch, select } from '@angular-redux/store';
 import { logout } from '../../actions/user.actions';
 import { User } from '../../models/user.model';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({

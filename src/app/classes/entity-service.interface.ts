@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { BulkPostResponse, PostResponse } from './post-response.interface';
 import { PagedResponse } from './paged-response.interface';
 

@@ -6,8 +6,7 @@ import { Asset } from '../models/asset.model';
 import { ReviewBase } from './review-base.class';
 import { filter, tap } from 'rxjs/operators';
 import { AssetActions } from '../actions/asset.actions';
-import { MonoTypeOperatorFunction } from 'rxjs/interfaces';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { MonoTypeOperatorFunction ,  BehaviorSubject } from 'rxjs';
 
 export abstract class DependencyReviewBase extends ReviewBase {
 

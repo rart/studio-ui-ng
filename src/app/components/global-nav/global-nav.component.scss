@@ -1,16 +1,12 @@
 @import "~app/styles/settings";
 
-::ng-deep {
-  std-global-nav {
-    grid-area: GlobalNav;
-  }
-}
-
 /* Structure */
 :host {
   z-index: 3;
+  width: 60px;
   height: 100vh;
   position: relative;
+  grid-area: GlobalNav;
 }
 
 /* Theme */
@@ -38,12 +34,12 @@
   padding: .5rem 0;
   color: $color-grey;
   align-items: center;
+  flex-direction: column;
   justify-content: center;
   &:hover {
     color: $color-blue;
   }
   &.active {
-    //background-color: #EDEFFF;
     color: $color-blue;
     background-color: lighten($color-blue, 40%);
   }
@@ -54,8 +50,15 @@
 }
 
 .global-nav__link__label {
-  display: none;
+  /* Styles for showing labels */
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 0.625rem;
+  margin: .3125rem 0 0;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
   /* TODO: Hide accessibly! */
+  display: none;
 }
 
 .global-nav__link__logo {

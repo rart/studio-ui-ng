@@ -1,4 +1,4 @@
-import { PartialObserver } from 'rxjs/Observer';
+import { PartialObserver } from 'rxjs';
 
 export declare type AnyObserver<T> = (value: T) => void | PartialObserver<T>;
 

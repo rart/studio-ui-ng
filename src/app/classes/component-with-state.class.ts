@@ -29,7 +29,7 @@ export class ComponentWithState extends ComponentBase {
       until = this.untilDestroyed();
     if (typeof keyMapOrKeys === 'string') {
       // is a key
-      store.subscribeTo(keyMapOrKeys, subscriber, until);
+      store.subscribeTo(keyMapOrKeys as keyof AppState, subscriber, until);
     } else {
       let
         branchKeys,

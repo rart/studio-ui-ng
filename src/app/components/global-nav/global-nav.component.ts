@@ -13,4 +13,8 @@ export class GlobalNavComponent {
 
   }
 
+  activeProjectBadgeClick() {
+
+  }
+
 }

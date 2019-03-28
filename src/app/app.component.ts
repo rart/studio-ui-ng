@@ -2,7 +2,7 @@ import { Router } from '@angular/router';
 import { Component, HostBinding } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
-import { interval } from 'rxjs/observable/interval';
+import { interval } from 'rxjs';
 import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { NgRedux, select } from '@angular-redux/store';

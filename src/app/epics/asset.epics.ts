@@ -5,11 +5,10 @@ import { WorkflowService } from '../services/workflow.service';
 import { AssetActions } from '../actions/asset.actions';
 import { RootEpic } from './root.epic';
 import { ContentService } from '../services/content.service';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { forkJoin ,  of } from 'rxjs';
 import { Asset } from '../models/asset.model';
 import { isArray } from 'util';
 import { BaseEpic } from './base-epic';
-import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class AssetEpics extends BaseEpic {

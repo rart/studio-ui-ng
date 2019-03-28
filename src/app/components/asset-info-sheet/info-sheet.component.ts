@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs/Subject';
+import { Subject ,  merge } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Asset } from '../../models/asset.model';
@@ -6,7 +6,6 @@ import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { AppState } from '../../classes/app-state.interface';
 import { fullName, notNullOrUndefined } from '../../app.utils';
 import { filter, takeUntil } from 'rxjs/operators';
-import { merge } from 'rxjs/observable/merge';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
 

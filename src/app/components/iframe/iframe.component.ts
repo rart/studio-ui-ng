@@ -10,9 +10,8 @@ import {
   ViewChild,
   OnChanges
 } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject ,  BehaviorSubject } from 'rxjs';
 import { CommunicationService } from '../../services/communication.service';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ComponentBase } from '../../classes/component-base.class';
 import {environment} from '../../../environments/environment';
 

@@ -1,5 +1,5 @@
 import { take } from 'rxjs/operators';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { combineLatest } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
 import { WithNgRedux } from './with-ng-redux.class';
 import { PAGE_SIZE_OPTIONS } from '../app.utils';

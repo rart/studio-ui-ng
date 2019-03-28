@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { dispatch, select } from '@angular-redux/store';
 import { logoutComplete } from '../../../actions/user.actions';
 import { ColorsEnum } from '../../../enums/colors.enum';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Settings } from '../../../classes/app-state.interface';
 import { ComponentBase } from '../../../classes/component-base.class';
 import { SettingsActions } from '../../../actions/settings.actions';

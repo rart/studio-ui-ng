@@ -1,13 +1,33 @@
 <header class="project-bar__header">
   <em class="project-bar__header__title">Project</em>
   <h2 class="project-bar__header__project-name">Editorial</h2>
-  <button class="project-bar__header__close">
+  <button class="project-bar__header__close" [matTooltip]="'Close Project' | translate" matTooltipPosition="right">
     <mat-icon aria-hidden="true">exit_to_app</mat-icon>
   </button>
   <p class="project-bar__header__description">Donec ullamcorper nulla non metus auctor fringilla...</p>
 </header>
 
-<nav class="project-bar__nav">
+<nav class="project-bar__nav" *ngIf="activeParent" [@enterAnimation]>
+  <li class="project-bar__nav_item" (click)="showChildLinks(null)">
+    <div class="project-bar__nav-back">
+      <mat-icon aria-hidden="true"
+                class="project-bar__link__children-indicator">
+        arrow_back_ios
+      </mat-icon>
+      {{activeParent.label}}
+    </div>
+  </li>
+  <li class="project-bar__nav_item" *ngFor="let item of activeParent.config.children">
+    <a class="project-bar__link"
+       [routerLink]="item.config.href"
+       routerLinkActive="active">
+      <!--<i class="project-bar__link__icon {{item.iconClass}}" aria-hidden="true">{{item.iconText}}</i>-->
+      <span class="project-bar__link__label">{{item.label}}</span>
+    </a>
+  </li>
+</nav>
+
+<nav class="project-bar__nav" *ngIf="!activeParent">
   <li class="project-bar__nav_item" *ngFor="let item of links">
     <a class="project-bar__link"
        (click)="item.config.children ? showChildLinks(item) : null"
@@ -24,27 +44,29 @@
   </li>
 </nav>
 
-<mat-expansion-panel
-  #expPanel
-  *ngFor="let item of trees"
-  class="project-bar__tree"
-  [expanded]="expandedPanels[getProjectNavPanelKey(item)]">
-  <mat-expansion-panel-header
-    class="project-bar__tree__panel-header"
-    [collapsedHeight]="'auto'"
-    [expandedHeight]="'auto'"
-    (click)="projectNavPanelExpandedStateChange(item, expPanel.expanded)">
-    <mat-panel-title class="project-bar__tree__panel-title">
-      <mat-icon>{{expPanel.expanded ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}}</mat-icon>
-      <span class="label">{{item.label}}</span>
-    </mat-panel-title>
-  </mat-expansion-panel-header>
+<section [hidden]="activeParent || null">
+  <mat-expansion-panel
+    #expPanel
+    *ngFor="let item of trees"
+    class="project-bar__tree"
+    [expanded]="expandedPanels[getProjectNavPanelKey(item)]">
+    <mat-expansion-panel-header
+      class="project-bar__tree__panel-header"
+      [collapsedHeight]="'auto'"
+      [expandedHeight]="'auto'"
+      (click)="projectNavPanelExpandedStateChange(item, expPanel.expanded)">
+      <mat-panel-title class="project-bar__tree__panel-title">
+        <mat-icon>{{expPanel.expanded ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}}</mat-icon>
+        <span class="label">{{item.label}}</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
 
-  <std-content-tree
-    *ngIf="expPanel.expanded"
-    [rootPath]="item.config.path"
-    [showRoot]="item.config.showRoot"
-    [project]="{ code: 'editorial', name: 'Editorial', description: '' }">
-  </std-content-tree>
+    <std-content-tree
+      *ngIf="expPanel.expanded"
+      [rootPath]="item.config.path"
+      [showRoot]="item.config.showRoot"
+      [project]="{ code: 'editorial', name: 'Editorial', description: '' }">
+    </std-content-tree>
 
-</mat-expansion-panel>
+  </mat-expansion-panel>
+</section>

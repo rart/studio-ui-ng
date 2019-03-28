@@ -4,7 +4,7 @@ import { environment } from '../../environments/environment';
 import { StudioHttpService } from './http.service';
 import { map } from 'rxjs/operators';
 import { API1Parser } from '../classes/api1-parser.class';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import {
   APIResponse,
   CreateGroupPayload,

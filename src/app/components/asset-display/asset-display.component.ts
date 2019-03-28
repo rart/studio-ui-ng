@@ -23,10 +23,8 @@ import { SettingsEnum } from '../../enums/Settings.enum';
 import { AssetActions } from '../../actions/asset.actions';
 import { fullName, notNullOrUndefined } from '../../app.utils';
 import { takeUntil, withLatestFrom } from 'rxjs/operators';
-import { merge } from 'rxjs/observable/merge';
+import { merge ,  ReplaySubject ,  Subject } from 'rxjs';
 import { isNullOrUndefined } from 'util';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { Subject } from 'rxjs/Subject';
 
 declare type LabelFactory = (asset: Asset) => string;
 

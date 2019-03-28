@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  Subject } from 'rxjs';
 import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { dispatch, NgRedux } from '@angular-redux/store';
 import { CookieService } from 'ngx-cookie-service';
@@ -27,7 +27,6 @@ import { IFrameComponent } from '../iframe/iframe.component';
 import { PreviewTabsActions } from '../../actions/preview-tabs.actions';
 import { StringUtils } from '../../utils/string.utils';
 import { createPreviewTabCore } from '../../utils/state.utils';
-import { Subject } from 'rxjs/Subject';
 import { AssetTypeEnum } from '../../enums/asset-type.enum';
 import { VideoPlayerComponent } from '../video-player/video-player.component';
 import { AudioPlayerComponent } from '../audio-player/audio-player.component';

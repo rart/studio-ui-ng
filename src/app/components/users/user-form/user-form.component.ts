@@ -7,7 +7,7 @@ import { showSnackBar } from '../../../utils/material.utils';
 import { Change, ChangeType } from '../../../classes/change-tracker.class';
 import { GroupService } from '../../../services/group.service';
 import { AVATARS, createEmptyUser, fullName } from '../../../app.utils';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { dispatch, NgRedux, select } from '@angular-redux/store';
 import { AppState, Settings } from '../../../classes/app-state.interface';
 import { createUser, deleteUser, fetchUser, updateUser } from '../../../actions/user.actions';

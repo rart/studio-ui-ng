@@ -2,14 +2,12 @@ import { AfterViewInit, Component, ElementRef, HostBinding, Input, OnInit } from
 import { Platform } from '@angular/cdk/platform';
 import { Settings } from '../../classes/app-state.interface';
 import { dispatch, select } from '@angular-redux/store';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  fromEvent ,  interval } from 'rxjs';
 import { ComponentBase } from '../../classes/component-base.class';
 import { skip, switchMap, take, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { SettingsActions } from '../../actions/settings.actions';
 import { navBarAnimations } from '../../utils/animations.utils';
-import { fromEvent } from 'rxjs/observable/fromEvent';
-import { interval } from 'rxjs/observable/interval';
 
 const PATH_IMAGES = `${environment.url.assets}/img/logos`;
 

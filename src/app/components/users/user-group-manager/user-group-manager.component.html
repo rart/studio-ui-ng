@@ -17,7 +17,7 @@
             <mat-chip-list *ngSwitchCase="true" fxLayoutAlign="left center">
               <mat-chip
                 [removable]="true" [selectable]="false"
-                (remove)="removeFromGroup(project, userGroup)"
+                (removed)="removeFromGroup(project, userGroup)"
                 *ngFor="let userGroup of getUserGroupsByProject(project)">
                 <span>{{userGroup.name}}</span>
                 <mat-icon matChipRemove>cancel</mat-icon>

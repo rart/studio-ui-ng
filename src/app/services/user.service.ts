@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
 import { StudioHttpService } from './http.service';
 import { environment } from '../../environments/environment';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  of } from 'rxjs';
 import { catchError, map, onErrorResumeNext } from 'rxjs/operators';
 import { PostResponse } from '../classes/post-response.interface';
 import { API1Parser } from '../classes/api1-parser.class';
@@ -10,7 +10,6 @@ import { BasicUsersPayload, BulkDeletePayload, DeletePayload } from '../models/s
 import { CreateUserPayload, FetchUserPayload, FetchUsersPayload } from '../models/service-payloads';
 import { API2Parser } from '../classes/api2-parser.class';
 import { createEmptyUser, getDefaultQuery, notNullOrUndefined } from '../app.utils';
-import { of } from 'rxjs/observable/of';
 import { Query } from '../models/query';
 
 const baseUrl = `/studio/api/2/users`;

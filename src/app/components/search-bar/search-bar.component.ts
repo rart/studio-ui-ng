@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Output, ViewChild } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'std-search-bar',

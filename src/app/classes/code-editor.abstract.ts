@@ -1,9 +1,6 @@
-import { Subject } from 'rxjs/Subject';
-import { Subscription } from 'rxjs/Subscription';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { Subject ,  Subscription ,  ReplaySubject ,  BehaviorSubject } from 'rxjs';
 import { combineLatest, switchMap, takeUntil } from 'rxjs/operators';
 import { isNullOrUndefined } from 'util';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 export interface CodeEditorOptions {
   tabSize: number;
@@ -164,13 +161,13 @@ export abstract class CodeEditor {
     }
   }
 
-  ready(logic: (x?) => void): Promise<any> {
+  ready(logic: Function): Promise<any> {
     return this.ready$
       .toPromise()
       .then(x => (logic && logic(x)) || (this));
   }
 
-  tap(logic: (x?) => void): Promise<any> {
+  tap(logic: Function): Promise<any> {
     return this.loaded$
       .toPromise()
       .then(x => (logic && logic(x)) || (this));
@@ -182,9 +179,9 @@ export abstract class CodeEditor {
     // // the very next change.
     //   this.internalChangeCtrl$.next());
     return this.internalChangeCtrl$
-      .pipe(
-        switchMap(() => this.changes$.pipe(takeUntil(this.valueSet$))),
-        ...operators
+      .pipe.apply(
+        this.internalChangeCtrl$,
+        [switchMap(() => this.changes$.pipe(takeUntil(this.valueSet$))), ...operators]
       )
       .subscribe(logic);
   }

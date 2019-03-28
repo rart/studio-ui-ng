@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { catchError, filter, onErrorResumeNext, switchMap, take, takeUntil } from 'rxjs/operators';
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from './classes/app-state.interface';

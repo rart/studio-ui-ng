@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { notNullOrUndefined } from '../../app.utils';
 import { isNullOrUndefined } from 'util';
 import { createPreviewTabCore } from '../../utils/state.utils';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PreviewTabsActions } from '../../actions/preview-tabs.actions';
 import { openDialog } from '../../utils/material.utils';

@@ -158,6 +158,7 @@ import { FormEditorComponent } from './components/form-editor/form-editor.compon
 import { FormEditorContainerComponent } from './components/form-editor/form-editor-container.component';
 import { GlobalNavComponent } from './components/global-nav/global-nav.component';
 import { ProjectBarComponent } from './components/project-bar/project-bar.component';
+import { applyMiddleware } from 'redux';
 
 requirejs({
   baseUrl: `${environment.assetsUrl}/js/vendor`,
@@ -352,11 +353,15 @@ export class AppModule {
       enhancers.push(devTools.enhancer());
     }
 
+    const epicMiddleware = createEpicMiddleware();
+
     store.configureStore(
       rootReducer,
       initialState,
-      [createEpicMiddleware(rootEpic.epic())],
+      [epicMiddleware],
       enhancers);
+
+    epicMiddleware.run(rootEpic.epic());
 
     store.dispatch({
       type: Actions.STUDIO_INIT

@@ -1,5 +1,5 @@
 import { Component, ContentChild, HostBinding, Input, OnInit, Output, TemplateRef } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { collapseInOut } from '../../utils/animations.utils';
 
 @Component({

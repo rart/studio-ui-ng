@@ -1,6 +1,5 @@
-import { AnonymousSubscription } from 'rxjs/Subscription';
+import { Unsubscribable as AnonymousSubscription ,  Observable ,  of ,  NEVER } from 'rxjs';
 import { environment } from '../environments/environment';
-import { Observable } from 'rxjs/Observable';
 import { combineLatest, takeUntil } from 'rxjs/operators';
 import { PagedResponse } from './classes/paged-response.interface';
 import { PagerConfig } from './classes/pager-config.interface';
@@ -16,7 +15,7 @@ export function createLocalPagination$<T>
    pager$,
    filter$ = of(''),
    filterFn = (item, query) => true,
-   takeUntilOp = takeUntil(never()),
+   takeUntilOp = takeUntil(NEVER),
 
    // can't filter directly on the filter$ since it wouldn't
    // clear the search filter when e.g. deleting the whole query
@@ -72,8 +71,6 @@ import { Asset } from './models/asset.model';
 import { AssetTypeEnum } from './enums/asset-type.enum';
 import { User } from './models/user.model';
 import { Group } from './models/group.model';
-import { of } from 'rxjs/observable/of';
-import { never } from 'rxjs/observable/never';
 import { APIResponse } from './models/service-payloads';
 import { ListingViewState, ModelState } from './classes/app-state.interface';
 import { Query } from './models/query';

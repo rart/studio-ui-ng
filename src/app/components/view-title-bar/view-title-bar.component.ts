@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ContentChild, ElementRef, HostBinding, Input, OnInit, TemplateRef } from '@angular/core';
 import { select } from '@angular-redux/store';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Settings } from '../../classes/app-state.interface';
 import { ComponentBase } from '../../classes/component-base.class';
 

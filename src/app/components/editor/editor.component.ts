@@ -25,19 +25,16 @@ import { CodeEditorFactory } from '../../classes/code-editor-factory.class';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { AppState, EditSession, EditSessions } from '../../classes/app-state.interface';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  BehaviorSubject ,  Subject ,  combineLatest } from 'rxjs';
 import { isNullOrUndefined } from 'util';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { AssetActions } from '../../actions/asset.actions';
 import { CodeEditorComponent } from '../code-editor/code-editor.component';
-import { Subject } from 'rxjs/Subject';
 import { IFrameComponent } from '../iframe/iframe.component';
 import { environment } from '../../../environments/environment';
 import { CookieService } from 'ngx-cookie-service';
 import { CommunicationService } from '../../services/communication.service';
 import { notNullOrUndefined } from '../../app.utils';
 import { WindowMessageTopicEnum } from '../../enums/window-message-topic.enum';
-import { combineLatest } from 'rxjs/observable/combineLatest';
 
 const COOKIE = environment.preview.cookie;
 

@@ -1,11 +1,10 @@
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
+import { Subject, Observable, MonoTypeOperatorFunction } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { MonoTypeOperatorFunction } from 'rxjs/interfaces';
 import { notNullOrUndefined } from '../app.utils';
 import { isNullOrUndefined } from 'util';
 
 let filterOperator;
+
 function initFilterOp() {
   if (isNullOrUndefined(filterOperator)) {
     filterOperator = filter(x => notNullOrUndefined(x));
@@ -31,10 +30,13 @@ export class ComponentBase {
   protected pipeFilterAndTakeUntil<A>(source$: Observable<A>, ...operators: MonoTypeOperatorFunction<A>[]): Observable<A> {
     initFilterOp();
     this.initTakeUntilOp();
-    return source$.pipe(
-      this.filterNulls(),
-      this.untilDestroyed(),
-      ...operators);
+    return source$.pipe.apply(
+      source$,
+      [
+        this.filterNulls(),
+        this.untilDestroyed(),
+        ...operators
+      ]);
   }
 
   protected filterNulls<T>(): MonoTypeOperatorFunction<T> {

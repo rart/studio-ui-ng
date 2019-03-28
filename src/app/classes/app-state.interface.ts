@@ -22,6 +22,8 @@ export interface AppState {
   groupsList: ListingViewState;
 }
 
+export type AuthState = 'void' | 'fetching' | 'validated' | 'timeout';
+
 export interface ExplorerState {
   activeProjectCode;
   byProject;

@@ -18,13 +18,14 @@ export class DashboardComponent implements OnInit {
     { icon: 'fa fa-file-o', label: 'Assets', href: '/assets' },
     { icon: 'fa fa-binoculars', label: 'Browser', href: '/preview' },
     { icon: 'fa fa-question-circle-o', label: 'Help', href: '/help' },
-    { icon: 'fa fa-cogs', label: 'Configuration', href: '/config' },
+    { icon: 'fa fa-cogs', label: 'Settings', href: '/settings' },
     { icon: 'fa fa-shopping-cart', label: 'Marketplace', href: '/market' }
   ];
 
   constructor() { }
 
   ngOnInit() {
+
   }
 
 }

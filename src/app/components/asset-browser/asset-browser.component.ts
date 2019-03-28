@@ -7,7 +7,7 @@ import { isNullOrUndefined } from 'util';
 import { notNullOrUndefined } from '../../app.utils';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { DirectoryViewComponent } from '../directory-view/directory-view.component';
-import { interval } from 'rxjs/observable/interval';
+import { interval } from 'rxjs';
 import { scan, takeLast, takeWhile } from 'rxjs/operators';
 
 @Component({

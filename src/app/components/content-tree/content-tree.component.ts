@@ -9,7 +9,7 @@ import { AppState, Workspace } from '../../classes/app-state.interface';
 import { ExpandedPathsActions } from '../../actions/expanded-paths.actions';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
 import { AssetActions } from '../../actions/asset.actions';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { notNullOrUndefined, orderAssetsFoldersFirst } from '../../app.utils';
 import { denormalize } from '../../reducers/assets.entity.reducer';
 

@@ -11,9 +11,11 @@
     <a class="global-nav__link"
        routerLink="{{item.config.href}}"
        routerLinkActive="active"
-       [routerLinkActiveOptions]="{ exact: true }">
+       [routerLinkActiveOptions]="{ exact: true }"
+       [matTooltip]="item.label"
+       matTooltipPosition="right">
       <i class="global-nav__link__icon {{item.iconClass}}" aria-hidden="true">{{item.iconText}}</i>
-      <span class="global-nav__link__label">{{'STUDIO_NAV.' + item.label | translate}}</span>
+      <div class="global-nav__link__label">{{item.label}}</div>
     </a>
   </li>
 </ul>

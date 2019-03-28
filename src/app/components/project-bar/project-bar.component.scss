@@ -3,9 +3,10 @@
 /* Structure */
 :host {
   z-index: 2;
-  width: 100%;
+  width: 220px;
   height: 100vh;
   display: block;
+  overflow: auto;
   grid-area: Sidebar;
   position: relative;
 }
@@ -56,9 +57,10 @@
 }
 
 .project-bar__nav {
-  margin: 20px 0;
   padding: 0 0;
+  margin: 20px 0;
   list-style-type: none;
+  background: $color-grey-main;
 }
 
 .project-bar__nav_item {
@@ -95,10 +97,6 @@
 
 .project-bar__tree {
   background: none;
-}
-
-
-.project-bar__tree {
   margin: 0 0 5px 0;
   ::ng-deep {
     .mat-expansion-indicator {
@@ -125,4 +123,20 @@
   align-items: center;
   text-transform: uppercase;
   min-height: 25px !important;
+}
+
+.project-bar__nav-back {
+  height: 2rem;
+  display: flex;
+  color: $color-black;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.04);
+  i, mat-icon, .material-icons {
+    height: 2rem;
+    display: flex;
+    left: .625rem;
+    position: absolute;
+    align-items: center;
+  }
 }

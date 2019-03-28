@@ -4,7 +4,7 @@ import { environment } from '../../environments/environment';
 
 import { Project } from '../models/project.model';
 import { StudioHttpService } from './http.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { EntityService } from '../classes/entity-service.interface';
 import { PagedResponse } from '../classes/paged-response.interface';
 import { PostResponse } from '../classes/post-response.interface';

@@ -1,18 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, PageEvent } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MediaChange, ObservableMedia } from '@angular/flex-layout';
+import { MediaChange, MediaObserver } from '@angular/flex-layout';
 import { createLocalPagination$ } from '../../app.utils';
 import { EmbeddedViewDialogComponent } from '../embedded-view-dialog/embedded-view-dialog.component';
 import { ProjectCrUDComponent } from './project-crud/project-crud.component';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject ,  Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, startWith } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { PagedResponse } from '../../classes/paged-response.interface';
 import { Project } from '../../models/project.model';
 import { PagerConfig } from '../../classes/pager-config.interface';
 import { dispatch, NgRedux, select } from '@angular-redux/store';
-import { Observable } from 'rxjs/Observable';
 import { ProjectActions } from '../../actions/project.actions';
 import { AppState } from '../../classes/app-state.interface';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
@@ -54,7 +53,7 @@ export class ProjectsComponent extends WithNgRedux implements OnInit {
               private projectActions: ProjectActions,
               private activeRoute: ActivatedRoute,
               private previewTabsActions: PreviewTabsActions,
-              private observableMedia: ObservableMedia) {
+              private mediaObserver: MediaObserver) {
     super(store);
   }
 
@@ -66,14 +65,14 @@ export class ProjectsComponent extends WithNgRedux implements OnInit {
 
   ngOnInit() {
 
-    this.observableMedia.subscribe((change: MediaChange) => {
+    this.mediaObserver.asObservable().subscribe((change: MediaChange[]) => {
       this.columns = ({
         'xs': '',
         'sm': 'two column',
         'md': 'three column',
         'lg': 'five column',
         'xl': 'six column'
-      }) [change.mqAlias];
+      }) [change[0].mqAlias];
     });
 
     this.activeRoute.url

@@ -1,11 +1,6 @@
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { forkJoin ,  fromEvent ,  Subject ,  from as fromPromise ,  Observable ,  merge } from 'rxjs';
 import { filter, takeUntil, tap } from 'rxjs/operators';
-import { fromEvent } from 'rxjs/observable/fromEvent';
-import { Subject } from 'rxjs/Subject';
-import { fromPromise } from 'rxjs/observable/fromPromise';
-import { Observable } from 'rxjs/Observable';
 import { ArrayUtils } from '../utils/array.utils';
-import { merge } from 'rxjs/observable/merge';
 import * as flatten from 'flatten';
 
 const CLASS = 'drag-over';

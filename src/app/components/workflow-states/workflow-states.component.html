@@ -71,7 +71,7 @@
         </td>
         <td class="state">
           <mat-form-field class="no-subscript no-underline no-infix">
-            <mat-select [(ngModel)]="i.asset.workflowStatus" (change)="itemStatusChanged(i)">
+            <mat-select [(ngModel)]="i.asset.workflowStatus" (selectionChange)="itemStatusChanged(i)">
               <mat-option [value]="status" *ngFor="let status of states">
                 {{status}}
               </mat-option>

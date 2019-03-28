@@ -19,7 +19,7 @@
                 #select="matSelect"
                 placeholder="{{ menu.label | translate }}"
                 [(ngModel)]="query[menu.action]"
-                (change)="menuOptionClicked(menu.action, select.value)">
+                (selectionChange)="menuOptionClicked(menu.action, select.value)">
                 <mat-option *ngFor="let opt of menu.options" [value]="opt.value">
                   {{ opt.label || opt.value }}
                 </mat-option>

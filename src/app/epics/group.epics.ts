@@ -15,7 +15,8 @@ import {
 import { AppState } from '../classes/app-state.interface';
 import { Store } from 'redux';
 import { isNullOrUndefined } from 'util';
-import { never } from 'rxjs/observable/never';
+import { NEVER } from 'rxjs';
+import { StateObservable } from 'redux-observable';
 
 @Injectable()
 export class GroupEpics extends BaseEpic {
@@ -50,12 +51,11 @@ export class GroupEpics extends BaseEpic {
 
   private fetchGroups = RootEpic.createEpic(
     Actions.FETCH_GROUPS,
-    ({ payload }, store: Store<AppState>) => {
-      const state = store.getState();
+    ({ payload }, { value: state }: StateObservable<AppState>) => {
       return (
         (payload.forceUpdate || isNullOrUndefined(state.groupsList.page[payload.query.pageIndex]))
           ? this.service.page(payload.query).pipe(map(fetchGroupsComplete))
-          : never()
+          : NEVER
       );
     });
 

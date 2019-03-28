@@ -2,12 +2,11 @@ import { AfterViewInit, Component, ElementRef, Input, OnChanges, Output, SimpleC
 import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from '../../classes/app-state.interface';
 import { Asset } from '../../models/asset.model';
-import { Subject } from 'rxjs/Subject';
+import { Subject ,  merge } from 'rxjs';
 import { FileDropHelper } from '../../classes/file-drop-herlper.class';
 import { UploaderComponent } from '../uploader/uploader.component';
 import { openDialog } from '../../utils/material.utils';
 import { MatDialog } from '@angular/material';
-import { merge } from 'rxjs/observable/merge';
 import { takeUntil } from 'rxjs/operators';
 import { notNullOrUndefined } from '../../app.utils';
 import { isNullOrUndefined } from 'util';

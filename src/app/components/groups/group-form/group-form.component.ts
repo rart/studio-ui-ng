@@ -24,7 +24,7 @@ import { MatSnackBar } from '@angular/material';
 import { showSnackBar } from '../../../utils/material.utils';
 import { User } from '../../../models/user.model';
 import { fetchUsers } from '../../../actions/user.actions';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'std-groups-form',
@@ -152,7 +152,7 @@ export class GroupFormComponent extends WithNgRedux implements OnInit {
       combineLatest(
         store.select(['entities', 'groups']),
         store.select(['entities', 'users']),
-        store.select('userList'))
+        store.select('usersList'))
         .pipe(this.untilDestroyed())
         .subscribe((values: any[]) => {
 

@@ -1,9 +1,9 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { NgRedux } from '@angular-redux/store';
-import { AppState, Settings, SidebarState } from '../../classes/app-state.interface';
+import { AppState, Settings } from '../../classes/app-state.interface';
 import { WithNgRedux } from '../../classes/with-ng-redux.class';
-import { combineLatest, filter, withLatestFrom } from 'rxjs/operators';
-import { routerAnimations } from '../../utils/animations.utils';
+import { combineLatest, filter } from 'rxjs/operators';
+import { routerAnimations, navBarAnimations } from '../../utils/animations.utils';
 import { NavigationEnd, Router } from '@angular/router';
 import { notNullOrUndefined } from '../../app.utils';
 import { StudioService } from '../../services/studio.service';
@@ -12,7 +12,7 @@ import { StudioService } from '../../services/studio.service';
   selector: 'std-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss'],
-  animations: routerAnimations
+  animations: [].concat(routerAnimations, navBarAnimations)
 })
 export class MainComponent extends WithNgRedux implements OnInit {
 
@@ -51,12 +51,16 @@ export class MainComponent extends WithNgRedux implements OnInit {
       .subscribe(([event, code, settings]) => {
 
         this.settings = settings;
-        this.navState = this.settings.viewAnimation;
-        this.showProjectBadge = notNullOrUndefined(code);
-        this.showProjectSidebar = notNullOrUndefined(code) && router.url.includes('/project/') && settings.navBarShown;
         this.activeProjectCode = code;
 
-        setTimeout(() => this.navState = '', 500);
+        this.showProjectBadge = notNullOrUndefined(code);
+        this.showProjectSidebar = (
+          settings.navBarShown &&
+          notNullOrUndefined(code) &&
+          router.url.includes('/project/')
+        );
+
+        this.navState = this.settings.viewAnimation;
 
       });
 
